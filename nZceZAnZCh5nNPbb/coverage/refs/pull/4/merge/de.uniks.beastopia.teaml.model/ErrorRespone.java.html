@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ErrorRespone.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.model</a> &gt; <span class="el_source">ErrorRespone.java</span></div><h1>ErrorRespone.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.model;
+import java.util.Objects;
+import java.beans.PropertyChangeSupport;
+
+<span class="nc" id="L5">public class ErrorRespone</span>
+{
+   public static final String PROPERTY_STATUS_CODE = &quot;statusCode&quot;;
+   public static final String PROPERTY_ERROR = &quot;error&quot;;
+   public static final String PROPERTY_MESSAGE = &quot;message&quot;;
+   private int statusCode;
+   private String error;
+   private String message;
+   protected PropertyChangeSupport listeners;
+
+   public int getStatusCode()
+   {
+<span class="nc" id="L17">      return this.statusCode;</span>
+   }
+
+   public ErrorRespone setStatusCode(int value)
+   {
+<span class="nc bnc" id="L22" title="All 2 branches missed.">      if (value == this.statusCode)</span>
+      {
+<span class="nc" id="L24">         return this;</span>
+      }
+
+<span class="nc" id="L27">      final int oldValue = this.statusCode;</span>
+<span class="nc" id="L28">      this.statusCode = value;</span>
+<span class="nc" id="L29">      this.firePropertyChange(PROPERTY_STATUS_CODE, oldValue, value);</span>
+<span class="nc" id="L30">      return this;</span>
+   }
+
+   public String getError()
+   {
+<span class="nc" id="L35">      return this.error;</span>
+   }
+
+   public ErrorRespone setError(String value)
+   {
+<span class="nc bnc" id="L40" title="All 2 branches missed.">      if (Objects.equals(value, this.error))</span>
+      {
+<span class="nc" id="L42">         return this;</span>
+      }
+
+<span class="nc" id="L45">      final String oldValue = this.error;</span>
+<span class="nc" id="L46">      this.error = value;</span>
+<span class="nc" id="L47">      this.firePropertyChange(PROPERTY_ERROR, oldValue, value);</span>
+<span class="nc" id="L48">      return this;</span>
+   }
+
+   public String getMessage()
+   {
+<span class="nc" id="L53">      return this.message;</span>
+   }
+
+   public ErrorRespone setMessage(String value)
+   {
+<span class="nc bnc" id="L58" title="All 2 branches missed.">      if (Objects.equals(value, this.message))</span>
+      {
+<span class="nc" id="L60">         return this;</span>
+      }
+
+<span class="nc" id="L63">      final String oldValue = this.message;</span>
+<span class="nc" id="L64">      this.message = value;</span>
+<span class="nc" id="L65">      this.firePropertyChange(PROPERTY_MESSAGE, oldValue, value);</span>
+<span class="nc" id="L66">      return this;</span>
+   }
+
+   public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue)
+   {
+<span class="nc bnc" id="L71" title="All 2 branches missed.">      if (this.listeners != null)</span>
+      {
+<span class="nc" id="L73">         this.listeners.firePropertyChange(propertyName, oldValue, newValue);</span>
+<span class="nc" id="L74">         return true;</span>
+      }
+<span class="nc" id="L76">      return false;</span>
+   }
+
+   public PropertyChangeSupport listeners()
+   {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">      if (this.listeners == null)</span>
+      {
+<span class="nc" id="L83">         this.listeners = new PropertyChangeSupport(this);</span>
+      }
+<span class="nc" id="L85">      return this.listeners;</span>
+   }
+
+   @Override
+   public String toString()
+   {
+<span class="nc" id="L91">      final StringBuilder result = new StringBuilder();</span>
+<span class="nc" id="L92">      result.append(' ').append(this.getError());</span>
+<span class="nc" id="L93">      result.append(' ').append(this.getMessage());</span>
+<span class="nc" id="L94">      return result.substring(1);</span>
+   }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
