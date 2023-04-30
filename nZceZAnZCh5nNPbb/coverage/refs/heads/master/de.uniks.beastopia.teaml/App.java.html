@@ -40,31 +40,35 @@ public class App extends Application {
 <span class="nc" id="L40">            return;</span>
         }
 
-        //controller = new LoginController();
+
+<span class="fc" id="L44">        final MainComponent component = DaggerMainComponent.builder().mainApp(this).build();</span>
+        //controller = component.loginController();
         //initAndRender(controller);
-<span class="fc" id="L45">    }</span>
+
+        //TODO in LoginController @Inject und leerer Konstruktor
+<span class="fc" id="L49">    }</span>
 
     @Override
     public void stop() {
-<span class="nc" id="L49">        cleanup();</span>
-<span class="nc" id="L50">    }</span>
+<span class="nc" id="L53">        cleanup();</span>
+<span class="nc" id="L54">    }</span>
 
     public void show(Controller controller) {
-<span class="nc" id="L53">        cleanup();</span>
-<span class="nc" id="L54">        this.controller = controller;</span>
-<span class="nc" id="L55">        initAndRender(controller);</span>
-<span class="nc" id="L56">    }</span>
+<span class="nc" id="L57">        cleanup();</span>
+<span class="nc" id="L58">        this.controller = controller;</span>
+<span class="nc" id="L59">        initAndRender(controller);</span>
+<span class="nc" id="L60">    }</span>
 
     private void initAndRender(Controller controller) {
-<span class="nc" id="L59">        controller.init();</span>
-<span class="nc" id="L60">        stage.getScene().setRoot(controller.render());</span>
-<span class="nc" id="L61">    }</span>
+<span class="nc" id="L63">        controller.init();</span>
+<span class="nc" id="L64">        stage.getScene().setRoot(controller.render());</span>
+<span class="nc" id="L65">    }</span>
 
     private void cleanup() {
-<span class="nc bnc" id="L64" title="All 2 branches missed.">        if (controller != null) {</span>
-<span class="nc" id="L65">            controller.destroy();</span>
-<span class="nc" id="L66">            controller = null;</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (controller != null) {</span>
+<span class="nc" id="L69">            controller.destroy();</span>
+<span class="nc" id="L70">            controller = null;</span>
         }
-<span class="nc" id="L68">    }</span>
+<span class="nc" id="L72">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

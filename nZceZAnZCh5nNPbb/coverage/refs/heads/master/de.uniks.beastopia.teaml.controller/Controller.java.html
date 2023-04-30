@@ -1,31 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Controller.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller</a> &gt; <span class="el_source">Controller.java</span></div><h1>Controller.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller;
 
 import de.uniks.beastopia.teaml.Main;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
 import java.io.IOException;
 
-<span class="nc" id="L9">public abstract class Controller {</span>
+<span class="nc" id="L11">public abstract class Controller {</span>
+
+<span class="nc" id="L13">    protected final CompositeDisposable disposables = new CompositeDisposable();</span>
+
     public void init() {
 
-<span class="nc" id="L12">    }</span>
+<span class="nc" id="L17">    }</span>
 
     public void destroy() {
+<span class="nc" id="L20">        disposables.dispose();</span>
+<span class="nc" id="L21">    }</span>
 
-<span class="nc" id="L16">    }</span>
+    public void onDestroy(Runnable action) {
+<span class="nc" id="L24">        disposables.add(Disposable.fromRunnable(action));</span>
+<span class="nc" id="L25">    }</span>
 
     public Parent render() {
-<span class="nc" id="L19">        return load(getClass().getSimpleName().replace(&quot;Controller&quot;, &quot;&quot;));</span>
+<span class="nc" id="L28">        return load(getClass().getSimpleName().replace(&quot;Controller&quot;, &quot;&quot;));</span>
     }
 
     protected Parent load(String view) {
-<span class="nc" id="L23">        final FXMLLoader loader = new FXMLLoader(Main.class.getResource(&quot;views/&quot; + view + &quot;.fxml&quot;));</span>
-<span class="nc" id="L24">        loader.setControllerFactory(c -&gt; this);</span>
+<span class="nc" id="L32">        final FXMLLoader loader = new FXMLLoader(Main.class.getResource(&quot;views/&quot; + view + &quot;.fxml&quot;));</span>
+<span class="nc" id="L33">        loader.setControllerFactory(c -&gt; this);</span>
         try {
-<span class="nc" id="L26">            return loader.load();</span>
-<span class="nc" id="L27">        } catch (IOException e) {</span>
-<span class="nc" id="L28">            throw new RuntimeException(e);</span>
+<span class="nc" id="L35">            return loader.load();</span>
+<span class="nc" id="L36">        } catch (IOException e) {</span>
+<span class="nc" id="L37">            throw new RuntimeException(e);</span>
         }
     }
 }
