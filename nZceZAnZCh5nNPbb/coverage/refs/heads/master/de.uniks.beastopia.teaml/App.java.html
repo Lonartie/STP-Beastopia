@@ -42,8 +42,8 @@ public class App extends Application {
 
 
 <span class="fc" id="L44">        final MainComponent component = DaggerMainComponent.builder().mainApp(this).build();</span>
-        //controller = component.loginController();
-        //initAndRender(controller);
+<span class="fc" id="L45">        controller = component.registrationController();</span>
+<span class="fc" id="L46">        initAndRender(controller);</span>
 
         //TODO in LoginController @Inject und leerer Konstruktor
 <span class="fc" id="L49">    }</span>
@@ -60,15 +60,18 @@ public class App extends Application {
 <span class="nc" id="L60">    }</span>
 
     private void initAndRender(Controller controller) {
-<span class="nc" id="L63">        controller.init();</span>
-<span class="nc" id="L64">        stage.getScene().setRoot(controller.render());</span>
-<span class="nc" id="L65">    }</span>
+<span class="fc" id="L63">        controller.init();</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">        if (controller.getTitle() != null) {</span>
+<span class="fc" id="L65">            stage.setTitle(controller.getTitle());</span>
+        }
+<span class="fc" id="L67">        stage.getScene().setRoot(controller.render());</span>
+<span class="fc" id="L68">    }</span>
 
     private void cleanup() {
-<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (controller != null) {</span>
-<span class="nc" id="L69">            controller.destroy();</span>
-<span class="nc" id="L70">            controller = null;</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (controller != null) {</span>
+<span class="nc" id="L72">            controller.destroy();</span>
+<span class="nc" id="L73">            controller = null;</span>
         }
-<span class="nc" id="L72">    }</span>
+<span class="nc" id="L75">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

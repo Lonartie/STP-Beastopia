@@ -8,33 +8,35 @@ import javafx.scene.Parent;
 
 import java.io.IOException;
 
-<span class="nc" id="L11">public abstract class Controller {</span>
+<span class="fc" id="L11">public abstract class Controller {</span>
 
-<span class="nc" id="L13">    protected final CompositeDisposable disposables = new CompositeDisposable();</span>
+<span class="fc" id="L13">    protected final CompositeDisposable disposables = new CompositeDisposable();</span>
 
     public void init() {
 
-<span class="nc" id="L17">    }</span>
+<span class="fc" id="L17">    }</span>
 
     public void destroy() {
 <span class="nc" id="L20">        disposables.dispose();</span>
 <span class="nc" id="L21">    }</span>
 
+<span class="nc" id="L23">    public String getTitle() { return null; }</span>
+
     public void onDestroy(Runnable action) {
-<span class="nc" id="L24">        disposables.add(Disposable.fromRunnable(action));</span>
-<span class="nc" id="L25">    }</span>
+<span class="nc" id="L26">        disposables.add(Disposable.fromRunnable(action));</span>
+<span class="nc" id="L27">    }</span>
 
     public Parent render() {
-<span class="nc" id="L28">        return load(getClass().getSimpleName().replace(&quot;Controller&quot;, &quot;&quot;));</span>
+<span class="fc" id="L30">        return load(getClass().getSimpleName().replace(&quot;Controller&quot;, &quot;&quot;));</span>
     }
 
     protected Parent load(String view) {
-<span class="nc" id="L32">        final FXMLLoader loader = new FXMLLoader(Main.class.getResource(&quot;views/&quot; + view + &quot;.fxml&quot;));</span>
-<span class="nc" id="L33">        loader.setControllerFactory(c -&gt; this);</span>
+<span class="fc" id="L34">        final FXMLLoader loader = new FXMLLoader(Main.class.getResource(&quot;views/&quot; + view + &quot;.fxml&quot;));</span>
+<span class="fc" id="L35">        loader.setControllerFactory(c -&gt; this);</span>
         try {
-<span class="nc" id="L35">            return loader.load();</span>
-<span class="nc" id="L36">        } catch (IOException e) {</span>
-<span class="nc" id="L37">            throw new RuntimeException(e);</span>
+<span class="fc" id="L37">            return loader.load();</span>
+<span class="nc" id="L38">        } catch (IOException e) {</span>
+<span class="nc" id="L39">            throw new RuntimeException(e);</span>
         }
     }
 }

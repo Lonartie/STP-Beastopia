@@ -9,14 +9,14 @@ import dagger.Provides;
 import javax.inject.Singleton;
 
 @Module
-<span class="nc" id="L12">public class MainModule {</span>
+<span class="fc" id="L12">public class MainModule {</span>
     @Provides
     @Singleton
     ObjectMapper objectMapper() {
-<span class="nc" id="L16">        return new ObjectMapper()</span>
-<span class="nc" id="L17">                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)</span>
-<span class="nc" id="L18">                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)</span>
-<span class="nc" id="L19">                .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);</span>
+<span class="fc" id="L16">        return new ObjectMapper()</span>
+<span class="fc" id="L17">                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)</span>
+<span class="fc" id="L18">                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)</span>
+<span class="fc" id="L19">                .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
