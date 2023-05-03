@@ -6,37 +6,43 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
+import javax.inject.Inject;
 import java.io.IOException;
+import java.util.ResourceBundle;
 
-<span class="fc" id="L11">public abstract class Controller {</span>
+<span class="fc" id="L13">public abstract class Controller {</span>
 
-<span class="fc" id="L13">    protected final CompositeDisposable disposables = new CompositeDisposable();</span>
+    @Inject
+    protected ResourceBundle resources;
+
+<span class="fc" id="L18">    protected final CompositeDisposable disposables = new CompositeDisposable();</span>
 
     public void init() {
 
-<span class="fc" id="L17">    }</span>
+<span class="fc" id="L22">    }</span>
 
     public void destroy() {
-<span class="nc" id="L20">        disposables.dispose();</span>
-<span class="nc" id="L21">    }</span>
+<span class="nc" id="L25">        disposables.dispose();</span>
+<span class="nc" id="L26">    }</span>
 
-<span class="nc" id="L23">    public String getTitle() { return null; }</span>
+<span class="nc" id="L28">    public String getTitle() { return null; }</span>
 
     public void onDestroy(Runnable action) {
-<span class="nc" id="L26">        disposables.add(Disposable.fromRunnable(action));</span>
-<span class="nc" id="L27">    }</span>
+<span class="nc" id="L31">        disposables.add(Disposable.fromRunnable(action));</span>
+<span class="nc" id="L32">    }</span>
 
     public Parent render() {
-<span class="fc" id="L30">        return load(getClass().getSimpleName().replace(&quot;Controller&quot;, &quot;&quot;));</span>
+<span class="fc" id="L35">        return load(getClass().getSimpleName().replace(&quot;Controller&quot;, &quot;&quot;));</span>
     }
 
     protected Parent load(String view) {
-<span class="fc" id="L34">        final FXMLLoader loader = new FXMLLoader(Main.class.getResource(&quot;views/&quot; + view + &quot;.fxml&quot;));</span>
-<span class="fc" id="L35">        loader.setControllerFactory(c -&gt; this);</span>
+<span class="fc" id="L39">        final FXMLLoader loader = new FXMLLoader(Main.class.getResource(&quot;views/&quot; + view + &quot;.fxml&quot;));</span>
+<span class="fc" id="L40">        loader.setControllerFactory(c -&gt; this);</span>
+<span class="fc" id="L41">        loader.setResources(resources);</span>
         try {
-<span class="fc" id="L37">            return loader.load();</span>
-<span class="nc" id="L38">        } catch (IOException e) {</span>
-<span class="nc" id="L39">            throw new RuntimeException(e);</span>
+<span class="fc" id="L43">            return loader.load();</span>
+<span class="nc" id="L44">        } catch (IOException e) {</span>
+<span class="nc" id="L45">            throw new RuntimeException(e);</span>
         }
     }
 }
