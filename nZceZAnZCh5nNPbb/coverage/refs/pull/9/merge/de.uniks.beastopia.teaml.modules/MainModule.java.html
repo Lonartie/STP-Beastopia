@@ -17,7 +17,7 @@ import java.util.prefs.Preferences;
     @Provides
     ResourceBundle bundle(Preferences preferences) {
 <span class="fc" id="L19">        final String locale = preferences.get(&quot;locale&quot;, Locale.ROOT.toLanguageTag());</span>
-<span class="fc" id="L20">        return ResourceBundle.getBundle(&quot;de/uniks/beastopia/teaml/lang/lang&quot;, Locale.forLanguageTag(locale));</span>
+<span class="fc" id="L20">        return ResourceBundle.getBundle(&quot;de/uniks/beastopia/teaml/assets/lang&quot;, Locale.forLanguageTag(locale));</span>
     }
 
     @Provides
