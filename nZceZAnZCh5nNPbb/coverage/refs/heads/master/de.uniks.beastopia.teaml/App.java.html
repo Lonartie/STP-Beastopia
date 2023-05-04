@@ -2,76 +2,82 @@
 
 import de.uniks.beastopia.teaml.controller.Controller;
 
+import fr.brouillard.oss.cssfx.CSSFX;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class App extends Application {
     private Stage stage;
     private Controller controller;
 
-<span class="fc" id="L14">    public App() {</span>
+<span class="fc" id="L17">    public App() {</span>
 
-<span class="fc" id="L16">    }</span>
+<span class="fc" id="L19">    }</span>
 
-<span class="nc" id="L18">    public App(Controller controller) {</span>
-<span class="nc" id="L19">        this.controller = controller;</span>
-<span class="nc" id="L20">    }</span>
+<span class="nc" id="L21">    public App(Controller controller) {</span>
+<span class="nc" id="L22">        this.controller = controller;</span>
+<span class="nc" id="L23">    }</span>
 
     public Stage getStage() {
-<span class="nc" id="L23">        return stage;</span>
+<span class="nc" id="L26">        return stage;</span>
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-<span class="fc" id="L28">        stage = primaryStage;</span>
-<span class="fc" id="L29">        stage.setWidth(800);</span>
-<span class="fc" id="L30">        stage.setHeight(600);</span>
-<span class="fc" id="L31">        stage.setTitle(&quot;Beastopia&quot;);</span>
+<span class="fc" id="L31">        stage = primaryStage;</span>
+<span class="fc" id="L32">        stage.setWidth(800);</span>
+<span class="fc" id="L33">        stage.setHeight(600);</span>
+<span class="fc" id="L34">        stage.setTitle(&quot;Beastopia&quot;);</span>
 
-<span class="fc" id="L33">        final Scene scene = new Scene(new Label(&quot;Loading...&quot;));</span>
-<span class="fc" id="L34">        stage.setScene(scene);</span>
+<span class="fc" id="L36">        final Scene scene = new Scene(new Label(&quot;Loading...&quot;));</span>
+<span class="fc" id="L37">        stage.setScene(scene);</span>
 
-<span class="fc" id="L36">        stage.show();</span>
+<span class="fc" id="L39">        scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource(&quot;views/styles.css&quot;)).toString());</span>
+<span class="fc" id="L40">        CSSFX.start(scene);</span>
 
-<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        if (controller != null) {</span>
-<span class="nc" id="L39">            initAndRender(controller);</span>
-<span class="nc" id="L40">            return;</span>
+<span class="fc" id="L42">        stage.show();</span>
+
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">        if (controller != null) {</span>
+<span class="nc" id="L45">            initAndRender(controller);</span>
+<span class="nc" id="L46">            return;</span>
         }
 
 
-<span class="fc" id="L44">        final MainComponent component = DaggerMainComponent.builder().mainApp(this).build();</span>
-<span class="fc" id="L45">        controller = component.registrationController();</span>
-<span class="fc" id="L46">        initAndRender(controller);</span>
+<span class="fc" id="L50">        final MainComponent component = DaggerMainComponent.builder().mainApp(this).build();</span>
+<span class="fc" id="L51">        controller = component.registrationController();</span>
+<span class="fc" id="L52">        initAndRender(controller);</span>
 
         //TODO in LoginController @Inject und leerer Konstruktor
-<span class="fc" id="L49">    }</span>
+<span class="fc" id="L55">    }</span>
 
     @Override
     public void stop() {
-<span class="nc" id="L53">        cleanup();</span>
-<span class="nc" id="L54">    }</span>
-
-    public void show(Controller controller) {
-<span class="nc" id="L57">        cleanup();</span>
-<span class="nc" id="L58">        this.controller = controller;</span>
-<span class="nc" id="L59">        initAndRender(controller);</span>
+<span class="nc" id="L59">        cleanup();</span>
 <span class="nc" id="L60">    }</span>
 
+    public void show(Controller controller) {
+<span class="nc" id="L63">        cleanup();</span>
+<span class="nc" id="L64">        this.controller = controller;</span>
+<span class="nc" id="L65">        initAndRender(controller);</span>
+<span class="nc" id="L66">    }</span>
+
     private void initAndRender(Controller controller) {
-<span class="fc" id="L63">        controller.init();</span>
-<span class="pc bpc" id="L64" title="1 of 2 branches missed.">        if (controller.getTitle() != null) {</span>
-<span class="fc" id="L65">            stage.setTitle(controller.getTitle());</span>
+<span class="fc" id="L69">        controller.init();</span>
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">        if (controller.getTitle() != null) {</span>
+<span class="fc" id="L71">            stage.setTitle(controller.getTitle());</span>
         }
-<span class="fc" id="L67">        stage.getScene().setRoot(controller.render());</span>
-<span class="fc" id="L68">    }</span>
+<span class="fc" id="L73">        stage.getScene().setRoot(controller.render());</span>
+<span class="fc" id="L74">    }</span>
 
     private void cleanup() {
-<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (controller != null) {</span>
-<span class="nc" id="L72">            controller.destroy();</span>
-<span class="nc" id="L73">            controller = null;</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (controller != null) {</span>
+<span class="nc" id="L78">            controller.destroy();</span>
+<span class="nc" id="L79">            controller = null;</span>
         }
-<span class="nc" id="L75">    }</span>
+<span class="nc" id="L81">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
