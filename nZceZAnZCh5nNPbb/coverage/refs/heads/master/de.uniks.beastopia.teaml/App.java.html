@@ -48,36 +48,34 @@ public class App extends Application {
 
 
 <span class="fc" id="L50">        final MainComponent component = DaggerMainComponent.builder().mainApp(this).build();</span>
-<span class="fc" id="L51">        controller = component.registrationController();</span>
+<span class="fc" id="L51">        controller = component.loginController();</span>
 <span class="fc" id="L52">        initAndRender(controller);</span>
-
-        //TODO in LoginController @Inject und leerer Konstruktor
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L53">    }</span>
 
     @Override
     public void stop() {
-<span class="nc" id="L59">        cleanup();</span>
-<span class="nc" id="L60">    }</span>
+<span class="nc" id="L57">        cleanup();</span>
+<span class="nc" id="L58">    }</span>
 
     public void show(Controller controller) {
-<span class="nc" id="L63">        cleanup();</span>
-<span class="nc" id="L64">        this.controller = controller;</span>
-<span class="nc" id="L65">        initAndRender(controller);</span>
-<span class="nc" id="L66">    }</span>
+<span class="nc" id="L61">        cleanup();</span>
+<span class="nc" id="L62">        this.controller = controller;</span>
+<span class="nc" id="L63">        initAndRender(controller);</span>
+<span class="nc" id="L64">    }</span>
 
     private void initAndRender(Controller controller) {
-<span class="fc" id="L69">        controller.init();</span>
-<span class="pc bpc" id="L70" title="1 of 2 branches missed.">        if (controller.getTitle() != null) {</span>
-<span class="fc" id="L71">            stage.setTitle(controller.getTitle());</span>
+<span class="fc" id="L67">        controller.init();</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        if (controller.getTitle() != null) {</span>
+<span class="fc" id="L69">            stage.setTitle(controller.getTitle());</span>
         }
-<span class="fc" id="L73">        stage.getScene().setRoot(controller.render());</span>
-<span class="fc" id="L74">    }</span>
+<span class="fc" id="L71">        stage.getScene().setRoot(controller.render());</span>
+<span class="fc" id="L72">    }</span>
 
     private void cleanup() {
-<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (controller != null) {</span>
-<span class="nc" id="L78">            controller.destroy();</span>
-<span class="nc" id="L79">            controller = null;</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (controller != null) {</span>
+<span class="nc" id="L76">            controller.destroy();</span>
+<span class="nc" id="L77">            controller = null;</span>
         }
-<span class="nc" id="L81">    }</span>
+<span class="nc" id="L79">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
