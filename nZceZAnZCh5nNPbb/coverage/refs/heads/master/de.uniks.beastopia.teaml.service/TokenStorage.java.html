@@ -5,19 +5,28 @@ import javax.inject.Singleton;
 
 @Singleton
 public class TokenStorage {
-    private String token;
+    private String accessToken;
+    private String refreshToken;
 
     @Inject
-<span class="fc" id="L11">    public TokenStorage() {</span>
+<span class="fc" id="L12">    public TokenStorage() {</span>
 
-<span class="fc" id="L13">    }</span>
+<span class="fc" id="L14">    }</span>
 
-    public String getToken() {
-<span class="nc" id="L16">        return token;</span>
+    public String getAccessToken() {
+<span class="nc" id="L17">        return accessToken;</span>
     }
 
-    public void setToken(String token) {
-<span class="nc" id="L20">        this.token = token;</span>
-<span class="nc" id="L21">    }</span>
+    public void setAccessToken(String accessToken) {
+<span class="nc" id="L21">        this.accessToken = accessToken;</span>
+<span class="nc" id="L22">    }</span>
+
+    public String getRefreshToken() {
+<span class="nc" id="L25">        return refreshToken;</span>
+    }
+
+    public void setRefreshToken(String refreshToken) {
+<span class="nc" id="L29">        this.refreshToken = refreshToken;</span>
+<span class="nc" id="L30">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

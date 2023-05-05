@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dagger.Module;
 import dagger.Provides;
 import de.uniks.beastopia.teaml.Main;
-import de.uniks.beastopia.teaml.service.AuthApiService;
-import de.uniks.beastopia.teaml.rest.UserAPIService;
+import de.uniks.beastopia.teaml.rest.AuthApiService;
+import de.uniks.beastopia.teaml.rest.UserApiService;
 import de.uniks.beastopia.teaml.service.TokenStorage;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -13,49 +13,48 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-
 import javax.inject.Singleton;
 
 @Module
-<span class="fc" id="L20">public class HttpModule {</span>
+<span class="fc" id="L19">public class HttpModule {</span>
     @Provides
     @Singleton
     static OkHttpClient client(TokenStorage tokenStorage) {
-<span class="fc" id="L24">        return new OkHttpClient.Builder().addInterceptor(chain -&gt; {</span>
-<span class="nc" id="L25">            final String token = tokenStorage.getToken();</span>
-<span class="nc bnc" id="L26" title="All 2 branches missed.">            if (token == null) {</span>
-<span class="nc" id="L27">                return chain.proceed(chain.request());</span>
+<span class="fc" id="L23">        return new OkHttpClient.Builder().addInterceptor(chain -&gt; {</span>
+<span class="nc" id="L24">            final String token = tokenStorage.getAccessToken();</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">            if (token == null) {</span>
+<span class="nc" id="L26">                return chain.proceed(chain.request());</span>
             }
-<span class="nc" id="L29">            final Request newRequest = chain</span>
-<span class="nc" id="L30">                    .request()</span>
-<span class="nc" id="L31">                    .newBuilder()</span>
-<span class="nc" id="L32">                    .addHeader(&quot;Authorization&quot;, &quot;Bearer &quot; + token)</span>
-<span class="nc" id="L33">                    .build();</span>
-<span class="nc" id="L34">            return chain.proceed(newRequest);</span>
-<span class="fc" id="L35">        }).build();</span>
+<span class="nc" id="L28">            final Request newRequest = chain</span>
+<span class="nc" id="L29">                    .request()</span>
+<span class="nc" id="L30">                    .newBuilder()</span>
+<span class="nc" id="L31">                    .addHeader(&quot;Authorization&quot;, &quot;Bearer &quot; + token)</span>
+<span class="nc" id="L32">                    .build();</span>
+<span class="nc" id="L33">            return chain.proceed(newRequest);</span>
+<span class="fc" id="L34">        }).build();</span>
     }
 
     @Provides
     @Singleton
     Retrofit retrofit(OkHttpClient client, ObjectMapper objectMapper) {
-<span class="fc" id="L41">        return new Retrofit.Builder()</span>
-<span class="fc" id="L42">                .baseUrl(Main.API_URL + &quot;/&quot;)</span>
-<span class="fc" id="L43">                .client(client)</span>
-<span class="fc" id="L44">                .addConverterFactory(JacksonConverterFactory.create(objectMapper))</span>
-<span class="fc" id="L45">                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())</span>
-<span class="fc" id="L46">                .build();</span>
+<span class="fc" id="L40">        return new Retrofit.Builder()</span>
+<span class="fc" id="L41">                .baseUrl(Main.API_URL + &quot;/&quot;)</span>
+<span class="fc" id="L42">                .client(client)</span>
+<span class="fc" id="L43">                .addConverterFactory(JacksonConverterFactory.create(objectMapper))</span>
+<span class="fc" id="L44">                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())</span>
+<span class="fc" id="L45">                .build();</span>
     }
 
     @Provides
     @Singleton
-    UserAPIService auth(Retrofit retrofit) {
-<span class="nc" id="L52">        return retrofit.create(UserAPIService.class);</span>
+    UserApiService user(Retrofit retrofit) {
+<span class="nc" id="L51">        return retrofit.create(UserApiService.class);</span>
     }
 
     @Provides
     @Singleton
-    AuthApiService login(Retrofit retrofit) {
-<span class="fc" id="L58">        return retrofit.create(AuthApiService.class);</span>
+    AuthApiService auth(Retrofit retrofit) {
+<span class="fc" id="L57">        return retrofit.create(AuthApiService.class);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
