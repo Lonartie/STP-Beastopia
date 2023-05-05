@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FriendListService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.service</a> &gt; <span class="el_source">FriendListService.java</span></div><h1>FriendListService.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.service;
+
+import de.uniks.beastopia.teaml.rest.AuthApiService;
+import de.uniks.beastopia.teaml.rest.UpdateUserDto;
+import de.uniks.beastopia.teaml.rest.User;
+import de.uniks.beastopia.teaml.rest.UserApService;
+import io.reactivex.rxjava3.core.Observable;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
+public class FriendListService {
+
+<span class="nc" id="L15">    public static enum Status {</span>
+<span class="nc" id="L16">        Online,</span>
+<span class="nc" id="L17">        Offline</span>
+    }
+
+    @Inject
+    TokenStorage tokenStorage;
+
+    @Inject
+    UserApService userApService;
+    @Inject
+    AuthApiService authApiService;
+
+    @Inject
+<span class="nc" id="L29">    public FriendListService() {</span>
+<span class="nc" id="L30">    }</span>
+
+    public Observable&lt;List&lt;User&gt;&gt; getUsers() {
+<span class="nc" id="L33">        return userApService.getUsers(null, null);</span>
+    }
+
+    public Observable&lt;List&lt;String&gt;&gt; getFriendIDs() {
+<span class="nc" id="L37">        return userApService</span>
+<span class="nc" id="L38">                .getUser(tokenStorage.getCurrentUser()._id())</span>
+<span class="nc" id="L39">                .map(User::friends);</span>
+    }
+
+    public Observable&lt;List&lt;User&gt;&gt; getFriends() {
+<span class="nc" id="L43">        return userApService</span>
+<span class="nc" id="L44">                .getUsers(tokenStorage.getCurrentUser().friends(), null);</span>
+    }
+
+    public Observable&lt;List&lt;User&gt;&gt; getFriends(Status status) {
+<span class="nc" id="L48">        return userApService</span>
+<span class="nc bnc" id="L49" title="All 3 branches missed.">                .getUsers(tokenStorage.getCurrentUser().friends(), switch (status) {</span>
+<span class="nc" id="L50">                    case Online -&gt; &quot;online&quot;;</span>
+<span class="nc" id="L51">                    case Offline -&gt; &quot;offline&quot;;</span>
+                });
+    }
+
+    public Observable&lt;User&gt; addFriend(User friend) {
+<span class="nc" id="L56">        return getFriendIDs().map(friends -&gt; {</span>
+<span class="nc" id="L57">            List&lt;String&gt; friendsCopy = new ArrayList&lt;&gt;(friends);</span>
+<span class="nc" id="L58">            friendsCopy.add(friend._id());</span>
+<span class="nc" id="L59">            String userID = tokenStorage.getCurrentUser()._id();</span>
+<span class="nc" id="L60">            tokenStorage.setCurrentUser(userApService.updateUser(userID, new UpdateUserDto(null, null, null, friendsCopy, null)).blockingFirst());</span>
+<span class="nc" id="L61">            return tokenStorage.getCurrentUser();</span>
+        });
+    }
+
+    public Observable&lt;User&gt; removeFriend(User friend) {
+<span class="nc" id="L66">        return getFriendIDs().map(friends -&gt; {</span>
+<span class="nc" id="L67">            List&lt;String&gt; friendsCopy = new ArrayList&lt;&gt;(friends);</span>
+<span class="nc" id="L68">            friendsCopy.remove(friend._id());</span>
+<span class="nc" id="L69">            String userID = tokenStorage.getCurrentUser()._id();</span>
+<span class="nc" id="L70">            tokenStorage.setCurrentUser(userApService.updateUser(userID, new UpdateUserDto(null, null, null, friendsCopy, null)).blockingFirst());</span>
+<span class="nc" id="L71">            return tokenStorage.getCurrentUser();</span>
+        });
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Dialog.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.utils</a> &gt; <span class="el_source">Dialog.java</span></div><h1>Dialog.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.utils;
+
+import com.google.gson.Gson;
+import de.uniks.beastopia.teaml.rest.ErrorResponse;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import retrofit2.HttpException;
+
+import java.util.Objects;
+
+<span class="nc" id="L11">public class Dialog {</span>
+    public static void error(Throwable exception, String dialogHeader) {
+<span class="nc" id="L13">        Platform.runLater(() -&gt; {</span>
+<span class="nc bnc" id="L14" title="All 2 branches missed.">            if (exception instanceof HttpException httpError) {</span>
+                String message;
+                try {
+<span class="nc" id="L17">                    String json = Objects.requireNonNull(Objects.requireNonNull(httpError.response()).errorBody()).string();</span>
+<span class="nc" id="L18">                    ErrorResponse response = new Gson().fromJson(json, ErrorResponse.class);</span>
+<span class="nc" id="L19">                    message = response.message();</span>
+<span class="nc" id="L20">                } catch (Exception e) {</span>
+<span class="nc" id="L21">                    throw new RuntimeException(e);</span>
+<span class="nc" id="L22">                }</span>
+<span class="nc" id="L23">                Alert alert = new Alert(Alert.AlertType.ERROR);</span>
+<span class="nc" id="L24">                alert.setTitle(&quot;Error&quot;);</span>
+<span class="nc" id="L25">                alert.setHeaderText(dialogHeader);</span>
+<span class="nc" id="L26">                alert.setContentText(message);</span>
+<span class="nc" id="L27">                alert.showAndWait();</span>
+            }
+<span class="nc" id="L29">        });</span>
+<span class="nc" id="L30">    }</span>
+
+    public static void info(String dialogHeader, String dialogContent) {
+<span class="nc" id="L33">        Platform.runLater(() -&gt; {</span>
+<span class="nc" id="L34">            Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="nc" id="L35">            alert.setTitle(&quot;Information&quot;);</span>
+<span class="nc" id="L36">            alert.setHeaderText(dialogHeader);</span>
+<span class="nc" id="L37">            alert.setContentText(dialogContent);</span>
+<span class="nc" id="L38">            alert.showAndWait();</span>
+<span class="nc" id="L39">        });</span>
+<span class="nc" id="L40">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
