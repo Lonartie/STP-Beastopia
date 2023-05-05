@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RegistrationController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller</a> &gt; <span class="el_source">RegistrationController.java</span></div><h1>RegistrationController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller;
+
+import com.google.gson.Gson;
+import de.uniks.beastopia.teaml.App;
+import de.uniks.beastopia.teaml.rest.ErrorResponse;
+import de.uniks.beastopia.teaml.service.RegistrationService;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
+import retrofit2.HttpException;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+public class RegistrationController extends Controller {
+
+    private static final String LUMNIX_LOGO_URL = &quot;https://db3pap006files.storage.live.com/y4mxQt5LQarTNXi_kqABPhZym0Mz3F9OlGfaD_oTWOO9bOQ3O5ONq7RuM7MAs0jYC0KvrQzmUYviHw0_u5iWumlA_h1uJ8nkOdVyO1xjk5IP6DGAWWeLRBN4rTch1Pmtr0220reSsrz7T8FRApdi3u7U_0hgat5RaXj4_fO7xp-lAXwCSQoNIPhazCcAoEPtDKk?encodeFailures=1&amp;width=500&amp;height=500&quot;;
+
+    @FXML
+    private TextField usernameInput;
+
+    @FXML
+    private TextField passwordInput;
+
+    @FXML
+    private TextField passwordRepeatInput;
+
+    @Inject
+    RegistrationService registrationService;
+
+    @Inject
+    Provider&lt;LoginController&gt; loginControllerProvider;
+
+    @Inject
+    App app;
+
+    @Inject
+<span class="nc" id="L39">    public RegistrationController() {</span>
+<span class="nc" id="L40">    }</span>
+
+    @Override
+    public String getTitle() {
+<span class="nc" id="L44">        return &quot;Beastopia - Registration&quot;;</span>
+    }
+
+    @FXML
+    private void uploadAvatar() {
+
+<span class="nc" id="L50">    }</span>
+
+    @FXML
+    private void signUp() {
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (!passwordInput.getText().equals(passwordRepeatInput.getText())) {</span>
+<span class="nc" id="L55">            Alert alert = new Alert(Alert.AlertType.ERROR);</span>
+<span class="nc" id="L56">            alert.setTitle(&quot;Error&quot;);</span>
+<span class="nc" id="L57">            alert.setHeaderText(&quot;Passwords do not match&quot;);</span>
+<span class="nc" id="L58">            alert.setContentText(&quot;The passwords you entered do not match. Please try again.&quot;);</span>
+<span class="nc" id="L59">            alert.showAndWait();</span>
+<span class="nc" id="L60">            return;</span>
+        }
+
+<span class="nc" id="L63">        disposables.add(registrationService.createUser(usernameInput.getText(), LUMNIX_LOGO_URL, passwordInput.getText())</span>
+<span class="nc" id="L64">                .subscribe(user -&gt; {</span>
+<span class="nc" id="L65">                    Platform.runLater(() -&gt; {</span>
+<span class="nc" id="L66">                        Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="nc" id="L67">                        alert.setTitle(&quot;Success&quot;);</span>
+<span class="nc" id="L68">                        alert.setHeaderText(&quot;Registration successful&quot;);</span>
+<span class="nc" id="L69">                        alert.setContentText(&quot;The registration was successful. You can now sign in.&quot;);</span>
+<span class="nc" id="L70">                        alert.showAndWait();</span>
+                        // TODO: show login when implemented
+<span class="nc" id="L72">                    });</span>
+<span class="nc" id="L73">                }, error -&gt; {</span>
+<span class="nc" id="L74">                    Platform.runLater(() -&gt; {</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">                        if (error instanceof HttpException httpError) {</span>
+                            String message;
+                            try {
+<span class="nc" id="L78">                                String json = httpError.response().errorBody().string();</span>
+<span class="nc" id="L79">                                ErrorResponse response = new Gson().fromJson(json, ErrorResponse.class);</span>
+<span class="nc" id="L80">                                message = response.message();</span>
+<span class="nc" id="L81">                            } catch (Exception e) {</span>
+<span class="nc" id="L82">                                throw new RuntimeException(e);</span>
+<span class="nc" id="L83">                            }</span>
+<span class="nc" id="L84">                            Alert alert = new Alert(Alert.AlertType.ERROR);</span>
+<span class="nc" id="L85">                            alert.setTitle(&quot;Error&quot;);</span>
+<span class="nc" id="L86">                            alert.setHeaderText(&quot;Registration failed&quot;);</span>
+<span class="nc" id="L87">                            alert.setContentText(message);</span>
+<span class="nc" id="L88">                            alert.showAndWait();</span>
+                        }
+<span class="nc" id="L90">                    });</span>
+<span class="nc" id="L91">                }));</span>
+<span class="nc" id="L92">    }</span>
+
+    @FXML
+    private void switchToSignIn() {
+<span class="nc" id="L96">        app.show(loginControllerProvider.get());</span>
+<span class="nc" id="L97">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
