@@ -26,20 +26,17 @@ public class IngameController extends Controller {
 <span class="nc" id="L26">    public IngameController() {</span>
 <span class="nc" id="L27">    }</span>
 
-    public void pauseMenu() {
-        //ToDo Show Pause Menu
-<span class="nc" id="L31">    }</span>
-
-    @Override
-    public String getTitle() {
-<span class="nc" id="L35">        return &quot;Beastopia&quot;;</span>
-    }
-
-    public void escape(KeyEvent keyEvent) {
-<span class="nc bnc" id="L39" title="All 2 branches missed.">        if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {</span>
+    @FXML
+    public void pauseMenu(KeyEvent keyEvent) {
+<span class="nc bnc" id="L31" title="All 2 branches missed.">        if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {</span>
             // TODO open PauseController
             // app.show(pauseControllerProvider.get());
         }
-<span class="nc" id="L43">    }</span>
+<span class="nc" id="L35">    }</span>
+
+    @Override
+    public String getTitle() {
+<span class="nc" id="L39">        return &quot;Beastopia&quot;;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

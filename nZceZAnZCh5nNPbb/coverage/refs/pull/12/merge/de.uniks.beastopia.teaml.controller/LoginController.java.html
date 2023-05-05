@@ -65,31 +65,33 @@ public class LoginController extends Controller {
         }
 
 <span class="nc" id="L67">        disposables.add(loginService.login(usernameInput.getText(), passwordInput.getText()).subscribe(lr -&gt; {</span>
-<span class="nc" id="L68">            app.show(new MenuController());</span>
-<span class="nc" id="L69">        }, error -&gt; {</span>
-<span class="nc" id="L70">            Platform.runLater(() -&gt; {</span>
-<span class="nc bnc" id="L71" title="All 2 branches missed.">                if (error instanceof HttpException httpError) {</span>
+<span class="nc" id="L68">            Platform.runLater(() -&gt; {</span>
+<span class="nc" id="L69">                app.show(new MenuController());</span>
+<span class="nc" id="L70">            });</span>
+<span class="nc" id="L71">        }, error -&gt; {</span>
+<span class="nc" id="L72">            Platform.runLater(() -&gt; {</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">                if (error instanceof HttpException httpError) {</span>
                     String message;
                     try {
-<span class="nc" id="L74">                        String json = httpError.response().errorBody().string();</span>
-<span class="nc" id="L75">                        ErrorResponse response = new Gson().fromJson(json, ErrorResponse.class);</span>
-<span class="nc" id="L76">                        message = response.message();</span>
-<span class="nc" id="L77">                    } catch (Exception e) {</span>
-<span class="nc" id="L78">                        throw new RuntimeException(e);</span>
-<span class="nc" id="L79">                    }</span>
-<span class="nc" id="L80">                    Alert alert = new Alert(Alert.AlertType.ERROR);</span>
-<span class="nc" id="L81">                    alert.setTitle(&quot;Error&quot;);</span>
-<span class="nc" id="L82">                    alert.setHeaderText(&quot;Login failed&quot;);</span>
-<span class="nc" id="L83">                    alert.setContentText(message);</span>
-<span class="nc" id="L84">                    alert.showAndWait();</span>
+<span class="nc" id="L76">                        String json = httpError.response().errorBody().string();</span>
+<span class="nc" id="L77">                        ErrorResponse response = new Gson().fromJson(json, ErrorResponse.class);</span>
+<span class="nc" id="L78">                        message = response.message();</span>
+<span class="nc" id="L79">                    } catch (Exception e) {</span>
+<span class="nc" id="L80">                        throw new RuntimeException(e);</span>
+<span class="nc" id="L81">                    }</span>
+<span class="nc" id="L82">                    Alert alert = new Alert(Alert.AlertType.ERROR);</span>
+<span class="nc" id="L83">                    alert.setTitle(&quot;Error&quot;);</span>
+<span class="nc" id="L84">                    alert.setHeaderText(&quot;Login failed&quot;);</span>
+<span class="nc" id="L85">                    alert.setContentText(message);</span>
+<span class="nc" id="L86">                    alert.showAndWait();</span>
                 }
-<span class="nc" id="L86">            });</span>
-<span class="nc" id="L87">        }));</span>
-<span class="nc" id="L88">    }</span>
+<span class="nc" id="L88">            });</span>
+<span class="nc" id="L89">        }));</span>
+<span class="nc" id="L90">    }</span>
 
     @FXML
     public void register() {
-<span class="nc" id="L92">        app.show(registrationControllerProvider.get());</span>
-<span class="nc" id="L93">    }</span>
+<span class="nc" id="L94">        app.show(registrationControllerProvider.get());</span>
+<span class="nc" id="L95">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
