@@ -2,7 +2,7 @@
 
 import de.uniks.beastopia.teaml.rest.CreateUserDto;
 import de.uniks.beastopia.teaml.rest.User;
-import de.uniks.beastopia.teaml.rest.UserApService;
+import de.uniks.beastopia.teaml.rest.UserApiService;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -10,14 +10,14 @@ import javax.inject.Inject;
 public class RegistrationService {
 
     @Inject
-    UserApService userApService;
+    UserApiService userApiService;
 
     @Inject
 <span class="nc" id="L16">    public RegistrationService() {</span>
 <span class="nc" id="L17">    }</span>
 
     public Observable&lt;User&gt; createUser(String name, String avatar, String password) {
-<span class="nc" id="L20">        return userApService.createUser(new CreateUserDto(name, avatar, password));</span>
+<span class="nc" id="L20">        return userApiService.createUser(new CreateUserDto(name, avatar, password));</span>
     }
 
 }

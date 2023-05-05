@@ -11,7 +11,7 @@ public class AuthService {
     @Inject
     AuthApiService authApiService;
     @Inject
-    UserApService userApService;
+    UserApiService userApiService;
 
     @Inject
 <span class="fc" id="L17">    public AuthService() {</span>
@@ -22,7 +22,7 @@ public class AuthService {
 <span class="nc" id="L22">            tokenStorage.setAccessToken(lr.accessToken());</span>
 <span class="nc" id="L23">            tokenStorage.setRefreshToken(lr.refreshToken());</span>
 <span class="nc" id="L24">            tokenStorage.setCurrentUser(new User(lr.createdAt(), lr.updatedAt(), lr._id(), lr.name(), lr.status(), lr.avatar(), lr.friends()));</span>
-<span class="nc" id="L25">            userApService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, UserApService.STATUS_ONLINE, null, null, null)).subscribe();</span>
+<span class="nc" id="L25">            userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, UserApiService.STATUS_ONLINE, null, null, null)).subscribe();</span>
 <span class="nc" id="L26">            return lr;</span>
         });
     }
@@ -32,13 +32,13 @@ public class AuthService {
 <span class="nc" id="L32">            tokenStorage.setAccessToken(lr.accessToken());</span>
 <span class="nc" id="L33">            tokenStorage.setRefreshToken(lr.refreshToken());</span>
 <span class="nc" id="L34">            tokenStorage.setCurrentUser(new User(lr.createdAt(), lr.updatedAt(), lr._id(), lr.name(), lr.status(), lr.avatar(), lr.friends()));</span>
-<span class="nc" id="L35">            userApService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, UserApService.STATUS_ONLINE, null, null, null)).subscribe();</span>
+<span class="nc" id="L35">            userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, UserApiService.STATUS_ONLINE, null, null, null)).subscribe();</span>
 <span class="nc" id="L36">            return lr;</span>
         });
     }
 
     public Observable&lt;Void&gt; logout() {
-<span class="nc" id="L41">        return userApService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, UserApService.STATUS_OFFLINE, null, null, null)).map(user -&gt; {</span>
+<span class="nc" id="L41">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, UserApiService.STATUS_OFFLINE, null, null, null)).map(user -&gt; {</span>
 <span class="nc" id="L42">            return authApiService.logout().blockingFirst();</span>
         });
     }

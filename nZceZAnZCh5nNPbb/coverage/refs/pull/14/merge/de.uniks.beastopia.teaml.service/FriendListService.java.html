@@ -3,7 +3,7 @@
 import de.uniks.beastopia.teaml.rest.AuthApiService;
 import de.uniks.beastopia.teaml.rest.UpdateUserDto;
 import de.uniks.beastopia.teaml.rest.User;
-import de.uniks.beastopia.teaml.rest.UserApService;
+import de.uniks.beastopia.teaml.rest.UserApiService;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -21,7 +21,7 @@ public class FriendListService {
     TokenStorage tokenStorage;
 
     @Inject
-    UserApService userApService;
+    UserApiService userApiService;
     @Inject
     AuthApiService authApiService;
 
@@ -30,22 +30,22 @@ public class FriendListService {
 <span class="nc" id="L30">    }</span>
 
     public Observable&lt;List&lt;User&gt;&gt; getUsers() {
-<span class="nc" id="L33">        return userApService.getUsers(null, null);</span>
+<span class="nc" id="L33">        return userApiService.getUsers(null, null);</span>
     }
 
     public Observable&lt;List&lt;String&gt;&gt; getFriendIDs() {
-<span class="nc" id="L37">        return userApService</span>
+<span class="nc" id="L37">        return userApiService</span>
 <span class="nc" id="L38">                .getUser(tokenStorage.getCurrentUser()._id())</span>
 <span class="nc" id="L39">                .map(User::friends);</span>
     }
 
     public Observable&lt;List&lt;User&gt;&gt; getFriends() {
-<span class="nc" id="L43">        return userApService</span>
+<span class="nc" id="L43">        return userApiService</span>
 <span class="nc" id="L44">                .getUsers(tokenStorage.getCurrentUser().friends(), null);</span>
     }
 
     public Observable&lt;List&lt;User&gt;&gt; getFriends(Status status) {
-<span class="nc" id="L48">        return userApService</span>
+<span class="nc" id="L48">        return userApiService</span>
 <span class="nc bnc" id="L49" title="All 3 branches missed.">                .getUsers(tokenStorage.getCurrentUser().friends(), switch (status) {</span>
 <span class="nc" id="L50">                    case Online -&gt; &quot;online&quot;;</span>
 <span class="nc" id="L51">                    case Offline -&gt; &quot;offline&quot;;</span>
@@ -57,7 +57,7 @@ public class FriendListService {
 <span class="nc" id="L57">            List&lt;String&gt; friendsCopy = new ArrayList&lt;&gt;(friends);</span>
 <span class="nc" id="L58">            friendsCopy.add(friend._id());</span>
 <span class="nc" id="L59">            String userID = tokenStorage.getCurrentUser()._id();</span>
-<span class="nc" id="L60">            tokenStorage.setCurrentUser(userApService.updateUser(userID, new UpdateUserDto(null, null, null, friendsCopy, null)).blockingFirst());</span>
+<span class="nc" id="L60">            tokenStorage.setCurrentUser(userApiService.updateUser(userID, new UpdateUserDto(null, null, null, friendsCopy, null)).blockingFirst());</span>
 <span class="nc" id="L61">            return tokenStorage.getCurrentUser();</span>
         });
     }
@@ -67,7 +67,7 @@ public class FriendListService {
 <span class="nc" id="L67">            List&lt;String&gt; friendsCopy = new ArrayList&lt;&gt;(friends);</span>
 <span class="nc" id="L68">            friendsCopy.remove(friend._id());</span>
 <span class="nc" id="L69">            String userID = tokenStorage.getCurrentUser()._id();</span>
-<span class="nc" id="L70">            tokenStorage.setCurrentUser(userApService.updateUser(userID, new UpdateUserDto(null, null, null, friendsCopy, null)).blockingFirst());</span>
+<span class="nc" id="L70">            tokenStorage.setCurrentUser(userApiService.updateUser(userID, new UpdateUserDto(null, null, null, friendsCopy, null)).blockingFirst());</span>
 <span class="nc" id="L71">            return tokenStorage.getCurrentUser();</span>
         });
     }
