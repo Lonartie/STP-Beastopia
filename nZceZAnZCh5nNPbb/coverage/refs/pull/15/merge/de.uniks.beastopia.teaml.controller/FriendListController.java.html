@@ -65,7 +65,7 @@ public class FriendListController extends Controller {
 
     @Override
     public void destroy() {
-
+<span class="nc" id="L68">        subControllers.forEach(Controller::destroy);</span>
 <span class="nc" id="L69">    }</span>
 
     @FXML

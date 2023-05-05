@@ -37,8 +37,13 @@ public class MenuController extends Controller {
     }
 
     @Override
+    public void destroy() {
+<span class="nc" id="L41">        subControllers.forEach(Controller::destroy);</span>
+<span class="nc" id="L42">    }</span>
+
+    @Override
     public String getTitle() {
-<span class="nc" id="L41">        return &quot;Beastopia - Main Menu&quot;;</span>
+<span class="nc" id="L46">        return &quot;Beastopia - Main Menu&quot;;</span>
     }
 
 }
