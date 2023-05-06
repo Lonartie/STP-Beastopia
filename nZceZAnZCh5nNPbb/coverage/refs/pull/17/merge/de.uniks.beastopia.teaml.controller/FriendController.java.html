@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FriendController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller</a> &gt; <span class="el_source">FriendController.java</span></div><h1>FriendController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller;
+
+
+import de.uniks.beastopia.teaml.rest.User;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
+
+import javax.inject.Inject;
+import java.util.prefs.Preferences;
+
+public class FriendController extends Controller {
+    @FXML
+    public ImageView friendAvatar;
+    @FXML
+    public Circle statusCircle;
+    @FXML
+    public Text name;
+    @FXML
+    public Button action;
+    @FXML
+    public Button chat;
+    @FXML
+    public Button pin;
+
+    public HBox _rootElement;
+
+    private User user;
+    private FriendListController friendListController;
+
+    private Boolean friendPin;
+
+<span class="nc" id="L40">    private final ImageView pinned = createImage(&quot;de/uniks/beastopia/teaml/assets/buttons/filled_pin.png&quot;);</span>
+
+<span class="nc" id="L42">    private final ImageView notPinned = createImage(&quot;de/uniks/beastopia/teaml/assets/buttons/pin.png&quot;);</span>
+    @Inject
+    Preferences preferences;
+
+    @Inject
+<span class="nc" id="L47">    public FriendController() {</span>
+
+<span class="nc" id="L49">    }</span>
+
+    public FriendController setFriendController(User user, FriendListController friendListController, boolean friendPin) {
+<span class="nc" id="L52">        this.user = user;</span>
+<span class="nc" id="L53">        this.friendListController = friendListController;</span>
+<span class="nc" id="L54">        this.friendPin = friendPin;</span>
+<span class="nc" id="L55">        return this;</span>
+    }
+
+    @Override
+    public Parent render() {
+<span class="nc" id="L60">        Parent parent = super.render();</span>
+
+        //TODO change avatar URL when avatar upload is implemented to individual link
+<span class="nc" id="L63">        Image image = new Image(&quot;de/uniks/beastopia/teaml/assets/Lumnix_Logo_tr.png&quot;, 40.0,</span>
+                40.0, false, false);
+<span class="nc" id="L65">        friendAvatar.setImage(image);</span>
+
+<span class="nc" id="L67">        name.setText(user.name());</span>
+
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (user.status().equals(&quot;online&quot;)) {</span>
+<span class="nc" id="L70">            statusCircle.setFill(Paint.valueOf(&quot;green&quot;));</span>
+        } else {
+<span class="nc" id="L72">            statusCircle.setFill(Paint.valueOf(&quot;red&quot;));</span>
+        }
+
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (this.friendPin) {</span>
+<span class="nc" id="L76">            this.pin.setGraphic(pinned);</span>
+        } else {
+<span class="nc" id="L78">            this.pin.setGraphic(notPinned);</span>
+        }
+
+<span class="nc" id="L81">        return parent;</span>
+    }
+
+    private ImageView createImage(String imageUrl) {
+<span class="nc" id="L85">        ImageView imageView = new ImageView(new Image(imageUrl));</span>
+<span class="nc" id="L86">        imageView.setFitHeight(25.0);</span>
+<span class="nc" id="L87">        imageView.setFitWidth(25.0);</span>
+<span class="nc" id="L88">        return imageView;</span>
+    }
+
+    @FXML
+    public void editFriendList(ActionEvent actionEvent) {
+<span class="nc" id="L93">    }</span>
+
+    @FXML
+    public void openFriendChat(ActionEvent actionEvent) {
+<span class="nc" id="L97">    }</span>
+
+    @FXML
+    public void pinFriend(ActionEvent actionEvent) {
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (pin.getGraphic() == notPinned) {</span>
+<span class="nc" id="L102">            friendListController.friendList.getChildren().remove(_rootElement);</span>
+<span class="nc" id="L103">            friendListController.friendList.getChildren().add(0, this.render());</span>
+<span class="nc" id="L104">            pin.setGraphic(pinned);</span>
+<span class="nc" id="L105">            preferences.putBoolean(this.user._id() + &quot;_pinned&quot;, true);</span>
+        } else {
+<span class="nc" id="L107">            pin.setGraphic(notPinned);</span>
+<span class="nc" id="L108">            preferences.putBoolean(this.user._id() + &quot;_pinned&quot;, false);</span>
+        }
+<span class="nc" id="L110">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
