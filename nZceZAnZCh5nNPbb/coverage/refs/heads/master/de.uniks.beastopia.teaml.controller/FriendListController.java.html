@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 public class FriendListController extends Controller {
     @FXML
@@ -35,41 +36,55 @@ public class FriendListController extends Controller {
     @Inject
     TokenStorage tokenStorage;
 
-<span class="nc" id="L38">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;Controller&gt;();</span>
+    @Inject
+    Preferences preferences;
+
+<span class="nc" id="L42">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;Controller&gt;();</span>
 
     @Inject
-<span class="nc" id="L41">    public FriendListController() {</span>
+<span class="nc" id="L45">    public FriendListController() {</span>
 
-<span class="nc" id="L43">    }</span>
+<span class="nc" id="L47">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L47">        Parent parent = super.render();</span>
+<span class="nc" id="L51">        Parent parent = super.render();</span>
 
-<span class="nc" id="L49">        disposables.add(friendListService.getFriends().observeOn(FX_SCHEDULER).subscribe(friends -&gt; {</span>
-<span class="nc bnc" id="L50" title="All 2 branches missed.">            for (User friend : friends) {</span>
-<span class="nc" id="L51">                Controller subController = friendControllerProvider.get().setUser(friend);</span>
-<span class="nc" id="L52">                subControllers.add(subController);</span>
-<span class="nc" id="L53">                friendList.getChildren().add(subController.render());</span>
-<span class="nc" id="L54">            }</span>
-<span class="nc" id="L55">        }));</span>
+<span class="nc" id="L53">        FriendListController friendListController = this;</span>
+<span class="nc" id="L54">        disposables.add(friendListService.getFriends().observeOn(FX_SCHEDULER).subscribe(friends -&gt; {</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">            if (friends != null) {</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">                for (User friend : friends) {</span>
 
-<span class="nc" id="L57">        return parent;</span>
+
+<span class="nc" id="L59">                    boolean friendPinned = preferences.getBoolean(friend._id() + &quot;_pinned&quot;, true);</span>
+<span class="nc" id="L60">                    Controller subController = friendControllerProvider.get()</span>
+<span class="nc" id="L61">                            .setFriendController(friend, friendListController, friendPinned);</span>
+<span class="nc" id="L62">                    subControllers.add(subController);</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">                    if (friendPinned) {</span>
+<span class="nc" id="L64">                        friendList.getChildren().add(0, subController.render());</span>
+                    } else {
+<span class="nc" id="L66">                        friendList.getChildren().add(subController.render());</span>
+                    }
+<span class="nc" id="L68">                }</span>
+            }
+<span class="nc" id="L70">        }));</span>
+
+<span class="nc" id="L72">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="nc" id="L62">        subControllers.forEach(Controller::destroy);</span>
-<span class="nc" id="L63">        super.destroy();</span>
-<span class="nc" id="L64">    }</span>
+<span class="nc" id="L77">        subControllers.forEach(Controller::destroy);</span>
+<span class="nc" id="L78">        super.destroy();</span>
+<span class="nc" id="L79">    }</span>
 
     @FXML
     public void showChats(ActionEvent actionEvent) {
 
-<span class="nc" id="L69">    }</span>
+<span class="nc" id="L84">    }</span>
 
     @FXML
     public void searchUser(ActionEvent actionEvent) {
-<span class="nc" id="L73">    }</span>
+<span class="nc" id="L88">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
