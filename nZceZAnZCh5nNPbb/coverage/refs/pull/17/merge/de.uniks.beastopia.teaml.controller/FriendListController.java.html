@@ -62,33 +62,32 @@ public class FriendListController extends Controller {
 <span class="nc" id="L62">                                .setFriendController(friend, friendListController, true);</span>
 <span class="nc" id="L63">                        subControllers.add(subController);</span>
 <span class="nc" id="L64">                        friendList.getChildren().add(0, subController.render());</span>
-<span class="nc" id="L65">                        friendControllerProvider.get().setFriendController(friend, friendListController, true);</span>
-<span class="nc" id="L66">                    } else {</span>
-<span class="nc" id="L67">                        Controller subController = friendControllerProvider.get()</span>
-<span class="nc" id="L68">                                .setFriendController(friend, friendListController, false);</span>
-<span class="nc" id="L69">                        subControllers.add(subController);</span>
-<span class="nc" id="L70">                        friendList.getChildren().add(subController.render());</span>
+<span class="nc" id="L65">                    } else {</span>
+<span class="nc" id="L66">                        Controller subController = friendControllerProvider.get()</span>
+<span class="nc" id="L67">                                .setFriendController(friend, friendListController, false);</span>
+<span class="nc" id="L68">                        subControllers.add(subController);</span>
+<span class="nc" id="L69">                        friendList.getChildren().add(subController.render());</span>
                     }
-<span class="nc" id="L72">                }</span>
+<span class="nc" id="L71">                }</span>
             }
-<span class="nc" id="L74">        }));</span>
+<span class="nc" id="L73">        }));</span>
 
-<span class="nc" id="L76">        return parent;</span>
+<span class="nc" id="L75">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="nc" id="L81">        subControllers.forEach(Controller::destroy);</span>
-<span class="nc" id="L82">        super.destroy();</span>
-<span class="nc" id="L83">    }</span>
+<span class="nc" id="L80">        subControllers.forEach(Controller::destroy);</span>
+<span class="nc" id="L81">        super.destroy();</span>
+<span class="nc" id="L82">    }</span>
 
     @FXML
     public void showChats(ActionEvent actionEvent) {
 
-<span class="nc" id="L88">    }</span>
+<span class="nc" id="L87">    }</span>
 
     @FXML
     public void searchUser(ActionEvent actionEvent) {
-<span class="nc" id="L92">    }</span>
+<span class="nc" id="L91">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
