@@ -21,25 +21,23 @@ public class AuthService {
 <span class="nc" id="L21">        return authApiService.login(new LoginDto(username, password)).map(lr -&gt; {</span>
 <span class="nc" id="L22">            tokenStorage.setAccessToken(lr.accessToken());</span>
 <span class="nc" id="L23">            tokenStorage.setRefreshToken(lr.refreshToken());</span>
-<span class="nc" id="L24">            tokenStorage.setCurrentUser(new User(lr.createdAt(), lr.updatedAt(), lr._id(), lr.name(), lr.status(), lr.avatar(), lr.friends()));</span>
-<span class="nc" id="L25">            userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, UserApiService.STATUS_ONLINE, null, null, null)).subscribe();</span>
-<span class="nc" id="L26">            return lr;</span>
+<span class="nc" id="L24">            tokenStorage.setCurrentUser(userApiService.updateUser(lr._id(), new UpdateUserDto(null, UserApiService.STATUS_ONLINE, null, null, null)).blockingFirst());</span>
+<span class="nc" id="L25">            return lr;</span>
         });
     }
 
     public Observable&lt;LoginResult&gt; refresh() {
-<span class="nc" id="L31">        return authApiService.refresh(new RefreshDto(tokenStorage.getRefreshToken())).map(lr -&gt; {</span>
-<span class="nc" id="L32">            tokenStorage.setAccessToken(lr.accessToken());</span>
-<span class="nc" id="L33">            tokenStorage.setRefreshToken(lr.refreshToken());</span>
-<span class="nc" id="L34">            tokenStorage.setCurrentUser(new User(lr.createdAt(), lr.updatedAt(), lr._id(), lr.name(), lr.status(), lr.avatar(), lr.friends()));</span>
-<span class="nc" id="L35">            userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, UserApiService.STATUS_ONLINE, null, null, null)).subscribe();</span>
-<span class="nc" id="L36">            return lr;</span>
+<span class="nc" id="L30">        return authApiService.refresh(new RefreshDto(tokenStorage.getRefreshToken())).map(lr -&gt; {</span>
+<span class="nc" id="L31">            tokenStorage.setAccessToken(lr.accessToken());</span>
+<span class="nc" id="L32">            tokenStorage.setRefreshToken(lr.refreshToken());</span>
+<span class="nc" id="L33">            tokenStorage.setCurrentUser(userApiService.updateUser(lr._id(), new UpdateUserDto(null, UserApiService.STATUS_ONLINE, null, null, null)).blockingFirst());</span>
+<span class="nc" id="L34">            return lr;</span>
         });
     }
 
     public Observable&lt;Void&gt; logout() {
-<span class="nc" id="L41">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, UserApiService.STATUS_OFFLINE, null, null, null)).map(user -&gt; {</span>
-<span class="nc" id="L42">            return authApiService.logout().blockingFirst();</span>
+<span class="nc" id="L39">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, UserApiService.STATUS_OFFLINE, null, null, null)).map(user -&gt; {</span>
+<span class="nc" id="L40">            return authApiService.logout().blockingFirst();</span>
         });
     }
 }
