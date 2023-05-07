@@ -33,13 +33,12 @@ public class RegionCell extends ListCell&lt;Region&gt; {
 <span class="nc" id="L33">            setText(null);</span>
         } else {
 <span class="nc" id="L35">            final Button join = new Button(item.name() + &quot; &quot; + resources.getString(&quot;join&quot;));</span>
-            //ToDo join in languages
-<span class="nc" id="L37">            join.setOnAction(event -&gt; {</span>
-<span class="nc" id="L38">                app.show(ingameControllerProvider.get());</span>
-<span class="nc" id="L39">            });</span>
-<span class="nc" id="L40">            setGraphic(join);</span>
+<span class="nc" id="L36">            join.setOnAction(event -&gt; {</span>
+<span class="nc" id="L37">                app.show(ingameControllerProvider.get());</span>
+<span class="nc" id="L38">            });</span>
+<span class="nc" id="L39">            setGraphic(join);</span>
         }
-<span class="nc" id="L42">        setAlignment(Pos.CENTER);</span>
-<span class="nc" id="L43">    }</span>
+<span class="nc" id="L41">        setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L42">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
