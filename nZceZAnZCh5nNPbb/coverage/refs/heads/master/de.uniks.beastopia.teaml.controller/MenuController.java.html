@@ -10,40 +10,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuController extends Controller {
-    private Controller regionController;
-    private Controller friendListController;
+<span class="nc" id="L13">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;Controller&gt;();</span>
+    @Inject
+    Provider&lt;RegionController&gt; regionControllerProvider;
+    @Inject
+    Provider&lt;FriendListController&gt; friendListControllerProvider;
     @FXML
     private VBox friendListContainer;
     @FXML
     private VBox regionContainer;
 
-<span class="nc" id="L20">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;Controller&gt;();</span>
     @Inject
-    Provider&lt;FriendListController&gt; friendListControllerProvider;
+<span class="nc" id="L24">    public MenuController() {</span>
 
-    @Inject
-<span class="nc" id="L25">    public MenuController() {</span>
-
-<span class="nc" id="L27">    }</span>
+<span class="nc" id="L26">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L31">        Parent parent = super.render();</span>
-<span class="nc" id="L32">        Controller subController = friendListControllerProvider.get();</span>
-<span class="nc" id="L33">        subControllers.add(subController);</span>
-<span class="nc" id="L34">        friendListContainer.getChildren().add(subController.render());</span>
-<span class="nc" id="L35">        return parent;</span>
+<span class="nc" id="L30">        Parent parent = super.render();</span>
+<span class="nc" id="L31">        Controller friendListController = friendListControllerProvider.get();</span>
+<span class="nc" id="L32">        subControllers.add(friendListController);</span>
+<span class="nc" id="L33">        friendListContainer.getChildren().add(friendListController.render());</span>
+<span class="nc" id="L34">        Controller regionController = regionControllerProvider.get();</span>
+<span class="nc" id="L35">        subControllers.add(regionController);</span>
+<span class="nc" id="L36">        regionContainer.getChildren().add(regionController.render());</span>
+<span class="nc" id="L37">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="nc" id="L40">        subControllers.forEach(Controller::destroy);</span>
-<span class="nc" id="L41">        super.destroy();</span>
-<span class="nc" id="L42">    }</span>
+<span class="nc" id="L42">        subControllers.forEach(Controller::destroy);</span>
+<span class="nc" id="L43">        super.destroy();</span>
+<span class="nc" id="L44">    }</span>
 
     @Override
     public String getTitle() {
-<span class="nc" id="L46">        return &quot;Beastopia - Main Menu&quot;;</span>
+<span class="nc" id="L48">        return &quot;Beastopia - Main Menu&quot;;</span>
     }
 
 }
