@@ -55,17 +55,17 @@ public class LoginController extends Controller {
 
     @FXML
     public void login() {
-<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (isInValid.get()) {</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if (isInValid.get()) {</span>
 <span class="nc" id="L59">            return;</span>
         }
 
-<span class="nc" id="L62">        disposables.add(authService.login(usernameInput.getText(), passwordInput.getText())</span>
-<span class="nc" id="L63">                .observeOn(FX_SCHEDULER).subscribe(lr -&gt; {</span>
-<span class="nc" id="L64">                    app.show(menuControllerProvider.get());</span>
-<span class="nc" id="L65">                }, error -&gt; {</span>
-<span class="nc" id="L66">                    Dialog.error(error, &quot;Login failed&quot;);</span>
-<span class="nc" id="L67">                }));</span>
-<span class="nc" id="L68">    }</span>
+<span class="fc" id="L62">        disposables.add(authService.login(usernameInput.getText(), passwordInput.getText())</span>
+<span class="fc" id="L63">                .observeOn(FX_SCHEDULER).subscribe(lr -&gt; {</span>
+<span class="fc" id="L64">                    app.show(menuControllerProvider.get());</span>
+<span class="fc" id="L65">                }, error -&gt; {</span>
+<span class="fc" id="L66">                    Dialog.error(error, &quot;Login failed&quot;);</span>
+<span class="fc" id="L67">                }));</span>
+<span class="fc" id="L68">    }</span>
 
     @FXML
     public void register() {
