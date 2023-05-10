@@ -107,13 +107,13 @@ public class FriendListController extends Controller {
             }
 <span class="nc" id="L108">        }</span>
 
-<span class="nc bnc" id="L110" title="All 2 branches missed.">        for (User user : filteredUsers.stream().sorted((a, b) -&gt; {</span>
-<span class="nc" id="L111">            boolean pina = preferences.getBoolean(a._id() + &quot;_pinned&quot;, false);</span>
-<span class="nc bnc" id="L112" title="All 2 branches missed.">            if (pina) {</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        for (User user : filteredUsers.stream().sorted((firstUser, secondUser) -&gt; {</span>
+<span class="nc" id="L111">            boolean notPinned = preferences.getBoolean(firstUser._id() + &quot;_pinned&quot;, false);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            if (notPinned) {</span>
 <span class="nc" id="L113">                return -1;</span>
             }
             else {
-<span class="nc" id="L116">                return a.name().compareTo(b.name());</span>
+<span class="nc" id="L116">                return firstUser.name().compareTo(secondUser.name());</span>
             }
 <span class="nc" id="L118">        }).toList()) {</span>
 <span class="nc" id="L119">            FriendController subController = friendControllerProvider.get();</span>
