@@ -96,40 +96,41 @@ public class FriendListController extends Controller {
 
 <span class="nc" id="L97">        friendList.getChildren().addAll(filteredParents);</span>
 <span class="nc" id="L98">    }</span>
-
     private List&lt;Parent&gt; getFilteredParents() {
-<span class="nc" id="L101">        List&lt;User&gt; filteredUsers = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L102">        List&lt;Parent&gt; filteredParents = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L100">        List&lt;User&gt; filteredUsers = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L101">        List&lt;Parent&gt; filteredParents = new ArrayList&lt;&gt;();</span>
 
-<span class="nc bnc" id="L104" title="All 2 branches missed.">        for (User user : allUsers) {</span>
-<span class="nc bnc" id="L105" title="All 2 branches missed.">            if (user.name().toLowerCase().startsWith(searchName.getText().toLowerCase())) {</span>
-<span class="nc" id="L106">                filteredUsers.add(user);</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        for (User user : allUsers) {</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">            if (user.name().toLowerCase().startsWith(searchName.getText().toLowerCase())) {</span>
+<span class="nc" id="L105">                filteredUsers.add(user);</span>
             }
-<span class="nc" id="L108">        }</span>
+<span class="nc" id="L107">        }</span>
 
-<span class="nc bnc" id="L110" title="All 2 branches missed.">        for (User user : filteredUsers.stream().sorted((firstUser, secondUser) -&gt; {</span>
-<span class="nc" id="L111">            boolean notPinned = preferences.getBoolean(firstUser._id() + &quot;_pinned&quot;, false);</span>
-<span class="nc bnc" id="L112" title="All 2 branches missed.">            if (notPinned) {</span>
-<span class="nc" id="L113">                return -1;</span>
+<span class="nc" id="L109">        filteredUsers.stream().sorted((firstUser, secondUser) -&gt; {</span>
+<span class="nc" id="L110">            boolean notPinned = preferences.getBoolean(firstUser._id() + &quot;_pinned&quot;, false);</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">            if (notPinned) {</span>
+<span class="nc" id="L112">                return -1;</span>
             }
             else {
-<span class="nc" id="L116">                return firstUser.name().compareTo(secondUser.name());</span>
+<span class="nc" id="L115">                return firstUser.name().compareTo(secondUser.name());</span>
             }
-<span class="nc" id="L118">        }).toList()) {</span>
-<span class="nc" id="L119">            FriendController subController = friendControllerProvider.get();</span>
-<span class="nc" id="L120">            boolean friendPinned = preferences.getBoolean(user._id() + &quot;_pinned&quot;, false);</span>
-<span class="nc" id="L121">            subController.setFriendController(user, this, friendPinned);</span>
-<span class="nc" id="L122">            filteredParents.add(subController.render());</span>
-<span class="nc" id="L123">        }</span>
-<span class="nc" id="L124">        return filteredParents;</span>
+        });
+
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        for (User user : filteredUsers) {</span>
+<span class="nc" id="L120">            FriendController subController = friendControllerProvider.get();</span>
+<span class="nc" id="L121">            boolean friendPinned = preferences.getBoolean(user._id() + &quot;_pinned&quot;, false);</span>
+<span class="nc" id="L122">            subController.setFriendController(user, this, friendPinned);</span>
+<span class="nc" id="L123">            filteredParents.add(subController.render());</span>
+<span class="nc" id="L124">        }</span>
+<span class="nc" id="L125">        return filteredParents;</span>
     }
 
     private void clearSubControllers() {
-<span class="nc bnc" id="L128" title="All 2 branches missed.">        for (Controller controller : subControllers) {</span>
-<span class="nc" id="L129">            controller.destroy();</span>
-<span class="nc" id="L130">        }</span>
-<span class="nc" id="L131">        subControllers.clear();</span>
-<span class="nc" id="L132">        friendList.getChildren().clear();</span>
-<span class="nc" id="L133">    }</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        for (Controller controller : subControllers) {</span>
+<span class="nc" id="L130">            controller.destroy();</span>
+<span class="nc" id="L131">        }</span>
+<span class="nc" id="L132">        subControllers.clear();</span>
+<span class="nc" id="L133">        friendList.getChildren().clear();</span>
+<span class="nc" id="L134">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
