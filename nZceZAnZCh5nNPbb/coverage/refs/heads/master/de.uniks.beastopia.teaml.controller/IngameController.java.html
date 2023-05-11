@@ -21,19 +21,19 @@ public class IngameController extends Controller {
     Provider&lt;PauseController&gt; pauseControllerProvider;
 
     @Inject
-<span class="nc" id="L24">    public IngameController() {</span>
-<span class="nc" id="L25">    }</span>
+<span class="fc" id="L24">    public IngameController() {</span>
+<span class="fc" id="L25">    }</span>
 
     @FXML
     public void pauseMenu(KeyEvent keyEvent) {
-<span class="nc bnc" id="L29" title="All 2 branches missed.">        if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {</span>
-<span class="nc" id="L30">            app.show(pauseControllerProvider.get());</span>
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">        if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {</span>
+<span class="fc" id="L30">            app.show(pauseControllerProvider.get());</span>
         }
-<span class="nc" id="L32">    }</span>
+<span class="fc" id="L32">    }</span>
 
     @Override
     public String getTitle() {
-<span class="nc" id="L36">        return &quot;Beastopia&quot;;</span>
+<span class="fc" id="L36">        return &quot;Beastopia&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
