@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FriendListController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller</a> &gt; <span class="el_source">FriendListController.java</span></div><h1>FriendListController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller;
+
+import de.uniks.beastopia.teaml.rest.User;
+import de.uniks.beastopia.teaml.service.FriendListService;
+import de.uniks.beastopia.teaml.service.TokenStorage;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.prefs.Preferences;
+
+public class FriendListController extends Controller {
+<span class="nc" id="L20">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;Controller&gt;();</span>
+<span class="nc" id="L21">    private final List&lt;User&gt; allUsers = new ArrayList&lt;User&gt;();</span>
+    @FXML
+    public TextField searchName;
+    @FXML
+    public Button searchBtn;
+    @FXML
+    public ScrollPane scrollFriends;
+    @FXML
+    public VBox friendList;
+    @FXML
+    public Button showChats;
+    @Inject
+    Provider&lt;FriendController&gt; friendControllerProvider;
+    @Inject
+    FriendListService friendListService;
+    @Inject
+    TokenStorage tokenStorage;
+    @Inject
+    Preferences preferences;
+
+    @Inject
+<span class="nc" id="L42">    public FriendListController() {</span>
+
+<span class="nc" id="L44">    }</span>
+
+    @Override
+    public Parent render() {
+<span class="nc" id="L48">        Parent parent = super.render();</span>
+<span class="nc" id="L49">        disposables.add(friendListService.getUsers().subscribe(users -&gt; {</span>
+<span class="nc" id="L50">            allUsers.clear();</span>
+<span class="nc" id="L51">            allUsers.addAll(users);</span>
+<span class="nc" id="L52">            searchUser();</span>
+<span class="nc" id="L53">        }));</span>
+<span class="nc" id="L54">        return parent;</span>
+    }
+
+    private void getFriends() {
+<span class="nc" id="L58">        disposables.add(friendListService.getFriends().observeOn(FX_SCHEDULER).subscribe(friends -&gt; {</span>
+<span class="nc" id="L59">            clearSubControllers();</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">            if (friends != null) {</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">                for (User friend : friends) {</span>
+<span class="nc" id="L62">                    boolean friendPinned = preferences.getBoolean(friend._id() + &quot;_pinned&quot;, true);</span>
+<span class="nc" id="L63">                    Controller subController = friendControllerProvider.get()</span>
+<span class="nc" id="L64">                            .setFriendController(friend, this, friendPinned);</span>
+<span class="nc" id="L65">                    subControllers.add(subController);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">                    if (friendPinned) {</span>
+<span class="nc" id="L67">                        friendList.getChildren().add(0, subController.render());</span>
+                    } else {
+<span class="nc" id="L69">                        friendList.getChildren().add(subController.render());</span>
+                    }
+<span class="nc" id="L71">                }</span>
+            }
+<span class="nc" id="L73">        }));</span>
+<span class="nc" id="L74">    }</span>
+
+    @Override
+    public void destroy() {
+<span class="nc" id="L78">        clearSubControllers();</span>
+<span class="nc" id="L79">        super.destroy();</span>
+<span class="nc" id="L80">    }</span>
+
+    @FXML
+    public void showChats() {
+<span class="nc" id="L84">    }</span>
+
+    @FXML
+    public void searchUser() {
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (searchName.getText().isEmpty()) {</span>
+<span class="nc" id="L89">            getFriends();</span>
+<span class="nc" id="L90">            return;</span>
+        }
+
+<span class="nc" id="L93">        clearSubControllers();</span>
+
+<span class="nc" id="L95">        List&lt;Parent&gt; filteredParents = getFilteredParents();</span>
+
+<span class="nc" id="L97">        friendList.getChildren().addAll(filteredParents);</span>
+<span class="nc" id="L98">    }</span>
+    private List&lt;Parent&gt; getFilteredParents() {
+<span class="nc" id="L100">        List&lt;User&gt; filteredUsers = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L101">        List&lt;Parent&gt; filteredParents = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        for (User user : allUsers) {</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">            if (user.name().toLowerCase().startsWith(searchName.getText().toLowerCase())) {</span>
+<span class="nc" id="L105">                filteredUsers.add(user);</span>
+            }
+<span class="nc" id="L107">        }</span>
+
+<span class="nc" id="L109">        filteredUsers.stream().sorted((firstUser, secondUser) -&gt; {</span>
+<span class="nc" id="L110">            boolean notPinned = preferences.getBoolean(firstUser._id() + &quot;_pinned&quot;, false);</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">            if (notPinned) {</span>
+<span class="nc" id="L112">                return -1;</span>
+            }
+            else {
+<span class="nc" id="L115">                return firstUser.name().compareTo(secondUser.name());</span>
+            }
+        });
+
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        for (User user : filteredUsers) {</span>
+<span class="nc" id="L120">            FriendController subController = friendControllerProvider.get();</span>
+<span class="nc" id="L121">            boolean friendPinned = preferences.getBoolean(user._id() + &quot;_pinned&quot;, false);</span>
+<span class="nc" id="L122">            subController.setFriendController(user, this, friendPinned);</span>
+<span class="nc" id="L123">            filteredParents.add(subController.render());</span>
+<span class="nc" id="L124">        }</span>
+<span class="nc" id="L125">        return filteredParents;</span>
+    }
+
+    private void clearSubControllers() {
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        for (Controller controller : subControllers) {</span>
+<span class="nc" id="L130">            controller.destroy();</span>
+<span class="nc" id="L131">        }</span>
+<span class="nc" id="L132">        subControllers.clear();</span>
+<span class="nc" id="L133">        friendList.getChildren().clear();</span>
+<span class="nc" id="L134">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
