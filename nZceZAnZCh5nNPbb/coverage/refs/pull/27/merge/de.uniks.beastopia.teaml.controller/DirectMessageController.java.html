@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DirectMessageController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller</a> &gt; <span class="el_source">DirectMessageController.java</span></div><h1>DirectMessageController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller;
 
+import de.uniks.beastopia.teaml.rest.Group;
+import de.uniks.beastopia.teaml.service.FriendListService;
+import de.uniks.beastopia.teaml.service.GroupListService;
 import de.uniks.beastopia.teaml.service.MessageService;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -14,12 +17,22 @@ import java.util.List;
 
 public class DirectMessageController extends Controller {
 
-<span class="nc" id="L17">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L20">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
 
     @Inject
     Provider&lt;MenuController&gt; menuControllerProvider;
+
+    @Inject
+    Provider&lt;ChatWindowController&gt; chatWindowControllerProvider;
+
     @Inject
     MessageService messageService;
+
+    @Inject
+    GroupListService groupListService;
+
+    @Inject
+    FriendListService friendListService;
     @FXML
     public VBox chatList;
     @FXML
@@ -28,40 +41,65 @@ public class DirectMessageController extends Controller {
     public TextField chatInput;
     @FXML
     public Label chatName; //this label shows the name of the person/group you are chatting with
+    private String namespace;
+    private String parentId;
 
     @Inject
-<span class="nc" id="L33">    public DirectMessageController() {</span>
+<span class="nc" id="L48">    public DirectMessageController() {</span>
 
-<span class="nc" id="L35">    }</span>
+<span class="nc" id="L50">    }</span>
+
+    public DirectMessageController setupDirectMessageController(String namespace, String parendId) {
+<span class="nc" id="L53">        this.namespace = namespace;</span>
+<span class="nc" id="L54">        this.parentId = parendId;</span>
+<span class="nc" id="L55">        return this;</span>
+    }
 
     @Override
     public Parent render() {
-<span class="nc" id="L39">        Parent parent = super.render();</span>
-        //ToDo load Messages
-<span class="nc" id="L41">        return parent;</span>
+<span class="nc" id="L60">        Parent parent = super.render();</span>
+
+<span class="nc bnc" id="L62" title="All 4 branches missed.">        if (this.namespace == null || this.parentId == null) {</span>
+            //TODO show first chat from ChatList
+        } else { //Open Chat from friend
+<span class="nc bnc" id="L65" title="All 2 branches missed.">            if (this.namespace.equals(&quot;group&quot;)) {</span>
+<span class="nc" id="L66">                disposables.add(groupListService.getGroup(parentId).observeOn(FX_SCHEDULER).subscribe(s -&gt; {</span>
+<span class="nc" id="L67">                    chatName.setText(s.name());</span>
+<span class="nc" id="L68">                }));</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">            } else if (this.namespace.equals(&quot;global&quot;)) {</span>
+<span class="nc" id="L70">                disposables.add(friendListService.getUser(parentId).observeOn(FX_SCHEDULER).subscribe(s -&gt; {</span>
+<span class="nc" id="L71">                    chatName.setText(s.name());</span>
+<span class="nc" id="L72">                }));</span>
+            }
+<span class="nc" id="L74">            Controller subController = chatWindowControllerProvider.get()</span>
+<span class="nc" id="L75">                    .setupChatWindowController(this.namespace, this.parentId);</span>
+<span class="nc" id="L76">            subControllers.add(subController);</span>
+<span class="nc" id="L77">            messageList.getChildren().add(subController.render());</span>
+        }
+<span class="nc" id="L79">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="nc" id="L46">        subControllers.forEach(Controller::destroy);</span>
-<span class="nc" id="L47">        super.destroy();</span>
-<span class="nc" id="L48">    }</span>
+<span class="nc" id="L84">        subControllers.forEach(Controller::destroy);</span>
+<span class="nc" id="L85">        super.destroy();</span>
+<span class="nc" id="L86">    }</span>
 
     @Override
     public String getTitle() {
-<span class="nc" id="L52">        return resources.getString(&quot;titleDirectMessages&quot;);</span>
+<span class="nc" id="L90">        return resources.getString(&quot;titleDirectMessages&quot;);</span>
     }
 
     public void back() {
-<span class="nc" id="L56">        app.show(menuControllerProvider.get());</span>
-<span class="nc" id="L57">    }</span>
+<span class="nc" id="L94">        app.show(menuControllerProvider.get());</span>
+<span class="nc" id="L95">    }</span>
 
     public void newGroup() {
         //ToDo show Group Controller
-<span class="nc" id="L61">    }</span>
+<span class="nc" id="L99">    }</span>
 
     public void sendMessage() {
         //ToDo send Message
-<span class="nc" id="L65">    }</span>
+<span class="nc" id="L103">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
