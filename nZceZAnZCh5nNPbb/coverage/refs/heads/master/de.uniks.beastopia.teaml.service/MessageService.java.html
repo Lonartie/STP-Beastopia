@@ -35,12 +35,12 @@ public class MessageService {
 <span class="nc" id="L35">        return sendMessage(Namespace.Regions, region._id(), content);</span>
     }
 
-    public Observable&lt;List&lt;Message&gt;&gt; getMessagesFromGroup(Group group, String content) {
-<span class="nc" id="L39">        return getMessages(Namespace.Groups, group._id());</span>
+    public Observable&lt;List&lt;Message&gt;&gt; getMessagesFromGroup(String groupId) {
+<span class="nc" id="L39">        return getMessages(Namespace.Groups, groupId);</span>
     }
 
-    public Observable&lt;List&lt;Message&gt;&gt; getMessagesFromFriend(User friend) {
-<span class="nc" id="L43">        return getMessages(Namespace.Global, friend._id());</span>
+    public Observable&lt;List&lt;Message&gt;&gt; getMessagesFromFriend(String friendId) {
+<span class="nc" id="L43">        return getMessages(Namespace.Global, friendId);</span>
     }
 
     public Observable&lt;List&lt;Message&gt;&gt; getMessagesFromRegion(Region region) {
