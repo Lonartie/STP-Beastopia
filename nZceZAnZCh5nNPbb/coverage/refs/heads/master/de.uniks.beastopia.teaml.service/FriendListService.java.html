@@ -7,13 +7,14 @@ import de.uniks.beastopia.teaml.rest.UserApiService;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FriendListService {
 
-<span class="nc" id="L14">    public static enum Status {</span>
-<span class="nc" id="L15">        Online,</span>
-<span class="nc" id="L16">        Offline</span>
+<span class="fc" id="L15">    public static enum Status {</span>
+<span class="fc" id="L16">        Online,</span>
+<span class="fc" id="L17">        Offline</span>
     }
 
     @Inject
@@ -25,58 +26,62 @@ public class FriendListService {
     AuthApiService authApiService;
 
     @Inject
-<span class="nc" id="L28">    public FriendListService() {</span>
-<span class="nc" id="L29">    }</span>
+<span class="fc" id="L29">    public FriendListService() {</span>
+<span class="fc" id="L30">    }</span>
 
     public Observable&lt;List&lt;User&gt;&gt; getUsers() {
-<span class="nc" id="L32">        return userApiService.getUsers(null, null);</span>
+<span class="fc" id="L33">        return userApiService.getUsers(null, null);</span>
     }
 
     public List&lt;String&gt; getFriendIDs() {
-<span class="nc" id="L36">        return tokenStorage.getCurrentUser().friends();</span>
+<span class="fc" id="L37">        return tokenStorage.getCurrentUser().friends();</span>
     }
 
     public Observable&lt;User&gt; getUser(String id) {
-<span class="nc" id="L40">        return userApiService.getUser(id);</span>
+<span class="fc" id="L41">        return userApiService.getUser(id);</span>
+    }
+
+    public boolean isFriend(User user) {
+<span class="fc" id="L45">        return tokenStorage.getCurrentUser().friends().contains(user._id());</span>
     }
 
     public Observable&lt;List&lt;User&gt;&gt; getFriends() {
-<span class="nc bnc" id="L44" title="All 2 branches missed.">        if (tokenStorage.getCurrentUser().friends().isEmpty())</span>
-<span class="nc" id="L45">            return Observable.just(List.of());</span>
-<span class="nc" id="L46">        return userApiService</span>
-<span class="nc" id="L47">                .getUsers(tokenStorage.getCurrentUser().friends(), null);</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (tokenStorage.getCurrentUser().friends().isEmpty())</span>
+<span class="fc" id="L50">            return Observable.just(List.of());</span>
+<span class="fc" id="L51">        return userApiService</span>
+<span class="fc" id="L52">                .getUsers(tokenStorage.getCurrentUser().friends(), null);</span>
     }
 
     public Observable&lt;List&lt;User&gt;&gt; getFriends(Status status) {
-<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (tokenStorage.getCurrentUser().friends().isEmpty())</span>
-<span class="nc" id="L52">            return Observable.just(List.of());</span>
-<span class="nc" id="L53">        return userApiService</span>
-<span class="nc bnc" id="L54" title="All 3 branches missed.">                .getUsers(tokenStorage.getCurrentUser().friends(), switch (status) {</span>
-<span class="nc" id="L55">                    case Online -&gt; &quot;online&quot;;</span>
-<span class="nc" id="L56">                    case Offline -&gt; &quot;offline&quot;;</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">        if (tokenStorage.getCurrentUser().friends().isEmpty())</span>
+<span class="nc" id="L57">            return Observable.just(List.of());</span>
+<span class="fc" id="L58">        return userApiService</span>
+<span class="pc bpc" id="L59" title="2 of 3 branches missed.">                .getUsers(tokenStorage.getCurrentUser().friends(), switch (status) {</span>
+<span class="fc" id="L60">                    case Online -&gt; &quot;online&quot;;</span>
+<span class="nc" id="L61">                    case Offline -&gt; &quot;offline&quot;;</span>
                 });
     }
 
     public Observable&lt;User&gt; addFriend(User friend) {
-<span class="nc" id="L61">        return Observable.create(source -&gt; {</span>
-<span class="nc" id="L62">            List&lt;String&gt; friends = tokenStorage.getCurrentUser().friends();</span>
-<span class="nc" id="L63">            friends.add(friend._id());</span>
-<span class="nc" id="L64">            String userID = tokenStorage.getCurrentUser()._id();</span>
-<span class="nc" id="L65">            tokenStorage.setCurrentUser(userApiService.updateUser(userID, new UpdateUserDto(null, null, null, friends, null)).blockingFirst());</span>
-<span class="nc" id="L66">            source.onNext(tokenStorage.getCurrentUser());</span>
-<span class="nc" id="L67">            source.onComplete();</span>
-<span class="nc" id="L68">        });</span>
+<span class="fc" id="L66">        return Observable.create(source -&gt; {</span>
+<span class="fc" id="L67">            List&lt;String&gt; friends = new ArrayList&lt;&gt;(tokenStorage.getCurrentUser().friends());</span>
+<span class="fc" id="L68">            friends.add(friend._id());</span>
+<span class="fc" id="L69">            String userID = tokenStorage.getCurrentUser()._id();</span>
+<span class="fc" id="L70">            tokenStorage.setCurrentUser(userApiService.updateUser(userID, new UpdateUserDto(null, null, null, friends, null)).blockingFirst());</span>
+<span class="fc" id="L71">            source.onNext(tokenStorage.getCurrentUser());</span>
+<span class="fc" id="L72">            source.onComplete();</span>
+<span class="fc" id="L73">        });</span>
     }
 
     public Observable&lt;User&gt; removeFriend(User friend) {
-<span class="nc" id="L72">        return Observable.create(source -&gt; {</span>
-<span class="nc" id="L73">            List&lt;String&gt; friends = tokenStorage.getCurrentUser().friends();</span>
-<span class="nc" id="L74">            friends.remove(friend._id());</span>
-<span class="nc" id="L75">            String userID = tokenStorage.getCurrentUser()._id();</span>
-<span class="nc" id="L76">            tokenStorage.setCurrentUser(userApiService.updateUser(userID, new UpdateUserDto(null, null, null, friends, null)).blockingFirst());</span>
-<span class="nc" id="L77">            source.onNext(tokenStorage.getCurrentUser());</span>
-<span class="nc" id="L78">            source.onComplete();</span>
-<span class="nc" id="L79">        });</span>
+<span class="fc" id="L77">        return Observable.create(source -&gt; {</span>
+<span class="fc" id="L78">            List&lt;String&gt; friends = new ArrayList&lt;&gt;(tokenStorage.getCurrentUser().friends());</span>
+<span class="fc" id="L79">            friends.remove(friend._id());</span>
+<span class="fc" id="L80">            String userID = tokenStorage.getCurrentUser()._id();</span>
+<span class="fc" id="L81">            tokenStorage.setCurrentUser(userApiService.updateUser(userID, new UpdateUserDto(null, null, null, friends, null)).blockingFirst());</span>
+<span class="fc" id="L82">            source.onNext(tokenStorage.getCurrentUser());</span>
+<span class="fc" id="L83">            source.onComplete();</span>
+<span class="fc" id="L84">        });</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -2,7 +2,7 @@
 
 
 import de.uniks.beastopia.teaml.rest.User;
-import javafx.event.ActionEvent;
+import de.uniks.beastopia.teaml.service.FriendListService;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -15,104 +15,150 @@ import javafx.scene.text.Text;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.util.function.Consumer;
 import java.util.prefs.Preferences;
+
+import static de.uniks.beastopia.teaml.rest.UserApiService.STATUS_ONLINE;
 
 public class FriendController extends Controller {
     @FXML
-    public ImageView friendAvatar;
+    ImageView friendAvatar;
     @FXML
-    public Circle statusCircle;
+    Circle statusCircle;
     @FXML
-    public Text name;
+    Text name;
     @FXML
-    public Button action;
+    Button addRemoveFriendButton;
     @FXML
-    public Button chat;
+    Button chat;
     @FXML
-    public Button pin;
-
+    Button pin;
     @FXML
-    public HBox _rootElement;
+    HBox _rootElement;
 
     private User user;
-    private FriendListController friendListController;
 
     @Inject
     Provider&lt;DirectMessageController&gt; directMessageControllerProvider;
 
     private Boolean friendPin;
 
-<span class="nc" id="L45">    private final ImageView pinned = createImage(&quot;de/uniks/beastopia/teaml/assets/buttons/filled_pin.png&quot;);</span>
-
-<span class="nc" id="L47">    private final ImageView notPinned = createImage(&quot;de/uniks/beastopia/teaml/assets/buttons/pin.png&quot;);</span>
+    private ImageView pinned;
+    private ImageView notPinned;
+    private ImageView addImage;
+    private ImageView removeImage;
     @Inject
     Preferences preferences;
+    @Inject
+    FriendListService friendListService;
+
+<span class="fc" id="L55">    private Consumer&lt;User&gt; onFriendChanged = null;</span>
+<span class="fc" id="L56">    private Consumer&lt;User&gt; onPinChanged = null;</span>
 
     @Inject
-<span class="nc" id="L52">    public FriendController() {</span>
+<span class="fc" id="L59">    public FriendController() {</span>
 
-<span class="nc" id="L54">    }</span>
+<span class="fc" id="L61">    }</span>
 
-    public FriendController setFriendController(User user, FriendListController friendListController, boolean friendPin) {
-<span class="nc" id="L57">        this.user = user;</span>
-<span class="nc" id="L58">        this.friendListController = friendListController;</span>
-<span class="nc" id="L59">        this.friendPin = friendPin;</span>
-<span class="nc" id="L60">        return this;</span>
+    @Override
+    public void init() {
+<span class="fc" id="L65">        pinned = createImage(&quot;de/uniks/beastopia/teaml/assets/buttons/filled_pin.png&quot;);</span>
+<span class="fc" id="L66">        notPinned = createImage(&quot;de/uniks/beastopia/teaml/assets/buttons/pin.png&quot;);</span>
+<span class="fc" id="L67">        addImage = createImage(&quot;de/uniks/beastopia/teaml/assets/buttons/plus.png&quot;);</span>
+<span class="fc" id="L68">        removeImage = createImage(&quot;de/uniks/beastopia/teaml/assets/buttons/minus.png&quot;);</span>
+<span class="fc" id="L69">    }</span>
+
+    public void setOnFriendChanged(Consumer&lt;User&gt; onFriendChanged) {
+<span class="fc" id="L72">        this.onFriendChanged = onFriendChanged;</span>
+<span class="fc" id="L73">    }</span>
+
+    public void setOnPinChanged(Consumer&lt;User&gt; onPinChanged) {
+<span class="nc" id="L76">        this.onPinChanged = onPinChanged;</span>
+<span class="nc" id="L77">    }</span>
+
+    public FriendController setUser(User user, boolean friendPin) {
+<span class="fc" id="L80">        this.user = user;</span>
+<span class="fc" id="L81">        this.friendPin = friendPin;</span>
+<span class="fc" id="L82">        return this;</span>
     }
 
     @Override
     public Parent render() {
-<span class="nc" id="L65">        Parent parent = super.render();</span>
+<span class="fc" id="L87">        Parent parent = super.render();</span>
 
         //TODO change avatar URL when avatar upload is implemented to individual link
-<span class="nc" id="L68">        Image image = new Image(&quot;de/uniks/beastopia/teaml/assets/Lumnix_Logo_tr.png&quot;, 40.0,</span>
+<span class="fc" id="L90">        Image image = new Image(&quot;de/uniks/beastopia/teaml/assets/Lumnix_Logo_tr.png&quot;, 40.0,</span>
                 40.0, false, false);
-<span class="nc" id="L70">        friendAvatar.setImage(image);</span>
+<span class="fc" id="L92">        friendAvatar.setImage(image);</span>
 
-<span class="nc" id="L72">        name.setText(user.name());</span>
+<span class="fc" id="L94">        name.setText(user.name());</span>
 
-<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (user.status().equals(&quot;online&quot;)) {</span>
-<span class="nc" id="L75">            statusCircle.setFill(Paint.valueOf(&quot;green&quot;));</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">        if (user.status().equals(STATUS_ONLINE)) {</span>
+<span class="nc" id="L97">            statusCircle.setFill(Paint.valueOf(&quot;green&quot;));</span>
         } else {
-<span class="nc" id="L77">            statusCircle.setFill(Paint.valueOf(&quot;red&quot;));</span>
+<span class="fc" id="L99">            statusCircle.setFill(Paint.valueOf(&quot;red&quot;));</span>
         }
 
-<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (this.friendPin) {</span>
-<span class="nc" id="L81">            this.pin.setGraphic(pinned);</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">        if (this.friendPin) {</span>
+<span class="nc" id="L103">            this.pin.setGraphic(pinned);</span>
         } else {
-<span class="nc" id="L83">            this.pin.setGraphic(notPinned);</span>
+<span class="fc" id="L105">            this.pin.setGraphic(notPinned);</span>
         }
 
-<span class="nc" id="L86">        return parent;</span>
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">        if (friendListService.isFriend(user)) {</span>
+<span class="fc" id="L109">            addRemoveFriendButton.setGraphic(removeImage);</span>
+        } else {
+<span class="nc" id="L111">            addRemoveFriendButton.setGraphic(addImage);</span>
+        }
+
+<span class="fc" id="L114">        return parent;</span>
     }
 
     private ImageView createImage(String imageUrl) {
-<span class="nc" id="L90">        ImageView imageView = new ImageView(new Image(imageUrl));</span>
-<span class="nc" id="L91">        imageView.setFitHeight(25.0);</span>
-<span class="nc" id="L92">        imageView.setFitWidth(25.0);</span>
-<span class="nc" id="L93">        return imageView;</span>
+<span class="fc" id="L118">        ImageView imageView = new ImageView(new Image(imageUrl));</span>
+<span class="fc" id="L119">        imageView.setFitHeight(25.0);</span>
+<span class="fc" id="L120">        imageView.setFitWidth(25.0);</span>
+<span class="fc" id="L121">        return imageView;</span>
     }
 
     @FXML
-    public void editFriendList(ActionEvent actionEvent) {
-<span class="nc" id="L98">    }</span>
-
-    @FXML
-    public void openFriendChat(ActionEvent actionEvent) {
-<span class="nc" id="L102">        app.show(directMessageControllerProvider.get().setupDirectMessageController(&quot;global&quot;, user._id()));</span>
-<span class="nc" id="L103">    }</span>
-
-    @FXML
-    public void pinFriend(ActionEvent actionEvent) {
-<span class="nc bnc" id="L107" title="All 2 branches missed.">        if (pin.getGraphic() == notPinned) {</span>
-<span class="nc" id="L108">            friendListController.friendList.getChildren().remove(_rootElement);</span>
-<span class="nc" id="L109">            friendListController.friendList.getChildren().add(0, this.render());</span>
-<span class="nc" id="L110">            pin.setGraphic(pinned);</span>
-<span class="nc" id="L111">            preferences.putBoolean(this.user._id() + &quot;_pinned&quot;, true);</span>
+    public void addRemoveFriend() {
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if (friendListService.isFriend(user)) {</span>
+<span class="fc" id="L127">            disposables.add(friendListService.removeFriend(user)</span>
+<span class="fc" id="L128">                    .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L129">                    .subscribe(user -&gt; {</span>
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">                        if (onFriendChanged != null) {</span>
+<span class="fc" id="L131">                            onFriendChanged.accept(user);</span>
+                        }
+<span class="fc" id="L133">                    }));</span>
         } else {
-<span class="nc" id="L113">            pin.setGraphic(notPinned);</span>
-<span class="nc" id="L114">            preferences.putBoolean(this.user._id() + &quot;_pinned&quot;, false);</span>
+<span class="fc" id="L135">            disposables.add(friendListService.addFriend(user)</span>
+<span class="fc" id="L136">                    .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L137">                    .subscribe(user -&gt; {</span>
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">                        if (onFriendChanged != null) {</span>
+<span class="fc" id="L139">                            onFriendChanged.accept(user);</span>
+                        }
+<span class="fc" id="L141">                    }));</span>
         }
-<span class="nc" id="L116">    }</span>
+<span class="fc" id="L143">    }</span>
+
+    @FXML
+    public void openFriendChat() {
+<span class="nc" id="L147">        app.show(directMessageControllerProvider.get().setupDirectMessageController(&quot;global&quot;, user._id()));</span>
+<span class="nc" id="L148">    }</span>
+
+    @FXML
+    public void pinFriend() {
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        if (pin.getGraphic() == notPinned) {</span>
+<span class="nc" id="L153">            pin.setGraphic(pinned);</span>
+<span class="nc" id="L154">            preferences.putBoolean(this.user._id() + &quot;_pinned&quot;, true);</span>
+        } else {
+<span class="nc" id="L156">            pin.setGraphic(notPinned);</span>
+<span class="nc" id="L157">            preferences.putBoolean(this.user._id() + &quot;_pinned&quot;, false);</span>
+        }
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        if (onPinChanged != null) {</span>
+<span class="nc" id="L160">            onPinChanged.accept(user);</span>
+        }
+<span class="nc" id="L162">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
