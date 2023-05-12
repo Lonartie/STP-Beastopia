@@ -59,45 +59,47 @@ public class DirectMessageController extends Controller {
     public Parent render() {
 <span class="nc" id="L60">        Parent parent = super.render();</span>
 
-<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (this.namespace.equals(&quot;group&quot;)) {</span>
-<span class="nc" id="L63">            disposables.add(groupListService.getGroup(parentId).observeOn(FX_SCHEDULER).subscribe(s -&gt; {</span>
-<span class="nc" id="L64">                chatName.setText(s.name());</span>
-<span class="nc" id="L65">            }));</span>
-<span class="nc bnc" id="L66" title="All 2 branches missed.">        } else if (this.namespace.equals(&quot;global&quot;)) {</span>
-<span class="nc" id="L67">            disposables.add(friendListService.getUser(parentId).observeOn(FX_SCHEDULER).subscribe(s -&gt; {</span>
-<span class="nc" id="L68">                chatName.setText(s.name());</span>
-<span class="nc" id="L69">            }));</span>
+<span class="nc bnc" id="L62" title="All 4 branches missed.">        if (this.namespace == null || this.parentId == null) {</span>
+            //TODO show first chat from ChatList
+        } else { //Open Chat from friend
+<span class="nc bnc" id="L65" title="All 2 branches missed.">            if (this.namespace.equals(&quot;group&quot;)) {</span>
+<span class="nc" id="L66">                disposables.add(groupListService.getGroup(parentId).observeOn(FX_SCHEDULER).subscribe(s -&gt; {</span>
+<span class="nc" id="L67">                    chatName.setText(s.name());</span>
+<span class="nc" id="L68">                }));</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">            } else if (this.namespace.equals(&quot;global&quot;)) {</span>
+<span class="nc" id="L70">                disposables.add(friendListService.getUser(parentId).observeOn(FX_SCHEDULER).subscribe(s -&gt; {</span>
+<span class="nc" id="L71">                    chatName.setText(s.name());</span>
+<span class="nc" id="L72">                }));</span>
+            }
+<span class="nc" id="L74">            Controller subController = chatWindowControllerProvider.get()</span>
+<span class="nc" id="L75">                    .setupChatWindowController(this.namespace, this.parentId);</span>
+<span class="nc" id="L76">            subControllers.add(subController);</span>
+<span class="nc" id="L77">            messageList.getChildren().add(subController.render());</span>
         }
-
-<span class="nc" id="L72">        Controller subController = chatWindowControllerProvider.get()</span>
-<span class="nc" id="L73">                .setupChatWindowController(this.namespace, this.parentId);</span>
-<span class="nc" id="L74">        subControllers.add(subController);</span>
-<span class="nc" id="L75">        messageList.getChildren().add(subController.render());</span>
-
-<span class="nc" id="L77">        return parent;</span>
+<span class="nc" id="L79">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="nc" id="L82">        subControllers.forEach(Controller::destroy);</span>
-<span class="nc" id="L83">        super.destroy();</span>
-<span class="nc" id="L84">    }</span>
+<span class="nc" id="L84">        subControllers.forEach(Controller::destroy);</span>
+<span class="nc" id="L85">        super.destroy();</span>
+<span class="nc" id="L86">    }</span>
 
     @Override
     public String getTitle() {
-<span class="nc" id="L88">        return resources.getString(&quot;titleDirectMessages&quot;);</span>
+<span class="nc" id="L90">        return resources.getString(&quot;titleDirectMessages&quot;);</span>
     }
 
     public void back() {
-<span class="nc" id="L92">        app.show(menuControllerProvider.get());</span>
-<span class="nc" id="L93">    }</span>
+<span class="nc" id="L94">        app.show(menuControllerProvider.get());</span>
+<span class="nc" id="L95">    }</span>
 
     public void newGroup() {
         //ToDo show Group Controller
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L99">    }</span>
 
     public void sendMessage() {
         //ToDo send Message
-<span class="nc" id="L101">    }</span>
+<span class="nc" id="L103">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
