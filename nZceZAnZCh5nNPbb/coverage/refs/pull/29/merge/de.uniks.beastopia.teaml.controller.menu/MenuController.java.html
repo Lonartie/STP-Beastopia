@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuController extends Controller {
-<span class="nc" id="L15">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L15">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
     @Inject
     Provider&lt;RegionController&gt; regionControllerProvider;
     @Inject
@@ -23,20 +23,20 @@ public class MenuController extends Controller {
     private VBox regionContainer;
 
     @Inject
-<span class="nc" id="L26">    public MenuController() {</span>
+<span class="fc" id="L26">    public MenuController() {</span>
 
-<span class="nc" id="L28">    }</span>
+<span class="fc" id="L28">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L32">        Parent parent = super.render();</span>
-<span class="nc" id="L33">        Controller friendListController = friendListControllerProvider.get();</span>
-<span class="nc" id="L34">        subControllers.add(friendListController);</span>
-<span class="nc" id="L35">        friendListContainer.getChildren().add(friendListController.render());</span>
-<span class="nc" id="L36">        Controller regionController = regionControllerProvider.get();</span>
-<span class="nc" id="L37">        subControllers.add(regionController);</span>
-<span class="nc" id="L38">        regionContainer.getChildren().add(regionController.render());</span>
-<span class="nc" id="L39">        return parent;</span>
+<span class="fc" id="L32">        Parent parent = super.render();</span>
+<span class="fc" id="L33">        Controller friendListController = friendListControllerProvider.get();</span>
+<span class="fc" id="L34">        subControllers.add(friendListController);</span>
+<span class="fc" id="L35">        friendListContainer.getChildren().add(friendListController.render());</span>
+<span class="fc" id="L36">        Controller regionController = regionControllerProvider.get();</span>
+<span class="fc" id="L37">        subControllers.add(regionController);</span>
+<span class="fc" id="L38">        regionContainer.getChildren().add(regionController.render());</span>
+<span class="fc" id="L39">        return parent;</span>
     }
 
     @Override
@@ -47,7 +47,7 @@ public class MenuController extends Controller {
 
     @Override
     public String getTitle() {
-<span class="nc" id="L50">        return &quot;Beastopia - Main Menu&quot;;</span>
+<span class="fc" id="L50">        return &quot;Beastopia - Main Menu&quot;;</span>
     }
 
 }

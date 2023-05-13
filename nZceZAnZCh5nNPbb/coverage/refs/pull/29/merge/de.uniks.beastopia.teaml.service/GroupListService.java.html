@@ -18,41 +18,41 @@ public class GroupListService {
     GroupApiService groupApiService;
 
     @Inject
-<span class="nc" id="L21">    GroupListService() {</span>
-<span class="nc" id="L22">    }</span>
+<span class="fc" id="L21">    GroupListService() {</span>
+<span class="fc" id="L22">    }</span>
 
     public Observable&lt;List&lt;Group&gt;&gt; getGroups() {
-<span class="nc" id="L25">        return groupApiService.getGroups(null);</span>
+<span class="fc" id="L25">        return groupApiService.getGroups(null);</span>
     }
 
     public Observable&lt;Group&gt; getGroup(String id) {
-<span class="nc" id="L29">        return groupApiService.getGroup(id);</span>
+<span class="fc" id="L29">        return groupApiService.getGroup(id);</span>
     }
 
     public Observable&lt;Group&gt; addGroup(String name, List&lt;String&gt; members) {
-<span class="nc" id="L33">        ArrayList&lt;String&gt; membersCopy = new ArrayList&lt;&gt;(members);</span>
-<span class="nc" id="L34">        membersCopy.add(tokenStorage.getCurrentUser()._id());</span>
-<span class="nc" id="L35">        return groupApiService.createGroup(new CreateGroupDto(name, membersCopy));</span>
+<span class="fc" id="L33">        ArrayList&lt;String&gt; membersCopy = new ArrayList&lt;&gt;(members);</span>
+<span class="fc" id="L34">        membersCopy.add(tokenStorage.getCurrentUser()._id());</span>
+<span class="fc" id="L35">        return groupApiService.createGroup(new CreateGroupDto(name, membersCopy));</span>
     }
 
     public Observable&lt;Group&gt; updateGroup(Group updatedGroup) {
-<span class="nc" id="L39">        return groupApiService.updateGroup(updatedGroup._id(), new UpdateGroupDto(updatedGroup.name(), updatedGroup.members()));</span>
+<span class="fc" id="L39">        return groupApiService.updateGroup(updatedGroup._id(), new UpdateGroupDto(updatedGroup.name(), updatedGroup.members()));</span>
     }
 
     public Observable&lt;Group&gt; addMember(Group group, String member) {
-<span class="nc" id="L43">        List&lt;String&gt; members = new ArrayList&lt;&gt;(group.members());</span>
-<span class="nc" id="L44">        members.add(member);</span>
-<span class="nc" id="L45">        return groupApiService.updateGroup(group._id(), new UpdateGroupDto(group.name(), members));</span>
+<span class="fc" id="L43">        List&lt;String&gt; members = new ArrayList&lt;&gt;(group.members());</span>
+<span class="fc" id="L44">        members.add(member);</span>
+<span class="fc" id="L45">        return groupApiService.updateGroup(group._id(), new UpdateGroupDto(group.name(), members));</span>
     }
 
     public Observable&lt;Group&gt; removeMember(Group group, String member) {
-<span class="nc" id="L49">        List&lt;String&gt; members = new ArrayList&lt;&gt;(group.members());</span>
-<span class="nc" id="L50">        members.remove(member);</span>
-<span class="nc" id="L51">        return groupApiService.updateGroup(group._id(), new UpdateGroupDto(group.name(), members));</span>
+<span class="fc" id="L49">        List&lt;String&gt; members = new ArrayList&lt;&gt;(group.members());</span>
+<span class="fc" id="L50">        members.remove(member);</span>
+<span class="fc" id="L51">        return groupApiService.updateGroup(group._id(), new UpdateGroupDto(group.name(), members));</span>
     }
 
     public Observable&lt;Group&gt; deleteGroup(Group group) {
-<span class="nc" id="L55">        return groupApiService.deleteGroup(group._id());</span>
+<span class="fc" id="L55">        return groupApiService.deleteGroup(group._id());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
