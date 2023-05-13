@@ -9,15 +9,15 @@ import java.util.List;
 
 public class RegionService {
 
-    private final RegionApiService regionApiService;
+    @Inject
+    RegionApiService regionApiService;
 
     @Inject
-<span class="nc" id="L15">    public RegionService(RegionApiService regionApiService) {</span>
-<span class="nc" id="L16">        this.regionApiService = regionApiService;</span>
-<span class="nc" id="L17">    }</span>
+<span class="fc" id="L16">    public RegionService() {</span>
+<span class="fc" id="L17">    }</span>
 
     public Observable&lt;List&lt;Region&gt;&gt; getRegions() {
-<span class="nc" id="L20">        return regionApiService.getRegions();</span>
+<span class="fc" id="L20">        return regionApiService.getRegions();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

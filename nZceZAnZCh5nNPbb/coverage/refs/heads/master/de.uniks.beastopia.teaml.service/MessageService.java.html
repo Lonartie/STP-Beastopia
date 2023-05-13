@@ -7,10 +7,10 @@ import javax.inject.Inject;
 import java.util.List;
 
 public class MessageService {
-<span class="nc" id="L10">    public static enum Namespace {</span>
-<span class="nc" id="L11">        Groups,</span>
-<span class="nc" id="L12">        Regions,</span>
-<span class="nc" id="L13">        Global</span>
+<span class="fc" id="L10">    public enum Namespace {</span>
+<span class="fc" id="L11">        Groups,</span>
+<span class="fc" id="L12">        Regions,</span>
+<span class="fc" id="L13">        Global</span>
     }
 
     @Inject
@@ -20,79 +20,78 @@ public class MessageService {
     MessageApiService messageApiService;
 
     @Inject
-<span class="nc" id="L23">    public MessageService() {</span>
-<span class="nc" id="L24">    }</span>
+<span class="fc" id="L23">    public MessageService() {</span>
+<span class="fc" id="L24">    }</span>
 
     public Observable&lt;Message&gt; sendMessageToGroup(Group group, String content) {
-<span class="nc" id="L27">        return sendMessage(Namespace.Groups, group._id(), content);</span>
+<span class="fc" id="L27">        return sendMessage(Namespace.Groups, group._id(), content);</span>
     }
 
     public Observable&lt;Message&gt; sendMessageToFriend(User friend, String content) {
-<span class="nc" id="L31">        return sendMessage(Namespace.Global, friend._id(), content);</span>
+<span class="fc" id="L31">        return sendMessage(Namespace.Global, friend._id(), content);</span>
     }
 
     public Observable&lt;Message&gt; sendMessageToRegion(Region region, String content) {
-<span class="nc" id="L35">        return sendMessage(Namespace.Regions, region._id(), content);</span>
+<span class="fc" id="L35">        return sendMessage(Namespace.Regions, region._id(), content);</span>
     }
 
     public Observable&lt;List&lt;Message&gt;&gt; getMessagesFromGroup(String groupId) {
-<span class="nc" id="L39">        return getMessages(Namespace.Groups, groupId);</span>
+<span class="fc" id="L39">        return getMessages(Namespace.Groups, groupId);</span>
     }
 
     public Observable&lt;List&lt;Message&gt;&gt; getMessagesFromFriend(String friendId) {
-<span class="nc" id="L43">        return getMessages(Namespace.Global, friendId);</span>
+<span class="fc" id="L43">        return getMessages(Namespace.Global, friendId);</span>
     }
 
-    public Observable&lt;List&lt;Message&gt;&gt; getMessagesFromRegion(Region region) {
-<span class="nc" id="L47">        return getMessages(Namespace.Regions, region._id());</span>
+    public Observable&lt;List&lt;Message&gt;&gt; getMessagesFromRegion(String regionId) {
+<span class="fc" id="L47">        return getMessages(Namespace.Regions, regionId);</span>
     }
 
     public Observable&lt;Message&gt; updateMessage(Group group, Message message, String newContent) {
-<span class="nc" id="L51">        return updateMessage(Namespace.Groups, group._id(), message, newContent);</span>
+<span class="fc" id="L51">        return updateMessage(Namespace.Groups, group._id(), message, newContent);</span>
     }
 
     public Observable&lt;Message&gt; updateMessage(User friend, Message message, String newContent) {
-<span class="nc" id="L55">        return updateMessage(Namespace.Global, friend._id(), message, newContent);</span>
+<span class="fc" id="L55">        return updateMessage(Namespace.Global, friend._id(), message, newContent);</span>
     }
 
     public Observable&lt;Message&gt; updateMessage(Region region, Message message, String newContent) {
-<span class="nc" id="L59">        return updateMessage(Namespace.Regions, region._id(), message, newContent);</span>
+<span class="fc" id="L59">        return updateMessage(Namespace.Regions, region._id(), message, newContent);</span>
     }
 
     public Observable&lt;Message&gt; deleteMessage(Group group, Message message) {
-<span class="nc" id="L63">        return deleteMessage(Namespace.Groups, group._id(), message);</span>
+<span class="fc" id="L63">        return deleteMessage(Namespace.Groups, group._id(), message);</span>
     }
 
     public Observable&lt;Message&gt; deleteMessage(User friend, Message message) {
-<span class="nc" id="L67">        return deleteMessage(Namespace.Global, friend._id(), message);</span>
+<span class="fc" id="L67">        return deleteMessage(Namespace.Global, friend._id(), message);</span>
     }
 
     public Observable&lt;Message&gt; deleteMessage(Region region, Message message) {
-<span class="nc" id="L71">        return deleteMessage(Namespace.Regions, region._id(), message);</span>
+<span class="fc" id="L71">        return deleteMessage(Namespace.Regions, region._id(), message);</span>
     }
 
     private Observable&lt;Message&gt; sendMessage(Namespace namespace, String parent, String content) {
-<span class="nc" id="L75">        return messageApiService.createMessage(namespaceToString(namespace), parent, new CreateMessageDto(content));</span>
+<span class="fc" id="L75">        return messageApiService.createMessage(namespaceToString(namespace), parent, new CreateMessageDto(content));</span>
     }
 
     private Observable&lt;List&lt;Message&gt;&gt; getMessages(Namespace namespace, String parent) {
-<span class="nc" id="L79">        return messageApiService.getMessages(namespaceToString(namespace), parent, null, null, null);</span>
+<span class="fc" id="L79">        return messageApiService.getMessages(namespaceToString(namespace), parent, null, null, null);</span>
     }
 
     private Observable&lt;Message&gt; updateMessage(Namespace namespace, String parent, Message message, String newContent) {
-<span class="nc" id="L83">        return messageApiService.updateMessage(namespaceToString(namespace), parent, message._id(), new UpdateMessageDto(newContent));</span>
+<span class="fc" id="L83">        return messageApiService.updateMessage(namespaceToString(namespace), parent, message._id(), new UpdateMessageDto(newContent));</span>
     }
 
     private Observable&lt;Message&gt; deleteMessage(Namespace namespace, String parent, Message message) {
-<span class="nc" id="L87">        return messageApiService.deleteMessage(namespaceToString(namespace), parent, message._id());</span>
+<span class="fc" id="L87">        return messageApiService.deleteMessage(namespaceToString(namespace), parent, message._id());</span>
     }
 
     private String namespaceToString(Namespace namespace) {
-<span class="nc bnc" id="L91" title="All 4 branches missed.">        return switch (namespace) {</span>
-<span class="nc" id="L92">            case Groups -&gt; &quot;groups&quot;;</span>
-<span class="nc" id="L93">            case Regions -&gt; &quot;regions&quot;;</span>
-<span class="nc" id="L94">            case Global -&gt; &quot;global&quot;;</span>
-<span class="nc" id="L95">            default -&gt; throw new IllegalArgumentException(&quot;Unknown namespace&quot;);</span>
+<span class="pc bpc" id="L91" title="1 of 4 branches missed.">        return switch (namespace) {</span>
+<span class="fc" id="L92">            case Groups -&gt; &quot;groups&quot;;</span>
+<span class="fc" id="L93">            case Regions -&gt; &quot;regions&quot;;</span>
+<span class="fc" id="L94">            case Global -&gt; &quot;global&quot;;</span>
         };
     }
 }
