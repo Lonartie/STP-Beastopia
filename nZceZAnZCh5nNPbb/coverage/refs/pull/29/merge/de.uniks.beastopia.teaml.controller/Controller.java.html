@@ -12,11 +12,14 @@ import javafx.scene.Parent;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
-<span class="fc" id="L17">public abstract class Controller {</span>
+<span class="fc" id="L20">public abstract class Controller {</span>
 
-<span class="fc" id="L19">    protected static final Scheduler FX_SCHEDULER = Schedulers.from(Platform::runLater);</span>
+<span class="fc" id="L22">    protected static final Scheduler FX_SCHEDULER = Schedulers.from(Platform::runLater);</span>
 
     @Inject
     protected ResourceBundle resources;
@@ -24,36 +27,47 @@ import java.util.ResourceBundle;
     @Inject
     protected App app;
 
-<span class="fc" id="L27">    protected final CompositeDisposable disposables = new CompositeDisposable();</span>
+<span class="fc" id="L30">    protected final CompositeDisposable disposables = new CompositeDisposable();</span>
 
     public void init() {
 
-<span class="fc" id="L31">    }</span>
+<span class="fc" id="L34">    }</span>
 
     public void destroy() {
-<span class="fc" id="L34">        disposables.dispose();</span>
-<span class="fc" id="L35">    }</span>
+<span class="fc" id="L37">        disposables.dispose();</span>
+<span class="fc" id="L38">    }</span>
 
     public String getTitle() {
-<span class="fc" id="L38">        return null;</span>
+<span class="fc" id="L41">        return null;</span>
     }
 
+    @SuppressWarnings(&quot;unused&quot;)
     public void onDestroy(Runnable action) {
-<span class="nc" id="L42">        disposables.add(Disposable.fromRunnable(action));</span>
-<span class="nc" id="L43">    }</span>
+<span class="nc" id="L46">        disposables.add(Disposable.fromRunnable(action));</span>
+<span class="nc" id="L47">    }</span>
 
     public Parent render() {
-<span class="fc" id="L46">        return load(getClass().getSimpleName().replace(&quot;Controller&quot;, &quot;&quot;));</span>
+<span class="fc" id="L50">        List&lt;String&gt; parts = new ArrayList&lt;&gt;(Arrays.stream(getClass().getPackageName().split(&quot;\\.&quot;)).toList());</span>
+
+        // de.uniks.beastopia.teaml.controller.menu.social -&gt; controller.menu.social
+        //noinspection OptionalGetWithoutIsPresent
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        while (!parts.stream().findFirst().get().equals(&quot;controller&quot;)) {</span>
+<span class="fc" id="L55">            parts.remove(0);</span>
+        }
+        // controller.menu.social -&gt; menu.social
+<span class="fc" id="L58">        parts.remove(0);</span>
+<span class="fc" id="L59">        String path = String.join(&quot;/&quot;, parts);</span>
+<span class="fc" id="L60">        return load(path + &quot;/&quot; + getClass().getSimpleName().replace(&quot;Controller&quot;, &quot;&quot;));</span>
     }
 
     protected Parent load(String view) {
-<span class="fc" id="L50">        final FXMLLoader loader = new FXMLLoader(Main.class.getResource(&quot;views/&quot; + view + &quot;.fxml&quot;));</span>
-<span class="fc" id="L51">        loader.setControllerFactory(c -&gt; this);</span>
-<span class="fc" id="L52">        loader.setResources(resources);</span>
+<span class="fc" id="L64">        final FXMLLoader loader = new FXMLLoader(Main.class.getResource(&quot;views/&quot; + view + &quot;.fxml&quot;));</span>
+<span class="fc" id="L65">        loader.setControllerFactory(c -&gt; this);</span>
+<span class="fc" id="L66">        loader.setResources(resources);</span>
         try {
-<span class="fc" id="L54">            return loader.load();</span>
-<span class="nc" id="L55">        } catch (IOException e) {</span>
-<span class="nc" id="L56">            throw new RuntimeException(e);</span>
+<span class="fc" id="L68">            return loader.load();</span>
+<span class="nc" id="L69">        } catch (IOException e) {</span>
+<span class="nc" id="L70">            throw new RuntimeException(e);</span>
         }
     }
 }
