@@ -34,48 +34,51 @@ public class LoginController extends Controller {
     Provider&lt;MenuController&gt; menuControllerProvider;
     @Inject
     AuthService authService;
+    @SuppressWarnings(&quot;unused&quot;)
+
     @Inject
     TokenStorage tokenStorage;
+    @SuppressWarnings(&quot;unused&quot;)
     @Inject
     Provider&lt;ResourceBundle&gt; resourcesProvider;
 
     private BooleanBinding isInValid;
 
     @Inject
-<span class="fc" id="L45">    public LoginController() {</span>
-<span class="fc" id="L46">    }</span>
+<span class="fc" id="L48">    public LoginController() {</span>
+<span class="fc" id="L49">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L50">        return resources.getString(&quot;titleLogin&quot;);</span>
+<span class="fc" id="L53">        return resources.getString(&quot;titleLogin&quot;);</span>
     }
 
     @Override
     public Parent render() {
-<span class="fc" id="L55">        final Parent parent = super.render();</span>
+<span class="fc" id="L58">        final Parent parent = super.render();</span>
 
-<span class="fc" id="L57">        isInValid = usernameInput.textProperty().isEmpty()</span>
-<span class="fc" id="L58">                .or(passwordInput.textProperty().length().lessThan(8));</span>
-<span class="fc" id="L59">        loginButton.disableProperty().bind(isInValid);</span>
+<span class="fc" id="L60">        isInValid = usernameInput.textProperty().isEmpty()</span>
+<span class="fc" id="L61">                .or(passwordInput.textProperty().length().lessThan(8));</span>
+<span class="fc" id="L62">        loginButton.disableProperty().bind(isInValid);</span>
 
-<span class="fc" id="L61">        return parent;</span>
+<span class="fc" id="L64">        return parent;</span>
     }
 
     @FXML
     public void login() {
-<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        if (isInValid.get()) {</span>
-<span class="nc" id="L67">            return;</span>
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">        if (isInValid.get()) {</span>
+<span class="nc" id="L70">            return;</span>
         }
 
-<span class="fc" id="L70">        disposables.add(authService.login(usernameInput.getText(), passwordInput.getText(), rememberMe.isSelected())</span>
-<span class="fc" id="L71">                .observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="fc" id="L72">                        lr -&gt; app.show(menuControllerProvider.get()),</span>
-<span class="fc" id="L73">                        error -&gt; Dialog.error(error, &quot;Login failed&quot;)));</span>
-<span class="fc" id="L74">    }</span>
+<span class="fc" id="L73">        disposables.add(authService.login(usernameInput.getText(), passwordInput.getText(), rememberMe.isSelected())</span>
+<span class="fc" id="L74">                .observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="fc" id="L75">                        lr -&gt; app.show(menuControllerProvider.get()),</span>
+<span class="fc" id="L76">                        error -&gt; Dialog.error(error, &quot;Login failed&quot;)));</span>
+<span class="fc" id="L77">    }</span>
 
     @FXML
     public void register() {
-<span class="fc" id="L78">        app.show(registrationControllerProvider.get());</span>
-<span class="fc" id="L79">    }</span>
+<span class="fc" id="L81">        app.show(registrationControllerProvider.get());</span>
+<span class="fc" id="L82">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
