@@ -55,5 +55,20 @@ public class AuthService {
     public boolean isRememberMe() {
 <span class="pc bpc" id="L56" title="1 of 2 branches missed.">        return preferences.get(&quot;rememberMe&quot;, null) != null;</span>
     }
+
+    public Observable&lt;User&gt; updatePassword(String password) {
+<span class="nc" id="L60">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, null, null, null, password));</span>
+    }
+
+    public Observable&lt;User&gt; updateAvatar(String avatar) {
+<span class="nc" id="L64">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, null, avatar, null, null));</span>
+    }
+
+    public Observable&lt;User&gt; deleteUser() {
+<span class="nc" id="L68">        return Observable.create(source -&gt; {</span>
+<span class="nc" id="L69">            userApiService.deleteUser(tokenStorage.getCurrentUser()._id()).subscribe();</span>
+<span class="nc" id="L70">            source.onNext(tokenStorage.getCurrentUser());</span>
+<span class="nc" id="L71">        });</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

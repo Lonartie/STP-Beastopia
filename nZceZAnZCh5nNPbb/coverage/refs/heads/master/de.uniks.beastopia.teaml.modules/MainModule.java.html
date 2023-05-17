@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dagger.Module;
 import dagger.Provides;
+import de.uniks.beastopia.teaml.utils.ThemeSettings;
 
 import javax.inject.Singleton;
 import java.util.Locale;
@@ -12,21 +13,27 @@ import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
 @Module
-<span class="fc" id="L15">public class MainModule {</span>
+<span class="fc" id="L16">public class MainModule {</span>
 
     @Provides
     ResourceBundle bundle(Preferences preferences) {
-<span class="fc" id="L19">        final String locale = preferences.get(&quot;locale&quot;, Locale.ROOT.toLanguageTag());</span>
-<span class="fc" id="L20">        return ResourceBundle.getBundle(&quot;de/uniks/beastopia/teaml/assets/lang&quot;, Locale.forLanguageTag(locale));</span>
+<span class="fc" id="L20">        final String locale = preferences.get(&quot;locale&quot;, Locale.ROOT.toLanguageTag());</span>
+<span class="fc" id="L21">        return ResourceBundle.getBundle(&quot;de/uniks/beastopia/teaml/assets/lang&quot;, Locale.forLanguageTag(locale));</span>
     }
 
     @Provides
     @Singleton
     ObjectMapper objectMapper() {
-<span class="fc" id="L26">        return new ObjectMapper()</span>
-<span class="fc" id="L27">                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)</span>
-<span class="fc" id="L28">                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)</span>
-<span class="fc" id="L29">                .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);</span>
+<span class="fc" id="L27">        return new ObjectMapper()</span>
+<span class="fc" id="L28">                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)</span>
+<span class="fc" id="L29">                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)</span>
+<span class="fc" id="L30">                .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);</span>
+    }
+
+    @Provides
+    @Singleton
+    ThemeSettings themeSettings() {
+<span class="fc" id="L36">        return new ThemeSettings();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
