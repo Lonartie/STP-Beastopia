@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml;
+
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.service.AuthService;
+import fr.brouillard.oss.cssfx.CSSFX;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
+
+import java.util.Objects;
+
+
+public class App extends Application {
+    private Stage stage;
+    private Controller controller;
+    private Scene scene;
+
+<span class="fc" id="L20">    public App() {</span>
+
+<span class="fc" id="L22">    }</span>
+
+<span class="fc" id="L24">    public App(Controller controller) {</span>
+<span class="fc" id="L25">        this.controller = controller;</span>
+<span class="fc" id="L26">    }</span>
+
+    public Stage getStage() {
+<span class="fc" id="L29">        return stage;</span>
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+
+<span class="fc" id="L35">        stage = primaryStage;</span>
+<span class="fc" id="L36">        stage.setWidth(800);</span>
+<span class="fc" id="L37">        stage.setHeight(600);</span>
+<span class="fc" id="L38">        stage.setTitle(&quot;Beastopia&quot;);</span>
+
+<span class="fc" id="L40">        scene = new Scene(new Label(&quot;Loading...&quot;));</span>
+<span class="fc" id="L41">        stage.setScene(scene);</span>
+
+<span class="fc" id="L43">        CSSFX.start(scene);</span>
+
+<span class="fc" id="L45">        stage.show();</span>
+
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">        if (controller != null) {</span>
+<span class="nc" id="L48">            initAndRender(controller);</span>
+<span class="nc" id="L49">            return;</span>
+        }
+
+<span class="fc" id="L52">        final MainComponent component = DaggerMainComponent.builder().mainApp(this).build();</span>
+<span class="fc" id="L53">        final AuthService authService = component.authService();</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        if (authService.isRememberMe()) {</span>
+            //noinspection ResultOfMethodCallIgnored
+<span class="nc" id="L56">            authService.refresh().subscribe(</span>
+<span class="nc" id="L57">                    lr -&gt; Platform.runLater(() -&gt; show(component.menuController())),</span>
+<span class="nc" id="L58">                    error -&gt; Platform.runLater(() -&gt; show(component.loginController())));</span>
+        } else {
+<span class="fc" id="L60">            show(component.loginController());</span>
+        }
+
+<span class="fc" id="L63">        component.themeSettings().updateSceneTheme = theme -&gt; {</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">            if (theme.equals(&quot;dark&quot;)) {</span>
+<span class="nc" id="L65">                scene.getStylesheets().removeIf(style -&gt; style.endsWith(&quot;views/summer.css&quot;));</span>
+<span class="nc" id="L66">                scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource(&quot;views/dark.css&quot;)).toString());</span>
+            } else {
+<span class="pc" id="L68">                scene.getStylesheets().removeIf(style -&gt; style.endsWith(&quot;views/dark.css&quot;));</span>
+<span class="fc" id="L69">                scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource(&quot;views/summer.css&quot;)).toString());</span>
+            }
+<span class="fc" id="L71">        };</span>
+
+<span class="fc" id="L73">        component.themeSettings().updateSceneTheme.accept(</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">                component.preferences().getBoolean(&quot;DarkTheme&quot;, false) ? &quot;dark&quot; : &quot;summer&quot;</span>
+        );
+<span class="fc" id="L76">    }</span>
+
+    @Override
+    public void stop() {
+<span class="nc" id="L80">        cleanup();</span>
+<span class="nc" id="L81">    }</span>
+
+    public void show(Controller controller) {
+<span class="fc" id="L84">        cleanup();</span>
+<span class="fc" id="L85">        this.controller = controller;</span>
+<span class="fc" id="L86">        initAndRender(controller);</span>
+<span class="fc" id="L87">    }</span>
+
+    public void toggleTheme() {
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (scene.getStylesheets().stream().anyMatch(style -&gt; style.endsWith(&quot;views/summer.css&quot;))) {</span>
+<span class="nc" id="L91">            scene.getStylesheets().removeIf(style -&gt; style.endsWith(&quot;views/summer.css&quot;));</span>
+<span class="nc" id="L92">            scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource(&quot;views/dark.css&quot;)).toString());</span>
+        } else {
+<span class="nc" id="L94">            scene.getStylesheets().removeIf(style -&gt; style.endsWith(&quot;views/dark.css&quot;));</span>
+<span class="nc" id="L95">            scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource(&quot;views/summer.css&quot;)).toString());</span>
+        }
+<span class="nc" id="L97">    }</span>
+
+    private void initAndRender(Controller controller) {
+<span class="fc" id="L100">        controller.init();</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (controller.getTitle() != null) {</span>
+<span class="fc" id="L102">            stage.setTitle(controller.getTitle());</span>
+        }
+<span class="fc" id="L104">        stage.getScene().setRoot(controller.render());</span>
+<span class="fc" id="L105">    }</span>
+
+    private void cleanup() {
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (controller != null) {</span>
+<span class="fc" id="L109">            controller.destroy();</span>
+<span class="fc" id="L110">            controller = null;</span>
+        }
+<span class="fc" id="L112">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
