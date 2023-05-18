@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClientEndpoint.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.sockets</a> &gt; <span class="el_source">ClientEndpoint.java</span></div><h1>ClientEndpoint.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.sockets;
+
+import javax.websocket.*;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
+
+@SuppressWarnings(&quot;unused&quot;)
+@javax.websocket.ClientEndpoint
+public class ClientEndpoint {
+    private final URI endpointURI;
+
+<span class="nc" id="L15">    private final List&lt;Consumer&lt;String&gt;&gt; messageHandlers = Collections.synchronizedList(new ArrayList&lt;&gt;());</span>
+
+    Session userSession;
+
+<span class="nc" id="L19">    public ClientEndpoint(URI endpointURI) {</span>
+<span class="nc" id="L20">        this.endpointURI = endpointURI;</span>
+<span class="nc" id="L21">    }</span>
+
+    public boolean isOpen() {
+<span class="nc" id="L24">        return false;</span>
+    }
+
+    public void open() {
+<span class="nc bnc" id="L28" title="All 2 branches missed.">        if (isOpen()) {</span>
+<span class="nc" id="L29">            return;</span>
+        }
+
+        try {
+<span class="nc" id="L33">            WebSocketContainer container = ContainerProvider.getWebSocketContainer();</span>
+            //noinspection resource
+<span class="nc" id="L35">            container.connectToServer(this, endpointURI);</span>
+<span class="nc" id="L36">        } catch (Exception e) {</span>
+<span class="nc" id="L37">            throw new RuntimeException(e);</span>
+<span class="nc" id="L38">        }</span>
+<span class="nc" id="L39">    }</span>
+
+    @OnOpen
+    public void onOpen(Session userSession) {
+<span class="nc" id="L43">        this.userSession = userSession;</span>
+<span class="nc" id="L44">    }</span>
+
+    @OnClose
+    public void onClose(Session userSession, CloseReason reason) {
+<span class="nc" id="L48">        this.userSession = null;</span>
+<span class="nc" id="L49">    }</span>
+
+    @OnMessage
+    public void onMessage(String Message) {
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        for (final Consumer&lt;String&gt; handler : this.messageHandlers) {</span>
+<span class="nc" id="L54">            handler.accept(Message);</span>
+<span class="nc" id="L55">        }</span>
+<span class="nc" id="L56">    }</span>
+
+    @OnError
+    public void onError(Throwable error) {
+<span class="nc" id="L60">        error.printStackTrace();</span>
+<span class="nc" id="L61">    }</span>
+
+    public void addMessageHandler(Consumer&lt;String&gt; handler) {
+<span class="nc" id="L64">        this.messageHandlers.add(handler);</span>
+<span class="nc" id="L65">    }</span>
+
+    public void removeMessageHandler(Consumer&lt;String&gt; handler) {
+<span class="nc" id="L68">        this.messageHandlers.remove(handler);</span>
+<span class="nc" id="L69">    }</span>
+
+    public void sendMessage(String message) {
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (this.userSession == null) {</span>
+<span class="nc" id="L73">            return;</span>
+        }
+<span class="nc" id="L75">        this.userSession.getAsyncRemote().sendText(message);</span>
+<span class="nc" id="L76">    }</span>
+
+    public void close() {
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (this.userSession == null) {</span>
+<span class="nc" id="L80">            return;</span>
+        }
+        try {
+<span class="nc" id="L83">            this.userSession.close();</span>
+<span class="nc" id="L84">        } catch (Exception e) {</span>
+<span class="nc" id="L85">            e.printStackTrace();</span>
+<span class="nc" id="L86">        }</span>
+<span class="nc" id="L87">    }</span>
+
+    public boolean hasMessageHandlers() {
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        return !this.messageHandlers.isEmpty();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
