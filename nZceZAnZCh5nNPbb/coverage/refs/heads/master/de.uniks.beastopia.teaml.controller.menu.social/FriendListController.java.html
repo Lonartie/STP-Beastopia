@@ -107,46 +107,47 @@ public class FriendListController extends Controller {
 <span class="fc" id="L107">    }</span>
 
     private List&lt;Parent&gt; getFilteredParents() {
-<span class="fc" id="L110">        List&lt;User&gt; filteredUsers = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L111">        List&lt;Parent&gt; filteredParents = new ArrayList&lt;&gt;();</span>
+        @SuppressWarnings(&quot;ReassignedVariable&quot;)
+<span class="fc" id="L111">        List&lt;User&gt; filteredUsers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L112">        List&lt;Parent&gt; filteredParents = new ArrayList&lt;&gt;();</span>
 
-<span class="fc bfc" id="L113" title="All 2 branches covered.">        for (User user : allUsers) {</span>
-<span class="fc bfc" id="L114" title="All 2 branches covered.">            if (user.name().toLowerCase().startsWith(searchName.getText().toLowerCase())</span>
-<span class="fc bfc" id="L115" title="All 2 branches covered.">                    &amp;&amp; !user._id().equals(tokenStorage.getCurrentUser()._id())) {</span>
-<span class="fc" id="L116">                filteredUsers.add(user);</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        for (User user : allUsers) {</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">            if (user.name().toLowerCase().startsWith(searchName.getText().toLowerCase())</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">                    &amp;&amp; !user._id().equals(tokenStorage.getCurrentUser()._id())) {</span>
+<span class="fc" id="L117">                filteredUsers.add(user);</span>
             }
-<span class="fc" id="L118">        }</span>
+<span class="fc" id="L119">        }</span>
 
-<span class="fc" id="L120">        filteredUsers = filteredUsers.stream().sorted((firstUser, secondUser) -&gt; {</span>
-<span class="fc" id="L121">            boolean notPinned = preferences.getBoolean(firstUser._id() + &quot;_pinned&quot;, false);</span>
-<span class="pc bpc" id="L122" title="1 of 2 branches missed.">            if (notPinned) {</span>
-<span class="nc" id="L123">                return -1;</span>
+<span class="fc" id="L121">        filteredUsers = filteredUsers.stream().sorted((firstUser, secondUser) -&gt; {</span>
+<span class="fc" id="L122">            boolean notPinned = preferences.getBoolean(firstUser._id() + &quot;_pinned&quot;, false);</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">            if (notPinned) {</span>
+<span class="nc" id="L124">                return -1;</span>
             } else {
-<span class="fc" id="L125">                return firstUser.name().compareTo(secondUser.name());</span>
+<span class="fc" id="L126">                return firstUser.name().compareTo(secondUser.name());</span>
             }
-<span class="fc" id="L127">        }).toList();</span>
+<span class="fc" id="L128">        }).toList();</span>
 
-<span class="fc bfc" id="L129" title="All 2 branches covered.">        for (User user : filteredUsers) {</span>
-<span class="fc" id="L130">            FriendController friendController = friendControllerProvider.get();</span>
-<span class="fc" id="L131">            friendController.init();</span>
-<span class="fc" id="L132">            friendController.setOnFriendChanged(user_ -&gt; {</span>
-<span class="nc" id="L133">                searchName.setText(&quot;&quot;);</span>
-<span class="nc" id="L134">                updateUserList();</span>
-<span class="nc" id="L135">            });</span>
-<span class="pc" id="L136">            friendController.setOnPinChanged(user_ -&gt; updateUserList());</span>
-<span class="fc" id="L137">            boolean friendPinned = preferences.getBoolean(user._id() + &quot;_pinned&quot;, false);</span>
-<span class="fc" id="L138">            friendController.setUser(user, friendPinned);</span>
-<span class="fc" id="L139">            filteredParents.add(friendController.render());</span>
-<span class="fc" id="L140">        }</span>
-<span class="fc" id="L141">        return filteredParents;</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        for (User user : filteredUsers) {</span>
+<span class="fc" id="L131">            FriendController friendController = friendControllerProvider.get();</span>
+<span class="fc" id="L132">            friendController.init();</span>
+<span class="fc" id="L133">            friendController.setOnFriendChanged(user_ -&gt; {</span>
+<span class="nc" id="L134">                searchName.setText(&quot;&quot;);</span>
+<span class="nc" id="L135">                updateUserList();</span>
+<span class="nc" id="L136">            });</span>
+<span class="pc" id="L137">            friendController.setOnPinChanged(user_ -&gt; updateUserList());</span>
+<span class="fc" id="L138">            boolean friendPinned = preferences.getBoolean(user._id() + &quot;_pinned&quot;, false);</span>
+<span class="fc" id="L139">            friendController.setUser(user, friendPinned);</span>
+<span class="fc" id="L140">            filteredParents.add(friendController.render());</span>
+<span class="fc" id="L141">        }</span>
+<span class="fc" id="L142">        return filteredParents;</span>
     }
 
     private void clearSubControllers() {
-<span class="fc bfc" id="L145" title="All 2 branches covered.">        for (Controller controller : subControllers) {</span>
-<span class="fc" id="L146">            controller.destroy();</span>
-<span class="fc" id="L147">        }</span>
-<span class="fc" id="L148">        subControllers.clear();</span>
-<span class="fc" id="L149">        friendList.getChildren().clear();</span>
-<span class="fc" id="L150">    }</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        for (Controller controller : subControllers) {</span>
+<span class="fc" id="L147">            controller.destroy();</span>
+<span class="fc" id="L148">        }</span>
+<span class="fc" id="L149">        subControllers.clear();</span>
+<span class="fc" id="L150">        friendList.getChildren().clear();</span>
+<span class="fc" id="L151">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
