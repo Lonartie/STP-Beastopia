@@ -56,7 +56,7 @@ public class DirectMessageController extends Controller {
 
 <span class="nc" id="L57">    }</span>
 
-    public DirectMessageController setupDirectMessageController(String namespace, String parendId) {
+    public DirectMessageController setupDirectMessageController(@SuppressWarnings(&quot;unused&quot;) String namespace, @SuppressWarnings(&quot;unused&quot;) String parendId) {
 <span class="nc" id="L60">        return this;</span>
     }
 
@@ -76,43 +76,31 @@ public class DirectMessageController extends Controller {
 <span class="nc" id="L76">        rightSide = chatScrollPane;</span>
 <span class="nc" id="L77">        grid.add(chatListController.render(), 0, 1);</span>
 
-        //        if (this.namespace == null || this.parentId == null) {
-//            //TODO show first chat from ChatList
-//        } else { //Open Chat from friend
-//            if (this.namespace.equals(&quot;group&quot;)) {
-//                disposables.add(groupListService.getGroup(parentId).observeOn(FX_SCHEDULER).subscribe(s -&gt; chatName.setText(s.name())));
-//            } else if (this.namespace.equals(&quot;global&quot;)) {
-//                disposables.add(friendListService.getUser(parentId).observeOn(FX_SCHEDULER).subscribe(s -&gt; chatName.setText(s.name())));
-//            }
-//            Controller subController = chatWindowControllerProvider.get()
-//                    .setupChatWindowController(this.namespace, this.parentId);
-//            subControllers.add(subController);
-//
-//        }
-<span class="nc" id="L92">        return parent;</span>
+        //TODO: show chatBox label
+<span class="nc" id="L80">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="nc" id="L97">        subControllers.forEach(Controller::destroy);</span>
-<span class="nc" id="L98">        super.destroy();</span>
-<span class="nc" id="L99">    }</span>
+<span class="nc" id="L85">        subControllers.forEach(Controller::destroy);</span>
+<span class="nc" id="L86">        super.destroy();</span>
+<span class="nc" id="L87">    }</span>
 
     @Override
     public String getTitle() {
-<span class="nc" id="L103">        return resources.getString(&quot;titleDirectMessage&quot;);</span>
+<span class="nc" id="L91">        return resources.getString(&quot;titleDirectMessage&quot;);</span>
     }
 
     public void back() {
-<span class="nc" id="L107">        app.show(menuControllerProvider.get());</span>
-<span class="nc" id="L108">    }</span>
+<span class="nc" id="L95">        app.show(menuControllerProvider.get());</span>
+<span class="nc" id="L96">    }</span>
 
     public void newGroup() {
         //ToDo show Group Controller
-<span class="nc" id="L112">    }</span>
+<span class="nc" id="L100">    }</span>
 
     public void sendMessage() {
         //ToDo send Message
-<span class="nc" id="L116">    }</span>
+<span class="nc" id="L104">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
