@@ -34,6 +34,9 @@ public class EditProfileController extends Controller {
     Provider&lt;MenuController&gt; menuControllerProvider;
     @Inject
     Provider&lt;DeleteUserController&gt; deleteUserControllerProvider;
+
+    @Inject
+    Provider&lt;PauseController&gt; pauseControllerProvider;
     @Inject
     AuthService authService;
     @Inject
@@ -42,72 +45,84 @@ public class EditProfileController extends Controller {
     ThemeSettings themeSettings;
     @FXML
     private TextField usernameField;
+    private String backController;
+
 
     @Inject
-<span class="nc" id="L47">    public EditProfileController() {</span>
+<span class="nc" id="L52">    public EditProfileController() {</span>
 
-<span class="nc" id="L49">    }</span>
+<span class="nc" id="L54">    }</span>
+
+    public EditProfileController backController(String controller) {
+<span class="nc" id="L57">        this.backController = controller;</span>
+<span class="nc" id="L58">        return this;</span>
+    }
 
     @Override
     public Parent render() {
-<span class="nc" id="L53">        Parent parent = super.render();</span>
-<span class="nc" id="L54">        usernameField.setText(tokenStorage.getCurrentUser().name());</span>
-<span class="nc" id="L55">        darkRadioButton.setSelected(prefs.getTheme().equals(&quot;dark&quot;));</span>
-<span class="nc bnc" id="L56" title="All 2 branches missed.">        summerRadioButton.setSelected(!prefs.getTheme().equals(&quot;dark&quot;));</span>
-<span class="nc" id="L57">        return parent;</span>
+<span class="nc" id="L63">        Parent parent = super.render();</span>
+<span class="nc" id="L64">        usernameField.setText(tokenStorage.getCurrentUser().name());</span>
+<span class="nc" id="L65">        darkRadioButton.setSelected(prefs.getTheme().equals(&quot;dark&quot;));</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        summerRadioButton.setSelected(!prefs.getTheme().equals(&quot;dark&quot;));</span>
+<span class="nc" id="L67">        return parent;</span>
     }
 
     @Override
     public String getTitle() {
-<span class="nc" id="L62">        return resources.getString(&quot;titleEditProfile&quot;);</span>
+<span class="nc" id="L72">        return resources.getString(&quot;titleEditProfile&quot;);</span>
     }
 
     public void uploadAvatar() {
-<span class="nc" id="L66">    }</span>
-
-    public void setDarkTheme() {
-<span class="nc" id="L69">        prefs.setTheme(&quot;dark&quot;);</span>
-<span class="nc" id="L70">        themeSettings.updateSceneTheme.accept(&quot;dark&quot;);</span>
-<span class="nc" id="L71">    }</span>
-
-    public void setSummerTheme() {
-<span class="nc" id="L74">        prefs.setTheme(&quot;dark&quot;);</span>
-<span class="nc" id="L75">        themeSettings.updateSceneTheme.accept(&quot;summer&quot;);</span>
 <span class="nc" id="L76">    }</span>
 
+    public void setDarkTheme() {
+<span class="nc" id="L79">        prefs.setTheme(&quot;dark&quot;);</span>
+<span class="nc" id="L80">        themeSettings.updateSceneTheme.accept(&quot;dark&quot;);</span>
+<span class="nc" id="L81">    }</span>
+
+    public void setSummerTheme() {
+<span class="nc" id="L84">        prefs.setTheme(&quot;dark&quot;);</span>
+<span class="nc" id="L85">        themeSettings.updateSceneTheme.accept(&quot;summer&quot;);</span>
+<span class="nc" id="L86">    }</span>
+
     public void changePassword() {
-<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (!newPasswordField.getText().isEmpty()) {</span>
-<span class="nc" id="L80">            setNewPassword();</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        if (!newPasswordField.getText().isEmpty()) {</span>
+<span class="nc" id="L90">            setNewPassword();</span>
         }
-<span class="nc" id="L82">    }</span>
+<span class="nc" id="L92">    }</span>
 
     private void setNewPassword() {
-<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (!newPasswordField.getText().equals(retypeNewPasswordField.getText())) {</span>
-<span class="nc" id="L86">            errorMessage(&quot;passwordsNotEqual&quot;);</span>
-<span class="nc bnc" id="L87" title="All 2 branches missed.">        } else if (newPasswordField.getText().length() &lt; 8) {</span>
-<span class="nc" id="L88">            errorMessage(&quot;passwordTooShort&quot;);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (!newPasswordField.getText().equals(retypeNewPasswordField.getText())) {</span>
+<span class="nc" id="L96">            errorMessage(&quot;passwordsNotEqual&quot;);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        } else if (newPasswordField.getText().length() &lt; 8) {</span>
+<span class="nc" id="L98">            errorMessage(&quot;passwordTooShort&quot;);</span>
         } else {
-<span class="nc" id="L90">            disposables.add(authService.updatePassword(newPasswordField.getText())</span>
-<span class="nc" id="L91">                    .observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="nc" id="L92">                            lr -&gt; app.show(menuControllerProvider.get()),</span>
-<span class="nc" id="L93">                            error -&gt; Dialog.error(error, resources.getString(&quot;passwordChangeFailed&quot;))));</span>
+<span class="nc" id="L100">            disposables.add(authService.updatePassword(newPasswordField.getText())</span>
+<span class="nc" id="L101">                    .observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="nc" id="L102">                            lr -&gt; app.show(menuControllerProvider.get()),</span>
+<span class="nc" id="L103">                            error -&gt; Dialog.error(error, resources.getString(&quot;passwordChangeFailed&quot;))));</span>
         }
-<span class="nc" id="L95">    }</span>
+<span class="nc" id="L105">    }</span>
 
     private void errorMessage(String message) {
-<span class="nc" id="L98">        Alert alert = new Alert(Alert.AlertType.ERROR);</span>
-<span class="nc" id="L99">        alert.setTitle(resources.getString(&quot;error&quot;));</span>
-<span class="nc" id="L100">        alert.setHeaderText(resources.getString(&quot;error&quot;));</span>
-<span class="nc" id="L101">        alert.setContentText(resources.getString(message));</span>
-<span class="nc" id="L102">        alert.showAndWait();</span>
-<span class="nc" id="L103">    }</span>
+<span class="nc" id="L108">        Alert alert = new Alert(Alert.AlertType.ERROR);</span>
+<span class="nc" id="L109">        alert.setTitle(resources.getString(&quot;error&quot;));</span>
+<span class="nc" id="L110">        alert.setHeaderText(resources.getString(&quot;error&quot;));</span>
+<span class="nc" id="L111">        alert.setContentText(resources.getString(message));</span>
+<span class="nc" id="L112">        alert.showAndWait();</span>
+<span class="nc" id="L113">    }</span>
 
     public void deleteUser() {
-<span class="nc" id="L106">        app.show(deleteUserControllerProvider.get());</span>
-<span class="nc" id="L107">    }</span>
+<span class="nc" id="L116">        app.show(deleteUserControllerProvider.get());</span>
+<span class="nc" id="L117">    }</span>
 
-    public void backToMenu() {
-<span class="nc" id="L110">        app.show(menuControllerProvider.get());</span>
-<span class="nc" id="L111">    }</span>
+    public void back() {
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (this.backController.equals(&quot;menu&quot;)) {</span>
+<span class="nc" id="L121">            app.show(menuControllerProvider.get());</span>
+        } else {
+<span class="nc" id="L123">            app.show(pauseControllerProvider.get());</span>
+        }
+
+<span class="nc" id="L126">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
