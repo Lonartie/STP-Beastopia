@@ -4,6 +4,7 @@ import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.service.AuthService;
 import de.uniks.beastopia.teaml.service.TokenStorage;
 import de.uniks.beastopia.teaml.utils.Dialog;
+import de.uniks.beastopia.teaml.utils.Prefs;
 import de.uniks.beastopia.teaml.utils.ThemeSettings;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -11,7 +12,6 @@ import javafx.scene.control.*;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import java.util.prefs.Preferences;
 
 
 public class EditProfileController extends Controller {
@@ -29,7 +29,7 @@ public class EditProfileController extends Controller {
     @FXML
     public ToggleGroup theme;
     @Inject
-    Preferences preferences;
+    Prefs prefs;
     @Inject
     Provider&lt;MenuController&gt; menuControllerProvider;
     @Inject
@@ -52,8 +52,8 @@ public class EditProfileController extends Controller {
     public Parent render() {
 <span class="nc" id="L53">        Parent parent = super.render();</span>
 <span class="nc" id="L54">        usernameField.setText(tokenStorage.getCurrentUser().name());</span>
-<span class="nc" id="L55">        darkRadioButton.setSelected(preferences.getBoolean(&quot;DarkTheme&quot;, false));</span>
-<span class="nc bnc" id="L56" title="All 2 branches missed.">        summerRadioButton.setSelected(!preferences.getBoolean(&quot;DarkTheme&quot;, false));</span>
+<span class="nc" id="L55">        darkRadioButton.setSelected(prefs.getTheme().equals(&quot;dark&quot;));</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        summerRadioButton.setSelected(!prefs.getTheme().equals(&quot;dark&quot;));</span>
 <span class="nc" id="L57">        return parent;</span>
     }
 
@@ -66,12 +66,12 @@ public class EditProfileController extends Controller {
 <span class="nc" id="L66">    }</span>
 
     public void setDarkTheme() {
-<span class="nc" id="L69">        preferences.putBoolean(&quot;DarkTheme&quot;, true);</span>
+<span class="nc" id="L69">        prefs.setTheme(&quot;dark&quot;);</span>
 <span class="nc" id="L70">        themeSettings.updateSceneTheme.accept(&quot;dark&quot;);</span>
 <span class="nc" id="L71">    }</span>
 
     public void setSummerTheme() {
-<span class="nc" id="L74">        preferences.putBoolean(&quot;DarkTheme&quot;, false);</span>
+<span class="nc" id="L74">        prefs.setTheme(&quot;dark&quot;);</span>
 <span class="nc" id="L75">        themeSettings.updateSceneTheme.accept(&quot;summer&quot;);</span>
 <span class="nc" id="L76">    }</span>
 
