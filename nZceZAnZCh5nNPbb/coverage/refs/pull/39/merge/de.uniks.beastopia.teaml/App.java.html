@@ -86,9 +86,9 @@ public class App extends Application {
 
     @Override
     public void stop() {
-<span class="nc" id="L89">        cleanupTasks.forEach(Runnable::run);</span>
-<span class="nc" id="L90">        cleanup();</span>
-<span class="nc" id="L91">    }</span>
+<span class="fc" id="L89">        cleanupTasks.forEach(Runnable::run);</span>
+<span class="fc" id="L90">        cleanup();</span>
+<span class="fc" id="L91">    }</span>
 
     public void show(Controller controller) {
 <span class="fc" id="L94">        cleanup();</span>
@@ -97,8 +97,8 @@ public class App extends Application {
 <span class="fc" id="L97">    }</span>
 
     private void initAndRender(Controller controller) {
-<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        if (controller == null) {</span>
-<span class="nc" id="L101">            return;</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">        if (controller == null) {</span>
+<span class="fc" id="L101">            return;</span>
         }
 
 <span class="fc" id="L104">        controller.init();</span>
