@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ChatWindowController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.menu.social</a> &gt; <span class="el_source">ChatWindowController.java</span></div><h1>ChatWindowController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.menu.social;
 
 import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.Event;
 import de.uniks.beastopia.teaml.rest.Group;
 import de.uniks.beastopia.teaml.rest.Message;
 import de.uniks.beastopia.teaml.service.MessageService;
+import de.uniks.beastopia.teaml.sockets.EventListener;
 import io.reactivex.rxjava3.core.Observable;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
 import javax.inject.Inject;
@@ -16,12 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatWindowController extends Controller {
-    private String parentId;
-<span class="fc" id="L20">    private final List&lt;Message&gt; messages = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L21">    private final List&lt;Message&gt; messages = new ArrayList&lt;&gt;();</span>
+    @Inject
+    EventListener eventListener;
     @FXML
     public VBox msgList;
-    @FXML
-    public Button btn;
 
     @Inject
     Provider&lt;MessageBubbleController&gt; messageBubbleControllerProvider;
@@ -29,10 +30,9 @@ public class ChatWindowController extends Controller {
     @Inject
     MessageService messageService;
 
-<span class="fc" id="L32">    @SuppressWarnings(&quot;MismatchedQueryAndUpdateOfCollection&quot;)</span>
-    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();
-
-    private String name;
+<span class="fc" id="L33">    @SuppressWarnings(&quot;MismatchedQueryAndUpdateOfCollection&quot;)</span>
+    private final List&lt;MessageBubbleController&gt; subControllers = new ArrayList&lt;&gt;();
+    private Group group;
 
     @Inject
 <span class="fc" id="L38">    public ChatWindowController() {</span>
@@ -40,43 +40,54 @@ public class ChatWindowController extends Controller {
 <span class="fc" id="L40">    }</span>
 
     public ChatWindowController setupChatWindowController(Group group) {
-<span class="fc" id="L43">        this.parentId = group._id();</span>
-<span class="fc" id="L44">        this.name = group.name();</span>
-<span class="fc" id="L45">        return this;</span>
+<span class="fc" id="L43">        this.group = group;</span>
+<span class="fc" id="L44">        return this;</span>
     }
 
+    @Override
+    public void init() {
+<span class="fc" id="L49">        super.init();</span>
+<span class="fc" id="L50">        disposables.add(eventListener.listen(&quot;groups.&quot; + group._id() + &quot;.messages.*.created&quot;, Message.class)</span>
+<span class="fc" id="L51">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L52">                .subscribe(this::addMessage));</span>
+<span class="fc" id="L53">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L51">        Parent parent = super.render();</span>
+<span class="fc" id="L57">        Parent parent = super.render();</span>
 
-<span class="fc" id="L53">        btn.setText(name);</span>
-
-<span class="fc" id="L55">        Observable&lt;List&lt;Message&gt;&gt; messagesFromGroup = messageService.getMessagesFromGroup(parentId);</span>
-<span class="pc bpc" id="L56" title="1 of 2 branches missed.">        if (messagesFromGroup != null) {</span>
-<span class="fc" id="L57">            disposables.add(messagesFromGroup</span>
-<span class="fc" id="L58">                    .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L59">                    .subscribe(this::fillInMessages));</span>
+<span class="fc" id="L59">        Observable&lt;List&lt;Message&gt;&gt; messagesFromGroup = messageService.getMessagesFromGroup(group._id());</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (messagesFromGroup != null) {</span>
+<span class="fc" id="L61">            disposables.add(messagesFromGroup</span>
+<span class="fc" id="L62">                    .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L63">                    .subscribe(this::fillInMessages));</span>
         }
 
-<span class="fc" id="L62">        return parent;</span>
+<span class="fc" id="L66">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="fc" id="L67">        subControllers.forEach(Controller::destroy);</span>
-<span class="fc" id="L68">        super.destroy();</span>
-<span class="fc" id="L69">    }</span>
+<span class="fc" id="L71">        subControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L72">        super.destroy();</span>
+<span class="fc" id="L73">    }</span>
+
+    private void addMessage(Event&lt;Message&gt; event) {
+<span class="nc" id="L76">        addMessage(event.data());</span>
+<span class="nc" id="L77">    }</span>
+
+    private void addMessage(Message message) {
+<span class="fc" id="L80">        MessageBubbleController subController = messageBubbleControllerProvider.get()</span>
+<span class="fc" id="L81">                .setMessage(group, message);</span>
+<span class="fc" id="L82">        subController.init();</span>
+<span class="fc" id="L83">        subControllers.add(subController);</span>
+<span class="fc" id="L84">        msgList.getChildren().add(subController.render());</span>
+<span class="fc" id="L85">    }</span>
 
     private void fillInMessages(List&lt;Message&gt; msgs) {
-<span class="fc" id="L72">        messages.clear();</span>
-<span class="fc" id="L73">        messages.addAll(msgs);</span>
-
-<span class="fc bfc" id="L75" title="All 2 branches covered.">        for (Message msg : messages) {</span>
-<span class="fc" id="L76">            Controller subController = messageBubbleControllerProvider.get().setMessage(msg);</span>
-<span class="fc" id="L77">            subControllers.add(subController);</span>
-<span class="fc" id="L78">            msgList.getChildren().add(subController.render());</span>
-<span class="fc" id="L79">        }</span>
-<span class="fc" id="L80">    }</span>
+<span class="fc" id="L88">        messages.clear();</span>
+<span class="fc" id="L89">        messages.addAll(msgs);</span>
+<span class="fc" id="L90">        messages.forEach(this::addMessage);</span>
+<span class="fc" id="L91">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

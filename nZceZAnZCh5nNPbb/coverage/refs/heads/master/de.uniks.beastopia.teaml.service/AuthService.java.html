@@ -56,19 +56,24 @@ public class AuthService {
         });
     }
 
-    public Observable&lt;User&gt; updatePassword(String password) {
-<span class="nc" id="L60">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, null, null, null, password));</span>
+    public Observable&lt;User&gt; goOffline() {
+<span class="nc" id="L60">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, UserApiService.STATUS_OFFLINE, null, null, null)).map(user -&gt; tokenStorage.getCurrentUser());</span>
     }
 
+    public Observable&lt;User&gt; updatePassword(String password) {
+<span class="nc" id="L64">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, null, null, null, password));</span>
+    }
+
+    @SuppressWarnings(&quot;unused&quot;)
     public Observable&lt;User&gt; updateAvatar(String avatar) {
-<span class="nc" id="L64">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, null, avatar, null, null));</span>
+<span class="nc" id="L69">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, null, avatar, null, null));</span>
     }
 
     public Observable&lt;User&gt; deleteUser() {
-<span class="nc" id="L68">        return Observable.create(source -&gt; {</span>
-<span class="nc" id="L69">            userApiService.deleteUser(tokenStorage.getCurrentUser()._id()).subscribe();</span>
-<span class="nc" id="L70">            source.onNext(tokenStorage.getCurrentUser());</span>
-<span class="nc" id="L71">        });</span>
+<span class="nc" id="L73">        return Observable.create(source -&gt; {</span>
+<span class="nc" id="L74">            userApiService.deleteUser(tokenStorage.getCurrentUser()._id()).subscribe();</span>
+<span class="nc" id="L75">            source.onNext(tokenStorage.getCurrentUser());</span>
+<span class="nc" id="L76">        });</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

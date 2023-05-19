@@ -19,7 +19,7 @@ import java.util.List;
 
 public class FriendListController extends Controller {
 <span class="fc" id="L21">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L22">    private final List&lt;User&gt; allUsers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L22">    public static final List&lt;User&gt; ALL_USERS = new ArrayList&lt;&gt;();</span>
     @FXML
     public TextField searchName;
     @FXML
@@ -50,8 +50,8 @@ public class FriendListController extends Controller {
     public Parent render() {
 <span class="fc" id="L51">        Parent parent = super.render();</span>
 <span class="fc" id="L52">        disposables.add(friendListService.getUsers().subscribe(users -&gt; {</span>
-<span class="fc" id="L53">            allUsers.clear();</span>
-<span class="fc" id="L54">            allUsers.addAll(users);</span>
+<span class="fc" id="L53">            ALL_USERS.clear();</span>
+<span class="fc" id="L54">            ALL_USERS.addAll(users);</span>
 <span class="fc" id="L55">            updateUserList();</span>
 <span class="fc" id="L56">        }));</span>
 <span class="fc" id="L57">        return parent;</span>
@@ -112,7 +112,7 @@ public class FriendListController extends Controller {
 <span class="fc" id="L112">        List&lt;User&gt; filteredUsers = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L113">        List&lt;Parent&gt; filteredParents = new ArrayList&lt;&gt;();</span>
 
-<span class="fc bfc" id="L115" title="All 2 branches covered.">        for (User user : allUsers) {</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        for (User user : ALL_USERS) {</span>
 <span class="fc bfc" id="L116" title="All 2 branches covered.">            if (user.name().toLowerCase().startsWith(searchName.getText().toLowerCase())</span>
 <span class="fc bfc" id="L117" title="All 2 branches covered.">                    &amp;&amp; !user._id().equals(tokenStorage.getCurrentUser()._id())) {</span>
 <span class="fc" id="L118">                filteredUsers.add(user);</span>
@@ -131,15 +131,15 @@ public class FriendListController extends Controller {
 <span class="fc bfc" id="L131" title="All 2 branches covered.">        for (User user : filteredUsers) {</span>
 <span class="fc" id="L132">            boolean friend = tokenStorage.getCurrentUser().friends().contains(user._id());</span>
 <span class="fc" id="L133">            FriendController friendController = friendControllerProvider.get();</span>
-<span class="fc" id="L134">            friendController.checkFriend(friend);</span>
-<span class="fc" id="L135">            friendController.init();</span>
-<span class="fc" id="L136">            friendController.setOnFriendChanged(user_ -&gt; {</span>
-<span class="nc" id="L137">                searchName.setText(&quot;&quot;);</span>
-<span class="nc" id="L138">                updateUserList();</span>
-<span class="nc" id="L139">            });</span>
-<span class="pc" id="L140">            friendController.setOnPinChanged(user_ -&gt; updateUserList());</span>
-<span class="fc" id="L141">            boolean friendPinned = prefs.isPinned(user);</span>
-<span class="fc" id="L142">            friendController.setUser(user, friendPinned);</span>
+<span class="fc" id="L134">            boolean friendPinned = prefs.isPinned(user);</span>
+<span class="fc" id="L135">            friendController.setUser(user, friendPinned);</span>
+<span class="fc" id="L136">            friendController.checkFriend(friend);</span>
+<span class="fc" id="L137">            friendController.init();</span>
+<span class="fc" id="L138">            friendController.setOnFriendChanged(user_ -&gt; {</span>
+<span class="nc" id="L139">                searchName.setText(&quot;&quot;);</span>
+<span class="nc" id="L140">                updateUserList();</span>
+<span class="nc" id="L141">            });</span>
+<span class="pc" id="L142">            friendController.setOnPinChanged(user_ -&gt; updateUserList());</span>
 <span class="fc" id="L143">            filteredParents.add(friendController.render());</span>
 <span class="fc" id="L144">        }</span>
 <span class="fc" id="L145">        return filteredParents;</span>

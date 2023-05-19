@@ -2,6 +2,7 @@
 
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.controller.menu.MenuController;
+import de.uniks.beastopia.teaml.rest.Group;
 import de.uniks.beastopia.teaml.service.FriendListService;
 import de.uniks.beastopia.teaml.service.GroupListService;
 import de.uniks.beastopia.teaml.service.MessageService;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class DirectMessageController extends Controller {
 
-<span class="nc" id="L23">    @SuppressWarnings(&quot;MismatchedQueryAndUpdateOfCollection&quot;)</span>
+<span class="nc" id="L24">    @SuppressWarnings(&quot;MismatchedQueryAndUpdateOfCollection&quot;)</span>
     private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();
 
     @Inject
@@ -50,57 +51,66 @@ public class DirectMessageController extends Controller {
     @FXML
     public Label chatName; //this label shows the name of the person/group you are chatting with
     private Node rightSide;
+    private Group currentGroup;
 
     @Inject
-<span class="nc" id="L55">    public DirectMessageController() {</span>
+<span class="nc" id="L57">    public DirectMessageController() {</span>
 
-<span class="nc" id="L57">    }</span>
+<span class="nc" id="L59">    }</span>
 
     public DirectMessageController setupDirectMessageController(@SuppressWarnings(&quot;unused&quot;) String namespace, @SuppressWarnings(&quot;unused&quot;) String parendId) {
-<span class="nc" id="L60">        return this;</span>
+<span class="nc" id="L62">        return this;</span>
     }
 
     @Override
     public void init() {
-<span class="nc" id="L65">        super.init();</span>
-<span class="nc" id="L66">        chatListController.setOnGroupClicked(group -&gt; {</span>
-<span class="nc" id="L67">            grid.getChildren().remove(rightSide);</span>
-<span class="nc" id="L68">            rightSide = chatWindowControllerProvider.get().setupChatWindowController(group).render();</span>
-<span class="nc" id="L69">            grid.add(rightSide, 1, 1);</span>
-<span class="nc" id="L70">        });</span>
-<span class="nc" id="L71">    }</span>
+<span class="nc" id="L67">        super.init();</span>
+<span class="nc" id="L68">        chatListController.setOnGroupClicked(group -&gt; {</span>
+<span class="nc" id="L69">            currentGroup = group;</span>
+<span class="nc" id="L70">            grid.getChildren().remove(rightSide);</span>
+<span class="nc" id="L71">            ChatWindowController controller = chatWindowControllerProvider.get().setupChatWindowController(group);</span>
+<span class="nc" id="L72">            controller.init();</span>
+<span class="nc" id="L73">            rightSide = controller.render();</span>
+<span class="nc" id="L74">            grid.add(rightSide, 1, 1);</span>
+<span class="nc" id="L75">        });</span>
+<span class="nc" id="L76">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L75">        Parent parent = super.render();</span>
-<span class="nc" id="L76">        rightSide = chatScrollPane;</span>
-<span class="nc" id="L77">        grid.add(chatListController.render(), 0, 1);</span>
+<span class="nc" id="L80">        Parent parent = super.render();</span>
+<span class="nc" id="L81">        rightSide = chatScrollPane;</span>
+<span class="nc" id="L82">        grid.add(chatListController.render(), 0, 1);</span>
 
         //TODO: show chatBox label
-<span class="nc" id="L80">        return parent;</span>
+<span class="nc" id="L85">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="nc" id="L85">        subControllers.forEach(Controller::destroy);</span>
-<span class="nc" id="L86">        super.destroy();</span>
-<span class="nc" id="L87">    }</span>
+<span class="nc" id="L90">        subControllers.forEach(Controller::destroy);</span>
+<span class="nc" id="L91">        super.destroy();</span>
+<span class="nc" id="L92">    }</span>
 
     @Override
     public String getTitle() {
-<span class="nc" id="L91">        return resources.getString(&quot;titleDirectMessage&quot;);</span>
+<span class="nc" id="L96">        return resources.getString(&quot;titleDirectMessage&quot;);</span>
     }
 
     public void back() {
-<span class="nc" id="L95">        app.show(menuControllerProvider.get());</span>
-<span class="nc" id="L96">    }</span>
+<span class="nc" id="L100">        app.show(menuControllerProvider.get());</span>
+<span class="nc" id="L101">    }</span>
 
     public void newGroup() {
         //ToDo show Group Controller
-<span class="nc" id="L100">    }</span>
+<span class="nc" id="L105">    }</span>
 
     public void sendMessage() {
-        //ToDo send Message
-<span class="nc" id="L104">    }</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (currentGroup == null) {</span>
+<span class="nc" id="L109">            return;</span>
+        }
+
+<span class="nc" id="L112">        String message = chatInput.getText();</span>
+<span class="nc" id="L113">        disposables.add(messageService.sendMessageToGroup(currentGroup, message).subscribe(r -&gt; chatInput.setText(&quot;&quot;)));</span>
+<span class="nc" id="L114">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
