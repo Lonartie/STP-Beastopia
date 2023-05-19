@@ -20,6 +20,8 @@ import java.util.List;
 
 public class MenuController extends Controller {
 <span class="fc" id="L22">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
+    @FXML
+    public VBox left;
     @Inject
     Provider&lt;RegionController&gt; regionControllerProvider;
     @Inject
@@ -52,55 +54,55 @@ public class MenuController extends Controller {
     TokenStorage tokenStorage;
 
     @Inject
-<span class="fc" id="L55">    public MenuController() {</span>
+<span class="fc" id="L57">    public MenuController() {</span>
 
-<span class="fc" id="L57">    }</span>
+<span class="fc" id="L59">    }</span>
 
     @Override
     public void init() {
-<span class="fc" id="L61">        super.init();</span>
-<span class="pc" id="L62">        app.addCleanupTask(() -&gt; authService.goOffline().subscribe());</span>
-<span class="fc" id="L63">    }</span>
+<span class="fc" id="L63">        super.init();</span>
+<span class="pc" id="L64">        app.addCleanupTask(() -&gt; authService.goOffline().subscribe());</span>
+<span class="fc" id="L65">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L67">        Parent parent = super.render();</span>
+<span class="fc" id="L69">        Parent parent = super.render();</span>
         //set beastopia banner
 
         //set userAvatar
 
-<span class="fc" id="L72">        userName.setText(tokenStorage.getCurrentUser().name());</span>
+<span class="fc" id="L74">        userName.setText(tokenStorage.getCurrentUser().name());</span>
 
-<span class="fc" id="L74">        Controller friendListController = friendListControllerProvider.get();</span>
-<span class="fc" id="L75">        subControllers.add(friendListController);</span>
-<span class="fc" id="L76">        friendListContainer.getChildren().add(friendListController.render());</span>
-<span class="fc" id="L77">        Controller regionController = regionControllerProvider.get();</span>
-<span class="fc" id="L78">        subControllers.add(regionController);</span>
-<span class="fc" id="L79">        regionContainer.getChildren().add(regionController.render());</span>
-<span class="fc" id="L80">        return parent;</span>
+<span class="fc" id="L76">        Controller friendListController = friendListControllerProvider.get();</span>
+<span class="fc" id="L77">        subControllers.add(friendListController);</span>
+<span class="fc" id="L78">        friendListContainer.getChildren().add(friendListController.render());</span>
+<span class="fc" id="L79">        Controller regionController = regionControllerProvider.get();</span>
+<span class="fc" id="L80">        subControllers.add(regionController);</span>
+<span class="fc" id="L81">        regionContainer.getChildren().add(regionController.render());</span>
+<span class="fc" id="L82">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="nc" id="L85">        subControllers.forEach(Controller::destroy);</span>
-<span class="nc" id="L86">        super.destroy();</span>
-<span class="nc" id="L87">    }</span>
+<span class="nc" id="L87">        subControllers.forEach(Controller::destroy);</span>
+<span class="nc" id="L88">        super.destroy();</span>
+<span class="nc" id="L89">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L91">        return resources.getString(&quot;titleMenu&quot;);</span>
+<span class="fc" id="L93">        return resources.getString(&quot;titleMenu&quot;);</span>
     }
 
     @FXML
     public void logout() {
-<span class="fc" id="L96">        disposables.add(authService.logout().observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="fc" id="L97">                lr -&gt; app.show(loginControllerProvider.get()),</span>
-<span class="nc" id="L98">                error -&gt; Dialog.error(error, &quot;Logout failed&quot;)));</span>
-<span class="fc" id="L99">    }</span>
+<span class="fc" id="L98">        disposables.add(authService.logout().observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="fc" id="L99">                lr -&gt; app.show(loginControllerProvider.get()),</span>
+<span class="nc" id="L100">                error -&gt; Dialog.error(error, &quot;Logout failed&quot;)));</span>
+<span class="fc" id="L101">    }</span>
 
     @FXML
     public void editProfileButtonPressed() {
-<span class="nc" id="L103">        app.show(editProfileControllerProvider.get().backController(&quot;menu&quot;));</span>
-<span class="nc" id="L104">    }</span>
+<span class="nc" id="L105">        app.show(editProfileControllerProvider.get().backController(&quot;menu&quot;));</span>
+<span class="nc" id="L106">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -18,9 +18,11 @@ import java.util.List;
 public class PauseController extends Controller {
 
     @FXML
+    public Button editProfileButton;
+    @FXML
     private VBox friendListContainer;
 
-<span class="fc" id="L23">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L25">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
     @Inject
     Provider&lt;FriendListController&gt; friendListControllerProvider;
     @Inject
@@ -33,44 +35,44 @@ public class PauseController extends Controller {
     Provider&lt;EditProfileController&gt; editProfileControllerProvider;
 
     @Inject
-<span class="fc" id="L36">    public PauseController() {</span>
+<span class="fc" id="L38">    public PauseController() {</span>
 
-<span class="fc" id="L38">    }</span>
+<span class="fc" id="L40">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L42">        Parent parent = super.render();</span>
-<span class="fc" id="L43">        Controller subController = friendListControllerProvider.get();</span>
-<span class="fc" id="L44">        subControllers.add(subController);</span>
-<span class="fc" id="L45">        friendListContainer.getChildren().add(subController.render());</span>
-<span class="fc" id="L46">        return parent;</span>
+<span class="fc" id="L44">        Parent parent = super.render();</span>
+<span class="fc" id="L45">        Controller subController = friendListControllerProvider.get();</span>
+<span class="fc" id="L46">        subControllers.add(subController);</span>
+<span class="fc" id="L47">        friendListContainer.getChildren().add(subController.render());</span>
+<span class="fc" id="L48">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="fc" id="L51">        subControllers.forEach(Controller::destroy);</span>
-<span class="fc" id="L52">    }</span>
+<span class="fc" id="L53">        subControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L54">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L56">        return resources.getString(&quot;titlePause&quot;);</span>
+<span class="fc" id="L58">        return resources.getString(&quot;titlePause&quot;);</span>
     }
 
     @FXML
     public void editProfileButtonPressed() {
-<span class="nc" id="L61">        app.show(editProfileControllerProvider.get().backController(&quot;pause&quot;));</span>
-<span class="nc" id="L62">    }</span>
+<span class="nc" id="L63">        app.show(editProfileControllerProvider.get().backController(&quot;pause&quot;));</span>
+<span class="nc" id="L64">    }</span>
 
     @FXML
     public void mainMenuButtonPressed() {
-<span class="fc" id="L66">        app.show(menuControllerProvider.get());</span>
-<span class="fc" id="L67">    }</span>
+<span class="fc" id="L68">        app.show(menuControllerProvider.get());</span>
+<span class="fc" id="L69">    }</span>
 
     @FXML
     public void pauseMenu(KeyEvent keyEvent) {
-<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {</span>
-<span class="fc" id="L72">            app.show(ingameControllerProvider.get());</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {</span>
+<span class="fc" id="L74">            app.show(ingameControllerProvider.get());</span>
         }
-<span class="fc" id="L74">    }</span>
+<span class="fc" id="L76">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
