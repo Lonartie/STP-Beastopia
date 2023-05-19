@@ -21,7 +21,7 @@ public class App extends Application {
 <span class="fc" id="L21">    private final List&lt;Runnable&gt; cleanupTasks = new ArrayList&lt;&gt;();</span>
 
 <span class="fc" id="L23">    public App() {</span>
-<span class="fc" id="L24">        this.mainComponent = DaggerMainComponent.builder().mainApp(this).build();</span>
+<span class="fc" id="L24">        this.mainComponent = de.uniks.beastopia.teaml.DaggerMainComponent.builder().mainApp(this).build();</span>
 <span class="fc" id="L25">    }</span>
 
 <span class="fc" id="L27">    public App(MainComponent mainComponent) {</span>
