@@ -74,36 +74,39 @@ public class ChatListController extends Controller {
 <span class="nc" id="L74">    }</span>
 
     public void updateGroupList() {
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (groups.size() == 0) {</span>
+<span class="nc" id="L78">            return;</span>
+        }
 
-<span class="nc" id="L78">        clearSubControllers();</span>
+<span class="nc" id="L81">        clearSubControllers();</span>
 
         // &lt;ida&gt;_&lt;idb&gt; is the name of a group with two members
-<span class="nc bnc" id="L81" title="All 2 branches missed.">        for (Group group : groups) {</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        for (Group group : groups) {</span>
             //noinspection StatementWithEmptyBody
-<span class="nc bnc" id="L83" title="All 2 branches missed.">            if (group.members().size() == 2 &amp;&amp; (</span>
-<span class="nc bnc" id="L84" title="All 2 branches missed.">                    group.name().equals(group.members().get(0) + &quot;_&quot; + group.members().get(1)))</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">                    || group.name().equals(group.members().get(1) + &quot;_&quot; + group.members().get(0))) {</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">            if (group.members().size() == 2 &amp;&amp; (</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">                    group.name().equals(group.members().get(0) + &quot;_&quot; + group.members().get(1)))</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">                    || group.name().equals(group.members().get(0) + &quot;_&quot; + group.members().get(0))) {</span>
               /*  ChatUserController chatUserController = chatUserControllerProvider.get();
                 subControllers.add(chatUserController);
                 chatList.getChildren().add(chatUserController.render());*/
             } else {
-<span class="nc" id="L90">                ChatGroupController chatGroupController = chatGroupControllerProvider.get();</span>
-<span class="nc" id="L91">                subControllers.add(chatGroupController);</span>
-<span class="nc" id="L92">                chatGroupController.setOnGroupClicked(onGroupClicked);</span>
-<span class="nc" id="L93">                chatGroupController.setGroup(group, false);</span>
-<span class="nc" id="L94">                chatList.getChildren().add(chatGroupController.render());</span>
+<span class="nc" id="L93">                ChatGroupController chatGroupController = chatGroupControllerProvider.get();</span>
+<span class="nc" id="L94">                subControllers.add(chatGroupController);</span>
+<span class="nc" id="L95">                chatGroupController.setOnGroupClicked(onGroupClicked);</span>
+<span class="nc" id="L96">                chatGroupController.setGroup(group, false);</span>
+<span class="nc" id="L97">                chatList.getChildren().add(chatGroupController.render());</span>
             }
-<span class="nc" id="L96">        }</span>
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L99">        }</span>
+<span class="nc" id="L100">    }</span>
 
     private void clearSubControllers() {
-<span class="nc bnc" id="L100" title="All 2 branches missed.">        for (Controller controller : subControllers) {</span>
-<span class="nc" id="L101">            controller.destroy();</span>
-<span class="nc" id="L102">        }</span>
-<span class="nc" id="L103">        subControllers.clear();</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        for (Controller controller : subControllers) {</span>
+<span class="nc" id="L104">            controller.destroy();</span>
+<span class="nc" id="L105">        }</span>
+<span class="nc" id="L106">        subControllers.clear();</span>
         //userList.getChildren().clear();
         //groupList.getChildren().clear();
-<span class="nc" id="L106">    }</span>
+<span class="nc" id="L109">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
