@@ -3,6 +3,7 @@
 import de.uniks.beastopia.teaml.rest.User;
 
 import javax.inject.Inject;
+import java.util.Locale;
 import java.util.prefs.Preferences;
 
 public class Prefs {
@@ -10,39 +11,52 @@ public class Prefs {
     Preferences preferences;
 
     @Inject
-<span class="fc" id="L13">    public Prefs() {</span>
-<span class="fc" id="L14">    }</span>
+<span class="fc" id="L14">    public Prefs() {</span>
+<span class="fc" id="L15">    }</span>
 
     public boolean isPinned(User user) {
-<span class="nc" id="L17">        return preferences.getBoolean(user._id() + &quot;_pinned&quot;, false);</span>
+<span class="nc" id="L18">        return preferences.getBoolean(user._id() + &quot;_pinned&quot;, false);</span>
     }
 
     public void setPinned(User user, boolean pinned) {
-<span class="nc" id="L21">        preferences.putBoolean(user._id() + &quot;_pinned&quot;, pinned);</span>
-<span class="nc" id="L22">    }</span>
+<span class="nc" id="L22">        preferences.putBoolean(user._id() + &quot;_pinned&quot;, pinned);</span>
+<span class="nc" id="L23">    }</span>
 
     public boolean isRememberMe() {
-<span class="nc bnc" id="L25" title="All 2 branches missed.">        return preferences.get(&quot;rememberMe&quot;, null) != null;</span>
+<span class="nc bnc" id="L26" title="All 2 branches missed.">        return preferences.get(&quot;rememberMe&quot;, null) != null;</span>
     }
 
     public String getRememberMeToken() {
-<span class="nc" id="L29">        return preferences.get(&quot;rememberMe&quot;, null);</span>
+<span class="nc" id="L30">        return preferences.get(&quot;rememberMe&quot;, null);</span>
     }
 
     public void setRememberMe(String refreshToken) {
-<span class="nc" id="L33">        preferences.put(&quot;rememberMe&quot;, refreshToken);</span>
-<span class="nc" id="L34">    }</span>
+<span class="nc" id="L34">        preferences.put(&quot;rememberMe&quot;, refreshToken);</span>
+<span class="nc" id="L35">    }</span>
 
     public void clearRememberMe() {
-<span class="nc" id="L37">        preferences.remove(&quot;rememberMe&quot;);</span>
-<span class="nc" id="L38">    }</span>
+<span class="nc" id="L38">        preferences.remove(&quot;rememberMe&quot;);</span>
+<span class="nc" id="L39">    }</span>
 
     public String getTheme() {
-<span class="nc bnc" id="L41" title="All 2 branches missed.">        return preferences.getBoolean(&quot;DarkTheme&quot;, false) ? &quot;dark&quot; : &quot;light&quot;;</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        return preferences.getBoolean(&quot;DarkTheme&quot;, false) ? &quot;dark&quot; : &quot;light&quot;;</span>
     }
 
     public void setTheme(String theme) {
-<span class="nc" id="L45">        preferences.putBoolean(&quot;DarkTheme&quot;, theme.equals(&quot;dark&quot;));</span>
-<span class="nc" id="L46">    }</span>
+<span class="nc" id="L46">        preferences.putBoolean(&quot;DarkTheme&quot;, theme.equals(&quot;dark&quot;));</span>
+<span class="nc" id="L47">    }</span>
+
+    public String getLocale() {
+<span class="fc" id="L50">        String userLocale = Locale.getDefault().toLanguageTag();</span>
+<span class="pc bpc" id="L51" title="2 of 4 branches missed.">        if (!userLocale.equals(&quot;en-EN&quot;) &amp;&amp; !userLocale.equals(&quot;de-DE&quot;)) {</span>
+<span class="fc" id="L52">            userLocale = &quot;en-EN&quot;;</span>
+        }
+
+<span class="fc" id="L55">        return preferences.get(&quot;locale&quot;, userLocale);</span>
+    }
+
+    public void setLocale(String locale) {
+<span class="nc" id="L59">        preferences.put(&quot;locale&quot;, locale);</span>
+<span class="nc" id="L60">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

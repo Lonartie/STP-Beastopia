@@ -25,14 +25,14 @@ public class GroupListService {
 <span class="fc" id="L25">        return groupApiService.getGroups(null);</span>
     }
 
-    public Observable&lt;Group&gt; getGroup(String id) {
-<span class="fc" id="L29">        return groupApiService.getGroup(id);</span>
+    public Observable&lt;Group&gt; addGroup(String name, List&lt;String&gt; members) {
+<span class="fc" id="L29">        ArrayList&lt;String&gt; membersCopy = new ArrayList&lt;&gt;(members);</span>
+<span class="fc" id="L30">        membersCopy.add(tokenStorage.getCurrentUser()._id());</span>
+<span class="fc" id="L31">        return groupApiService.createGroup(new CreateGroupDto(name, membersCopy));</span>
     }
 
-    public Observable&lt;Group&gt; addGroup(String name, List&lt;String&gt; members) {
-<span class="fc" id="L33">        ArrayList&lt;String&gt; membersCopy = new ArrayList&lt;&gt;(members);</span>
-<span class="fc" id="L34">        membersCopy.add(tokenStorage.getCurrentUser()._id());</span>
-<span class="fc" id="L35">        return groupApiService.createGroup(new CreateGroupDto(name, membersCopy));</span>
+    public Observable&lt;Group&gt; getGroup(String id) {
+<span class="fc" id="L35">        return groupApiService.getGroup(id);</span>
     }
 
     public Observable&lt;Group&gt; updateGroup(Group updatedGroup) {
