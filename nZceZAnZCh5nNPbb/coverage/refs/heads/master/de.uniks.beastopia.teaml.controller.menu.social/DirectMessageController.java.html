@@ -65,7 +65,7 @@ public class DirectMessageController extends Controller {
 <span class="nc" id="L65">        super.init();</span>
 <span class="nc" id="L66">        chatListController.setOnGroupClicked(group -&gt; {</span>
 <span class="nc" id="L67">            grid.getChildren().remove(rightSide);</span>
-<span class="nc" id="L68">            rightSide = chatWindowControllerProvider.get().setupChatWindowController(&quot;group&quot;, group).render();</span>
+<span class="nc" id="L68">            rightSide = chatWindowControllerProvider.get().setupChatWindowController(group).render();</span>
 <span class="nc" id="L69">            grid.add(rightSide, 1, 1);</span>
 <span class="nc" id="L70">        });</span>
 <span class="nc" id="L71">    }</span>
