@@ -38,25 +38,25 @@ public class FriendListService {
 <span class="fc" id="L38">        return userApiService.getUser(id);</span>
     }
 
-    public boolean isFriend(User user) {
-<span class="fc" id="L42">        return tokenStorage.getCurrentUser().friends().contains(user._id());</span>
-    }
-
     public Observable&lt;List&lt;User&gt;&gt; getFriends() {
-<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (tokenStorage.getCurrentUser().friends().isEmpty())</span>
-<span class="fc" id="L47">            return Observable.just(List.of());</span>
-<span class="fc" id="L48">        return userApiService</span>
-<span class="fc" id="L49">                .getUsers(tokenStorage.getCurrentUser().friends(), null);</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (tokenStorage.getCurrentUser().friends().isEmpty())</span>
+<span class="fc" id="L43">            return Observable.just(List.of());</span>
+<span class="fc" id="L44">        return userApiService</span>
+<span class="fc" id="L45">                .getUsers(tokenStorage.getCurrentUser().friends(), null);</span>
     }
 
     public Observable&lt;List&lt;User&gt;&gt; getFriends(Status status) {
-<span class="fc bfc" id="L53" title="All 2 branches covered.">        if (tokenStorage.getCurrentUser().friends().isEmpty())</span>
-<span class="fc" id="L54">            return Observable.just(List.of());</span>
-<span class="fc" id="L55">        return userApiService</span>
-<span class="pc bpc" id="L56" title="2 of 3 branches missed.">                .getUsers(tokenStorage.getCurrentUser().friends(), switch (status) {</span>
-<span class="fc" id="L57">                    case Online -&gt; &quot;online&quot;;</span>
-<span class="nc" id="L58">                    case Offline -&gt; &quot;offline&quot;;</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (tokenStorage.getCurrentUser().friends().isEmpty())</span>
+<span class="fc" id="L50">            return Observable.just(List.of());</span>
+<span class="fc" id="L51">        return userApiService</span>
+<span class="pc bpc" id="L52" title="2 of 3 branches missed.">                .getUsers(tokenStorage.getCurrentUser().friends(), switch (status) {</span>
+<span class="fc" id="L53">                    case Online -&gt; &quot;online&quot;;</span>
+<span class="nc" id="L54">                    case Offline -&gt; &quot;offline&quot;;</span>
                 });
+    }
+
+    public boolean isFriend(User user) {
+<span class="fc" id="L59">        return tokenStorage.getCurrentUser().friends().contains(user._id());</span>
     }
 
     public Observable&lt;User&gt; addFriend(User friend) {

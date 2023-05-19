@@ -186,7 +186,7 @@ public class FriendController extends Controller {
 
     @FXML
     public void openFriendChat() {
-<span class="fc" id="L189">        app.show(directMessageControllerProvider.get().setupDirectMessageController(&quot;global&quot;, user._id()));</span>
+<span class="fc" id="L189">        app.show(directMessageControllerProvider.get().setupDirectMessageController(user));</span>
 <span class="fc" id="L190">    }</span>
 
     @FXML

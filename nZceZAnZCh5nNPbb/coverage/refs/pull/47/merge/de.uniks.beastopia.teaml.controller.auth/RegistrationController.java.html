@@ -3,15 +3,20 @@
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.service.RegistrationService;
 import de.uniks.beastopia.teaml.utils.Dialog;
+import de.uniks.beastopia.teaml.utils.Prefs;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class RegistrationController extends Controller {
 
@@ -19,61 +24,99 @@ public class RegistrationController extends Controller {
 
     @FXML
     private TextField usernameInput;
-
     @FXML
     private PasswordField passwordInput;
-
     @FXML
     private PasswordField passwordRepeatInput;
-
     @FXML
     private Button signUpButton;
+    @FXML
+    public RadioButton selectEnglishLanguage;
+    @FXML
+    public RadioButton selectGermanLanguage;
 
     @Inject
+    Provider&lt;ResourceBundle&gt; resourcesProvider;
+    @Inject
     RegistrationService registrationService;
-
+    @Inject
+    Prefs prefs;
     @Inject
     Provider&lt;LoginController&gt; loginControllerProvider;
 
+<span class="fc" id="L47">    private final SimpleStringProperty username = new SimpleStringProperty();</span>
+<span class="fc" id="L48">    private final SimpleStringProperty password = new SimpleStringProperty();</span>
+<span class="fc" id="L49">    private final SimpleStringProperty passwordRepeat = new SimpleStringProperty();</span>
+<span class="fc" id="L50">    private boolean isEnglish = false;</span>
+
     @Inject
-<span class="fc" id="L39">    public RegistrationController() {</span>
-<span class="fc" id="L40">    }</span>
+<span class="fc" id="L53">    public RegistrationController() {</span>
+<span class="fc" id="L54">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L44">        return resources.getString(&quot;titleRegistration&quot;);</span>
+<span class="fc" id="L58">        return resources.getString(&quot;titleRegistration&quot;);</span>
     }
 
     @Override
     public Parent render() {
-<span class="fc" id="L49">        Parent parent = super.render();</span>
+<span class="fc" id="L63">        Parent parent = super.render();</span>
 
-<span class="fc" id="L51">        BooleanBinding isInValid = usernameInput.textProperty().isEmpty()</span>
-<span class="fc" id="L52">                .or(passwordInput.textProperty().length().lessThan(8))</span>
-<span class="fc" id="L53">                .or(passwordRepeatInput.textProperty().length().lessThan(8))</span>
-<span class="fc" id="L54">                .or(passwordInput.textProperty().isNotEqualTo(passwordRepeatInput.textProperty()));</span>
-<span class="fc" id="L55">        signUpButton.disableProperty().bind(isInValid);</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (prefs.getLocale().contains(&quot;de&quot;)) {</span>
+<span class="nc" id="L66">            selectGermanLanguage.setSelected(true);</span>
+<span class="nc" id="L67">            isEnglish = false;</span>
+        } else {
+<span class="fc" id="L69">            selectEnglishLanguage.setSelected(true);</span>
+<span class="fc" id="L70">            isEnglish = true;</span>
+        }
+<span class="fc" id="L72">        usernameInput.textProperty().bindBidirectional(username);</span>
+<span class="fc" id="L73">        passwordInput.textProperty().bindBidirectional(password);</span>
+<span class="fc" id="L74">        passwordRepeatInput.textProperty().bindBidirectional(passwordRepeat);</span>
 
-<span class="fc" id="L57">        return parent;</span>
+<span class="fc" id="L76">        BooleanBinding isInValid = usernameInput.textProperty().isEmpty()</span>
+<span class="fc" id="L77">                .or(passwordInput.textProperty().length().lessThan(8))</span>
+<span class="fc" id="L78">                .or(passwordRepeatInput.textProperty().length().lessThan(8))</span>
+<span class="fc" id="L79">                .or(passwordInput.textProperty().isNotEqualTo(passwordRepeatInput.textProperty()));</span>
+<span class="fc" id="L80">        signUpButton.disableProperty().bind(isInValid);</span>
+
+<span class="fc" id="L82">        return parent;</span>
     }
 
     @FXML
     private void uploadAvatar() {
 
-<span class="nc" id="L63">    }</span>
+<span class="nc" id="L88">    }</span>
 
+    @SuppressWarnings(&quot;UnnecessaryUnicodeEscape&quot;)
     @FXML
     private void signUp() {
-<span class="fc" id="L67">        disposables.add(registrationService.createUser(usernameInput.getText(), LUMNIX_LOGO_URL, passwordInput.getText())</span>
-<span class="fc" id="L68">                .observeOn(FX_SCHEDULER).subscribe(user -&gt; {</span>
-<span class="fc" id="L69">                    Dialog.info(&quot;Registration successful&quot;, &quot;You can now sign in with your new account.&quot;);</span>
-<span class="fc" id="L70">                    app.show(loginControllerProvider.get());</span>
-<span class="fc" id="L71">                }, error -&gt; Dialog.error(error, &quot;Registration failed&quot;)));</span>
-<span class="fc" id="L72">    }</span>
+<span class="fc" id="L93">        disposables.add(registrationService.createUser(usernameInput.getText(), LUMNIX_LOGO_URL, passwordInput.getText())</span>
+<span class="fc" id="L94">                .observeOn(FX_SCHEDULER).subscribe(user -&gt; {</span>
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">                    Dialog.info(isEnglish ? &quot;Registration successful!&quot; : &quot;Registrierung erfolgreich!&quot;,</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">                            isEnglish ? &quot;You can now sign in with your new account.&quot; : &quot;Sie k\u00f6nnen sich jetzt mit Ihrem neuen Konto anmelden.&quot;);</span>
+<span class="fc" id="L97">                    app.show(loginControllerProvider.get());</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">                }, error -&gt; Dialog.error(error, isEnglish ? &quot;Registration failed.&quot; : &quot;Registrierung fehlgeschlagen.&quot;)));</span>
+<span class="fc" id="L99">    }</span>
 
     @FXML
     private void switchToSignIn() {
-<span class="fc" id="L76">        app.show(loginControllerProvider.get());</span>
-<span class="fc" id="L77">    }</span>
+<span class="fc" id="L103">        app.show(loginControllerProvider.get());</span>
+<span class="fc" id="L104">    }</span>
+
+    public void setDe() {
+<span class="nc" id="L107">        setLanguage(Locale.GERMAN);</span>
+<span class="nc" id="L108">        isEnglish = false;</span>
+<span class="nc" id="L109">    }</span>
+
+    public void setEn() {
+<span class="nc" id="L112">        setLanguage(Locale.ENGLISH);</span>
+<span class="nc" id="L113">        isEnglish = true;</span>
+<span class="nc" id="L114">    }</span>
+
+    private void setLanguage(Locale locale) {
+<span class="nc" id="L117">        prefs.setLocale(locale.toLanguageTag());</span>
+<span class="nc" id="L118">        resources = resourcesProvider.get();</span>
+<span class="nc" id="L119">        app.update();</span>
+<span class="nc" id="L120">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

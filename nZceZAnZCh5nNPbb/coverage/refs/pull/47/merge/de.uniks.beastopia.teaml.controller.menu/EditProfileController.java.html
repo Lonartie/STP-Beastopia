@@ -6,20 +6,19 @@ import de.uniks.beastopia.teaml.service.TokenStorage;
 import de.uniks.beastopia.teaml.utils.Dialog;
 import de.uniks.beastopia.teaml.utils.Prefs;
 import de.uniks.beastopia.teaml.utils.ThemeSettings;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 
 public class EditProfileController extends Controller {
 
-    @FXML
-    public PasswordField newPasswordField;
-    @FXML
-    public PasswordField retypeNewPasswordField;
     @FXML
     public RadioButton darkRadioButton;
     @FXML
@@ -28,6 +27,19 @@ public class EditProfileController extends Controller {
     public ToggleGroup language;
     @FXML
     public ToggleGroup theme;
+    @FXML
+    public RadioButton selectEnglishLanguage;
+    @FXML
+    public RadioButton selectGermanLanguage;
+    @FXML
+    private TextField usernameInput;
+    @FXML
+    public PasswordField passwordInput;
+    @FXML
+    public PasswordField passwordRepeatInput;
+
+    @Inject
+    Provider&lt;ResourceBundle&gt; resourcesProvider;
     @Inject
     Prefs prefs;
     @Inject
@@ -43,86 +55,114 @@ public class EditProfileController extends Controller {
     TokenStorage tokenStorage;
     @Inject
     ThemeSettings themeSettings;
-    @FXML
-    private TextField usernameField;
+
     private String backController;
 
+<span class="nc" id="L61">    private final SimpleStringProperty username = new SimpleStringProperty();</span>
+<span class="nc" id="L62">    private final SimpleStringProperty password = new SimpleStringProperty();</span>
+<span class="nc" id="L63">    private final SimpleStringProperty passwordRepeat = new SimpleStringProperty();</span>
 
     @Inject
-<span class="nc" id="L52">    public EditProfileController() {</span>
+<span class="nc" id="L66">    public EditProfileController() {</span>
 
-<span class="nc" id="L54">    }</span>
+<span class="nc" id="L68">    }</span>
 
     public EditProfileController backController(String controller) {
-<span class="nc" id="L57">        this.backController = controller;</span>
-<span class="nc" id="L58">        return this;</span>
+<span class="nc" id="L71">        this.backController = controller;</span>
+<span class="nc" id="L72">        return this;</span>
     }
 
     @Override
     public Parent render() {
-<span class="nc" id="L63">        Parent parent = super.render();</span>
-<span class="nc" id="L64">        usernameField.setText(tokenStorage.getCurrentUser().name());</span>
-<span class="nc" id="L65">        darkRadioButton.setSelected(prefs.getTheme().equals(&quot;dark&quot;));</span>
-<span class="nc bnc" id="L66" title="All 2 branches missed.">        summerRadioButton.setSelected(!prefs.getTheme().equals(&quot;dark&quot;));</span>
-<span class="nc" id="L67">        return parent;</span>
+<span class="nc" id="L77">        Parent parent = super.render();</span>
+
+
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (prefs.getLocale().contains(&quot;de&quot;)) {</span>
+<span class="nc" id="L81">            selectGermanLanguage.setSelected(true);</span>
+        } else {
+<span class="nc" id="L83">            selectEnglishLanguage.setSelected(true);</span>
+        }
+<span class="nc" id="L85">        usernameInput.textProperty().bindBidirectional(username);</span>
+<span class="nc" id="L86">        passwordInput.textProperty().bindBidirectional(password);</span>
+<span class="nc" id="L87">        passwordRepeatInput.textProperty().bindBidirectional(passwordRepeat);</span>
+
+<span class="nc" id="L89">        usernameInput.setText(tokenStorage.getCurrentUser().name());</span>
+<span class="nc" id="L90">        darkRadioButton.setSelected(prefs.getTheme().equals(&quot;dark&quot;));</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        summerRadioButton.setSelected(!prefs.getTheme().equals(&quot;dark&quot;));</span>
+<span class="nc" id="L92">        return parent;</span>
     }
 
     @Override
     public String getTitle() {
-<span class="nc" id="L72">        return resources.getString(&quot;titleEditProfile&quot;);</span>
+<span class="nc" id="L97">        return resources.getString(&quot;titleEditProfile&quot;);</span>
     }
 
     public void uploadAvatar() {
-<span class="nc" id="L76">    }</span>
+<span class="nc" id="L101">    }</span>
 
     public void setDarkTheme() {
-<span class="nc" id="L79">        prefs.setTheme(&quot;dark&quot;);</span>
-<span class="nc" id="L80">        themeSettings.updateSceneTheme.accept(&quot;dark&quot;);</span>
-<span class="nc" id="L81">    }</span>
+<span class="nc" id="L104">        prefs.setTheme(&quot;dark&quot;);</span>
+<span class="nc" id="L105">        themeSettings.updateSceneTheme.accept(&quot;dark&quot;);</span>
+<span class="nc" id="L106">    }</span>
 
     public void setSummerTheme() {
-<span class="nc" id="L84">        prefs.setTheme(&quot;summer&quot;);</span>
-<span class="nc" id="L85">        themeSettings.updateSceneTheme.accept(&quot;summer&quot;);</span>
-<span class="nc" id="L86">    }</span>
+<span class="nc" id="L109">        prefs.setTheme(&quot;summer&quot;);</span>
+<span class="nc" id="L110">        themeSettings.updateSceneTheme.accept(&quot;summer&quot;);</span>
+<span class="nc" id="L111">    }</span>
 
     public void changePassword() {
-<span class="nc bnc" id="L89" title="All 2 branches missed.">        if (!newPasswordField.getText().isEmpty()) {</span>
-<span class="nc" id="L90">            setNewPassword();</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (!passwordInput.getText().isEmpty()) {</span>
+<span class="nc" id="L115">            setNewPassword();</span>
         }
-<span class="nc" id="L92">    }</span>
-
-    private void setNewPassword() {
-<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (!newPasswordField.getText().equals(retypeNewPasswordField.getText())) {</span>
-<span class="nc" id="L96">            errorMessage(&quot;passwordsNotEqual&quot;);</span>
-<span class="nc bnc" id="L97" title="All 2 branches missed.">        } else if (newPasswordField.getText().length() &lt; 8) {</span>
-<span class="nc" id="L98">            errorMessage(&quot;passwordTooShort&quot;);</span>
-        } else {
-<span class="nc" id="L100">            disposables.add(authService.updatePassword(newPasswordField.getText())</span>
-<span class="nc" id="L101">                    .observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="nc" id="L102">                            lr -&gt; app.show(menuControllerProvider.get()),</span>
-<span class="nc" id="L103">                            error -&gt; Dialog.error(error, resources.getString(&quot;passwordChangeFailed&quot;))));</span>
-        }
-<span class="nc" id="L105">    }</span>
-
-    private void errorMessage(String message) {
-<span class="nc" id="L108">        Alert alert = new Alert(Alert.AlertType.ERROR);</span>
-<span class="nc" id="L109">        alert.setTitle(resources.getString(&quot;error&quot;));</span>
-<span class="nc" id="L110">        alert.setHeaderText(resources.getString(&quot;error&quot;));</span>
-<span class="nc" id="L111">        alert.setContentText(resources.getString(message));</span>
-<span class="nc" id="L112">        alert.showAndWait();</span>
-<span class="nc" id="L113">    }</span>
-
-    public void deleteUser() {
-<span class="nc" id="L116">        app.show(deleteUserControllerProvider.get());</span>
 <span class="nc" id="L117">    }</span>
 
-    public void back() {
-<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (this.backController.equals(&quot;menu&quot;)) {</span>
-<span class="nc" id="L121">            app.show(menuControllerProvider.get());</span>
+    private void setNewPassword() {
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (!passwordInput.getText().equals(passwordRepeatInput.getText())) {</span>
+<span class="nc" id="L121">            errorMessage(&quot;passwordsNotEqual&quot;);</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        } else if (passwordInput.getText().length() &lt; 8) {</span>
+<span class="nc" id="L123">            errorMessage(&quot;passwordTooShort&quot;);</span>
         } else {
-<span class="nc" id="L123">            app.show(pauseControllerProvider.get());</span>
+<span class="nc" id="L125">            disposables.add(authService.updatePassword(passwordInput.getText())</span>
+<span class="nc" id="L126">                    .observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="nc" id="L127">                            lr -&gt; app.show(menuControllerProvider.get()),</span>
+<span class="nc" id="L128">                            error -&gt; Dialog.error(error, resources.getString(&quot;passwordChangeFailed&quot;))));</span>
+        }
+<span class="nc" id="L130">    }</span>
+
+    private void errorMessage(String message) {
+<span class="nc" id="L133">        Alert alert = new Alert(Alert.AlertType.ERROR);</span>
+<span class="nc" id="L134">        alert.setTitle(resources.getString(&quot;error&quot;));</span>
+<span class="nc" id="L135">        alert.setHeaderText(resources.getString(&quot;error&quot;));</span>
+<span class="nc" id="L136">        alert.setContentText(resources.getString(message));</span>
+<span class="nc" id="L137">        alert.showAndWait();</span>
+<span class="nc" id="L138">    }</span>
+
+    public void deleteUser() {
+<span class="nc" id="L141">        app.show(deleteUserControllerProvider.get());</span>
+<span class="nc" id="L142">    }</span>
+
+    public void back() {
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (this.backController.equals(&quot;menu&quot;)) {</span>
+<span class="nc" id="L146">            app.show(menuControllerProvider.get());</span>
+        } else {
+<span class="nc" id="L148">            app.show(pauseControllerProvider.get());</span>
         }
 
-<span class="nc" id="L126">    }</span>
+<span class="nc" id="L151">    }</span>
+
+    public void setDe() {
+<span class="nc" id="L154">        setLanguage(Locale.GERMAN);</span>
+<span class="nc" id="L155">    }</span>
+
+    public void setEn() {
+<span class="nc" id="L158">        setLanguage(Locale.ENGLISH);</span>
+<span class="nc" id="L159">    }</span>
+
+    private void setLanguage(Locale locale) {
+<span class="nc" id="L162">        prefs.setLocale(locale.toLanguageTag());</span>
+<span class="nc" id="L163">        resources = resourcesProvider.get();</span>
+<span class="nc" id="L164">        app.update();</span>
+<span class="nc" id="L165">    }</span>
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
