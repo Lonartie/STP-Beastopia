@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HttpModule.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.modules</a> &gt; <span class="el_source">HttpModule.java</span></div><h1>HttpModule.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.modules;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dagger.Module;
+import dagger.Provides;
+import de.uniks.beastopia.teaml.Main;
+import de.uniks.beastopia.teaml.rest.*;
+import de.uniks.beastopia.teaml.service.TokenStorage;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import javax.inject.Singleton;
+
+@Module
+<span class="fc" id="L19">public class HttpModule {</span>
+    @Provides
+    @Singleton
+    static OkHttpClient client(TokenStorage tokenStorage) {
+<span class="fc" id="L23">        return new OkHttpClient.Builder().addInterceptor(chain -&gt; {</span>
+<span class="nc" id="L24">            final String token = tokenStorage.getAccessToken();</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">            if (token == null) {</span>
+<span class="nc" id="L26">                return chain.proceed(chain.request());</span>
+            }
+<span class="nc" id="L28">            final Request newRequest = chain</span>
+<span class="nc" id="L29">                    .request()</span>
+<span class="nc" id="L30">                    .newBuilder()</span>
+<span class="nc" id="L31">                    .addHeader(&quot;Authorization&quot;, &quot;Bearer &quot; + token)</span>
+<span class="nc" id="L32">                    .build();</span>
+
+<span class="nc" id="L34">            Response response = chain.proceed(newRequest);</span>
+
+<span class="nc bnc" id="L36" title="All 4 branches missed.">            if (response.isSuccessful() || response.code() != 429)</span>
+<span class="nc" id="L37">                return response;</span>
+
+<span class="nc bnc" id="L39" title="All 4 branches missed.">            while (!response.isSuccessful() &amp;&amp; response.code() == 429) {</span>
+                try {
+<span class="nc" id="L41">                    response.close();</span>
+                    //noinspection BusyWait
+<span class="nc" id="L43">                    Thread.sleep(1000);</span>
+<span class="nc" id="L44">                    response = chain.proceed(newRequest);</span>
+<span class="nc" id="L45">                } catch (InterruptedException e) {</span>
+<span class="nc" id="L46">                    throw new RuntimeException(e);</span>
+<span class="nc" id="L47">                }</span>
+            }
+
+<span class="nc" id="L50">            return response;</span>
+<span class="fc" id="L51">        }).build();</span>
+    }
+
+    @Provides
+    @Singleton
+    Retrofit retrofit(OkHttpClient client, ObjectMapper objectMapper) {
+<span class="fc" id="L57">        return new Retrofit.Builder()</span>
+<span class="fc" id="L58">                .baseUrl(Main.API_URL + &quot;/&quot;)</span>
+<span class="fc" id="L59">                .client(client)</span>
+<span class="fc" id="L60">                .addConverterFactory(JacksonConverterFactory.create(objectMapper))</span>
+<span class="fc" id="L61">                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())</span>
+<span class="fc" id="L62">                .build();</span>
+    }
+
+    @Provides
+    @Singleton
+    UserApiService user(Retrofit retrofit) {
+<span class="fc" id="L68">        return retrofit.create(UserApiService.class);</span>
+    }
+
+    @Provides
+    @Singleton
+    AuthApiService auth(Retrofit retrofit) {
+<span class="fc" id="L74">        return retrofit.create(AuthApiService.class);</span>
+    }
+
+    @Provides
+    @Singleton
+    GroupApiService group(Retrofit retrofit) {
+<span class="nc" id="L80">        return retrofit.create(GroupApiService.class);</span>
+    }
+
+    @Provides
+    @Singleton
+    MessageApiService message(Retrofit retrofit) {
+<span class="nc" id="L86">        return retrofit.create(MessageApiService.class);</span>
+    }
+
+    @Provides
+    @Singleton
+    RegionApiService region(Retrofit retrofit) {
+<span class="nc" id="L92">        return retrofit.create(RegionApiService.class);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
