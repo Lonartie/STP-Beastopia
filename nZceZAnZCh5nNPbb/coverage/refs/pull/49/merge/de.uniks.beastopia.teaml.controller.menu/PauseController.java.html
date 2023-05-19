@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PauseController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.menu</a> &gt; <span class="el_source">PauseController.java</span></div><h1>PauseController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.menu;
+
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.controller.ingame.IngameController;
+import de.uniks.beastopia.teaml.controller.menu.social.FriendListController;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PauseController extends Controller {
+
+    @FXML
+    private VBox friendListContainer;
+
+<span class="fc" id="L23">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
+    @Inject
+    Provider&lt;FriendListController&gt; friendListControllerProvider;
+    @Inject
+    Provider&lt;MenuController&gt; menuControllerProvider;
+
+    @Inject
+    Provider&lt;IngameController&gt; ingameControllerProvider;
+
+    @Inject
+    Provider&lt;EditProfileController&gt; editProfileControllerProvider;
+
+    @Inject
+<span class="fc" id="L36">    public PauseController() {</span>
+
+<span class="fc" id="L38">    }</span>
+
+    @Override
+    public Parent render() {
+<span class="fc" id="L42">        Parent parent = super.render();</span>
+<span class="fc" id="L43">        Controller subController = friendListControllerProvider.get();</span>
+<span class="fc" id="L44">        subControllers.add(subController);</span>
+<span class="fc" id="L45">        friendListContainer.getChildren().add(subController.render());</span>
+<span class="fc" id="L46">        return parent;</span>
+    }
+
+    @Override
+    public void destroy() {
+<span class="fc" id="L51">        subControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L52">    }</span>
+
+    @Override
+    public String getTitle() {
+<span class="fc" id="L56">        return resources.getString(&quot;titlePause&quot;);</span>
+    }
+
+    @FXML
+    public void editProfileButtonPressed() {
+<span class="nc" id="L61">        app.show(editProfileControllerProvider.get().backController(&quot;pause&quot;));</span>
+<span class="nc" id="L62">    }</span>
+
+    @FXML
+    public void mainMenuButtonPressed() {
+<span class="fc" id="L66">        app.show(menuControllerProvider.get());</span>
+<span class="fc" id="L67">    }</span>
+
+    @FXML
+    public void pauseMenu(KeyEvent keyEvent) {
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {</span>
+<span class="fc" id="L72">            app.show(ingameControllerProvider.get());</span>
+        }
+<span class="fc" id="L74">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
