@@ -52,23 +52,23 @@ public class ChatGroupController extends Controller {
     Provider&lt;DirectMessageController&gt; directMessageControllerProvider;
     @Inject
     TokenStorage tokenStorage;
-<span class="nc" id="L55">    private final Consumer&lt;Group&gt; onPinChanged = null;</span>
-<span class="nc" id="L56">    private Consumer&lt;Group&gt; onGroupClicked = null;</span>
+<span class="fc" id="L55">    private final Consumer&lt;Group&gt; onPinChanged = null;</span>
+<span class="fc" id="L56">    private Consumer&lt;Group&gt; onGroupClicked = null;</span>
 
     @Inject
-<span class="nc" id="L59">    public ChatGroupController() {</span>
+<span class="fc" id="L59">    public ChatGroupController() {</span>
 
-<span class="nc" id="L61">    }</span>
+<span class="fc" id="L61">    }</span>
 
     @Override
     public void init() {
         try {
-<span class="nc" id="L66">            pinnedImg = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/filled_pin.png&quot;)));</span>
-<span class="nc" id="L67">            notPinnedImg = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/pin.png&quot;)));</span>
+<span class="fc" id="L66">            pinnedImg = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/filled_pin.png&quot;)));</span>
+<span class="fc" id="L67">            notPinnedImg = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/pin.png&quot;)));</span>
 <span class="nc" id="L68">        } catch (URISyntaxException | FileNotFoundException e) {</span>
 <span class="nc" id="L69">            throw new RuntimeException(e);</span>
-<span class="nc" id="L70">        }</span>
-<span class="nc" id="L71">    }</span>
+<span class="fc" id="L70">        }</span>
+<span class="fc" id="L71">    }</span>
 
     public void setOnGroupClicked(Consumer&lt;Group&gt; onGroupClicked) {
 <span class="nc" id="L74">        this.onGroupClicked = onGroupClicked;</span>
@@ -76,23 +76,23 @@ public class ChatGroupController extends Controller {
 
     @SuppressWarnings(&quot;UnusedReturnValue&quot;)
     public ChatGroupController setGroup(Group group, boolean pinned) {
-<span class="nc" id="L79">        this.group = group;</span>
-<span class="nc" id="L80">        this.pinned = pinned;</span>
-<span class="nc" id="L81">        return this;</span>
+<span class="fc" id="L79">        this.group = group;</span>
+<span class="fc" id="L80">        this.pinned = pinned;</span>
+<span class="fc" id="L81">        return this;</span>
     }
 
     @Override
     public Parent render() {
-<span class="nc" id="L86">        Parent parent = super.render();</span>
-<span class="nc" id="L87">        name.setText(group.name());</span>
+<span class="fc" id="L86">        Parent parent = super.render();</span>
+<span class="fc" id="L87">        name.setText(group.name());</span>
 
-<span class="nc bnc" id="L89" title="All 2 branches missed.">        if (this.pinned) {</span>
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">        if (this.pinned) {</span>
 <span class="nc" id="L90">            this.pinGroupBtn.setGraphic(pinnedImg);</span>
         } else {
-<span class="nc" id="L92">            this.pinGroupBtn.setGraphic(notPinnedImg);</span>
+<span class="fc" id="L92">            this.pinGroupBtn.setGraphic(notPinnedImg);</span>
         }
 
-<span class="nc" id="L95">        return parent;</span>
+<span class="fc" id="L95">        return parent;</span>
     }
 
     public void mouseClicked() {
@@ -100,14 +100,14 @@ public class ChatGroupController extends Controller {
 <span class="nc" id="L100">    }</span>
 
     private ImageView createImage(URL imageUrl) throws URISyntaxException, FileNotFoundException {
-<span class="nc" id="L103">        ImageView imageView = new ImageView(loadImage(imageUrl));</span>
-<span class="nc" id="L104">        imageView.setFitHeight(25.0);</span>
-<span class="nc" id="L105">        imageView.setFitWidth(25.0);</span>
-<span class="nc" id="L106">        return imageView;</span>
+<span class="fc" id="L103">        ImageView imageView = new ImageView(loadImage(imageUrl));</span>
+<span class="fc" id="L104">        imageView.setFitHeight(25.0);</span>
+<span class="fc" id="L105">        imageView.setFitWidth(25.0);</span>
+<span class="fc" id="L106">        return imageView;</span>
     }
 
     private static Image loadImage(URL imageUrl) throws FileNotFoundException, URISyntaxException {
-<span class="nc" id="L110">        return new Image(new FileInputStream(new File(imageUrl.toURI())));</span>
+<span class="fc" id="L110">        return new Image(new FileInputStream(new File(imageUrl.toURI())));</span>
     }
 
     public void editGroup() {
@@ -116,18 +116,18 @@ public class ChatGroupController extends Controller {
 
     @FXML
     public void deleteGroup() {
-<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (group.members().size() &lt; 2) {</span>
-<span class="nc" id="L120">            disposables.add(groupListService.deleteGroup(group).observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="nc" id="L121">                    lr -&gt; app.show(directMessageControllerProvider.get()),</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (group.members().size() &lt; 2) {</span>
+<span class="fc" id="L120">            disposables.add(groupListService.deleteGroup(group).observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="fc" id="L121">                    lr -&gt; app.show(directMessageControllerProvider.get()),</span>
 <span class="nc" id="L122">                    error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;)</span>
                     )));
         } else {
-<span class="nc" id="L125">            disposables.add(groupListService.removeMember(group, tokenStorage.getCurrentUser()._id()).observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="nc" id="L126">                    lr -&gt; app.show(directMessageControllerProvider.get()),</span>
+<span class="fc" id="L125">            disposables.add(groupListService.removeMember(group, tokenStorage.getCurrentUser()._id()).observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="fc" id="L126">                    lr -&gt; app.show(directMessageControllerProvider.get()),</span>
 <span class="nc" id="L127">                    error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;)</span>
                     )));
         }
-<span class="nc" id="L130">    }</span>
+<span class="fc" id="L130">    }</span>
 
     //TODO: implement pinning feature
     public void pinGroup() {
