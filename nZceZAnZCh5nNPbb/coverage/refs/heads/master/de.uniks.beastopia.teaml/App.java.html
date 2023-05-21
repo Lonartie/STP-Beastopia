@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml;
 
 import de.uniks.beastopia.teaml.controller.Controller;
-import de.uniks.beastopia.teaml.service.AuthService;
 import fr.brouillard.oss.cssfx.CSSFX;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
@@ -18,105 +16,97 @@ public class App extends Application {
     private Stage stage;
     private Controller controller;
     private Scene scene;
-<span class="fc" id="L21">    private final List&lt;Runnable&gt; cleanupTasks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L19">    private final List&lt;Runnable&gt; cleanupTasks = new ArrayList&lt;&gt;();</span>
 
-<span class="fc" id="L23">    public App() {</span>
-<span class="fc" id="L24">        this.mainComponent = de.uniks.beastopia.teaml.DaggerMainComponent.builder().mainApp(this).build();</span>
-<span class="fc" id="L25">    }</span>
+<span class="fc" id="L21">    public App() {</span>
+<span class="fc" id="L22">        this.mainComponent = de.uniks.beastopia.teaml.DaggerMainComponent.builder().mainApp(this).build();</span>
+<span class="fc" id="L23">    }</span>
 
-<span class="fc" id="L27">    public App(MainComponent mainComponent) {</span>
-<span class="fc" id="L28">        this.mainComponent = mainComponent;</span>
-<span class="fc" id="L29">    }</span>
+<span class="fc" id="L25">    public App(MainComponent mainComponent) {</span>
+<span class="fc" id="L26">        this.mainComponent = mainComponent;</span>
+<span class="fc" id="L27">    }</span>
 
     public void setMainComponent(MainComponent mainComponent) {
-<span class="fc" id="L32">        this.mainComponent = mainComponent;</span>
-<span class="fc" id="L33">    }</span>
+<span class="fc" id="L30">        this.mainComponent = mainComponent;</span>
+<span class="fc" id="L31">    }</span>
 
     public Stage getStage() {
-<span class="fc" id="L36">        return stage;</span>
+<span class="fc" id="L34">        return stage;</span>
     }
 
     public void addCleanupTask(Runnable task) {
-<span class="fc" id="L40">        cleanupTasks.add(task);</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L38">        cleanupTasks.add(task);</span>
+<span class="fc" id="L39">    }</span>
 
     @Override
     public void start(Stage primaryStage) {
-<span class="fc" id="L45">        stage = primaryStage;</span>
-<span class="fc" id="L46">        stage.setWidth(800);</span>
-<span class="fc" id="L47">        stage.setHeight(600);</span>
-<span class="fc" id="L48">        stage.setTitle(&quot;Beastopia&quot;);</span>
+<span class="fc" id="L43">        stage = primaryStage;</span>
+<span class="fc" id="L44">        stage.setWidth(800);</span>
+<span class="fc" id="L45">        stage.setHeight(600);</span>
+<span class="fc" id="L46">        stage.setTitle(&quot;Beastopia&quot;);</span>
 
-<span class="fc" id="L50">        scene = new Scene(new Label(&quot;Loading...&quot;));</span>
-<span class="fc" id="L51">        stage.setScene(scene);</span>
+<span class="fc" id="L48">        scene = new Scene(new Label(&quot;Loading...&quot;));</span>
+<span class="fc" id="L49">        stage.setScene(scene);</span>
 
-<span class="fc" id="L53">        scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource(&quot;views/summer.css&quot;)).toString());</span>
-<span class="fc" id="L54">        CSSFX.start(scene);</span>
+<span class="fc" id="L51">        scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource(&quot;views/summer.css&quot;)).toString());</span>
+<span class="fc" id="L52">        CSSFX.start(scene);</span>
 
-<span class="fc" id="L56">        stage.show();</span>
+<span class="fc" id="L54">        stage.show();</span>
 
-<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if (mainComponent == null) {</span>
-<span class="nc" id="L59">            return;</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">        if (mainComponent == null) {</span>
+<span class="nc" id="L57">            return;</span>
         }
 
-<span class="fc" id="L62">        final AuthService authService = mainComponent.authService();</span>
-<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        if (mainComponent.prefs().isRememberMe()) {</span>
-            //noinspection ResultOfMethodCallIgnored
-<span class="nc" id="L65">            authService.refresh().subscribe(</span>
-<span class="nc" id="L66">                    lr -&gt; Platform.runLater(() -&gt; show(mainComponent.menuController())),</span>
-<span class="nc" id="L67">                    error -&gt; Platform.runLater(() -&gt; show(mainComponent.loginController())));</span>
-        } else {
-<span class="fc" id="L69">            show(mainComponent.loginController());</span>
-        }
-
-<span class="fc" id="L72">        mainComponent.themeSettings().updateSceneTheme = theme -&gt; {</span>
-<span class="pc bpc" id="L73" title="1 of 2 branches missed.">            if (theme.equals(&quot;dark&quot;)) {</span>
-<span class="fc" id="L74">                scene.getStylesheets().removeIf(style -&gt; style.endsWith(&quot;views/summer.css&quot;));</span>
-<span class="fc" id="L75">                scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource(&quot;views/dark.css&quot;)).toString());</span>
+<span class="fc" id="L60">        mainComponent.themeSettings().updateSceneTheme = theme -&gt; {</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">            if (theme.equals(&quot;dark&quot;)) {</span>
+<span class="fc" id="L62">                scene.getStylesheets().removeIf(style -&gt; style.endsWith(&quot;views/summer.css&quot;));</span>
+<span class="fc" id="L63">                scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource(&quot;views/dark.css&quot;)).toString());</span>
             } else {
-<span class="nc" id="L77">                scene.getStylesheets().removeIf(style -&gt; style.endsWith(&quot;views/dark.css&quot;));</span>
-<span class="nc" id="L78">                scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource(&quot;views/summer.css&quot;)).toString());</span>
+<span class="nc" id="L65">                scene.getStylesheets().removeIf(style -&gt; style.endsWith(&quot;views/dark.css&quot;));</span>
+<span class="nc" id="L66">                scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource(&quot;views/summer.css&quot;)).toString());</span>
             }
-<span class="fc" id="L80">        };</span>
+<span class="fc" id="L68">        };</span>
 
-<span class="fc" id="L82">        mainComponent.themeSettings().updateSceneTheme.accept(</span>
-<span class="fc" id="L83">                mainComponent.prefs().getTheme()</span>
+<span class="fc" id="L70">        mainComponent.themeSettings().updateSceneTheme.accept(</span>
+<span class="fc" id="L71">                mainComponent.prefs().getTheme()</span>
         );
-<span class="fc" id="L85">    }</span>
+
+<span class="fc" id="L74">        show(mainComponent.loginController());</span>
+<span class="fc" id="L75">    }</span>
 
     @Override
     public void stop() {
-<span class="fc" id="L89">        cleanupTasks.forEach(Runnable::run);</span>
-<span class="fc" id="L90">        cleanup();</span>
-<span class="fc" id="L91">    }</span>
+<span class="fc" id="L79">        cleanupTasks.forEach(Runnable::run);</span>
+<span class="fc" id="L80">        cleanup();</span>
+<span class="fc" id="L81">    }</span>
 
     public void show(Controller controller) {
-<span class="fc" id="L94">        cleanup();</span>
-<span class="fc" id="L95">        this.controller = controller;</span>
-<span class="fc" id="L96">        initAndRender();</span>
-<span class="fc" id="L97">    }</span>
+<span class="fc" id="L84">        cleanup();</span>
+<span class="fc" id="L85">        this.controller = controller;</span>
+<span class="fc" id="L86">        initAndRender();</span>
+<span class="fc" id="L87">    }</span>
 
     private void initAndRender() {
-<span class="fc bfc" id="L100" title="All 2 branches covered.">        if (controller == null) {</span>
-<span class="fc" id="L101">            return;</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (controller == null) {</span>
+<span class="fc" id="L91">            return;</span>
         }
 
-<span class="fc" id="L104">        controller.init();</span>
-<span class="fc" id="L105">        update();</span>
-<span class="fc" id="L106">    }</span>
+<span class="fc" id="L94">        controller.init();</span>
+<span class="fc" id="L95">        update();</span>
+<span class="fc" id="L96">    }</span>
 
     private void cleanup() {
-<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (controller != null) {</span>
-<span class="fc" id="L110">            controller.destroy();</span>
-<span class="fc" id="L111">            controller = null;</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        if (controller != null) {</span>
+<span class="fc" id="L100">            controller.destroy();</span>
+<span class="fc" id="L101">            controller = null;</span>
         }
-<span class="fc" id="L113">    }</span>
+<span class="fc" id="L103">    }</span>
 
     public void update() {
-<span class="fc bfc" id="L116" title="All 2 branches covered.">        if (controller.getTitle() != null) {</span>
-<span class="fc" id="L117">            stage.setTitle(controller.getTitle());</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        if (controller.getTitle() != null) {</span>
+<span class="fc" id="L107">            stage.setTitle(controller.getTitle());</span>
         }
-<span class="fc" id="L119">        stage.getScene().setRoot(controller.render());</span>
-<span class="fc" id="L120">    }</span>
+<span class="fc" id="L109">        stage.getScene().setRoot(controller.render());</span>
+<span class="fc" id="L110">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
