@@ -3,8 +3,10 @@
 import de.uniks.beastopia.teaml.Main;
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.rest.Group;
+import de.uniks.beastopia.teaml.service.DataCache;
 import de.uniks.beastopia.teaml.service.FriendListService;
 import de.uniks.beastopia.teaml.service.TokenStorage;
+import de.uniks.beastopia.teaml.utils.Prefs;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -21,7 +23,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.prefs.Preferences;
 
 public class ChatUserController extends Controller {
 
@@ -36,103 +37,106 @@ public class ChatUserController extends Controller {
     @FXML
     Text name;
 
-    private Group group;
-    private Boolean pinned;
-    private ImageView pinnedImg;
-    private ImageView notPinnedImg;
-    //private ImageView abort;
-
     @Inject
     TokenStorage tokenStorage;
     @Inject
     FriendListService friendListService;
+    @Inject
+    Prefs prefs;
+    @Inject
+    DataCache cache;
+
+    private Group group;
+    private ImageView pinnedImg;
+    private ImageView notPinnedImg;
+<span class="nc" id="L52">    private Consumer&lt;Group&gt; onPinChanged = null;</span>
+<span class="nc" id="L53">    private Consumer&lt;Group&gt; onGroupClicked = null;</span>
 
     @Inject
-    Preferences preferences;
+<span class="nc" id="L56">    public ChatUserController() {</span>
 
-<span class="nc" id="L53">    private final Consumer&lt;Group&gt; onPinChanged = null;</span>
+<span class="nc" id="L58">    }</span>
 
-<span class="nc" id="L55">    private Consumer&lt;Group&gt; onGroupClicked = null;</span>
-
-    @Inject
-<span class="nc" id="L58">    public ChatUserController() {</span>
-
-<span class="nc" id="L60">    }</span>
+    private static Image loadImage(URL imageUrl) throws FileNotFoundException, URISyntaxException {
+<span class="nc" id="L61">        return new Image(new FileInputStream(new File(imageUrl.toURI())));</span>
+    }
 
     @Override
     public void init() {
         try {
-<span class="nc" id="L65">            pinnedImg = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/filled_pin.png&quot;)));</span>
-<span class="nc" id="L66">            notPinnedImg = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/pin.png&quot;)));</span>
-<span class="nc" id="L67">        } catch (URISyntaxException | FileNotFoundException e) {</span>
-<span class="nc" id="L68">            throw new RuntimeException(e);</span>
-<span class="nc" id="L69">        }</span>
-<span class="nc" id="L70">    }</span>
+<span class="nc" id="L67">            pinnedImg = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/filled_pin.png&quot;)).toString());</span>
+<span class="nc" id="L68">            notPinnedImg = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/pin.png&quot;)).toString());</span>
+<span class="nc" id="L69">        } catch (URISyntaxException | FileNotFoundException e) {</span>
+<span class="nc" id="L70">            throw new RuntimeException(e);</span>
+<span class="nc" id="L71">        }</span>
+<span class="nc" id="L72">    }</span>
 
     public void setOnGroupClicked(Consumer&lt;Group&gt; onGroupClicked) {
-<span class="nc" id="L73">        this.onGroupClicked = onGroupClicked;</span>
-<span class="nc" id="L74">    }</span>
+<span class="nc" id="L75">        this.onGroupClicked = onGroupClicked;</span>
+<span class="nc" id="L76">    }</span>
+
+    public void setOnPinChanged(Consumer&lt;Group&gt; onPinChanged) {
+<span class="nc" id="L79">        this.onPinChanged = onPinChanged;</span>
+<span class="nc" id="L80">    }</span>
 
     @SuppressWarnings(&quot;UnusedReturnValue&quot;)
-    public ChatUserController setGroup(Group group, boolean pinned) {
-<span class="nc" id="L78">        this.group = group;</span>
-<span class="nc" id="L79">        this.pinned = pinned;</span>
-<span class="nc" id="L80">        return this;</span>
+    public ChatUserController setGroup(Group group) {
+<span class="nc" id="L84">        this.group = group;</span>
+<span class="nc" id="L85">        return this;</span>
     }
 
     @Override
     public Parent render() {
-<span class="nc" id="L85">        Parent parent = super.render();</span>
-<span class="nc bnc" id="L86" title="All 2 branches missed.">        String otherID = group.members().get(0).equals(tokenStorage.getCurrentUser()._id())</span>
-<span class="nc" id="L87">                ? group.members().get(1)</span>
-<span class="nc" id="L88">                : group.members().get(0);</span>
-<span class="nc" id="L89">        disposables.add(friendListService.getUser(otherID).subscribe(user -&gt; name.setText(user.name())));</span>
+<span class="nc" id="L90">        Parent parent = super.render();</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        String otherID = group.members().get(0).equals(tokenStorage.getCurrentUser()._id())</span>
+<span class="nc" id="L92">                ? group.members().get(1)</span>
+<span class="nc" id="L93">                : group.members().get(0);</span>
 
-<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (this.pinned) {</span>
-<span class="nc" id="L92">            this.pinGroupBtn.setGraphic(pinnedImg);</span>
+<span class="nc" id="L95">        cache.getAllUsers().stream()</span>
+<span class="nc" id="L96">                .filter(user -&gt; user._id().equals(otherID))</span>
+<span class="nc" id="L97">                .findFirst()</span>
+<span class="nc" id="L98">                .ifPresent(user -&gt; name.setText(user.name()));</span>
+
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (prefs.isPinned(this.group)) {</span>
+<span class="nc" id="L101">            this.pinGroupBtn.setGraphic(pinnedImg);</span>
         } else {
-<span class="nc" id="L94">            this.pinGroupBtn.setGraphic(notPinnedImg);</span>
+<span class="nc" id="L103">            this.pinGroupBtn.setGraphic(notPinnedImg);</span>
         }
 
-<span class="nc" id="L97">        return parent;</span>
+<span class="nc" id="L106">        return parent;</span>
     }
 
     public void mouseClicked() {
-<span class="nc" id="L101">        onGroupClicked.accept(group);</span>
-<span class="nc" id="L102">    }</span>
+<span class="nc" id="L110">        onGroupClicked.accept(group);</span>
+<span class="nc" id="L111">    }</span>
 
-    private ImageView createImage(URL imageUrl) throws URISyntaxException, FileNotFoundException {
-<span class="nc" id="L105">        ImageView imageView = new ImageView(loadImage(imageUrl));</span>
-<span class="nc" id="L106">        imageView.setFitHeight(25.0);</span>
-<span class="nc" id="L107">        imageView.setFitWidth(25.0);</span>
-<span class="nc" id="L108">        return imageView;</span>
-    }
-
-    private static Image loadImage(URL imageUrl) throws FileNotFoundException, URISyntaxException {
-<span class="nc" id="L112">        return new Image(new FileInputStream(new File(imageUrl.toURI())));</span>
+    private ImageView createImage(String imageUrl) throws URISyntaxException, FileNotFoundException {
+<span class="nc" id="L114">        ImageView imageView = new ImageView(imageUrl);</span>
+<span class="nc" id="L115">        imageView.setFitHeight(25.0);</span>
+<span class="nc" id="L116">        imageView.setFitWidth(25.0);</span>
+<span class="nc" id="L117">        return imageView;</span>
     }
 
     public void editGroup() {
         //TODO: show edit group dialog
-<span class="nc" id="L117">    }</span>
+<span class="nc" id="L122">    }</span>
 
     public void deleteGroup() {
         //TODO: delete group
-<span class="nc" id="L121">    }</span>
+<span class="nc" id="L126">    }</span>
 
-    //TODO: implement pinning feature
+    @FXML
     public void pinGroup() {
-<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (pinGroupBtn.getGraphic() == notPinnedImg) {</span>
-<span class="nc" id="L126">            pinGroupBtn.setGraphic(pinnedImg);</span>
-<span class="nc" id="L127">            preferences.putBoolean(this.group._id() + &quot;_pinned&quot;, true);</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        if (!prefs.isPinned(this.group)) {</span>
+<span class="nc" id="L131">            pinGroupBtn.setGraphic(pinnedImg);</span>
+<span class="nc" id="L132">            prefs.setPinned(this.group, true);</span>
         } else {
-<span class="nc" id="L129">            pinGroupBtn.setGraphic(notPinnedImg);</span>
-<span class="nc" id="L130">            preferences.putBoolean(this.group._id() + &quot;_pinned&quot;, false);</span>
+<span class="nc" id="L134">            pinGroupBtn.setGraphic(notPinnedImg);</span>
+<span class="nc" id="L135">            prefs.setPinned(this.group, false);</span>
         }
-        //noinspection ConstantValue
-<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (onPinChanged != null) {</span>
-<span class="nc" id="L134">            onPinChanged.accept(group);</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        if (onPinChanged != null) {</span>
+<span class="nc" id="L138">            onPinChanged.accept(group);</span>
         }
-<span class="nc" id="L136">    }</span>
+<span class="nc" id="L140">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
