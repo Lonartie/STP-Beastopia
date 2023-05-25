@@ -28,42 +28,49 @@ public class DeleteUserController extends Controller {
     @Inject
     Provider&lt;EditProfileController&gt; editProfileControllerProvider;
 
-    @Inject
-<span class="nc" id="L32">    public DeleteUserController() {</span>
+    private String backController;
 
-<span class="nc" id="L34">    }</span>
+    @Inject
+<span class="nc" id="L34">    public DeleteUserController() {</span>
+
+<span class="nc" id="L36">    }</span>
+
+    public DeleteUserController backController (String controller) {
+<span class="nc" id="L39">        this.backController = controller;</span>
+<span class="nc" id="L40">        return this;</span>
+    }
 
     @Override
     public Parent render() {
-<span class="nc" id="L38">        Parent parent = super.render();</span>
-<span class="nc" id="L39">        usernameField.setText(tokenStorage.getCurrentUser().name());</span>
-<span class="nc" id="L40">        return parent;</span>
+<span class="nc" id="L45">        Parent parent = super.render();</span>
+<span class="nc" id="L46">        usernameField.setText(tokenStorage.getCurrentUser().name());</span>
+<span class="nc" id="L47">        return parent;</span>
     }
 
     @Override
     public String getTitle() {
-<span class="nc" id="L45">        return resources.getString(&quot;titleDeleteUser&quot;);</span>
+<span class="nc" id="L52">        return resources.getString(&quot;titleDeleteUser&quot;);</span>
     }
 
     public void deleteUser() {
-<span class="nc bnc" id="L49" title="All 2 branches missed.">        if (!passwordField.getText().isEmpty()) {</span>
-<span class="nc" id="L50">            disposables.add(authService.login(tokenStorage.getCurrentUser().name(), passwordField.getText(), false)</span>
-<span class="nc" id="L51">                    .observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="nc" id="L52">                            lr -&gt; deleteConfirmed(),</span>
-<span class="nc" id="L53">                            error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;))));</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        if (!passwordField.getText().isEmpty()) {</span>
+<span class="nc" id="L57">            disposables.add(authService.login(tokenStorage.getCurrentUser().name(), passwordField.getText(), false)</span>
+<span class="nc" id="L58">                    .observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="nc" id="L59">                            lr -&gt; deleteConfirmed(),</span>
+<span class="nc" id="L60">                            error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;))));</span>
         }
-<span class="nc" id="L55">    }</span>
-
-    private void deleteConfirmed() {
-<span class="nc" id="L58">        disposables.add(authService.deleteUser()</span>
-<span class="nc" id="L59">                .observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="nc" id="L60">                        lr -&gt; app.show(loginControllerProvider.get()),</span>
-<span class="nc" id="L61">                        error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;))));</span>
 <span class="nc" id="L62">    }</span>
 
+    private void deleteConfirmed() {
+<span class="nc" id="L65">        disposables.add(authService.deleteUser()</span>
+<span class="nc" id="L66">                .observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="nc" id="L67">                        lr -&gt; app.show(loginControllerProvider.get()),</span>
+<span class="nc" id="L68">                        error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;))));</span>
+<span class="nc" id="L69">    }</span>
+
     public void cancel() {
-<span class="nc" id="L65">        app.show(editProfileControllerProvider.get());</span>
-<span class="nc" id="L66">    }</span>
+<span class="nc" id="L72">        app.show(editProfileControllerProvider.get().backController(backController));</span>
+<span class="nc" id="L73">    }</span>
 }
 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

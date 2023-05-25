@@ -138,7 +138,7 @@ public class EditProfileController extends Controller {
 <span class="nc" id="L138">    }</span>
 
     public void deleteUser() {
-<span class="nc" id="L141">        app.show(deleteUserControllerProvider.get());</span>
+<span class="nc" id="L141">        app.show(deleteUserControllerProvider.get().backController(backController));</span>
 <span class="nc" id="L142">    }</span>
 
     public void back() {
