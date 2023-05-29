@@ -2,44 +2,57 @@
 
 import com.google.gson.Gson;
 import de.uniks.beastopia.teaml.rest.ErrorResponse;
+import de.uniks.beastopia.teaml.rest.ValidationErrorResponse;
 import javafx.scene.control.Alert;
 import retrofit2.HttpException;
 
+import java.io.IOException;
 import java.util.Objects;
 
-<span class="nc" id="L10">public class Dialog {</span>
+<span class="nc" id="L12">public class Dialog {</span>
     public static void error(Throwable exception, String dialogHeader) {
-<span class="pc bpc" id="L12" title="1 of 2 branches missed.">        if (exception instanceof HttpException httpError) {</span>
+<span class="pc bpc" id="L14" title="1 of 2 branches missed.">        if (exception instanceof HttpException httpError) {</span>
             String message;
+            String json;
             try {
-<span class="fc" id="L15">                String json = Objects.requireNonNull(Objects.requireNonNull(httpError.response()).errorBody()).string();</span>
-<span class="fc" id="L16">                ErrorResponse response = new Gson().fromJson(json, ErrorResponse.class);</span>
-<span class="fc" id="L17">                message = response.message();</span>
-<span class="nc" id="L18">            } catch (Exception e) {</span>
-<span class="nc" id="L19">                throw new RuntimeException(e);</span>
-<span class="fc" id="L20">            }</span>
-<span class="fc" id="L21">            Alert alert = new Alert(Alert.AlertType.ERROR);</span>
-<span class="fc" id="L22">            alert.setTitle(&quot;Error&quot;);</span>
-<span class="fc" id="L23">            alert.setHeaderText(dialogHeader);</span>
-<span class="fc" id="L24">            alert.setContentText(message);</span>
-<span class="fc" id="L25">            alert.showAndWait();</span>
+<span class="fc" id="L18">                json = Objects.requireNonNull(Objects.requireNonNull(httpError.response()).errorBody()).string();</span>
+<span class="nc" id="L19">            } catch (IOException e) {</span>
+<span class="nc" id="L20">                throw new RuntimeException(e);</span>
+<span class="fc" id="L21">            }</span>
+
+            try {
+<span class="fc" id="L24">                ErrorResponse response = new Gson().fromJson(json, ErrorResponse.class);</span>
+<span class="fc" id="L25">                message = response.message();</span>
+<span class="nc" id="L26">            } catch (Exception e) {</span>
+                try {
+<span class="nc" id="L28">                    ValidationErrorResponse response = new Gson().fromJson(json, ValidationErrorResponse.class);</span>
+<span class="nc" id="L29">                    message = String.join(&quot;\n&quot;, response.message());</span>
+<span class="nc" id="L30">                } catch (Exception e2) {</span>
+<span class="nc" id="L31">                    throw new RuntimeException(e2);</span>
+<span class="nc" id="L32">                }</span>
+<span class="fc" id="L33">            }</span>
+<span class="fc" id="L34">            Alert alert = new Alert(Alert.AlertType.ERROR);</span>
+<span class="fc" id="L35">            alert.setTitle(&quot;Error&quot;);</span>
+<span class="fc" id="L36">            alert.setHeaderText(dialogHeader);</span>
+<span class="fc" id="L37">            alert.setContentText(message);</span>
+<span class="fc" id="L38">            alert.showAndWait();</span>
         }
-<span class="fc" id="L27">    }</span>
+<span class="fc" id="L40">    }</span>
 
     public static void error(String dialogHeader, String dialogContent) {
-<span class="nc" id="L30">        Alert alert = new Alert(Alert.AlertType.ERROR);</span>
-<span class="nc" id="L31">        alert.setTitle(&quot;Information&quot;);</span>
-<span class="nc" id="L32">        alert.setHeaderText(dialogHeader);</span>
-<span class="nc" id="L33">        alert.setContentText(dialogContent);</span>
-<span class="nc" id="L34">        alert.showAndWait();</span>
-<span class="nc" id="L35">    }</span>
+<span class="nc" id="L43">        Alert alert = new Alert(Alert.AlertType.ERROR);</span>
+<span class="nc" id="L44">        alert.setTitle(&quot;Information&quot;);</span>
+<span class="nc" id="L45">        alert.setHeaderText(dialogHeader);</span>
+<span class="nc" id="L46">        alert.setContentText(dialogContent);</span>
+<span class="nc" id="L47">        alert.showAndWait();</span>
+<span class="nc" id="L48">    }</span>
 
     public static void info(String dialogHeader, String dialogContent) {
-<span class="fc" id="L38">        Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
-<span class="fc" id="L39">        alert.setTitle(&quot;Information&quot;);</span>
-<span class="fc" id="L40">        alert.setHeaderText(dialogHeader);</span>
-<span class="fc" id="L41">        alert.setContentText(dialogContent);</span>
-<span class="fc" id="L42">        alert.showAndWait();</span>
-<span class="fc" id="L43">    }</span>
+<span class="fc" id="L51">        Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="fc" id="L52">        alert.setTitle(&quot;Information&quot;);</span>
+<span class="fc" id="L53">        alert.setHeaderText(dialogHeader);</span>
+<span class="fc" id="L54">        alert.setContentText(dialogContent);</span>
+<span class="fc" id="L55">        alert.showAndWait();</span>
+<span class="fc" id="L56">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

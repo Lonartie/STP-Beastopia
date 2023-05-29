@@ -115,36 +115,35 @@ public class ChatGroupController extends Controller {
     }
 
     public void editGroup() {
-        //TODO: show edit group dialog
-<span class="nc" id="L119">    }</span>
+<span class="nc" id="L118">    }</span>
 
     @FXML
     public void deleteGroup() {
-<span class="fc bfc" id="L123" title="All 2 branches covered.">        if (group.members().size() &lt; 2) {</span>
-<span class="fc" id="L124">            disposables.add(groupListService.deleteGroup(group).observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="fc" id="L125">                    lr -&gt; app.show(directMessageControllerProvider.get()),</span>
-<span class="nc" id="L126">                    error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;)</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (group.members().size() &lt; 2) {</span>
+<span class="fc" id="L123">            disposables.add(groupListService.deleteGroup(group).observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="fc" id="L124">                    lr -&gt; app.show(directMessageControllerProvider.get()),</span>
+<span class="nc" id="L125">                    error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;)</span>
                     )));
         } else {
-<span class="fc" id="L129">            disposables.add(groupListService.removeMember(group, tokenStorage.getCurrentUser()._id()).observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="fc" id="L130">                    lr -&gt; app.show(directMessageControllerProvider.get()),</span>
-<span class="nc" id="L131">                    error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;)</span>
+<span class="fc" id="L128">            disposables.add(groupListService.removeMember(group, tokenStorage.getCurrentUser()._id()).observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="fc" id="L129">                    lr -&gt; app.show(directMessageControllerProvider.get()),</span>
+<span class="nc" id="L130">                    error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;)</span>
                     )));
         }
-<span class="fc" id="L134">    }</span>
+<span class="fc" id="L133">    }</span>
 
     @FXML
     public void pinGroup() {
-<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (!prefs.isPinned(this.group)) {</span>
-<span class="nc" id="L139">            pinGroupBtn.setGraphic(pinnedImg);</span>
-<span class="nc" id="L140">            prefs.setPinned(this.group, true);</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        if (!prefs.isPinned(this.group)) {</span>
+<span class="nc" id="L138">            pinGroupBtn.setGraphic(pinnedImg);</span>
+<span class="nc" id="L139">            prefs.setPinned(this.group, true);</span>
         } else {
-<span class="nc" id="L142">            pinGroupBtn.setGraphic(notPinnedImg);</span>
-<span class="nc" id="L143">            prefs.setPinned(this.group, false);</span>
+<span class="nc" id="L141">            pinGroupBtn.setGraphic(notPinnedImg);</span>
+<span class="nc" id="L142">            prefs.setPinned(this.group, false);</span>
         }
-<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (onPinChanged != null) {</span>
-<span class="nc" id="L146">            onPinChanged.accept(group);</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        if (onPinChanged != null) {</span>
+<span class="nc" id="L145">            onPinChanged.accept(group);</span>
         }
-<span class="nc" id="L148">    }</span>
+<span class="nc" id="L147">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
