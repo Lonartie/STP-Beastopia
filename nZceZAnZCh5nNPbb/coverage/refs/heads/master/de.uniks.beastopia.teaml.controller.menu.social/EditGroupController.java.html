@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EditGroupController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.menu.social</a> &gt; <span class="el_source">EditGroupController.java</span></div><h1>EditGroupController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.menu.social;
+
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.User;
+import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.service.FriendListService;
+import de.uniks.beastopia.teaml.service.TokenStorage;
+import de.uniks.beastopia.teaml.utils.Prefs;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.ArrayList;
+import java.util.List;
+
+public class EditGroupController extends Controller {
+
+<span class="nc" id="L21">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
+    @FXML
+    public TextField username;
+    @FXML
+    public VBox users;
+    @FXML
+    public TextField newGroupName;
+    @Inject
+    Provider&lt;DirectMessageController&gt; directMessageControllerProvider;
+    @Inject
+    Provider&lt;UserController&gt; userControllerProvider;
+    @Inject
+    FriendListService friendListService;
+    @Inject
+    TokenStorage tokenStorage;
+    @Inject
+    Prefs prefs;
+    @Inject
+    DataCache cache;
+
+    @Inject
+<span class="nc" id="L42">    public EditGroupController() {</span>
+
+<span class="nc" id="L44">    }</span>
+
+    @Override
+    public String getTitle() {
+<span class="nc" id="L48">        return resources.getString(&quot;titleEditGroup&quot;);</span>
+    }
+
+    @FXML
+    public void updateUserList() {
+<span class="nc" id="L53">        clearSubControllers();</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (username.getText().isEmpty()) {</span>
+<span class="nc" id="L55">            return;</span>
+        }
+<span class="nc" id="L57">        List&lt;Parent&gt; filteredParents = getFilteredParents();</span>
+<span class="nc" id="L58">        users.getChildren().addAll(filteredParents);</span>
+<span class="nc" id="L59">    }</span>
+
+    @FXML
+    public void back() {
+<span class="nc" id="L63">        app.show(directMessageControllerProvider.get());</span>
+<span class="nc" id="L64">    }</span>
+
+    public void editGroup() {
+
+<span class="nc" id="L68">    }</span>
+
+    @Override
+    public void destroy() {
+<span class="nc" id="L72">        super.destroy();</span>
+<span class="nc" id="L73">        clearSubControllers();</span>
+<span class="nc" id="L74">    }</span>
+
+    private void clearSubControllers() {
+<span class="nc" id="L77">        subControllers.forEach(Controller::destroy);</span>
+<span class="nc" id="L78">        subControllers.clear();</span>
+<span class="nc" id="L79">        users.getChildren().clear();</span>
+<span class="nc" id="L80">    }</span>
+
+    private List&lt;Parent&gt; getFilteredParents() {
+
+<span class="nc" id="L84">        List&lt;User&gt; filteredUsers = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L85">        List&lt;Parent&gt; filteredParents = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        for (User user : cache.getAllUsers()) {</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">            if (user.name().toLowerCase().startsWith(username.getText().toLowerCase())</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">                    &amp;&amp; !user._id().equals(tokenStorage.getCurrentUser()._id())) {</span>
+<span class="nc" id="L90">                filteredUsers.add(user);</span>
+            }
+<span class="nc" id="L92">        }</span>
+
+<span class="nc" id="L94">        filteredUsers = filteredUsers.stream().sorted((firstUser, secondUser) -&gt; {</span>
+<span class="nc" id="L95">            boolean notPinned = prefs.isPinned(firstUser);</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">            if (notPinned) {</span>
+<span class="nc" id="L97">                return -1;</span>
+            } else {
+<span class="nc" id="L99">                return firstUser.name().compareTo(secondUser.name());</span>
+            }
+<span class="nc" id="L101">        }).toList();</span>
+
+
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        for (User user : filteredUsers) {</span>
+<span class="nc" id="L105">            UserController userController = userControllerProvider.get();</span>
+<span class="nc" id="L106">            userController.setUser(user);</span>
+<span class="nc" id="L107">            userController.init();</span>
+<span class="nc" id="L108">            filteredParents.add(userController.render());</span>
+<span class="nc" id="L109">        }</span>
+
+<span class="nc" id="L111">        return filteredParents;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

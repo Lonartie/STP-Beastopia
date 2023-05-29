@@ -48,7 +48,6 @@ public class FriendController extends Controller {
     Provider&lt;DirectMessageController&gt; directMessageControllerProvider;
 
     private Boolean friendPin;
-
     private ImageView pinned;
     private ImageView notPinned;
     private ImageView addImage;
@@ -60,147 +59,147 @@ public class FriendController extends Controller {
     @Inject
     EventListener eventListener;
 
-<span class="fc" id="L63">    private Consumer&lt;User&gt; onFriendChanged = null;</span>
-<span class="fc" id="L64">    private Consumer&lt;User&gt; onPinChanged = null;</span>
+<span class="fc" id="L62">    private Consumer&lt;User&gt; onFriendChanged = null;</span>
+<span class="fc" id="L63">    private Consumer&lt;User&gt; onPinChanged = null;</span>
     private boolean friend;
 
     @Inject
-<span class="fc" id="L68">    public FriendController() {</span>
+<span class="fc" id="L67">    public FriendController() {</span>
 
-<span class="fc" id="L70">    }</span>
+<span class="fc" id="L69">    }</span>
 
     @Override
     public void init() {
-<span class="fc" id="L74">        disposables.add(eventListener.listen(&quot;users.&quot; + user._id() + &quot;.updated&quot;, User.class)</span>
-<span class="fc" id="L75">                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L76">                .subscribe(event -&gt; {</span>
-<span class="nc" id="L77">                    final User user = event.data();</span>
-<span class="nc" id="L78">                    updateOnlineStatus(user);</span>
-<span class="nc" id="L79">                }));</span>
+<span class="fc" id="L73">        disposables.add(eventListener.listen(&quot;users.&quot; + user._id() + &quot;.updated&quot;, User.class)</span>
+<span class="fc" id="L74">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L75">                .subscribe(event -&gt; {</span>
+<span class="nc" id="L76">                    final User user = event.data();</span>
+<span class="nc" id="L77">                    updateOnlineStatus(user);</span>
+<span class="nc" id="L78">                }));</span>
 
         try {
-<span class="fc" id="L82">            pinned = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/filled_pin.png&quot;)).toString());</span>
-<span class="fc" id="L83">            notPinned = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/pin.png&quot;)).toString());</span>
-<span class="fc" id="L84">            addImage = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/plus.png&quot;)).toString());</span>
-<span class="fc" id="L85">            removeImage = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/minus.png&quot;)).toString());</span>
-<span class="nc" id="L86">        } catch (URISyntaxException | FileNotFoundException e) {</span>
-<span class="nc" id="L87">            throw new RuntimeException(e);</span>
-<span class="fc" id="L88">        }</span>
-<span class="fc" id="L89">    }</span>
+<span class="fc" id="L81">            pinned = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/filled_pin.png&quot;)).toString());</span>
+<span class="fc" id="L82">            notPinned = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/pin.png&quot;)).toString());</span>
+<span class="fc" id="L83">            addImage = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/plus.png&quot;)).toString());</span>
+<span class="fc" id="L84">            removeImage = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/minus.png&quot;)).toString());</span>
+<span class="nc" id="L85">        } catch (URISyntaxException | FileNotFoundException e) {</span>
+<span class="nc" id="L86">            throw new RuntimeException(e);</span>
+<span class="fc" id="L87">        }</span>
+<span class="fc" id="L88">    }</span>
 
     public void setOnFriendChanged(Consumer&lt;User&gt; onFriendChanged) {
-<span class="fc" id="L92">        this.onFriendChanged = onFriendChanged;</span>
-<span class="fc" id="L93">    }</span>
+<span class="fc" id="L91">        this.onFriendChanged = onFriendChanged;</span>
+<span class="fc" id="L92">    }</span>
 
     public void checkFriend(boolean friend) {
-<span class="nc" id="L96">        this.friend = friend;</span>
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L95">        this.friend = friend;</span>
+<span class="nc" id="L96">    }</span>
 
     public void setOnPinChanged(Consumer&lt;User&gt; onPinChanged) {
-<span class="nc" id="L100">        this.onPinChanged = onPinChanged;</span>
-<span class="nc" id="L101">    }</span>
+<span class="nc" id="L99">        this.onPinChanged = onPinChanged;</span>
+<span class="nc" id="L100">    }</span>
 
     public FriendController setUser(User user, boolean friendPin) {
-<span class="fc" id="L104">        this.user = user;</span>
-<span class="fc" id="L105">        this.friendPin = friendPin;</span>
-<span class="fc" id="L106">        return this;</span>
+<span class="fc" id="L103">        this.user = user;</span>
+<span class="fc" id="L104">        this.friendPin = friendPin;</span>
+<span class="fc" id="L105">        return this;</span>
     }
 
     @Override
     public Parent render() {
-<span class="fc" id="L111">        Parent parent = super.render();</span>
+<span class="fc" id="L110">        Parent parent = super.render();</span>
 
         //TODO change avatar URL when avatar upload is implemented to individual link
         try {
-<span class="fc" id="L115">            Image image = loadImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/Lumnix_Logo_tr.png&quot;)).toString(),</span>
+<span class="fc" id="L114">            Image image = loadImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/Lumnix_Logo_tr.png&quot;)).toString(),</span>
                     40.0, 40.0, false, false);
-<span class="fc" id="L117">            friendAvatar.setImage(image);</span>
-<span class="nc" id="L118">        } catch (FileNotFoundException | URISyntaxException e) {</span>
-<span class="nc" id="L119">            throw new RuntimeException(e);</span>
-<span class="fc" id="L120">        }</span>
+<span class="fc" id="L116">            friendAvatar.setImage(image);</span>
+<span class="nc" id="L117">        } catch (FileNotFoundException | URISyntaxException e) {</span>
+<span class="nc" id="L118">            throw new RuntimeException(e);</span>
+<span class="fc" id="L119">        }</span>
 
-<span class="fc" id="L122">        name.setText(user.name());</span>
-<span class="fc" id="L123">        updateOnlineStatus(user);</span>
+<span class="fc" id="L121">        name.setText(user.name());</span>
+<span class="fc" id="L122">        updateOnlineStatus(user);</span>
 
-<span class="pc bpc" id="L125" title="1 of 2 branches missed.">        if (friend) {</span>
-<span class="nc bnc" id="L126" title="All 2 branches missed.">            if (this.friendPin) {</span>
-<span class="nc" id="L127">                this.pin.setGraphic(pinned);</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if (friend) {</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">            if (this.friendPin) {</span>
+<span class="nc" id="L126">                this.pin.setGraphic(pinned);</span>
             } else {
-<span class="nc" id="L129">                this.pin.setGraphic(notPinned);</span>
+<span class="nc" id="L128">                this.pin.setGraphic(notPinned);</span>
             }
         } else {
-<span class="fc" id="L132">            this.pin.setGraphic(notPinned); //that buttons align</span>
-<span class="fc" id="L133">            this.pin.setVisible(false);</span>
-<span class="fc" id="L134">            this.pin.setDisable(true);</span>
+<span class="fc" id="L131">            this.pin.setGraphic(notPinned); //that buttons align</span>
+<span class="fc" id="L132">            this.pin.setVisible(false);</span>
+<span class="fc" id="L133">            this.pin.setDisable(true);</span>
         }
 
-<span class="pc bpc" id="L137" title="1 of 2 branches missed.">        if (friendListService.isFriend(user)) {</span>
-<span class="fc" id="L138">            addRemoveFriendButton.setGraphic(removeImage);</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        if (friendListService.isFriend(user)) {</span>
+<span class="fc" id="L137">            addRemoveFriendButton.setGraphic(removeImage);</span>
         } else {
-<span class="nc" id="L140">            addRemoveFriendButton.setGraphic(addImage);</span>
+<span class="nc" id="L139">            addRemoveFriendButton.setGraphic(addImage);</span>
         }
 
-<span class="fc" id="L143">        return parent;</span>
+<span class="fc" id="L142">        return parent;</span>
     }
 
     private void updateOnlineStatus(User user) {
-<span class="pc bpc" id="L147" title="1 of 2 branches missed.">        if (user.status().equals(STATUS_ONLINE)) {</span>
-<span class="nc" id="L148">            statusCircle.setFill(Paint.valueOf(&quot;green&quot;));</span>
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">        if (user.status().equals(STATUS_ONLINE)) {</span>
+<span class="nc" id="L147">            statusCircle.setFill(Paint.valueOf(&quot;green&quot;));</span>
         } else {
-<span class="fc" id="L150">            statusCircle.setFill(Paint.valueOf(&quot;red&quot;));</span>
+<span class="fc" id="L149">            statusCircle.setFill(Paint.valueOf(&quot;red&quot;));</span>
         }
-<span class="fc" id="L152">    }</span>
+<span class="fc" id="L151">    }</span>
 
     private ImageView createImage(String imageUrl) throws URISyntaxException, FileNotFoundException {
-<span class="fc" id="L155">        ImageView imageView = new ImageView(imageUrl);</span>
-<span class="fc" id="L156">        imageView.setFitHeight(25.0);</span>
-<span class="fc" id="L157">        imageView.setFitWidth(25.0);</span>
-<span class="fc" id="L158">        return imageView;</span>
+<span class="fc" id="L154">        ImageView imageView = new ImageView(imageUrl);</span>
+<span class="fc" id="L155">        imageView.setFitHeight(25.0);</span>
+<span class="fc" id="L156">        imageView.setFitWidth(25.0);</span>
+<span class="fc" id="L157">        return imageView;</span>
     }
 
     @SuppressWarnings(&quot;SameParameterValue&quot;)
     private static Image loadImage(String imageUrl, double width, double height, boolean preserveRatio, boolean smooth) throws FileNotFoundException, URISyntaxException {
-<span class="fc" id="L163">        return new Image(imageUrl, width, height, preserveRatio, smooth);</span>
+<span class="fc" id="L162">        return new Image(imageUrl, width, height, preserveRatio, smooth);</span>
     }
 
     @FXML
     public void addRemoveFriend() {
-<span class="fc bfc" id="L168" title="All 2 branches covered.">        if (friendListService.isFriend(user)) {</span>
-<span class="fc" id="L169">            disposables.add(friendListService.removeFriend(user)</span>
-<span class="fc" id="L170">                    .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L171">                    .subscribe(user -&gt; {</span>
-<span class="pc bpc" id="L172" title="1 of 2 branches missed.">                        if (onFriendChanged != null) {</span>
-<span class="fc" id="L173">                            onFriendChanged.accept(user);</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (friendListService.isFriend(user)) {</span>
+<span class="fc" id="L168">            disposables.add(friendListService.removeFriend(user)</span>
+<span class="fc" id="L169">                    .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L170">                    .subscribe(user -&gt; {</span>
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">                        if (onFriendChanged != null) {</span>
+<span class="fc" id="L172">                            onFriendChanged.accept(user);</span>
                         }
-<span class="fc" id="L175">                    }));</span>
+<span class="fc" id="L174">                    }));</span>
         } else {
-<span class="fc" id="L177">            disposables.add(friendListService.addFriend(user)</span>
-<span class="fc" id="L178">                    .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L179">                    .subscribe(user -&gt; {</span>
-<span class="pc bpc" id="L180" title="1 of 2 branches missed.">                        if (onFriendChanged != null) {</span>
-<span class="fc" id="L181">                            onFriendChanged.accept(user);</span>
+<span class="fc" id="L176">            disposables.add(friendListService.addFriend(user)</span>
+<span class="fc" id="L177">                    .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L178">                    .subscribe(user -&gt; {</span>
+<span class="pc bpc" id="L179" title="1 of 2 branches missed.">                        if (onFriendChanged != null) {</span>
+<span class="fc" id="L180">                            onFriendChanged.accept(user);</span>
                         }
-<span class="fc" id="L183">                    }));</span>
+<span class="fc" id="L182">                    }));</span>
         }
-<span class="fc" id="L185">    }</span>
+<span class="fc" id="L184">    }</span>
 
     @FXML
     public void openFriendChat() {
-<span class="fc" id="L189">        app.show(directMessageControllerProvider.get().setupDirectMessageController(user));</span>
-<span class="fc" id="L190">    }</span>
+<span class="fc" id="L188">        app.show(directMessageControllerProvider.get().setupDirectMessageController(user));</span>
+<span class="fc" id="L189">    }</span>
 
     @FXML
     public void pinFriend() {
-<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (pin.getGraphic() == notPinned) {</span>
-<span class="nc" id="L195">            pin.setGraphic(pinned);</span>
-<span class="nc" id="L196">            prefs.setPinned(user, true);</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (pin.getGraphic() == notPinned) {</span>
+<span class="nc" id="L194">            pin.setGraphic(pinned);</span>
+<span class="nc" id="L195">            prefs.setPinned(user, true);</span>
         } else {
-<span class="nc" id="L198">            pin.setGraphic(notPinned);</span>
-<span class="nc" id="L199">            prefs.setPinned(user, false);</span>
+<span class="nc" id="L197">            pin.setGraphic(notPinned);</span>
+<span class="nc" id="L198">            prefs.setPinned(user, false);</span>
         }
-<span class="nc bnc" id="L201" title="All 2 branches missed.">        if (onPinChanged != null) {</span>
-<span class="nc" id="L202">            onPinChanged.accept(user);</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">        if (onPinChanged != null) {</span>
+<span class="nc" id="L201">            onPinChanged.accept(user);</span>
         }
-<span class="nc" id="L204">    }</span>
+<span class="nc" id="L203">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
