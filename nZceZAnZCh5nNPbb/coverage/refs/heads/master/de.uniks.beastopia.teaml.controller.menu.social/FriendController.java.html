@@ -152,54 +152,68 @@ public class FriendController extends Controller {
 
     private ImageView createImage(String imageUrl) throws URISyntaxException, FileNotFoundException {
 <span class="fc" id="L154">        ImageView imageView = new ImageView(imageUrl);</span>
-<span class="fc" id="L155">        imageView.setFitHeight(25.0);</span>
-<span class="fc" id="L156">        imageView.setFitWidth(25.0);</span>
-<span class="fc" id="L157">        return imageView;</span>
+<span class="fc" id="L155">        imageView.setCache(false);</span>
+<span class="fc" id="L156">        imageView.setFitHeight(25.0);</span>
+<span class="fc" id="L157">        imageView.setFitWidth(25.0);</span>
+<span class="fc" id="L158">        return imageView;</span>
     }
 
     @SuppressWarnings(&quot;SameParameterValue&quot;)
     private static Image loadImage(String imageUrl, double width, double height, boolean preserveRatio, boolean smooth) throws FileNotFoundException, URISyntaxException {
-<span class="fc" id="L162">        return new Image(imageUrl, width, height, preserveRatio, smooth);</span>
+<span class="fc" id="L163">        return new Image(imageUrl, width, height, preserveRatio, smooth);</span>
     }
 
     @FXML
     public void addRemoveFriend() {
-<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (friendListService.isFriend(user)) {</span>
-<span class="fc" id="L168">            disposables.add(friendListService.removeFriend(user)</span>
-<span class="fc" id="L169">                    .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L170">                    .subscribe(user -&gt; {</span>
-<span class="pc bpc" id="L171" title="1 of 2 branches missed.">                        if (onFriendChanged != null) {</span>
-<span class="fc" id="L172">                            onFriendChanged.accept(user);</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">        if (friendListService.isFriend(user)) {</span>
+<span class="fc" id="L169">            disposables.add(friendListService.removeFriend(user)</span>
+<span class="fc" id="L170">                    .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L171">                    .subscribe(user -&gt; {</span>
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">                        if (onFriendChanged != null) {</span>
+<span class="fc" id="L173">                            onFriendChanged.accept(user);</span>
                         }
-<span class="fc" id="L174">                    }));</span>
+<span class="fc" id="L175">                    }));</span>
         } else {
-<span class="fc" id="L176">            disposables.add(friendListService.addFriend(user)</span>
-<span class="fc" id="L177">                    .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L178">                    .subscribe(user -&gt; {</span>
-<span class="pc bpc" id="L179" title="1 of 2 branches missed.">                        if (onFriendChanged != null) {</span>
-<span class="fc" id="L180">                            onFriendChanged.accept(user);</span>
+<span class="fc" id="L177">            disposables.add(friendListService.addFriend(user)</span>
+<span class="fc" id="L178">                    .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L179">                    .subscribe(user -&gt; {</span>
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">                        if (onFriendChanged != null) {</span>
+<span class="fc" id="L181">                            onFriendChanged.accept(user);</span>
                         }
-<span class="fc" id="L182">                    }));</span>
+<span class="fc" id="L183">                    }));</span>
         }
-<span class="fc" id="L184">    }</span>
+<span class="fc" id="L185">    }</span>
 
     @FXML
     public void openFriendChat() {
-<span class="fc" id="L188">        app.show(directMessageControllerProvider.get().setupDirectMessageController(user));</span>
-<span class="fc" id="L189">    }</span>
+<span class="fc" id="L189">        app.show(directMessageControllerProvider.get().setupDirectMessageController(user));</span>
+<span class="fc" id="L190">    }</span>
 
     @FXML
     public void pinFriend() {
-<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (pin.getGraphic() == notPinned) {</span>
-<span class="nc" id="L194">            pin.setGraphic(pinned);</span>
-<span class="nc" id="L195">            prefs.setPinned(user, true);</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (pin.getGraphic() == notPinned) {</span>
+<span class="nc" id="L195">            pin.setGraphic(pinned);</span>
+<span class="nc" id="L196">            prefs.setPinned(user, true);</span>
         } else {
-<span class="nc" id="L197">            pin.setGraphic(notPinned);</span>
-<span class="nc" id="L198">            prefs.setPinned(user, false);</span>
+<span class="nc" id="L198">            pin.setGraphic(notPinned);</span>
+<span class="nc" id="L199">            prefs.setPinned(user, false);</span>
         }
-<span class="nc bnc" id="L200" title="All 2 branches missed.">        if (onPinChanged != null) {</span>
-<span class="nc" id="L201">            onPinChanged.accept(user);</span>
+<span class="nc bnc" id="L201" title="All 2 branches missed.">        if (onPinChanged != null) {</span>
+<span class="nc" id="L202">            onPinChanged.accept(user);</span>
         }
-<span class="nc" id="L203">    }</span>
+<span class="nc" id="L204">    }</span>
+
+    @Override
+    public void destroy() {
+<span class="fc" id="L208">        pinned = null;</span>
+<span class="fc" id="L209">        notPinned = null;</span>
+<span class="fc" id="L210">        addImage = null;</span>
+<span class="fc" id="L211">        removeImage = null;</span>
+
+<span class="fc" id="L213">        onPinChanged = null;</span>
+<span class="fc" id="L214">        onFriendChanged = null;</span>
+
+<span class="fc" id="L216">        super.destroy();</span>
+<span class="fc" id="L217">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

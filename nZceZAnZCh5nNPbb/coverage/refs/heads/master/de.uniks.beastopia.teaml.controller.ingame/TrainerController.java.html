@@ -8,9 +8,7 @@ import de.uniks.beastopia.teaml.service.TrainerService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
 import javax.inject.Inject;
@@ -21,18 +19,6 @@ public class TrainerController extends Controller {
     private TextField trainerNameInput;
     @FXML
     private Text regionNameDisplay;
-    @FXML
-    private ImageView trainerSprite;
-    @FXML
-    private Button backButton;
-    @FXML
-    private Button chooseLeftButton;
-    @FXML
-    private Button chooseRightButton;
-    @FXML
-    private Button deleteTrainerButton;
-    @FXML
-    private Button saveTrainerButton;
 
     @Inject
     TokenStorage tokenStorage;
@@ -42,61 +28,65 @@ public class TrainerController extends Controller {
     Provider&lt;IngameController&gt; ingameControllerProvider;
 
     private Region region;
+    @SuppressWarnings(&quot;unused&quot;)
     private Trainer trainer;
 
-<span class="nc" id="L47">    private final SimpleStringProperty trainerName = new SimpleStringProperty();</span>
+<span class="nc" id="L34">    private final SimpleStringProperty trainerName = new SimpleStringProperty();</span>
 
     @Inject
-<span class="nc" id="L50">    public TrainerController() {</span>
-<span class="nc" id="L51">    }</span>
+<span class="nc" id="L37">    public TrainerController() {</span>
+<span class="nc" id="L38">    }</span>
 
     @Override
     public void init() {
         // Check if current user has a trainer for the specified region
-<span class="nc" id="L56">        disposables.add(trainerService.getAllTrainer(region._id())</span>
-<span class="nc" id="L57">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L58">                .subscribe(trainers -&gt; {</span>
-<span class="nc" id="L59">                    Trainer tr = trainers.stream().filter(t -&gt; t.name().equals(tokenStorage.getCurrentUser().name())).findFirst().orElse(null);</span>
+<span class="nc" id="L43">        disposables.add(trainerService.getAllTrainer(region._id())</span>
+<span class="nc" id="L44">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L45">                .subscribe(trainers -&gt; {</span>
+<span class="nc" id="L46">                    Trainer tr = trainers.stream().filter(t -&gt; t.name().equals(tokenStorage.getCurrentUser().name())).findFirst().orElse(null);</span>
 
-<span class="nc bnc" id="L61" title="All 2 branches missed.">                    if (tr != null) {</span>
-<span class="nc" id="L62">                        this.trainer = tr;</span>
-<span class="nc" id="L63">                        app.show(ingameControllerProvider.get());</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">                    if (tr != null) {</span>
+<span class="nc" id="L49">                        this.trainer = tr;</span>
+<span class="nc" id="L50">                        app.show(ingameControllerProvider.get());</span>
                     }
-<span class="nc" id="L65">                }));</span>
-<span class="nc" id="L66">    }</span>
+<span class="nc" id="L52">                }));</span>
+<span class="nc" id="L53">    }</span>
 
     public void saveTrainer() {
-        //TODO: Save trainer for current region
-<span class="nc" id="L70">    }</span>
+<span class="nc" id="L56">        IngameController controller = ingameControllerProvider.get();</span>
+<span class="nc" id="L57">        controller.setRegion(region);</span>
+<span class="nc" id="L58">        app.show(controller);</span>
+<span class="nc" id="L59">    }</span>
 
     public void deleteTrainer() {
         //TODO: Delete trainer for current region
-<span class="nc" id="L74">    }</span>
+<span class="nc" id="L63">    }</span>
 
     public void back() {
         //TODO: Implement back functionality
-<span class="nc" id="L78">    }</span>
+<span class="nc" id="L67">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L82">        Parent parent = super.render();</span>
+<span class="nc" id="L71">        Parent parent = super.render();</span>
 
-<span class="nc" id="L84">        trainerNameInput.textProperty().bindBidirectional(trainerName);</span>
-<span class="nc" id="L85">        regionNameDisplay.setText(&quot;RegionName&quot;);</span>
-<span class="nc" id="L86">        return parent;</span>
+<span class="nc" id="L73">        trainerNameInput.textProperty().bindBidirectional(trainerName);</span>
+<span class="nc" id="L74">        regionNameDisplay.setText(&quot;RegionName&quot;);</span>
+<span class="nc" id="L75">        return parent;</span>
     }
 
     @Override
     public String getTitle() {
-<span class="nc" id="L91">        return resources.getString(&quot;titleTrainer&quot;);</span>
+<span class="nc" id="L80">        return resources.getString(&quot;titleTrainer&quot;);</span>
     }
 
     public void setRegion(Region region) {
-<span class="nc" id="L95">        this.region = region;</span>
-<span class="nc" id="L96">    }</span>
+<span class="nc" id="L84">        this.region = region;</span>
+<span class="nc" id="L85">    }</span>
 
+    @SuppressWarnings(&quot;unused&quot;)
     public void setTrainer(Trainer trainer) {
-<span class="nc" id="L99">        this.trainer = trainer;</span>
-<span class="nc" id="L100">    }</span>
+<span class="nc" id="L89">        this.trainer = trainer;</span>
+<span class="nc" id="L90">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

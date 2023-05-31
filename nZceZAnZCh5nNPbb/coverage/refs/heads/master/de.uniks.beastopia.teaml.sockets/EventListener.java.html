@@ -48,7 +48,7 @@ public class EventListener {
 
     public &lt;T&gt; Observable&lt;Event&lt;T&gt;&gt; listen(String pattern, Class&lt;T&gt; type) {
 <span class="nc" id="L50">        return Observable.create(emitter -&gt; {</span>
-<span class="nc" id="L51">            this.ensureOpen();</span>
+<span class="nc" id="L51">            ensureOpen();</span>
 <span class="nc" id="L52">            send(Map.of(&quot;event&quot;, &quot;subscribe&quot;, &quot;data&quot;, pattern));</span>
 <span class="nc" id="L53">            final Consumer&lt;String&gt; handler = createPatternHandler(mapper, pattern, type, emitter);</span>
 <span class="nc" id="L54">            endpoint.addMessageHandler(handler);</span>
