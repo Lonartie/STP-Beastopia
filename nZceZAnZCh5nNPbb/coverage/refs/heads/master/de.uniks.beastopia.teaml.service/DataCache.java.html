@@ -37,5 +37,13 @@ public class DataCache {
     public List&lt;User&gt; getAllUsers() {
 <span class="fc" id="L38">        return allUsers;</span>
     }
+    public User getUser(String id) {
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        for (User user : allUsers) {</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">            if (user._id().equals(id)) {</span>
+<span class="nc" id="L43">                return user;</span>
+            }
+<span class="nc" id="L45">        }</span>
+<span class="nc" id="L46">        return null;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
