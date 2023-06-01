@@ -64,16 +64,33 @@ public class AuthService {
 <span class="fc" id="L64">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, null, null, null, password));</span>
     }
 
+    public Observable&lt;User&gt; updateUsername(String username) {
+<span class="nc" id="L68">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(username, null, null, null, null)).map(user -&gt; {</span>
+<span class="nc" id="L69">            tokenStorage.setCurrentUser(user);</span>
+<span class="nc" id="L70">            return user;</span>
+        });
+    }
+
+    public Observable&lt;User&gt; updateUsernameAndPassword(String username, String password) {
+<span class="nc" id="L75">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(username, null, null, null, password)).map(user -&gt; {</span>
+<span class="nc" id="L76">            tokenStorage.setCurrentUser(user);</span>
+<span class="nc" id="L77">            return user;</span>
+        });
+    }
+
     @SuppressWarnings(&quot;unused&quot;)
     public Observable&lt;User&gt; updateAvatar(String avatar) {
-<span class="nc" id="L69">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, null, avatar, null, null));</span>
+<span class="nc" id="L83">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, null, avatar, null, null)).map(user -&gt; {</span>
+<span class="nc" id="L84">            tokenStorage.setCurrentUser(user);</span>
+<span class="nc" id="L85">            return user;</span>
+        });
     }
 
     public Observable&lt;User&gt; deleteUser() {
-<span class="fc" id="L73">        return Observable.create(source -&gt; {</span>
-<span class="fc" id="L74">            userApiService.deleteUser(tokenStorage.getCurrentUser()._id()).subscribe();</span>
-<span class="fc" id="L75">            source.onNext(tokenStorage.getCurrentUser());</span>
-<span class="fc" id="L76">        });</span>
+<span class="fc" id="L90">        return Observable.create(source -&gt; {</span>
+<span class="fc" id="L91">            userApiService.deleteUser(tokenStorage.getCurrentUser()._id()).subscribe();</span>
+<span class="fc" id="L92">            source.onNext(tokenStorage.getCurrentUser());</span>
+<span class="fc" id="L93">        });</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
