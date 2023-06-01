@@ -71,93 +71,93 @@ public class IngameController extends Controller {
 <span class="fc" id="L71">                .subscribe(areas -&gt; {</span>
 <span class="fc" id="L72">                    cache.setAreas(areas);</span>
 <span class="pc bpc" id="L73" title="1 of 2 branches missed.">                    if (prefs.getArea() == null) {</span>
-<span class="pc" id="L74">                        Area area = areas.stream().filter(a -&gt; a._id().equals(region.spawn().area())).findFirst().orElse(null);</span>
+<span class="fc" id="L74">                        Area area = areas.stream().filter(a -&gt; a._id().equals(region.spawn().area())).findFirst().orElse(null);</span>
 <span class="pc bpc" id="L75" title="1 of 2 branches missed.">                        if (area == null) {</span>
-<span class="fc" id="L76">                            loadingPage.setDone();</span>
-<span class="fc" id="L77">                            return;</span>
+<span class="nc" id="L76">                            loadingPage.setDone();</span>
+<span class="nc" id="L77">                            return;</span>
                         }
-<span class="nc" id="L79">                        prefs.setArea(area);</span>
-<span class="nc" id="L80">                        posx = region.spawn().x();</span>
-<span class="nc" id="L81">                        posy = region.spawn().y();</span>
-<span class="nc" id="L82">                        this.map = area.map();</span>
-<span class="nc" id="L83">                    } else {</span>
+<span class="fc" id="L79">                        prefs.setArea(area);</span>
+<span class="fc" id="L80">                        posx = region.spawn().x();</span>
+<span class="fc" id="L81">                        posy = region.spawn().y();</span>
+<span class="fc" id="L82">                        this.map = area.map();</span>
+<span class="fc" id="L83">                    } else {</span>
 <span class="nc" id="L84">                        posx = (int) prefs.getPosition().getX();</span>
 <span class="nc" id="L85">                        posy = (int) prefs.getPosition().getY();</span>
 <span class="nc" id="L86">                        this.map = prefs.getArea().map();</span>
                     }
-<span class="nc" id="L88">                    this.tileSet = presetsService.getTileset(map.tilesets().get(0)).blockingFirst();</span>
-<span class="nc" id="L89">                    this.image = presetsService.getImage(tileSet).blockingFirst();</span>
-<span class="nc" id="L90">                    drawMap();</span>
-<span class="nc" id="L91">                    loadingPage.setDone();</span>
-<span class="nc" id="L92">                }));</span>
+<span class="fc" id="L88">                    this.tileSet = presetsService.getTileset(map.tilesets().get(0)).blockingFirst();</span>
+<span class="fc" id="L89">                    this.image = presetsService.getImage(tileSet).blockingFirst();</span>
+<span class="fc" id="L90">                    drawMap();</span>
+<span class="fc" id="L91">                    loadingPage.setDone();</span>
+<span class="fc" id="L92">                }));</span>
 
 <span class="fc" id="L94">        return loadingPage.parent();</span>
     }
 
     private void drawMap() {
-<span class="nc" id="L98">        player = drawTile(0, 0, image, presetsService.getTileViewPort(1, tileSet));</span>
+<span class="fc" id="L98">        player = drawTile(0, 0, image, presetsService.getTileViewPort(1, tileSet));</span>
 
-<span class="nc bnc" id="L100" title="All 2 branches missed.">        for (Layer layer : map.layers()) {</span>
-<span class="nc bnc" id="L101" title="All 2 branches missed.">            if (layer.chunks() == null) {</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">        for (Layer layer : map.layers()) {</span>
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">            if (layer.chunks() == null) {</span>
 <span class="nc" id="L102">                continue;</span>
             }
 
-<span class="nc bnc" id="L105" title="All 2 branches missed.">            for (Chunk chunk : layer.chunks()) {</span>
-<span class="nc" id="L106">                int chunkX = chunk.x();</span>
-<span class="nc" id="L107">                int chunkY = chunk.y();</span>
-<span class="nc" id="L108">                int index = 0;</span>
-<span class="nc bnc" id="L109" title="All 2 branches missed.">                for (int id : chunk.data()) {</span>
-<span class="nc" id="L110">                    int x = index % chunk.width() + chunkX;</span>
-<span class="nc" id="L111">                    int y = index / chunk.width() + chunkY;</span>
-<span class="nc" id="L112">                    index++;</span>
-<span class="nc" id="L113">                    drawTile(x, y, image, presetsService.getTileViewPort(id, tileSet));</span>
-<span class="nc" id="L114">                }</span>
-<span class="nc" id="L115">            }</span>
-<span class="nc" id="L116">        }</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">            for (Chunk chunk : layer.chunks()) {</span>
+<span class="fc" id="L106">                int chunkX = chunk.x();</span>
+<span class="fc" id="L107">                int chunkY = chunk.y();</span>
+<span class="fc" id="L108">                int index = 0;</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">                for (int id : chunk.data()) {</span>
+<span class="fc" id="L110">                    int x = index % chunk.width() + chunkX;</span>
+<span class="fc" id="L111">                    int y = index / chunk.width() + chunkY;</span>
+<span class="fc" id="L112">                    index++;</span>
+<span class="fc" id="L113">                    drawTile(x, y, image, presetsService.getTileViewPort(id, tileSet));</span>
+<span class="fc" id="L114">                }</span>
+<span class="fc" id="L115">            }</span>
+<span class="fc" id="L116">        }</span>
 
-<span class="nc" id="L118">        updateOrigin();</span>
-<span class="nc" id="L119">    }</span>
+<span class="fc" id="L118">        updateOrigin();</span>
+<span class="fc" id="L119">    }</span>
 
     private ImageView drawTile(int x, int y, Image image, Rectangle2D viewPort) {
-<span class="nc" id="L122">        ImageView view = new ImageView();</span>
-<span class="nc" id="L123">        view.setPreserveRatio(true);</span>
-<span class="nc" id="L124">        view.setSmooth(true);</span>
-<span class="nc" id="L125">        view.setImage(image);</span>
-<span class="nc" id="L126">        view.setFitWidth(TILE_SIZE + 1);</span>
-<span class="nc" id="L127">        view.setFitHeight(TILE_SIZE + 1);</span>
-<span class="nc" id="L128">        view.setViewport(viewPort);</span>
-<span class="nc" id="L129">        view.setTranslateX(x * TILE_SIZE);</span>
-<span class="nc" id="L130">        view.setTranslateY(y * TILE_SIZE);</span>
-<span class="nc" id="L131">        tilePane.getChildren().add(view);</span>
-<span class="nc" id="L132">        return view;</span>
+<span class="fc" id="L122">        ImageView view = new ImageView();</span>
+<span class="fc" id="L123">        view.setPreserveRatio(true);</span>
+<span class="fc" id="L124">        view.setSmooth(true);</span>
+<span class="fc" id="L125">        view.setImage(image);</span>
+<span class="fc" id="L126">        view.setFitWidth(TILE_SIZE + 1);</span>
+<span class="fc" id="L127">        view.setFitHeight(TILE_SIZE + 1);</span>
+<span class="fc" id="L128">        view.setViewport(viewPort);</span>
+<span class="fc" id="L129">        view.setTranslateX(x * TILE_SIZE);</span>
+<span class="fc" id="L130">        view.setTranslateY(y * TILE_SIZE);</span>
+<span class="fc" id="L131">        tilePane.getChildren().add(view);</span>
+<span class="fc" id="L132">        return view;</span>
     }
 
     private void moveTile(int x, int y, ImageView view) {
-<span class="nc" id="L136">        view.toFront();</span>
-<span class="nc" id="L137">        view.setTranslateX(x * TILE_SIZE);</span>
-<span class="nc" id="L138">        view.setTranslateY(y * TILE_SIZE);</span>
-<span class="nc" id="L139">    }</span>
+<span class="fc" id="L136">        view.toFront();</span>
+<span class="fc" id="L137">        view.setTranslateX(x * TILE_SIZE);</span>
+<span class="fc" id="L138">        view.setTranslateY(y * TILE_SIZE);</span>
+<span class="fc" id="L139">    }</span>
 
     public void setOrigin(int tilex, int tiley) {
-<span class="nc" id="L142">        double parentWidth = width;</span>
-<span class="nc" id="L143">        double parentHeight = height;</span>
+<span class="fc" id="L142">        double parentWidth = width;</span>
+<span class="fc" id="L143">        double parentHeight = height;</span>
 
-<span class="nc" id="L145">        double originX = parentWidth / 2 - TILE_SIZE / 2;</span>
-<span class="nc" id="L146">        double originY = parentHeight / 2 - TILE_SIZE / 2;</span>
+<span class="fc" id="L145">        double originX = parentWidth / 2 - TILE_SIZE / 2;</span>
+<span class="fc" id="L146">        double originY = parentHeight / 2 - TILE_SIZE / 2;</span>
 
-<span class="nc" id="L148">        double tilePaneTranslationX = originX - tilex * TILE_SIZE;</span>
-<span class="nc" id="L149">        double tilePaneTranslationY = originY - tiley * TILE_SIZE;</span>
+<span class="fc" id="L148">        double tilePaneTranslationX = originX - tilex * TILE_SIZE;</span>
+<span class="fc" id="L149">        double tilePaneTranslationY = originY - tiley * TILE_SIZE;</span>
 
-<span class="nc" id="L151">        tilePane.setTranslateX(tilePaneTranslationX);</span>
-<span class="nc" id="L152">        tilePane.setTranslateY(tilePaneTranslationY);</span>
+<span class="fc" id="L151">        tilePane.setTranslateX(tilePaneTranslationX);</span>
+<span class="fc" id="L152">        tilePane.setTranslateY(tilePaneTranslationY);</span>
 
-<span class="nc" id="L154">        moveTile(tilex, tiley, player);</span>
-<span class="nc" id="L155">        prefs.setPosition(new Point2D(tilex, tiley));</span>
-<span class="nc" id="L156">    }</span>
+<span class="fc" id="L154">        moveTile(tilex, tiley, player);</span>
+<span class="fc" id="L155">        prefs.setPosition(new Point2D(tilex, tiley));</span>
+<span class="fc" id="L156">    }</span>
 
     public void updateOrigin() {
-<span class="nc" id="L159">        setOrigin(posx, posy);</span>
-<span class="nc" id="L160">    }</span>
+<span class="fc" id="L159">        setOrigin(posx, posy);</span>
+<span class="fc" id="L160">    }</span>
 
     @Override
     public void onResize(int width, int height) {
@@ -170,22 +170,22 @@ public class IngameController extends Controller {
 
     @FXML
     public void handleKeyEvent(KeyEvent keyEvent) {
-<span class="pc bpc" id="L173" title="1 of 2 branches missed.">        if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {</span>
 <span class="fc" id="L174">            app.show(pauseControllerProvider.get());</span>
         }
 
-<span class="pc bpc" id="L177" title="2 of 4 branches missed.">        if (keyEvent.getCode().equals(KeyCode.UP) || keyEvent.getCode().equals(KeyCode.W)) {</span>
-<span class="nc" id="L178">            posy--;</span>
-<span class="nc" id="L179">            updateOrigin();</span>
-<span class="pc bpc" id="L180" title="2 of 4 branches missed.">        } else if (keyEvent.getCode().equals(KeyCode.DOWN) || keyEvent.getCode().equals(KeyCode.S)) {</span>
-<span class="nc" id="L181">            posy++;</span>
-<span class="nc" id="L182">            updateOrigin();</span>
-<span class="pc bpc" id="L183" title="2 of 4 branches missed.">        } else if (keyEvent.getCode().equals(KeyCode.LEFT) || keyEvent.getCode().equals(KeyCode.A)) {</span>
-<span class="nc" id="L184">            posx--;</span>
-<span class="nc" id="L185">            updateOrigin();</span>
-<span class="pc bpc" id="L186" title="2 of 4 branches missed.">        } else if (keyEvent.getCode().equals(KeyCode.RIGHT) || keyEvent.getCode().equals(KeyCode.D)) {</span>
-<span class="nc" id="L187">            posx++;</span>
-<span class="nc" id="L188">            updateOrigin();</span>
+<span class="pc bpc" id="L177" title="1 of 4 branches missed.">        if (keyEvent.getCode().equals(KeyCode.UP) || keyEvent.getCode().equals(KeyCode.W)) {</span>
+<span class="fc" id="L178">            posy--;</span>
+<span class="fc" id="L179">            updateOrigin();</span>
+<span class="pc bpc" id="L180" title="1 of 4 branches missed.">        } else if (keyEvent.getCode().equals(KeyCode.DOWN) || keyEvent.getCode().equals(KeyCode.S)) {</span>
+<span class="fc" id="L181">            posy++;</span>
+<span class="fc" id="L182">            updateOrigin();</span>
+<span class="pc bpc" id="L183" title="1 of 4 branches missed.">        } else if (keyEvent.getCode().equals(KeyCode.LEFT) || keyEvent.getCode().equals(KeyCode.A)) {</span>
+<span class="fc" id="L184">            posx--;</span>
+<span class="fc" id="L185">            updateOrigin();</span>
+<span class="pc bpc" id="L186" title="1 of 4 branches missed.">        } else if (keyEvent.getCode().equals(KeyCode.RIGHT) || keyEvent.getCode().equals(KeyCode.D)) {</span>
+<span class="fc" id="L187">            posx++;</span>
+<span class="fc" id="L188">            updateOrigin();</span>
         }
 <span class="fc" id="L190">    }</span>
 
