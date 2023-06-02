@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TrainerService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.service</a> &gt; <span class="el_source">TrainerService.java</span></div><h1>TrainerService.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.service;
+
+import de.uniks.beastopia.teaml.rest.CreateTrainerDto;
+import de.uniks.beastopia.teaml.rest.Trainer;
+import de.uniks.beastopia.teaml.rest.TrainerApiService;
+import de.uniks.beastopia.teaml.rest.UpdateTrainerDto;
+import io.reactivex.rxjava3.core.Observable;
+
+import javax.inject.Inject;
+import java.util.List;
+
+public class TrainerService {
+    @Inject
+    TrainerApiService trainerApiService;
+
+    @Inject
+<span class="nc" id="L17">    TrainerService() {</span>
+<span class="nc" id="L18">    }</span>
+
+    public Observable&lt;Trainer&gt; createTrainer(String regionId, String name, String image) {
+<span class="nc" id="L21">        return trainerApiService.createTrainer(regionId, new CreateTrainerDto(name, image));</span>
+    }
+
+    public Observable&lt;List&lt;Trainer&gt;&gt; getAllTrainer(String regionId) {
+<span class="nc" id="L25">        return trainerApiService.getAllTrainer(regionId);</span>
+    }
+
+    public Observable&lt;Trainer&gt; getTrainer(String regionId, String trainerId) {
+<span class="nc" id="L29">        return trainerApiService.getTrainer(regionId, trainerId);</span>
+    }
+
+    public Observable&lt;Trainer&gt; deleteTrainer(String regionId, String trainerId) {
+<span class="nc" id="L33">        return trainerApiService.deleteTrainer(regionId, trainerId);</span>
+    }
+
+    public Observable&lt;Trainer&gt; updateTrainer(String regionId, String trainerId, String name, String image) {
+<span class="nc" id="L37">        return trainerApiService.updateTrainer(regionId, trainerId, new UpdateTrainerDto(name, image));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
