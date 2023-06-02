@@ -26,8 +26,10 @@ public class ChatUserController extends Controller {
     HBox _rootElement;
     @FXML
     Button pinGroupBtn;
+    @SuppressWarnings(&quot;unused&quot;)
     @FXML
     Button deleteGroupBtn;
+    @SuppressWarnings(&quot;unused&quot;)
     @FXML
     Button editGroupBtn;
     @FXML
@@ -45,90 +47,95 @@ public class ChatUserController extends Controller {
     private Group group;
     private ImageView pinnedImg;
     private ImageView notPinnedImg;
-<span class="nc" id="L48">    private Consumer&lt;Group&gt; onPinChanged = null;</span>
-<span class="nc" id="L49">    private Consumer&lt;Group&gt; onGroupClicked = null;</span>
+<span class="fc" id="L50">    private Consumer&lt;Group&gt; onPinChanged = null;</span>
+<span class="fc" id="L51">    private Consumer&lt;Group&gt; onGroupClicked = null;</span>
 
     @Inject
-<span class="nc" id="L52">    public ChatUserController() {</span>
+<span class="fc" id="L54">    public ChatUserController() {</span>
 
-<span class="nc" id="L54">    }</span>
+<span class="fc" id="L56">    }</span>
 
     @Override
     public void init() {
         try {
-<span class="nc" id="L59">            pinnedImg = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/filled_pin.png&quot;)).toString());</span>
-<span class="nc" id="L60">            notPinnedImg = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/pin.png&quot;)).toString());</span>
-<span class="nc" id="L61">        } catch (URISyntaxException | FileNotFoundException e) {</span>
-<span class="nc" id="L62">            throw new RuntimeException(e);</span>
-<span class="nc" id="L63">        }</span>
-<span class="nc" id="L64">    }</span>
+<span class="fc" id="L61">            pinnedImg = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/filled_pin.png&quot;)).toString());</span>
+<span class="fc" id="L62">            notPinnedImg = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/pin.png&quot;)).toString());</span>
+<span class="nc" id="L63">        } catch (URISyntaxException | FileNotFoundException e) {</span>
+<span class="nc" id="L64">            throw new RuntimeException(e);</span>
+<span class="fc" id="L65">        }</span>
+<span class="fc" id="L66">    }</span>
 
     public void setOnGroupClicked(Consumer&lt;Group&gt; onGroupClicked) {
-<span class="nc" id="L67">        this.onGroupClicked = onGroupClicked;</span>
-<span class="nc" id="L68">    }</span>
+<span class="fc" id="L69">        this.onGroupClicked = onGroupClicked;</span>
+<span class="fc" id="L70">    }</span>
+
 
     public void setOnPinChanged(Consumer&lt;Group&gt; onPinChanged) {
-<span class="nc" id="L71">        this.onPinChanged = onPinChanged;</span>
-<span class="nc" id="L72">    }</span>
+<span class="fc" id="L74">        this.onPinChanged = onPinChanged;</span>
+<span class="fc" id="L75">    }</span>
 
     @SuppressWarnings(&quot;UnusedReturnValue&quot;)
     public ChatUserController setGroup(Group group) {
-<span class="nc" id="L76">        this.group = group;</span>
-<span class="nc" id="L77">        return this;</span>
+<span class="fc" id="L79">        this.group = group;</span>
+<span class="fc" id="L80">        return this;</span>
     }
 
     @Override
     public Parent render() {
-<span class="nc" id="L82">        Parent parent = super.render();</span>
-<span class="nc bnc" id="L83" title="All 2 branches missed.">        String otherID = group.members().get(0).equals(tokenStorage.getCurrentUser()._id())</span>
-<span class="nc" id="L84">                ? group.members().get(1)</span>
-<span class="nc" id="L85">                : group.members().get(0);</span>
+<span class="fc" id="L85">        Parent parent = super.render();</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        String otherID = group.members().get(0).equals(tokenStorage.getCurrentUser()._id())</span>
+<span class="fc" id="L87">                ? group.members().get(1)</span>
+<span class="pc" id="L88">                : group.members().get(0);</span>
 
-<span class="nc" id="L87">        cache.getAllUsers().stream()</span>
-<span class="nc" id="L88">                .filter(user -&gt; user._id().equals(otherID))</span>
-<span class="nc" id="L89">                .findFirst()</span>
-<span class="nc" id="L90">                .ifPresent(user -&gt; name.setText(user.name()));</span>
+<span class="fc" id="L90">        cache.getAllUsers().stream()</span>
+<span class="fc" id="L91">                .filter(user -&gt; user._id().equals(otherID))</span>
+<span class="fc" id="L92">                .findFirst()</span>
+<span class="fc" id="L93">                .ifPresent(user -&gt; name.setText(user.name()));</span>
 
-<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (prefs.isPinned(this.group)) {</span>
-<span class="nc" id="L93">            this.pinGroupBtn.setGraphic(pinnedImg);</span>
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">        if (prefs.isPinned(this.group)) {</span>
+<span class="fc" id="L96">            this.pinGroupBtn.setGraphic(pinnedImg);</span>
         } else {
-<span class="nc" id="L95">            this.pinGroupBtn.setGraphic(notPinnedImg);</span>
+<span class="nc" id="L98">            this.pinGroupBtn.setGraphic(notPinnedImg);</span>
         }
 
-<span class="nc" id="L98">        return parent;</span>
+<span class="fc" id="L101">        return parent;</span>
     }
 
+    @SuppressWarnings(&quot;unused&quot;)
     public void mouseClicked() {
-<span class="nc" id="L102">        onGroupClicked.accept(group);</span>
-<span class="nc" id="L103">    }</span>
+<span class="fc" id="L106">        onGroupClicked.accept(group);</span>
+<span class="fc" id="L107">    }</span>
 
     private ImageView createImage(String imageUrl) throws URISyntaxException, FileNotFoundException {
-<span class="nc" id="L106">        ImageView imageView = new ImageView(imageUrl);</span>
-<span class="nc" id="L107">        imageView.setFitHeight(25.0);</span>
-<span class="nc" id="L108">        imageView.setFitWidth(25.0);</span>
-<span class="nc" id="L109">        return imageView;</span>
+<span class="fc" id="L110">        ImageView imageView = new ImageView(imageUrl);</span>
+<span class="fc" id="L111">        imageView.setFitHeight(25.0);</span>
+<span class="fc" id="L112">        imageView.setFitWidth(25.0);</span>
+<span class="fc" id="L113">        return imageView;</span>
     }
 
+    @SuppressWarnings(&quot;unused&quot;)
     public void editGroup() {
         //TODO: show edit group dialog
-<span class="nc" id="L114">    }</span>
+<span class="nc" id="L119">    }</span>
 
+    @SuppressWarnings(&quot;unused&quot;)
     public void deleteGroup() {
         //TODO: delete group
-<span class="nc" id="L118">    }</span>
+<span class="nc" id="L124">    }</span>
 
+    @SuppressWarnings(&quot;unused&quot;)
     @FXML
     public void pinGroup() {
-<span class="nc bnc" id="L122" title="All 2 branches missed.">        if (!prefs.isPinned(this.group)) {</span>
-<span class="nc" id="L123">            pinGroupBtn.setGraphic(pinnedImg);</span>
-<span class="nc" id="L124">            prefs.setPinned(this.group, true);</span>
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">        if (!prefs.isPinned(this.group)) {</span>
+<span class="nc" id="L130">            pinGroupBtn.setGraphic(pinnedImg);</span>
+<span class="nc" id="L131">            prefs.setPinned(this.group, true);</span>
         } else {
-<span class="nc" id="L126">            pinGroupBtn.setGraphic(notPinnedImg);</span>
-<span class="nc" id="L127">            prefs.setPinned(this.group, false);</span>
+<span class="fc" id="L133">            pinGroupBtn.setGraphic(notPinnedImg);</span>
+<span class="fc" id="L134">            prefs.setPinned(this.group, false);</span>
         }
-<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (onPinChanged != null) {</span>
-<span class="nc" id="L130">            onPinChanged.accept(group);</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        if (onPinChanged != null) {</span>
+<span class="fc" id="L137">            onPinChanged.accept(group);</span>
         }
-<span class="nc" id="L132">    }</span>
+<span class="fc" id="L139">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
