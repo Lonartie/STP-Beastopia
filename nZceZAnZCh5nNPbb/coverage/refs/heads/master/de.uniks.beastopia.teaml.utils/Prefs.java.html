@@ -102,5 +102,21 @@ public class Prefs {
 <span class="nc" id="L102">                preferences.getDouble(&quot;positionY&quot;, 0)</span>
         );
     }
+
+    public void setMusicVolume(double volume) {
+<span class="nc" id="L107">        preferences.putDouble(&quot;musicVolume&quot;, volume);</span>
+<span class="nc" id="L108">    }</span>
+
+    public double getMusicVolume() {
+<span class="nc" id="L111">        return preferences.getDouble(&quot;musicVolume&quot;, 0);</span>
+    }
+
+    public void setSoundVolume(double volume) {
+<span class="nc" id="L115">        preferences.putDouble(&quot;soundVolume&quot;, volume);</span>
+<span class="nc" id="L116">    }</span>
+
+    public double getSoundVolume() {
+<span class="nc" id="L119">        return preferences.getDouble(&quot;soundVolume&quot;, 0);</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
