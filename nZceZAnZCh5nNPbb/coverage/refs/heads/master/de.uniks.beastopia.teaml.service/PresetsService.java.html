@@ -25,26 +25,27 @@ public class PresetsService {
 <span class="nc" id="L25">        return presetsApiService.getCharacters();</span>
     }
 
-    public Observable&lt;ResponseBody&gt; getSpriteSheet(String fileName) {
-<span class="nc" id="L29">        return presetsApiService.getSpriteSheet(fileName);</span>
+    public Observable&lt;Image&gt; getCharacterSprites(String fileName) {
+<span class="nc" id="L29">        return presetsApiService.getCharacterSprites(fileName)</span>
+<span class="nc" id="L30">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
     }
 
     public Observable&lt;Image&gt; getImage(TileSet tileSet) {
-<span class="nc" id="L33">        return presetsApiService.getTileset(tileSet.image())</span>
-<span class="nc" id="L34">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
+<span class="nc" id="L34">        return presetsApiService.getTileset(tileSet.image())</span>
+<span class="nc" id="L35">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
     }
 
     public Observable&lt;TileSet&gt; getTileset(TileSetDescription description) {
-<span class="nc" id="L38">        return presetsApiService.getTileset(new File(description.source()).getName())</span>
-<span class="nc" id="L39">                .map((ResponseBody body) -&gt; new Gson().fromJson(body.string(), TileSet.class));</span>
+<span class="nc" id="L39">        return presetsApiService.getTileset(new File(description.source()).getName())</span>
+<span class="nc" id="L40">                .map((ResponseBody body) -&gt; new Gson().fromJson(body.string(), TileSet.class));</span>
     }
 
     public Rectangle2D getTileViewPort(int id, TileSet tileSet) {
-<span class="nc" id="L43">        int columns = tileSet.columns();</span>
-<span class="nc" id="L44">        int tileSize = tileSet.tileheight();</span>
-<span class="nc" id="L45">        int x = (id - 1) % columns;</span>
-<span class="nc" id="L46">        int y = (id - 1) / columns;</span>
-<span class="nc" id="L47">        return new Rectangle2D(x * tileSize, y * tileSize, tileSize, tileSize);</span>
+<span class="nc" id="L44">        int columns = tileSet.columns();</span>
+<span class="nc" id="L45">        int tileSize = tileSet.tileheight();</span>
+<span class="nc" id="L46">        int x = (id - 1) % columns;</span>
+<span class="nc" id="L47">        int y = (id - 1) / columns;</span>
+<span class="nc" id="L48">        return new Rectangle2D(x * tileSize, y * tileSize, tileSize, tileSize);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
