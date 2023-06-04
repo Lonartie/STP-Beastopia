@@ -147,16 +147,25 @@ public class DirectMessageController extends Controller {
         }
 
 <span class="fc" id="L149">        String message = chatInput.getText();</span>
-<span class="fc" id="L150">        disposables.add(messageService.sendMessageToGroup(currentGroup, message).subscribe(r -&gt; chatInput.setText(&quot;&quot;)));</span>
-<span class="fc" id="L151">    }</span>
+<span class="fc" id="L150">        disposables.add(messageService</span>
+<span class="fc" id="L151">                .sendMessageToGroup(currentGroup, message)</span>
+<span class="fc" id="L152">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L153">                .subscribe(r -&gt; {</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">                            if (r == null) {</span>
+<span class="nc" id="L155">                                return;</span>
+                            }
+<span class="fc" id="L157">                            chatInput.setText(&quot;&quot;);</span>
+<span class="fc" id="L158">                        }</span>
+                ));
+<span class="fc" id="L160">    }</span>
 
     private void loadGroup(Group group) {
-<span class="fc" id="L154">        currentGroup = group;</span>
-<span class="fc" id="L155">        grid.getChildren().remove(rightSide);</span>
-<span class="fc" id="L156">        ChatWindowController controller = chatWindowControllerProvider.get().setupChatWindowController(group);</span>
-<span class="fc" id="L157">        controller.init();</span>
-<span class="fc" id="L158">        rightSide = controller.render();</span>
-<span class="fc" id="L159">        grid.add(rightSide, 1, 1);</span>
-<span class="fc" id="L160">    }</span>
+<span class="fc" id="L163">        currentGroup = group;</span>
+<span class="fc" id="L164">        grid.getChildren().remove(rightSide);</span>
+<span class="fc" id="L165">        ChatWindowController controller = chatWindowControllerProvider.get().setupChatWindowController(group);</span>
+<span class="fc" id="L166">        controller.init();</span>
+<span class="fc" id="L167">        rightSide = controller.render();</span>
+<span class="fc" id="L168">        grid.add(rightSide, 1, 1);</span>
+<span class="fc" id="L169">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
