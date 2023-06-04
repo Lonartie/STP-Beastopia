@@ -14,23 +14,23 @@ public class TrainerService {
     TrainerApiService trainerApiService;
 
     @Inject
-<span class="nc" id="L17">    TrainerService() {</span>
-<span class="nc" id="L18">    }</span>
+<span class="fc" id="L17">    TrainerService() {</span>
+<span class="fc" id="L18">    }</span>
 
     public Observable&lt;Trainer&gt; createTrainer(String regionId, String name, String image) {
-<span class="nc" id="L21">        return trainerApiService.createTrainer(regionId, new CreateTrainerDto(name, image));</span>
+<span class="fc" id="L21">        return trainerApiService.createTrainer(regionId, new CreateTrainerDto(name, image));</span>
     }
 
     public Observable&lt;List&lt;Trainer&gt;&gt; getAllTrainer(String regionId) {
-<span class="nc" id="L25">        return trainerApiService.getAllTrainer(regionId);</span>
+<span class="fc" id="L25">        return trainerApiService.getAllTrainer(regionId);</span>
     }
 
     public Observable&lt;Trainer&gt; getTrainer(String regionId, String trainerId) {
-<span class="nc" id="L29">        return trainerApiService.getTrainer(regionId, trainerId);</span>
+<span class="fc" id="L29">        return trainerApiService.getTrainer(regionId, trainerId);</span>
     }
 
     public Observable&lt;Trainer&gt; deleteTrainer(String regionId, String trainerId) {
-<span class="nc" id="L33">        return trainerApiService.deleteTrainer(regionId, trainerId);</span>
+<span class="fc" id="L33">        return trainerApiService.deleteTrainer(regionId, trainerId);</span>
     }
 
     public Observable&lt;Trainer&gt; updateTrainer(String regionId, String trainerId, String name, String image) {

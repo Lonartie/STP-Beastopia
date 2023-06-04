@@ -18,16 +18,16 @@ public class PresetsService {
     PresetsApiService presetsApiService;
 
     @Inject
-<span class="nc" id="L21">    public PresetsService() {</span>
-<span class="nc" id="L22">    }</span>
+<span class="fc" id="L21">    public PresetsService() {</span>
+<span class="fc" id="L22">    }</span>
 
     public Observable&lt;List&lt;String&gt;&gt; getCharacters() {
-<span class="nc" id="L25">        return presetsApiService.getCharacters();</span>
+<span class="fc" id="L25">        return presetsApiService.getCharacters();</span>
     }
 
     public Observable&lt;Image&gt; getCharacterSprites(String fileName) {
-<span class="nc" id="L29">        return presetsApiService.getCharacterSprites(fileName)</span>
-<span class="nc" id="L30">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
+<span class="fc" id="L29">        return presetsApiService.getCharacterSprites(fileName)</span>
+<span class="fc" id="L30">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
     }
 
     public Observable&lt;Image&gt; getImage(TileSet tileSet) {
