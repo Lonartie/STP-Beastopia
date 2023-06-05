@@ -20,16 +20,16 @@ import java.util.function.Consumer;
 
 public class EntityController extends Controller {
     private Image spriteSheet;
-<span class="nc" id="L23">    int PORT_WIDTH = 16;</span>
-<span class="nc" id="L24">    int PORT_HEIGHT = 32;</span>
-<span class="nc" id="L25">    int SPRITE_STEP = 16;</span>
-<span class="nc" id="L26">    int STATE_STEP = 32;</span>
-<span class="nc" id="L27">    int DIRECTION_STEP = 96;</span>
-<span class="nc" id="L28">    int index = 0;</span>
+<span class="fc" id="L23">    int PORT_WIDTH = 16;</span>
+<span class="fc" id="L24">    int PORT_HEIGHT = 32;</span>
+<span class="fc" id="L25">    int SPRITE_STEP = 16;</span>
+<span class="fc" id="L26">    int STATE_STEP = 32;</span>
+<span class="fc" id="L27">    int DIRECTION_STEP = 96;</span>
+<span class="fc" id="L28">    int index = 0;</span>
     Trainer trainer;
     Parent parent;
     Direction direction;
-<span class="nc" id="L32">    ObjectProperty&lt;PlayerState&gt; state = new SimpleObjectProperty&lt;&gt;();</span>
+<span class="fc" id="L32">    ObjectProperty&lt;PlayerState&gt; state = new SimpleObjectProperty&lt;&gt;();</span>
     Consumer&lt;MoveTrainerDto&gt; onTrainerUpdate;
 
     @FXML
@@ -41,24 +41,24 @@ public class EntityController extends Controller {
 
 
     @Inject
-<span class="nc" id="L44">    public EntityController() {</span>
-<span class="nc" id="L45">    }</span>
+<span class="fc" id="L44">    public EntityController() {</span>
+<span class="fc" id="L45">    }</span>
 
     public void setOnTrainerUpdate(Consumer&lt;MoveTrainerDto&gt; onTrainerUpdate) {
 <span class="nc" id="L48">        this.onTrainerUpdate = onTrainerUpdate;</span>
 <span class="nc" id="L49">    }</span>
 
     public ObjectProperty&lt;PlayerState&gt; playerState() {
-<span class="nc" id="L52">        return state;</span>
+<span class="fc" id="L52">        return state;</span>
     }
 
     @Override
     public void init() {
-<span class="nc" id="L57">        super.init();</span>
-<span class="nc" id="L58">        direction = Direction.DOWN;</span>
-<span class="nc" id="L59">        disposables.add(udpEventListener.listen(&quot;areas.&quot; + trainer.area() + &quot;.trainers.&quot; + trainer._id() + &quot;.moved&quot;, MoveTrainerDto.class)</span>
-<span class="nc" id="L60">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L61">                .subscribe(</span>
+<span class="fc" id="L57">        super.init();</span>
+<span class="fc" id="L58">        direction = Direction.DOWN;</span>
+<span class="fc" id="L59">        disposables.add(udpEventListener.listen(&quot;areas.&quot; + trainer.area() + &quot;.trainers.&quot; + trainer._id() + &quot;.moved&quot;, MoveTrainerDto.class)</span>
+<span class="fc" id="L60">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L61">                .subscribe(</span>
                         event -&gt; {
 <span class="nc bnc" id="L63" title="All 5 branches missed.">                            switch (event.data().direction()) {</span>
 <span class="nc" id="L64">                                case 0 -&gt; direction = Direction.RIGHT;</span>
@@ -74,37 +74,37 @@ public class EntityController extends Controller {
 <span class="nc" id="L74">                            throw new RuntimeException(error);</span>
                         }
                 ));
-<span class="nc" id="L77">        this.spriteSheet = presetsService.getCharacterSprites(trainer.image()).blockingFirst();</span>
-<span class="nc" id="L78">    }</span>
+<span class="fc" id="L77">        this.spriteSheet = presetsService.getCharacterSprites(trainer.image()).blockingFirst();</span>
+<span class="fc" id="L78">    }</span>
 
     public void setTrainer(Trainer trainer) {
-<span class="nc" id="L81">        this.trainer = trainer;</span>
-<span class="nc" id="L82">    }</span>
+<span class="fc" id="L81">        this.trainer = trainer;</span>
+<span class="fc" id="L82">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L86">        int VIEW_SIZE = 40;</span>
-<span class="nc" id="L87">        parent = super.render();</span>
-<span class="nc" id="L88">        entityView.toFront();</span>
-<span class="nc" id="L89">        entityView.setPreserveRatio(true);</span>
-<span class="nc" id="L90">        entityView.setSmooth(true);</span>
-<span class="nc" id="L91">        entityView.setImage(spriteSheet);</span>
-<span class="nc" id="L92">        entityView.setFitWidth(VIEW_SIZE);</span>
-<span class="nc" id="L93">        entityView.setFitHeight(VIEW_SIZE);</span>
-<span class="nc" id="L94">        entityView.setViewport(getViewport());</span>
-<span class="nc" id="L95">        return parent;</span>
+<span class="fc" id="L86">        int VIEW_SIZE = 40;</span>
+<span class="fc" id="L87">        parent = super.render();</span>
+<span class="fc" id="L88">        entityView.toFront();</span>
+<span class="fc" id="L89">        entityView.setPreserveRatio(true);</span>
+<span class="fc" id="L90">        entityView.setSmooth(true);</span>
+<span class="fc" id="L91">        entityView.setImage(spriteSheet);</span>
+<span class="fc" id="L92">        entityView.setFitWidth(VIEW_SIZE);</span>
+<span class="fc" id="L93">        entityView.setFitHeight(VIEW_SIZE);</span>
+<span class="fc" id="L94">        entityView.setViewport(getViewport());</span>
+<span class="fc" id="L95">        return parent;</span>
     }
 
     private Rectangle2D getViewport() {
-<span class="nc" id="L99">        return new Rectangle2D(direction.ordinal() * DIRECTION_STEP + index * SPRITE_STEP,</span>
-<span class="nc" id="L100">                state.get().ordinal() * STATE_STEP + STATE_STEP,</span>
+<span class="fc" id="L99">        return new Rectangle2D(direction.ordinal() * DIRECTION_STEP + index * SPRITE_STEP,</span>
+<span class="fc" id="L100">                state.get().ordinal() * STATE_STEP + STATE_STEP,</span>
                 PORT_WIDTH,
                 PORT_HEIGHT);
     }
 
     @Override
     public void destroy() {
-<span class="nc" id="L107">        super.destroy();</span>
-<span class="nc" id="L108">    }</span>
+<span class="fc" id="L107">        super.destroy();</span>
+<span class="fc" id="L108">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
