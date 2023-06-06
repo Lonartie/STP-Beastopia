@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UDPEventListener.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.sockets</a> &gt; <span class="el_source">UDPEventListener.java</span></div><h1>UDPEventListener.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.sockets;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.uniks.beastopia.teaml.Main;
+import de.uniks.beastopia.teaml.rest.Event;
+import de.uniks.beastopia.teaml.service.TokenStorage;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableEmitter;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.nio.channels.AsynchronousCloseException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
+
+@Singleton
+@SuppressWarnings(&quot;unused&quot;)
+public class UDPEventListener {
+    private final ObjectMapper mapper;
+    DatagramSocket clientSocket;
+<span class="nc" id="L31">    List&lt;Consumer&lt;String&gt;&gt; messageHandlers = new ArrayList&lt;&gt;();</span>
+    Thread receiver;
+
+    @Inject
+<span class="nc" id="L35">    public UDPEventListener(TokenStorage tokenStorage, ObjectMapper objectMapper) {</span>
+<span class="nc" id="L36">        this.mapper = objectMapper;</span>
+<span class="nc" id="L37">    }</span>
+
+    private void ensureOpen() {
+<span class="nc bnc" id="L40" title="All 4 branches missed.">        if (clientSocket != null &amp;&amp; clientSocket.isConnected()) {</span>
+<span class="nc" id="L41">            return;</span>
+        }
+
+        try {
+<span class="nc" id="L45">            clientSocket = new DatagramSocket();</span>
+<span class="nc" id="L46">            final String host = Main.UDP_URL.split(&quot;:&quot;)[0];</span>
+<span class="nc" id="L47">            final InetAddress address = InetAddress.getByName(host);</span>
+<span class="nc" id="L48">            final int port = Integer.parseInt(Main.UDP_URL.split(&quot;:&quot;)[1]);</span>
+<span class="nc" id="L49">            clientSocket.connect(address, port);</span>
+<span class="nc" id="L50">            this.receiver = new Thread(this::receive);</span>
+<span class="nc" id="L51">            this.receiver.start();</span>
+<span class="nc" id="L52">        } catch (Exception e) {</span>
+<span class="nc" id="L53">            throw new RuntimeException(e);</span>
+<span class="nc" id="L54">        }</span>
+<span class="nc" id="L55">    }</span>
+
+    public &lt;T&gt; Observable&lt;Event&lt;T&gt;&gt; listen(String pattern, Class&lt;T&gt; type) {
+<span class="nc" id="L58">        return Observable.create(emitter -&gt; {</span>
+<span class="nc" id="L59">            this.ensureOpen();</span>
+<span class="nc" id="L60">            send(Map.of(&quot;event&quot;, &quot;subscribe&quot;, &quot;data&quot;, pattern));</span>
+<span class="nc" id="L61">            final Consumer&lt;String&gt; handler = createPatternHandler(mapper, pattern, type, emitter);</span>
+<span class="nc" id="L62">            messageHandlers.add(handler);</span>
+<span class="nc" id="L63">            emitter.setCancellable(() -&gt; removeEventHandler(pattern, handler));</span>
+<span class="nc" id="L64">        });</span>
+    }
+
+    public static &lt;T&gt; Consumer&lt;String&gt; createPatternHandler(ObjectMapper mapper, String pattern, Class&lt;T&gt; type, ObservableEmitter&lt;Event&lt;T&gt;&gt; emitter) {
+        // regions.*.created -&gt; regions\.[^.]*\.created
+<span class="nc" id="L69">        final Pattern regex = Pattern.compile(pattern.replace(&quot;.&quot;, &quot;\\.&quot;).replace(&quot;*&quot;, &quot;[^.]*&quot;));</span>
+<span class="nc" id="L70">        return eventStr -&gt; {</span>
+            try {
+<span class="nc" id="L72">                final JsonNode node = mapper.readTree(eventStr);</span>
+<span class="nc" id="L73">                final String event = node.get(&quot;event&quot;).asText();</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">                if (!regex.matcher(event).matches()) {</span>
+<span class="nc" id="L75">                    return;</span>
+                }
+
+<span class="nc" id="L78">                final T data = mapper.treeToValue(node.get(&quot;data&quot;), type);</span>
+<span class="nc" id="L79">                emitter.onNext(new Event&lt;&gt;(event, data));</span>
+<span class="nc" id="L80">            } catch (Exception e) {</span>
+<span class="nc" id="L81">                emitter.onError(e);</span>
+<span class="nc" id="L82">            }</span>
+<span class="nc" id="L83">        };</span>
+    }
+
+    private void removeEventHandler(String pattern, Consumer&lt;String&gt; handler) {
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (clientSocket == null) {</span>
+<span class="nc" id="L88">            return;</span>
+        }
+
+<span class="nc" id="L91">        send(Map.of(&quot;event&quot;, &quot;unsubscribe&quot;, &quot;data&quot;, pattern));</span>
+<span class="nc" id="L92">        messageHandlers.remove(handler);</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        if (messageHandlers.isEmpty()) {</span>
+<span class="nc" id="L94">            close();</span>
+        }
+<span class="nc" id="L96">    }</span>
+
+    public void send(Map&lt;String, String&gt; message) {
+        try {
+<span class="nc" id="L100">            send(mapper.writeValueAsString(message));</span>
+<span class="nc" id="L101">        } catch (JsonProcessingException e) {</span>
+<span class="nc" id="L102">            throw new RuntimeException(e);</span>
+<span class="nc" id="L103">        }</span>
+<span class="nc" id="L104">    }</span>
+
+    public void send(String message) {
+<span class="nc" id="L107">        ensureOpen();</span>
+        try {
+<span class="nc" id="L109">            final String host = Main.UDP_URL.split(&quot;:&quot;)[0];</span>
+<span class="nc" id="L110">            final InetAddress address = InetAddress.getByName(host);</span>
+<span class="nc" id="L111">            final int port = Integer.parseInt(Main.UDP_URL.split(&quot;:&quot;)[1]);</span>
+<span class="nc" id="L112">            final byte[] bytes = message.getBytes(StandardCharsets.UTF_8);</span>
+<span class="nc" id="L113">            final DatagramPacket packet = new DatagramPacket(bytes, bytes.length, address, port);</span>
+<span class="nc" id="L114">            clientSocket.send(packet);</span>
+<span class="nc" id="L115">            System.out.println(&quot;Sent: &quot; + message);</span>
+<span class="nc" id="L116">        } catch (IOException e) {</span>
+<span class="nc" id="L117">            throw new RuntimeException(e);</span>
+<span class="nc" id="L118">        }</span>
+<span class="nc" id="L119">    }</span>
+
+    private void close() {
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        if (clientSocket == null) {</span>
+<span class="nc" id="L123">            return;</span>
+        }
+
+<span class="nc" id="L126">        clientSocket.close();</span>
+<span class="nc" id="L127">        clientSocket = null;</span>
+<span class="nc" id="L128">    }</span>
+
+    private void receive() {
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        while (clientSocket != null) {</span>
+<span class="nc" id="L132">            byte[] data = new byte[1024];</span>
+<span class="nc" id="L133">            DatagramPacket packet = new DatagramPacket(data, data.length);</span>
+            try {
+<span class="nc" id="L135">                clientSocket.receive(packet);</span>
+<span class="nc" id="L136">                final String message = new String(packet.getData(), packet.getOffset(), packet.getLength());</span>
+<span class="nc" id="L137">                System.out.println(&quot;Received: &quot; + message);</span>
+<span class="nc" id="L138">                messageHandlers.forEach(handler -&gt; handler.accept(message));</span>
+<span class="nc" id="L139">            } catch (AsynchronousCloseException e) {</span>
+                // main thread closed the socket
+                // exit gracefully
+<span class="nc" id="L142">                return;</span>
+<span class="nc" id="L143">            } catch (IOException e) {</span>
+<span class="nc" id="L144">                throw new RuntimeException(e);</span>
+<span class="nc" id="L145">            }</span>
+<span class="nc" id="L146">        }</span>
+<span class="nc" id="L147">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
