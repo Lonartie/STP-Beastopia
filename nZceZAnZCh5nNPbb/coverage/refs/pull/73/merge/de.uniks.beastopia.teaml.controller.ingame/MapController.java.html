@@ -96,8 +96,8 @@ public class MapController extends Controller {
 <span class="nc" id="L96">                r.setHeight(object.height());</span>
 <span class="nc" id="L97">                r.setFill(Color.TRANSPARENT);</span>
 <span class="nc" id="L98">                r.setOnMouseEntered(event -&gt; setRegionInfo(object, regionInfo, event));</span>
-<span class="nc" id="L99">                r.setOnMouseExited(event -&gt; anchorPane.getChildren().remove(1));</span>
-<span class="nc" id="L100">                mapPane.getChildren().add(r);</span>
+<span class="nc" id="L99">                r.setOnMouseExited(event -&gt; anchorPane.getChildren().remove(anchorPane.getChildren().size() - 1));</span>
+<span class="nc" id="L100">                anchorPane.getChildren().add(r);</span>
 <span class="nc" id="L101">            } else {</span>
 <span class="nc" id="L102">                Polygon p = new Polygon();</span>
 <span class="nc bnc" id="L103" title="All 2 branches missed.">                for (HashMap&lt;String, Double&gt; point : object.polygon()) {</span>
@@ -107,8 +107,8 @@ public class MapController extends Controller {
 <span class="nc" id="L107">                }</span>
 <span class="nc" id="L108">                p.setFill(Color.TRANSPARENT);</span>
 <span class="nc" id="L109">                p.setOnMouseEntered(event -&gt; setRegionInfo(object, regionInfo, event));</span>
-<span class="nc" id="L110">                p.setOnMouseExited(event -&gt; anchorPane.getChildren().remove(1));</span>
-<span class="nc" id="L111">                mapPane.getChildren().add(p);</span>
+<span class="nc" id="L110">                p.setOnMouseExited(event -&gt; anchorPane.getChildren().remove(anchorPane.getChildren().size() - 1));</span>
+<span class="nc" id="L111">                anchorPane.getChildren().add(p);</span>
             }
 
 <span class="nc" id="L114">        }</span>
@@ -118,48 +118,61 @@ public class MapController extends Controller {
 <span class="nc" id="L118">        String name = object.name();</span>
 <span class="nc" id="L119">        String description = object.properties().get(0).get(&quot;value&quot;);</span>
 <span class="nc" id="L120">        regionInfo.setText(name, description);</span>
-<span class="nc" id="L121">        anchorPane.getChildren().add(regionInfo.render());</span>
-<span class="nc" id="L122">        anchorPane.getChildren().get(1).setLayoutX(event.getX() + 10);</span>
-<span class="nc" id="L123">        anchorPane.getChildren().get(1).setLayoutY(event.getY() + 10);</span>
-<span class="nc" id="L124">    }</span>
+<span class="nc" id="L121">        double maxX = anchorPane.widthProperty().getValue();</span>
+<span class="nc" id="L122">        double maxY = anchorPane.heightProperty().getValue();</span>
+<span class="nc" id="L123">        anchorPane.getChildren().add(regionInfo.render());</span>
+<span class="nc" id="L124">        int lastChild = anchorPane.getChildren().size() - 1;</span>
+
+<span class="nc bnc" id="L126" title="All 2 branches missed.">        if (event.getX() + 10 + 231 &gt; maxX) {</span>
+<span class="nc" id="L127">            anchorPane.getChildren().get(lastChild).setLayoutX(event.getX() - 231 - 10);</span>
+        } else {
+<span class="nc" id="L129">            anchorPane.getChildren().get(lastChild).setLayoutX(event.getX() + 10);</span>
+        }
+
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (event.getY() + 10 + 131 &gt; maxY) {</span>
+<span class="nc" id="L133">            anchorPane.getChildren().get(lastChild).setLayoutY(event.getY() - 131 - 10);</span>
+        } else {
+<span class="nc" id="L135">            anchorPane.getChildren().get(lastChild).setLayoutY(event.getY() + 10);</span>
+        }
+<span class="nc" id="L137">    }</span>
 
     private void drawTileLayer(Layer layer) {
-<span class="nc" id="L127">        int TILE_SIZE = 16;</span>
-<span class="nc bnc" id="L128" title="All 2 branches missed.">        for (Chunk chunk : layer.chunks()) {</span>
-<span class="nc" id="L129">            int chunkX = chunk.x();</span>
-<span class="nc" id="L130">            int chunkY = chunk.y();</span>
-<span class="nc" id="L131">            int index = 0;</span>
-<span class="nc bnc" id="L132" title="All 2 branches missed.">            for (int id : chunk.data()) {</span>
-<span class="nc" id="L133">                int x = index % chunk.width() + chunkX;</span>
-<span class="nc" id="L134">                int y = index / chunk.height() + chunkY;</span>
-<span class="nc" id="L135">                index++;</span>
-<span class="nc" id="L136">                ImageView view = new ImageView();</span>
-<span class="nc" id="L137">                view.setPreserveRatio(true);</span>
-<span class="nc" id="L138">                view.setSmooth(true);</span>
-<span class="nc" id="L139">                view.setImage(image);</span>
-<span class="nc" id="L140">                view.setFitWidth(TILE_SIZE + 1);</span>
-<span class="nc" id="L141">                view.setFitHeight(TILE_SIZE + 1);</span>
-<span class="nc" id="L142">                view.setViewport(presetsService.getTileViewPort(id, tileSet));</span>
-<span class="nc" id="L143">                view.setTranslateX(x * TILE_SIZE);</span>
-<span class="nc" id="L144">                view.setTranslateY(y * TILE_SIZE);</span>
-<span class="nc" id="L145">                mapPane.getChildren().add(view);</span>
-<span class="nc" id="L146">            }</span>
-<span class="nc" id="L147">        }</span>
-<span class="nc" id="L148">    }</span>
+<span class="nc" id="L140">        int TILE_SIZE = 16;</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        for (Chunk chunk : layer.chunks()) {</span>
+<span class="nc" id="L142">            int chunkX = chunk.x();</span>
+<span class="nc" id="L143">            int chunkY = chunk.y();</span>
+<span class="nc" id="L144">            int index = 0;</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">            for (int id : chunk.data()) {</span>
+<span class="nc" id="L146">                int x = index % chunk.width() + chunkX;</span>
+<span class="nc" id="L147">                int y = index / chunk.height() + chunkY;</span>
+<span class="nc" id="L148">                index++;</span>
+<span class="nc" id="L149">                ImageView view = new ImageView();</span>
+<span class="nc" id="L150">                view.setPreserveRatio(true);</span>
+<span class="nc" id="L151">                view.setSmooth(true);</span>
+<span class="nc" id="L152">                view.setImage(image);</span>
+<span class="nc" id="L153">                view.setFitWidth(TILE_SIZE + 1);</span>
+<span class="nc" id="L154">                view.setFitHeight(TILE_SIZE + 1);</span>
+<span class="nc" id="L155">                view.setViewport(presetsService.getTileViewPort(id, tileSet));</span>
+<span class="nc" id="L156">                view.setTranslateX(x * TILE_SIZE);</span>
+<span class="nc" id="L157">                view.setTranslateY(y * TILE_SIZE);</span>
+<span class="nc" id="L158">                anchorPane.getChildren().add(view);</span>
+<span class="nc" id="L159">            }</span>
+<span class="nc" id="L160">        }</span>
+<span class="nc" id="L161">    }</span>
 
     @Override
     public void destroy() {
-<span class="nc" id="L152">        super.destroy();</span>
-<span class="nc" id="L153">    }</span>
+<span class="nc" id="L165">        super.destroy();</span>
+<span class="nc" id="L166">    }</span>
 
     public void closeMap() {
-<span class="nc" id="L156">        IngameController ingameController = ingameControllerProvider.get();</span>
-<span class="nc" id="L157">        ingameController.setRegion(region);</span>
-<span class="nc" id="L158">        app.show(ingameController);</span>
-<span class="nc" id="L159">    }</span>
+<span class="nc" id="L169">        IngameController ingameController = ingameControllerProvider.get();</span>
+<span class="nc" id="L170">        ingameController.setRegion(region);</span>
+<span class="nc" id="L171">        app.show(ingameController);</span>
+<span class="nc" id="L172">    }</span>
 
     public void setRegion(Region region) {
-<span class="nc" id="L162">        this.region = region;</span>
-<span class="nc" id="L163">    }</span>
+<span class="nc" id="L175">        this.region = region;</span>
+<span class="nc" id="L176">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
