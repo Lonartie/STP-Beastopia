@@ -360,10 +360,10 @@ public class IngameController extends Controller {
 
     @FXML
     public void handleKeyEvent(KeyEvent keyEvent) {
-<span class="pc bpc" id="L363" title="1 of 2 branches missed.">        if (keyEvent.getCode().equals(KeyCode.M)) {</span>
-<span class="nc" id="L364">            MapController map = mapControllerProvider.get();</span>
-<span class="nc" id="L365">            map.setRegion(region);</span>
-<span class="nc" id="L366">            app.show(map);</span>
+<span class="fc bfc" id="L363" title="All 2 branches covered.">        if (keyEvent.getCode().equals(KeyCode.M)) {</span>
+<span class="fc" id="L364">            MapController map = mapControllerProvider.get();</span>
+<span class="fc" id="L365">            map.setRegion(region);</span>
+<span class="fc" id="L366">            app.show(map);</span>
         }
 
 <span class="fc bfc" id="L369" title="All 2 branches covered.">        if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {</span>
