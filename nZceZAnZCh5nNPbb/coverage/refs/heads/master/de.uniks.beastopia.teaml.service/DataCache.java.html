@@ -18,89 +18,110 @@ public class DataCache {
 <span class="fc" id="L18">    private List&lt;Region&gt; regions = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L19">    private List&lt;Area&gt; areas = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L20">    private List&lt;Pair&lt;String, Image&gt;&gt; characters = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L21">    private List&lt;Trainer&gt; trainers = new ArrayList&lt;&gt;();</span>
     Trainer trainer;
+    Region joinedRegion;
 
     @Inject
-<span class="fc" id="L24">    public DataCache() {</span>
-<span class="fc" id="L25">    }</span>
+<span class="fc" id="L26">    public DataCache() {</span>
+<span class="fc" id="L27">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void addUser(User user) {
-<span class="nc" id="L29">        users.add(user);</span>
-<span class="nc" id="L30">    }</span>
+<span class="nc" id="L31">        users.add(user);</span>
+<span class="nc" id="L32">    }</span>
 
     public void setAllUsers(List&lt;User&gt; users) {
-<span class="fc" id="L33">        this.users = new ArrayList&lt;&gt;(users);</span>
-<span class="fc" id="L34">    }</span>
+<span class="fc" id="L35">        this.users = new ArrayList&lt;&gt;(users);</span>
+<span class="fc" id="L36">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void addUsers(List&lt;User&gt; users) {
-<span class="nc" id="L38">        this.users.addAll(users);</span>
-<span class="nc" id="L39">    }</span>
+<span class="nc" id="L40">        this.users.addAll(users);</span>
+<span class="nc" id="L41">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void removeUser(User user) {
-<span class="nc" id="L43">        users.remove(user);</span>
-<span class="nc" id="L44">    }</span>
+<span class="nc" id="L45">        users.remove(user);</span>
+<span class="nc" id="L46">    }</span>
 
     public List&lt;User&gt; getAllUsers() {
-<span class="fc" id="L47">        return users;</span>
+<span class="fc" id="L49">        return users;</span>
     }
 
     public User getUser(String id) {
-<span class="fc" id="L51">        return users.stream()</span>
-<span class="fc" id="L52">                .filter(user -&gt; user._id().equals(id))</span>
-<span class="fc" id="L53">                .findFirst()</span>
-<span class="fc" id="L54">                .orElse(null);</span>
+<span class="fc" id="L53">        return users.stream()</span>
+<span class="fc" id="L54">                .filter(user -&gt; user._id().equals(id))</span>
+<span class="fc" id="L55">                .findFirst()</span>
+<span class="fc" id="L56">                .orElse(null);</span>
     }
 
     public List&lt;Region&gt; getRegions() {
-<span class="nc" id="L58">        return regions;</span>
+<span class="nc" id="L60">        return regions;</span>
     }
 
     public void setRegions(List&lt;Region&gt; regions) {
-<span class="nc" id="L62">        this.regions = new ArrayList&lt;&gt;(regions);</span>
-<span class="nc" id="L63">    }</span>
+<span class="nc" id="L64">        this.regions = new ArrayList&lt;&gt;(regions);</span>
+<span class="nc" id="L65">    }</span>
 
     public Region getRegion(String id) {
-<span class="nc" id="L66">        return regions.stream()</span>
-<span class="nc" id="L67">                .filter(region -&gt; region._id().equals(id))</span>
-<span class="nc" id="L68">                .findFirst()</span>
-<span class="nc" id="L69">                .orElse(null);</span>
+<span class="nc" id="L68">        return regions.stream()</span>
+<span class="nc" id="L69">                .filter(region -&gt; region._id().equals(id))</span>
+<span class="nc" id="L70">                .findFirst()</span>
+<span class="nc" id="L71">                .orElse(null);</span>
+    }
+
+    public void setRegion(Region region) {
+<span class="nc" id="L75">        this.joinedRegion = region;</span>
+<span class="nc" id="L76">    }</span>
+
+    public Region getJoinedRegion() {
+<span class="nc" id="L79">        return joinedRegion;</span>
     }
 
     public void setAreas(List&lt;Area&gt; areas) {
-<span class="nc" id="L73">        this.areas = new ArrayList&lt;&gt;(areas);</span>
-<span class="nc" id="L74">    }</span>
+<span class="nc" id="L83">        this.areas = new ArrayList&lt;&gt;(areas);</span>
+<span class="nc" id="L84">    }</span>
 
     public Area getArea(String id) {
-<span class="nc" id="L77">        return areas.stream()</span>
-<span class="nc" id="L78">                .filter(area -&gt; area._id().equals(id))</span>
-<span class="nc" id="L79">                .findFirst()</span>
-<span class="nc" id="L80">                .orElse(null);</span>
+<span class="nc" id="L87">        return areas.stream()</span>
+<span class="nc" id="L88">                .filter(area -&gt; area._id().equals(id))</span>
+<span class="nc" id="L89">                .findFirst()</span>
+<span class="nc" id="L90">                .orElse(null);</span>
     }
 
     public void setTrainer(Trainer trainer) {
-<span class="nc" id="L84">        this.trainer = trainer;</span>
-<span class="nc" id="L85">    }</span>
+<span class="nc" id="L94">        this.trainer = trainer;</span>
+<span class="nc" id="L95">    }</span>
 
     public Trainer getTrainer() {
-<span class="nc" id="L88">        return trainer;</span>
+<span class="nc" id="L98">        return trainer;</span>
     }
 
+    public Trainer getTrainer(String id) {
+<span class="nc" id="L102">        return trainers.stream()</span>
+<span class="nc" id="L103">                .filter(trainer -&gt; trainer._id().equals(id))</span>
+<span class="nc" id="L104">                .findFirst()</span>
+<span class="nc" id="L105">                .orElse(null);</span>
+    }
+
+    public void setTrainers(List&lt;Trainer&gt; trainers) {
+<span class="nc" id="L109">        this.trainers = trainers;</span>
+<span class="nc" id="L110">    }</span>
+
     public void setCharacters(List&lt;Pair&lt;String, Image&gt;&gt; characters) {
-<span class="nc" id="L92">        this.characters = new ArrayList&lt;&gt;(characters);</span>
-<span class="nc" id="L93">    }</span>
+<span class="nc" id="L113">        this.characters = new ArrayList&lt;&gt;(characters);</span>
+<span class="nc" id="L114">    }</span>
 
     public List&lt;Pair&lt;String, Image&gt;&gt; getCharacters() {
-<span class="nc" id="L96">        return characters;</span>
+<span class="nc" id="L117">        return characters;</span>
     }
 
     public Pair&lt;String, Image&gt; getCharacterImage(String image) {
-<span class="nc" id="L100">        return characters.stream()</span>
-<span class="nc" id="L101">                .filter(pair -&gt; pair.getKey().equals(image))</span>
-<span class="nc" id="L102">                .findFirst()</span>
-<span class="nc" id="L103">                .orElse(null);</span>
+<span class="nc" id="L121">        return characters.stream()</span>
+<span class="nc" id="L122">                .filter(pair -&gt; pair.getKey().equals(image))</span>
+<span class="nc" id="L123">                .findFirst()</span>
+<span class="nc" id="L124">                .orElse(null);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

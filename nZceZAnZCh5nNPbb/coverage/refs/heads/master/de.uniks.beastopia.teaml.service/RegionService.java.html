@@ -19,5 +19,9 @@ public class RegionService {
     public Observable&lt;List&lt;Region&gt;&gt; getRegions() {
 <span class="fc" id="L20">        return regionApiService.getRegions();</span>
     }
+
+    public Observable&lt;Region&gt; getRegion(String id) {
+<span class="fc" id="L24">        return regionApiService.getRegion(id);</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -3,6 +3,7 @@
 import de.uniks.beastopia.teaml.App;
 import de.uniks.beastopia.teaml.controller.ingame.TrainerController;
 import de.uniks.beastopia.teaml.rest.Region;
+import de.uniks.beastopia.teaml.service.DataCache;
 import de.uniks.beastopia.teaml.service.TokenStorage;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -19,33 +20,35 @@ public class RegionCell extends ListCell&lt;Region&gt; {
     Provider&lt;TrainerController&gt; trainerControllerProvider;
     @Inject
     TokenStorage tokenStorage;
-
+    @Inject
+    DataCache cache;
     @Inject
     App app;
 
     @Inject
-<span class="nc" id="L27">    public RegionCell(ResourceBundle resources) {</span>
-<span class="nc" id="L28">        this.resources = resources;</span>
-<span class="nc" id="L29">    }</span>
+<span class="nc" id="L29">    public RegionCell(ResourceBundle resources) {</span>
+<span class="nc" id="L30">        this.resources = resources;</span>
+<span class="nc" id="L31">    }</span>
 
     @Override
     protected void updateItem(Region item, boolean empty) {
-<span class="nc" id="L33">        super.updateItem(item, empty);</span>
-<span class="nc bnc" id="L34" title="All 4 branches missed.">        if (empty || item == null) {</span>
-<span class="nc" id="L35">            setGraphic(null);</span>
-<span class="nc" id="L36">            setText(null);</span>
+<span class="nc" id="L35">        super.updateItem(item, empty);</span>
+<span class="nc bnc" id="L36" title="All 4 branches missed.">        if (empty || item == null) {</span>
+<span class="nc" id="L37">            setGraphic(null);</span>
+<span class="nc" id="L38">            setText(null);</span>
         } else {
-<span class="nc" id="L38">            final Button join = new Button(item.name() + &quot; &quot; + resources.getString(&quot;join&quot;));</span>
-<span class="nc" id="L39">            join.setOnAction(event -&gt; {</span>
-<span class="nc" id="L40">                TrainerController controller = trainerControllerProvider.get();</span>
-<span class="nc" id="L41">                controller.setRegion(item);</span>
-<span class="nc" id="L42">                controller.backController(&quot;menu&quot;);</span>
-<span class="nc" id="L43">                app.show(controller);</span>
-<span class="nc" id="L44">            });</span>
-<span class="nc" id="L45">            setGraphic(join);</span>
+<span class="nc" id="L40">            final Button join = new Button(item.name() + &quot; &quot; + resources.getString(&quot;join&quot;));</span>
+<span class="nc" id="L41">            join.setOnAction(event -&gt; {</span>
+<span class="nc" id="L42">                TrainerController controller = trainerControllerProvider.get();</span>
+<span class="nc" id="L43">                cache.setRegion(item);</span>
+<span class="nc" id="L44">                controller.setRegion(item);</span>
+<span class="nc" id="L45">                controller.backController(&quot;menu&quot;);</span>
+<span class="nc" id="L46">                app.show(controller);</span>
+<span class="nc" id="L47">            });</span>
+<span class="nc" id="L48">            setGraphic(join);</span>
         }
-<span class="nc" id="L47">        setAlignment(Pos.CENTER);</span>
-<span class="nc" id="L48">        getStyleClass().add(&quot;region-cell&quot;);</span>
-<span class="nc" id="L49">    }</span>
+<span class="nc" id="L50">        setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L51">        getStyleClass().add(&quot;region-cell&quot;);</span>
+<span class="nc" id="L52">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
