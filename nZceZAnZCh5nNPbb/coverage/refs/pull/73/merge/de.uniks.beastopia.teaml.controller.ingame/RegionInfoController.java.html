@@ -3,14 +3,11 @@
 import de.uniks.beastopia.teaml.controller.Controller;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import javax.inject.Inject;
 
 public class RegionInfoController extends Controller {
-    @FXML
-    public VBox rootelement;
     @FXML
     public Text place;
     @FXML
@@ -20,38 +17,38 @@ public class RegionInfoController extends Controller {
     String information;
 
     @Inject
-<span class="nc" id="L23">    public RegionInfoController() {</span>
-<span class="nc" id="L24">    }</span>
+<span class="nc" id="L20">    public RegionInfoController() {</span>
+<span class="nc" id="L21">    }</span>
 
     @Override
     public void init() {
-<span class="nc" id="L28">        super.init();</span>
-<span class="nc" id="L29">        this.place = new Text();</span>
-<span class="nc" id="L30">        this.description = new Text();</span>
-<span class="nc" id="L31">    }</span>
+<span class="nc" id="L25">        super.init();</span>
+<span class="nc" id="L26">        this.place = new Text();</span>
+<span class="nc" id="L27">        this.description = new Text();</span>
+<span class="nc" id="L28">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L35">        Parent parent = super.render();</span>
+<span class="nc" id="L32">        Parent parent = super.render();</span>
 
-<span class="nc" id="L37">        this.place.setText(name);</span>
-<span class="nc bnc" id="L38" title="All 2 branches missed.">        if (information.equals(&quot;&quot;)) {</span>
-<span class="nc" id="L39">            this.description.visibleProperty().setValue(false);</span>
+<span class="nc" id="L34">        this.place.setText(name);</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        if (information.equals(&quot;&quot;)) {</span>
+<span class="nc" id="L36">            this.description.visibleProperty().setValue(false);</span>
         } else {
-<span class="nc" id="L41">            this.description.setText(information);</span>
+<span class="nc" id="L38">            this.description.setText(information);</span>
         }
-<span class="nc" id="L43">        return parent;</span>
+<span class="nc" id="L40">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="nc" id="L48">        super.destroy();</span>
-<span class="nc" id="L49">    }</span>
+<span class="nc" id="L45">        super.destroy();</span>
+<span class="nc" id="L46">    }</span>
 
     public RegionInfoController setText(String name, String description) {
-<span class="nc" id="L52">        this.name = name;</span>
-<span class="nc" id="L53">        this.information = description;</span>
-<span class="nc" id="L54">        return this;</span>
+<span class="nc" id="L49">        this.name = name;</span>
+<span class="nc" id="L50">        this.information = description;</span>
+<span class="nc" id="L51">        return this;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
