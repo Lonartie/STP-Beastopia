@@ -17,38 +17,38 @@ public class RegionInfoController extends Controller {
     String information;
 
     @Inject
-<span class="nc" id="L20">    public RegionInfoController() {</span>
-<span class="nc" id="L21">    }</span>
+<span class="fc" id="L20">    public RegionInfoController() {</span>
+<span class="fc" id="L21">    }</span>
 
     @Override
     public void init() {
-<span class="nc" id="L25">        super.init();</span>
-<span class="nc" id="L26">        this.place = new Text();</span>
-<span class="nc" id="L27">        this.description = new Text();</span>
-<span class="nc" id="L28">    }</span>
+<span class="fc" id="L25">        super.init();</span>
+<span class="fc" id="L26">        this.place = new Text();</span>
+<span class="fc" id="L27">        this.description = new Text();</span>
+<span class="fc" id="L28">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L32">        Parent parent = super.render();</span>
+<span class="fc" id="L32">        Parent parent = super.render();</span>
 
-<span class="nc" id="L34">        this.place.setText(name);</span>
-<span class="nc bnc" id="L35" title="All 2 branches missed.">        if (information.equals(&quot;&quot;)) {</span>
-<span class="nc" id="L36">            this.description.visibleProperty().setValue(false);</span>
+<span class="fc" id="L34">        this.place.setText(name);</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (information.equals(&quot;&quot;)) {</span>
+<span class="fc" id="L36">            this.description.visibleProperty().setValue(false);</span>
         } else {
-<span class="nc" id="L38">            this.description.setText(information);</span>
+<span class="fc" id="L38">            this.description.setText(information);</span>
         }
-<span class="nc" id="L40">        return parent;</span>
+<span class="fc" id="L40">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="nc" id="L45">        super.destroy();</span>
-<span class="nc" id="L46">    }</span>
+<span class="fc" id="L45">        super.destroy();</span>
+<span class="fc" id="L46">    }</span>
 
     public RegionInfoController setText(String name, String description) {
-<span class="nc" id="L49">        this.name = name;</span>
-<span class="nc" id="L50">        this.information = description;</span>
-<span class="nc" id="L51">        return this;</span>
+<span class="fc" id="L49">        this.name = name;</span>
+<span class="fc" id="L50">        this.information = description;</span>
+<span class="fc" id="L51">        return this;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
