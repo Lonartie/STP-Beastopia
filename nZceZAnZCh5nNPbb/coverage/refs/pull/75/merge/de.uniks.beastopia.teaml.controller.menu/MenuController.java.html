@@ -96,11 +96,11 @@ public class MenuController extends Controller {
 
     @Override
     public void destroy() {
-<span class="nc" id="L99">        subControllers.forEach(Controller::destroy);</span>
-<span class="nc" id="L100">        banner = null;</span>
-<span class="nc" id="L101">        userAvatar = null;</span>
-<span class="nc" id="L102">        super.destroy();</span>
-<span class="nc" id="L103">    }</span>
+<span class="fc" id="L99">        subControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L100">        banner = null;</span>
+<span class="fc" id="L101">        userAvatar = null;</span>
+<span class="fc" id="L102">        super.destroy();</span>
+<span class="fc" id="L103">    }</span>
 
     @Override
     public String getTitle() {
@@ -116,11 +116,11 @@ public class MenuController extends Controller {
 
     @FXML
     public void editProfileButtonPressed() {
-<span class="nc" id="L119">        app.show(editProfileControllerProvider.get().backController(&quot;menu&quot;));</span>
-<span class="nc" id="L120">    }</span>
+<span class="fc" id="L119">        app.show(editProfileControllerProvider.get().backController(&quot;menu&quot;));</span>
+<span class="fc" id="L120">    }</span>
 
     public void settingsButtonPressed() {
-<span class="nc" id="L123">        app.show(settingsControllerProvider.get().backController(&quot;menu&quot;));</span>
-<span class="nc" id="L124">    }</span>
+<span class="fc" id="L123">        app.show(settingsControllerProvider.get().backController(&quot;menu&quot;));</span>
+<span class="fc" id="L124">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
