@@ -114,16 +114,16 @@ public class FriendController extends Controller {
 <span class="fc" id="L114">        name.setText(user.name());</span>
 <span class="fc" id="L115">        updateOnlineStatus(user);</span>
 
-<span class="pc bpc" id="L117" title="1 of 2 branches missed.">        if (friend) {</span>
-<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (this.friendPin) {</span>
+<span class="pc bpc" id="L117" title="3 of 4 branches missed.">        if (friendListService.isFriend(user) || friend) {</span>
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">            if (this.friendPin) {</span>
 <span class="nc" id="L119">                this.pin.setGraphic(pinned);</span>
             } else {
-<span class="nc" id="L121">                this.pin.setGraphic(notPinned);</span>
+<span class="fc" id="L121">                this.pin.setGraphic(notPinned);</span>
             }
         } else {
-<span class="fc" id="L124">            this.pin.setGraphic(notPinned);</span>
-<span class="fc" id="L125">            this.pin.setVisible(false);</span>
-<span class="fc" id="L126">            this.pin.setDisable(true);</span>
+<span class="nc" id="L124">            this.pin.setGraphic(notPinned);</span>
+<span class="nc" id="L125">            this.pin.setVisible(false);</span>
+<span class="nc" id="L126">            this.pin.setDisable(true);</span>
         }
 
 <span class="pc bpc" id="L129" title="1 of 2 branches missed.">        if (friendListService.isFriend(user)) {</span>
@@ -179,17 +179,17 @@ public class FriendController extends Controller {
 
     @FXML
     public void pinFriend() {
-<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (pin.getGraphic() == notPinned) {</span>
-<span class="nc" id="L183">            pin.setGraphic(pinned);</span>
-<span class="nc" id="L184">            prefs.setPinned(user, true);</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        if (pin.getGraphic() == notPinned) {</span>
+<span class="fc" id="L183">            pin.setGraphic(pinned);</span>
+<span class="fc" id="L184">            prefs.setPinned(user, true);</span>
         } else {
-<span class="nc" id="L186">            pin.setGraphic(notPinned);</span>
-<span class="nc" id="L187">            prefs.setPinned(user, false);</span>
+<span class="fc" id="L186">            pin.setGraphic(notPinned);</span>
+<span class="fc" id="L187">            prefs.setPinned(user, false);</span>
         }
-<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (onPinChanged != null) {</span>
+<span class="pc bpc" id="L189" title="1 of 2 branches missed.">        if (onPinChanged != null) {</span>
 <span class="nc" id="L190">            onPinChanged.accept(user);</span>
         }
-<span class="nc" id="L192">    }</span>
+<span class="fc" id="L192">    }</span>
 
     @Override
     public void destroy() {

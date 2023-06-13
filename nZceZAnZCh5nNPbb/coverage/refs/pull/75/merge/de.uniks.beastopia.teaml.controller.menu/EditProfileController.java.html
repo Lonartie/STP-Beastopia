@@ -84,14 +84,14 @@ public class EditProfileController extends Controller {
     }
 
     public void uploadAvatar() {
-<span class="nc" id="L87">        File file = cache.provideFile(app);</span>
+<span class="fc" id="L87">        File file = cache.provideFile(app);</span>
         try {
-<span class="nc" id="L89">            this.bufferedImage = ImageIO.read(file);</span>
+<span class="fc" id="L89">            this.bufferedImage = ImageIO.read(file);</span>
 <span class="nc" id="L90">        } catch (IOException e) {</span>
 <span class="nc" id="L91">            throw new RuntimeException(e);</span>
-<span class="nc" id="L92">        }</span>
-<span class="nc" id="L93">        avatarPreview.setImage(new Image(file.toURI().toString(), 128, 128, true, true, true));</span>
-<span class="nc" id="L94">    }</span>
+<span class="fc" id="L92">        }</span>
+<span class="fc" id="L93">        avatarPreview.setImage(new Image(file.toURI().toString(), 128, 128, true, true, true));</span>
+<span class="fc" id="L94">    }</span>
 
     private void errorMessage(String message) {
 <span class="fc" id="L97">        Alert alert = new Alert(Alert.AlertType.ERROR);</span>
@@ -118,27 +118,27 @@ public class EditProfileController extends Controller {
     public void editProfile() {
 <span class="pc bpc" id="L119" title="1 of 2 branches missed.">        if (usernameInput.getText().isEmpty()) {</span>
 <span class="nc" id="L120">            errorMessage(&quot;usernameEmpty&quot;);</span>
-<span class="pc bpc" id="L121" title="1 of 2 branches missed.">        } else if (!passwordInput.getText().isBlank()) {</span>
-<span class="pc bpc" id="L122" title="1 of 2 branches missed.">            if (usernameInput.getText().equals(tokenStorage.getCurrentUser().name())) {</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        } else if (!passwordInput.getText().isBlank()) {</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">            if (usernameInput.getText().equals(tokenStorage.getCurrentUser().name())) {</span>
 <span class="fc" id="L123">                setNewPassword();</span>
             } else {
-<span class="nc" id="L125">                setNewUsernameAndPassword();</span>
+<span class="fc" id="L125">                setNewUsernameAndPassword();</span>
             }
-<span class="nc bnc" id="L127" title="All 2 branches missed.">        } else if (!usernameInput.getText().equals(tokenStorage.getCurrentUser().name())) {</span>
-<span class="nc" id="L128">            setNewUsername();</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        } else if (!usernameInput.getText().equals(tokenStorage.getCurrentUser().name())) {</span>
+<span class="fc" id="L128">            setNewUsername();</span>
         }
 
-<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        if (bufferedImage != null) {</span>
-<span class="nc" id="L132">            setNewAvatar();</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (bufferedImage != null) {</span>
+<span class="fc" id="L132">            setNewAvatar();</span>
         }
 <span class="fc" id="L134">    }</span>
 
     private void setNewUsername() {
-<span class="nc" id="L137">        disposables.add(authService.updateUsername(usernameInput.getText())</span>
-<span class="nc" id="L138">                .observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="nc" id="L139">                        lr -&gt; app.show(menuControllerProvider.get()),</span>
+<span class="fc" id="L137">        disposables.add(authService.updateUsername(usernameInput.getText())</span>
+<span class="fc" id="L138">                .observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="fc" id="L139">                        lr -&gt; app.show(menuControllerProvider.get()),</span>
 <span class="nc" id="L140">                        error -&gt; Dialog.error(error, resources.getString(&quot;usernameChangeFailed&quot;))));</span>
-<span class="nc" id="L141">    }</span>
+<span class="fc" id="L141">    }</span>
 
     private void setNewPassword() {
 <span class="fc bfc" id="L144" title="All 2 branches covered.">        if (!passwordInput.getText().equals(passwordRepeatInput.getText())) {</span>
@@ -152,21 +152,21 @@ public class EditProfileController extends Controller {
 <span class="fc" id="L152">    }</span>
 
     private void setNewUsernameAndPassword() {
-<span class="nc bnc" id="L155" title="All 2 branches missed.">        if (!passwordInput.getText().equals(passwordRepeatInput.getText())) {</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">        if (!passwordInput.getText().equals(passwordRepeatInput.getText())) {</span>
 <span class="nc" id="L156">            errorMessage(&quot;passwordsNotEqual&quot;);</span>
         } else {
-<span class="nc" id="L158">            disposables.add(authService.updateUsernameAndPassword(usernameInput.getText(), passwordInput.getText())</span>
-<span class="nc" id="L159">                    .observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="nc" id="L160">                            lr -&gt; app.show(menuControllerProvider.get()),</span>
+<span class="fc" id="L158">            disposables.add(authService.updateUsernameAndPassword(usernameInput.getText(), passwordInput.getText())</span>
+<span class="fc" id="L159">                    .observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="fc" id="L160">                            lr -&gt; app.show(menuControllerProvider.get()),</span>
 <span class="nc" id="L161">                            error -&gt; Dialog.error(error, resources.getString(&quot;UsernameAndPasswordChangeFailed&quot;))));</span>
         }
-<span class="nc" id="L163">    }</span>
+<span class="fc" id="L163">    }</span>
 
     private void setNewAvatar() {
-<span class="nc" id="L166">        disposables.add(authService.updateAvatar(cache.getAvatarDataUrl(bufferedImage)).observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="nc" id="L167">                lr -&gt; app.show(menuControllerProvider.get()),</span>
+<span class="fc" id="L166">        disposables.add(authService.updateAvatar(cache.getAvatarDataUrl(bufferedImage)).observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="fc" id="L167">                lr -&gt; app.show(menuControllerProvider.get()),</span>
 <span class="nc" id="L168">                error -&gt; Dialog.error(error, resources.getString(&quot;avatarChangeFailed&quot;))));</span>
-<span class="nc" id="L169">    }</span>
+<span class="fc" id="L169">    }</span>
 
     @Override
     public void destroy() {
