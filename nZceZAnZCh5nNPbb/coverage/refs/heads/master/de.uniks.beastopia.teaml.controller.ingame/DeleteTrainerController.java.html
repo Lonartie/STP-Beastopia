@@ -30,56 +30,56 @@ public class DeleteTrainerController extends Controller {
 
 
     @Inject
-<span class="nc" id="L33">    public DeleteTrainerController() {</span>
-<span class="nc" id="L34">    }</span>
+<span class="fc" id="L33">    public DeleteTrainerController() {</span>
+<span class="fc" id="L34">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L38">        Parent parent = super.render();</span>
+<span class="fc" id="L38">        Parent parent = super.render();</span>
 
-<span class="nc" id="L40">        trainerSprite.setImage(cache.getCharacterImage(cache.getTrainer().image()).getValue());</span>
-<span class="nc" id="L41">        trainerSprite.setPreserveRatio(true);</span>
-<span class="nc" id="L42">        trainerSprite.setViewport(TrainerController.PREVIEW_VIEWPORT);</span>
-<span class="nc" id="L43">        trainerSprite.setFitWidth(32 * TrainerController.PREVIEW_SCALING);</span>
-<span class="nc" id="L44">        trainerSprite.setFitHeight(32 * TrainerController.PREVIEW_SCALING);</span>
-<span class="nc" id="L45">        trainerSprite.setSmooth(false);</span>
-<span class="nc" id="L46">        return parent;</span>
+<span class="fc" id="L40">        trainerSprite.setImage(cache.getCharacterImage(cache.getTrainer().image()).getValue());</span>
+<span class="fc" id="L41">        trainerSprite.setPreserveRatio(true);</span>
+<span class="fc" id="L42">        trainerSprite.setViewport(TrainerController.PREVIEW_VIEWPORT);</span>
+<span class="fc" id="L43">        trainerSprite.setFitWidth(32 * TrainerController.PREVIEW_SCALING);</span>
+<span class="fc" id="L44">        trainerSprite.setFitHeight(32 * TrainerController.PREVIEW_SCALING);</span>
+<span class="fc" id="L45">        trainerSprite.setSmooth(false);</span>
+<span class="fc" id="L46">        return parent;</span>
     }
 
     @Override
     public String getTitle() {
-<span class="nc" id="L51">        return resources.getString(&quot;titleTrainerDeletion&quot;);</span>
+<span class="fc" id="L51">        return resources.getString(&quot;titleTrainerDeletion&quot;);</span>
     }
 
     public void deleteTrainer() {
-<span class="nc bnc" id="L55" title="All 6 branches missed.">        if (trainerNameField == null || trainerNameField.getText().isEmpty() || !trainerNameField.getText().equals(cache.getTrainer().name())) {</span>
-<span class="nc" id="L56">            Dialog.error(resources.getString(&quot;trainerNameMissing&quot;), resources.getString(&quot;trainerDeletionNameMissing&quot;));</span>
-<span class="nc" id="L57">            return;</span>
+<span class="pc bpc" id="L55" title="1 of 6 branches missed.">        if (trainerNameField == null || trainerNameField.getText().isEmpty() || !trainerNameField.getText().equals(cache.getTrainer().name())) {</span>
+<span class="fc" id="L56">            Dialog.error(resources.getString(&quot;trainerNameMissing&quot;), resources.getString(&quot;trainerDeletionNameMissing&quot;));</span>
+<span class="fc" id="L57">            return;</span>
         }
 
-<span class="nc" id="L60">        disposables.add(trainerService.deleteTrainer(region._id(), cache.getTrainer()._id())</span>
-<span class="nc" id="L61">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L62">                .subscribe(tr -&gt; {</span>
-<span class="nc bnc" id="L63" title="All 2 branches missed.">                    if (tr != null) {</span>
-<span class="nc" id="L64">                        cache.setTrainer(null);</span>
+<span class="fc" id="L60">        disposables.add(trainerService.deleteTrainer(region._id(), cache.getTrainer()._id())</span>
+<span class="fc" id="L61">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L62">                .subscribe(tr -&gt; {</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">                    if (tr != null) {</span>
+<span class="fc" id="L64">                        cache.setTrainer(null);</span>
 
-<span class="nc" id="L66">                        TrainerController trainerController = trainerControllerProvider.get();</span>
-<span class="nc" id="L67">                        trainerController.setRegion(region);</span>
-<span class="nc" id="L68">                        trainerController.backController(&quot;menu&quot;);</span>
-<span class="nc" id="L69">                        app.show(trainerController);</span>
+<span class="fc" id="L66">                        TrainerController trainerController = trainerControllerProvider.get();</span>
+<span class="fc" id="L67">                        trainerController.setRegion(region);</span>
+<span class="fc" id="L68">                        trainerController.backController(&quot;menu&quot;);</span>
+<span class="fc" id="L69">                        app.show(trainerController);</span>
                     }
-<span class="nc" id="L71">                }));</span>
-<span class="nc" id="L72">    }</span>
+<span class="fc" id="L71">                }));</span>
+<span class="fc" id="L72">    }</span>
 
     public void cancel() {
-<span class="nc" id="L75">        TrainerController trainerController = trainerControllerProvider.get();</span>
-<span class="nc" id="L76">        trainerController.setRegion(region);</span>
-<span class="nc" id="L77">        trainerController.backController(&quot;pause&quot;);</span>
-<span class="nc" id="L78">        app.show(trainerController);</span>
-<span class="nc" id="L79">    }</span>
+<span class="fc" id="L75">        TrainerController trainerController = trainerControllerProvider.get();</span>
+<span class="fc" id="L76">        trainerController.setRegion(region);</span>
+<span class="fc" id="L77">        trainerController.backController(&quot;pause&quot;);</span>
+<span class="fc" id="L78">        app.show(trainerController);</span>
+<span class="fc" id="L79">    }</span>
 
     public void setRegion(Region region) {
-<span class="nc" id="L82">        this.region = region;</span>
-<span class="nc" id="L83">    }</span>
+<span class="fc" id="L82">        this.region = region;</span>
+<span class="fc" id="L83">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
