@@ -40,11 +40,12 @@ public class RegionController extends Controller {
 <span class="nc" id="L40">        final ListView&lt;Region&gt; regions = new ListView&lt;&gt;(this.regions);</span>
 <span class="nc" id="L41">        regions.setCellFactory(param -&gt; regionCellProvider.get());</span>
 <span class="nc" id="L42">        regionList.getChildren().add(regions);</span>
-<span class="nc" id="L43">        disposables.add(regionService.getRegions().subscribe(col -&gt; {</span>
-<span class="nc" id="L44">            cache.setRegions(col);</span>
-<span class="nc" id="L45">            this.regions.setAll(col);</span>
-<span class="nc" id="L46">        }));</span>
-<span class="nc" id="L47">        return parent;</span>
+<span class="nc" id="L43">        VBox.setVgrow(regions, javafx.scene.layout.Priority.ALWAYS);</span>
+<span class="nc" id="L44">        disposables.add(regionService.getRegions().subscribe(col -&gt; {</span>
+<span class="nc" id="L45">            cache.setRegions(col);</span>
+<span class="nc" id="L46">            this.regions.setAll(col);</span>
+<span class="nc" id="L47">        }));</span>
+<span class="nc" id="L48">        return parent;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

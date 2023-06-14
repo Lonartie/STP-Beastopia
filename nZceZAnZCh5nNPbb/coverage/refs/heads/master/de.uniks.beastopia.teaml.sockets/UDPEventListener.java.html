@@ -118,7 +118,7 @@ public class UDPEventListener {
 <span class="nc" id="L118">            final byte[] bytes = message.getBytes(StandardCharsets.UTF_8);</span>
 <span class="nc" id="L119">            final DatagramPacket packet = new DatagramPacket(bytes, bytes.length, address, port);</span>
 <span class="nc" id="L120">            clientSocket.send(packet);</span>
-<span class="nc" id="L121">            System.out.println(&quot;Sent: &quot; + message);</span>
+//            System.out.println(&quot;Sent: &quot; + message);
 <span class="nc" id="L122">        } catch (IOException e) {</span>
 <span class="nc" id="L123">            throw new RuntimeException(e);</span>
 <span class="nc" id="L124">        }</span>
@@ -140,7 +140,7 @@ public class UDPEventListener {
             try {
 <span class="nc" id="L141">                clientSocket.receive(packet);</span>
 <span class="nc" id="L142">                final String message = new String(packet.getData(), packet.getOffset(), packet.getLength());</span>
-<span class="nc" id="L143">                System.out.println(&quot;Received: &quot; + message);</span>
+//                System.out.println(&quot;Received: &quot; + message);
 <span class="nc" id="L144">                synchronized (messageHandlers) {</span>
 <span class="nc" id="L145">                    messageHandlers.forEach(handler -&gt; handler.accept(message));</span>
 <span class="nc" id="L146">                }</span>

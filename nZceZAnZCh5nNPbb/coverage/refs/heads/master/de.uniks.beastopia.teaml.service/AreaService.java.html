@@ -19,5 +19,10 @@ public class AreaService {
     public Observable&lt;List&lt;Area&gt;&gt; getAreas(String region) {
 <span class="nc" id="L20">        return areaApiService.getAreas(region);</span>
     }
+
+    public Observable&lt;Area&gt; getArea(String region, String id) {
+<span class="nc" id="L24">        return areaApiService.getArea(region, id);</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

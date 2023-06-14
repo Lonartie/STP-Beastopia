@@ -16,16 +16,16 @@ import java.util.ResourceBundle;
 <span class="fc" id="L16">public class MainModule {</span>
     @Provides
     ResourceBundle bundle(Prefs prefs) {
-<span class="fc" id="L19">        return ResourceBundle.getBundle(&quot;de/uniks/beastopia/teaml/assets/lang&quot;, Locale.forLanguageTag(prefs.getLocale()));</span>
+<span class="nc" id="L19">        return ResourceBundle.getBundle(&quot;de/uniks/beastopia/teaml/assets/lang&quot;, Locale.forLanguageTag(prefs.getLocale()));</span>
     }
 
     @Provides
     @Singleton
     ObjectMapper objectMapper() {
-<span class="fc" id="L25">        return new ObjectMapper()</span>
-<span class="fc" id="L26">                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)</span>
-<span class="fc" id="L27">                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)</span>
-<span class="fc" id="L28">                .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);</span>
+<span class="nc" id="L25">        return new ObjectMapper()</span>
+<span class="nc" id="L26">                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)</span>
+<span class="nc" id="L27">                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)</span>
+<span class="nc" id="L28">                .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);</span>
     }
 
     @Provides
