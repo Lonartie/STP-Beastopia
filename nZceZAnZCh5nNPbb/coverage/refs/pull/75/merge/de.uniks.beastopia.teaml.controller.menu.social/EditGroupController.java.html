@@ -21,9 +21,9 @@ import java.util.List;
 
 public class EditGroupController extends Controller {
 
-<span class="nc" id="L24">    private final List&lt;User&gt; addedUsersList = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L25">    private final List&lt;Controller&gt; addedUserControllers = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L26">    private final List&lt;Controller&gt; availableUserControllers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L24">    private final List&lt;User&gt; addedUsersList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L25">    private final List&lt;Controller&gt; addedUserControllers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L26">    private final List&lt;Controller&gt; availableUserControllers = new ArrayList&lt;&gt;();</span>
 
     @FXML
     public TextField usernameField;
@@ -49,33 +49,33 @@ public class EditGroupController extends Controller {
     private Group group;
 
     @Inject
-<span class="nc" id="L52">    public EditGroupController() {</span>
-<span class="nc" id="L53">    }</span>
+<span class="fc" id="L52">    public EditGroupController() {</span>
+<span class="fc" id="L53">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L57">        Parent parent = super.render();</span>
-<span class="nc" id="L58">        groupNameField.setText(group.name());</span>
-<span class="nc bnc" id="L59" title="All 2 branches missed.">        for (int i = 0; i &lt; group.members().size(); ++i) {</span>
-<span class="nc" id="L60">            User user = cache.getUser(group.members().get(i));</span>
-<span class="nc" id="L61">            addedUsersList.add(user);</span>
+<span class="fc" id="L57">        Parent parent = super.render();</span>
+<span class="fc" id="L58">        groupNameField.setText(group.name());</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        for (int i = 0; i &lt; group.members().size(); ++i) {</span>
+<span class="fc" id="L60">            User user = cache.getUser(group.members().get(i));</span>
+<span class="fc" id="L61">            addedUsersList.add(user);</span>
         }
-<span class="nc" id="L63">        updateLists();</span>
-<span class="nc" id="L64">        return parent;</span>
+<span class="fc" id="L63">        updateLists();</span>
+<span class="fc" id="L64">        return parent;</span>
     }
 
     @Override
     public String getTitle() {
-<span class="nc" id="L69">        return resources.getString(&quot;titleEditGroup&quot;);</span>
+<span class="fc" id="L69">        return resources.getString(&quot;titleEditGroup&quot;);</span>
     }
 
     @FXML
     public void updateUserList() {
-<span class="nc" id="L74">        availableUserControllers.clear();</span>
-<span class="nc" id="L75">        users.getChildren().clear();</span>
+<span class="fc" id="L74">        availableUserControllers.clear();</span>
+<span class="fc" id="L75">        users.getChildren().clear();</span>
 
-<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (usernameField.getText().isEmpty()) {</span>
-<span class="nc" id="L78">            return;</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        if (usernameField.getText().isEmpty()) {</span>
+<span class="fc" id="L78">            return;</span>
         }
 
 <span class="nc bnc" id="L81" title="All 2 branches missed.">        for (User user : reverse(sortByPin(cache.getAllUsers()))) {</span>
@@ -99,22 +99,22 @@ public class EditGroupController extends Controller {
 
     @FXML
     public void updateAddedUserList() {
-<span class="nc" id="L102">        addedUserControllers.clear();</span>
-<span class="nc" id="L103">        addedUsers.getChildren().clear();</span>
+<span class="fc" id="L102">        addedUserControllers.clear();</span>
+<span class="fc" id="L103">        addedUsers.getChildren().clear();</span>
 
-<span class="nc bnc" id="L105" title="All 2 branches missed.">        for (User user : reverse(sortByPin(addedUsersList))) {</span>
-<span class="nc" id="L106">            UserController controller = userControllerProvider.get()</span>
-<span class="nc" id="L107">                    .setIsAdded(true);</span>
-<span class="nc" id="L108">            controller.setUser(user);</span>
-<span class="nc" id="L109">            controller.setOnUserToggled(this::toggleUser);</span>
-<span class="nc" id="L110">            controller.setOnUserPinToggled(u -&gt; {</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        for (User user : reverse(sortByPin(addedUsersList))) {</span>
+<span class="fc" id="L106">            UserController controller = userControllerProvider.get()</span>
+<span class="fc" id="L107">                    .setIsAdded(true);</span>
+<span class="fc" id="L108">            controller.setUser(user);</span>
+<span class="fc" id="L109">            controller.setOnUserToggled(this::toggleUser);</span>
+<span class="fc" id="L110">            controller.setOnUserPinToggled(u -&gt; {</span>
 <span class="nc bnc" id="L111" title="All 2 branches missed.">                prefs.setPinned(u, !prefs.isPinned(u));</span>
 <span class="nc" id="L112">                updateLists();</span>
 <span class="nc" id="L113">            });</span>
-<span class="nc" id="L114">            controller.init();</span>
-<span class="nc" id="L115">            addedUsers.getChildren().add(0, controller.render());</span>
-<span class="nc" id="L116">        }</span>
-<span class="nc" id="L117">    }</span>
+<span class="fc" id="L114">            controller.init();</span>
+<span class="fc" id="L115">            addedUsers.getChildren().add(0, controller.render());</span>
+<span class="fc" id="L116">        }</span>
+<span class="fc" id="L117">    }</span>
 
     private void toggleUser(User user) {
 <span class="nc bnc" id="L120" title="All 2 branches missed.">        if (addedUsersList.contains(user)) {</span>
@@ -127,25 +127,25 @@ public class EditGroupController extends Controller {
 <span class="nc" id="L127">    }</span>
 
     private void updateLists() {
-<span class="nc" id="L130">        updateUserList();</span>
-<span class="nc" id="L131">        updateAddedUserList();</span>
-<span class="nc" id="L132">    }</span>
+<span class="fc" id="L130">        updateUserList();</span>
+<span class="fc" id="L131">        updateAddedUserList();</span>
+<span class="fc" id="L132">    }</span>
 
     private List&lt;User&gt; sortByPin(List&lt;User&gt; users) {
-<span class="nc" id="L135">        List&lt;User&gt; result = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L136">        List&lt;User&gt; sortedUsers = new ArrayList&lt;&gt;(users);</span>
-<span class="nc" id="L137">        sortedUsers.sort(Comparator.comparing(u -&gt; u.name().toLowerCase()));</span>
-<span class="nc" id="L138">        result.addAll(sortedUsers.stream().filter(prefs::isPinned).toList());</span>
-<span class="nc bnc" id="L139" title="All 2 branches missed.">        result.addAll(sortedUsers.stream().filter(u -&gt; !prefs.isPinned(u)).toList());</span>
-<span class="nc" id="L140">        return result;</span>
+<span class="fc" id="L135">        List&lt;User&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L136">        List&lt;User&gt; sortedUsers = new ArrayList&lt;&gt;(users);</span>
+<span class="fc" id="L137">        sortedUsers.sort(Comparator.comparing(u -&gt; u.name().toLowerCase()));</span>
+<span class="fc" id="L138">        result.addAll(sortedUsers.stream().filter(prefs::isPinned).toList());</span>
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">        result.addAll(sortedUsers.stream().filter(u -&gt; !prefs.isPinned(u)).toList());</span>
+<span class="fc" id="L140">        return result;</span>
     }
 
     private static List&lt;User&gt; reverse(List&lt;User&gt; users) {
-<span class="nc" id="L144">        List&lt;User&gt; result = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L145" title="All 2 branches missed.">        for (int i = users.size() - 1; i &gt;= 0; i--) {</span>
-<span class="nc" id="L146">            result.add(users.get(i));</span>
+<span class="fc" id="L144">        List&lt;User&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">        for (int i = users.size() - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L146">            result.add(users.get(i));</span>
         }
-<span class="nc" id="L148">        return result;</span>
+<span class="fc" id="L148">        return result;</span>
     }
 
     @FXML
@@ -161,8 +161,8 @@ public class EditGroupController extends Controller {
 <span class="nc" id="L161">        availableUserControllers.forEach(Controller::destroy);</span>
 <span class="nc" id="L162">    }</span>
     public EditGroupController setGroup(Group group) {
-<span class="nc" id="L164">        this.group = group;</span>
-<span class="nc" id="L165">        return this;</span>
+<span class="fc" id="L164">        this.group = group;</span>
+<span class="fc" id="L165">        return this;</span>
     }
 
     public void editGroup() {
