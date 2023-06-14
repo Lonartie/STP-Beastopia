@@ -130,17 +130,17 @@ public class ChatGroupController extends Controller {
 
     @FXML
     public void pinGroup() {
-<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (!prefs.isPinned(this.group)) {</span>
-<span class="nc" id="L134">            pinGroupBtn.setGraphic(pinnedImg);</span>
-<span class="nc" id="L135">            prefs.setPinned(this.group, true);</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        if (!prefs.isPinned(this.group)) {</span>
+<span class="fc" id="L134">            pinGroupBtn.setGraphic(pinnedImg);</span>
+<span class="fc" id="L135">            prefs.setPinned(this.group, true);</span>
         } else {
-<span class="nc" id="L137">            pinGroupBtn.setGraphic(notPinnedImg);</span>
-<span class="nc" id="L138">            prefs.setPinned(this.group, false);</span>
+<span class="fc" id="L137">            pinGroupBtn.setGraphic(notPinnedImg);</span>
+<span class="fc" id="L138">            prefs.setPinned(this.group, false);</span>
         }
-<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (onPinChanged != null) {</span>
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">        if (onPinChanged != null) {</span>
 <span class="nc" id="L141">            onPinChanged.accept(group);</span>
         }
-<span class="nc" id="L143">    }</span>
+<span class="fc" id="L143">    }</span>
 
     @FXML
     public void editGroup() {

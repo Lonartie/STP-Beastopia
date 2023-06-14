@@ -74,28 +74,28 @@ public class EditGroupController extends Controller {
 <span class="fc" id="L74">        availableUserControllers.clear();</span>
 <span class="fc" id="L75">        users.getChildren().clear();</span>
 
-<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        if (usernameField.getText().isEmpty()) {</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (usernameField.getText().isEmpty()) {</span>
 <span class="fc" id="L78">            return;</span>
         }
 
-<span class="nc bnc" id="L81" title="All 2 branches missed.">        for (User user : reverse(sortByPin(cache.getAllUsers()))) {</span>
-<span class="nc bnc" id="L82" title="All 2 branches missed.">            if (addedUsersList.contains(user) ||</span>
-<span class="nc bnc" id="L83" title="All 2 branches missed.">                    !user.name().toLowerCase().startsWith(usernameField.getText().toLowerCase())) {</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        for (User user : reverse(sortByPin(cache.getAllUsers()))) {</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">            if (addedUsersList.contains(user) ||</span>
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">                    !user.name().toLowerCase().startsWith(usernameField.getText().toLowerCase())) {</span>
 <span class="nc" id="L84">                continue;</span>
             }
 
-<span class="nc" id="L87">            UserController controller = userControllerProvider.get()</span>
-<span class="nc" id="L88">                    .setIsAdded(false);</span>
-<span class="nc" id="L89">            controller.setUser(user);</span>
-<span class="nc" id="L90">            controller.setOnUserToggled(this::toggleUser);</span>
-<span class="nc" id="L91">            controller.setOnUserPinToggled(u -&gt; {</span>
+<span class="fc" id="L87">            UserController controller = userControllerProvider.get()</span>
+<span class="fc" id="L88">                    .setIsAdded(false);</span>
+<span class="fc" id="L89">            controller.setUser(user);</span>
+<span class="fc" id="L90">            controller.setOnUserToggled(this::toggleUser);</span>
+<span class="fc" id="L91">            controller.setOnUserPinToggled(u -&gt; {</span>
 <span class="nc bnc" id="L92" title="All 2 branches missed.">                prefs.setPinned(u, !prefs.isPinned(u));</span>
 <span class="nc" id="L93">                updateLists();</span>
 <span class="nc" id="L94">            });</span>
-<span class="nc" id="L95">            controller.init();</span>
-<span class="nc" id="L96">            users.getChildren().add(0, controller.render());</span>
-<span class="nc" id="L97">        }</span>
-<span class="nc" id="L98">    }</span>
+<span class="fc" id="L95">            controller.init();</span>
+<span class="fc" id="L96">            users.getChildren().add(0, controller.render());</span>
+<span class="fc" id="L97">        }</span>
+<span class="fc" id="L98">    }</span>
 
     @FXML
     public void updateAddedUserList() {
@@ -150,42 +150,42 @@ public class EditGroupController extends Controller {
 
     @FXML
     public void back() {
-<span class="nc" id="L153">        app.show(directMessageControllerProvider.get());</span>
-<span class="nc" id="L154">    }</span>
+<span class="fc" id="L153">        app.show(directMessageControllerProvider.get());</span>
+<span class="fc" id="L154">    }</span>
 
 
     @Override
     public void destroy() {
-<span class="nc" id="L159">        super.destroy();</span>
-<span class="nc" id="L160">        addedUserControllers.forEach(Controller::destroy);</span>
-<span class="nc" id="L161">        availableUserControllers.forEach(Controller::destroy);</span>
-<span class="nc" id="L162">    }</span>
+<span class="fc" id="L159">        super.destroy();</span>
+<span class="fc" id="L160">        addedUserControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L161">        availableUserControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L162">    }</span>
     public EditGroupController setGroup(Group group) {
 <span class="fc" id="L164">        this.group = group;</span>
 <span class="fc" id="L165">        return this;</span>
     }
 
     public void editGroup() {
-<span class="nc bnc" id="L169" title="All 2 branches missed.">        if (groupNameField.getText().isEmpty()) {</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">        if (groupNameField.getText().isEmpty()) {</span>
 <span class="nc" id="L170">            Dialog.error(resources.getString(&quot;groupNameMissing&quot;), resources.getString(&quot;enterGroupName&quot;));</span>
 <span class="nc" id="L171">            return;</span>
         }
-<span class="nc" id="L173">        List&lt;String&gt; userIds = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L174" title="All 2 branches missed.">        for (User user : addedUsersList) {</span>
-<span class="nc" id="L175">            userIds.add(user._id());</span>
-<span class="nc" id="L176">        }</span>
+<span class="fc" id="L173">        List&lt;String&gt; userIds = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">        for (User user : addedUsersList) {</span>
+<span class="fc" id="L175">            userIds.add(user._id());</span>
+<span class="fc" id="L176">        }</span>
 
-<span class="nc" id="L178">        userIds.add(tokenStorage.getCurrentUser()._id());</span>
+<span class="fc" id="L178">        userIds.add(tokenStorage.getCurrentUser()._id());</span>
 
-<span class="nc" id="L180">        Group updatedGroup = new Group(group.createdAt(), group.updatedAt(), group._id(), groupNameField.getText(), userIds);</span>
+<span class="fc" id="L180">        Group updatedGroup = new Group(group.createdAt(), group.updatedAt(), group._id(), groupNameField.getText(), userIds);</span>
 
-<span class="nc" id="L182">        disposables.add(groupListService.updateGroup(updatedGroup)</span>
-<span class="nc" id="L183">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L184">                .subscribe(group -&gt; {</span>
-<span class="nc" id="L185">                    DirectMessageController directMessageController = directMessageControllerProvider.get();</span>
-<span class="nc" id="L186">                    app.show(directMessageController);</span>
-<span class="nc" id="L187">                }, error -&gt; Dialog.error(error, &quot;error&quot;)));</span>
+<span class="fc" id="L182">        disposables.add(groupListService.updateGroup(updatedGroup)</span>
+<span class="fc" id="L183">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L184">                .subscribe(group -&gt; {</span>
+<span class="fc" id="L185">                    DirectMessageController directMessageController = directMessageControllerProvider.get();</span>
+<span class="fc" id="L186">                    app.show(directMessageController);</span>
+<span class="pc" id="L187">                }, error -&gt; Dialog.error(error, &quot;error&quot;)));</span>
 
-<span class="nc" id="L189">    }</span>
+<span class="fc" id="L189">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
