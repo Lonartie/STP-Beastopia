@@ -109,51 +109,47 @@ public class RegistrationController extends Controller {
 
     @FXML
     private void uploadAvatar() {
-<span class="nc" id="L112">        File file = cache.provideFile(app);</span>
-        try {
-<span class="nc" id="L114">            this.bufferedImage = ImageIO.read(file);</span>
-<span class="nc" id="L115">        } catch (IOException e) {</span>
-<span class="nc" id="L116">            throw new RuntimeException(e);</span>
-<span class="nc" id="L117">        }</span>
-<span class="nc" id="L118">        avatarPreview.setImage(new Image(file.toURI().toString(), 128, 128, true, true, true));</span>
-<span class="nc" id="L119">    }</span>
+<span class="nc" id="L112">        File file = cache.provideImageFile(app);</span>
+<span class="nc" id="L113">        this.bufferedImage = cache.provideBufferedImage(file);</span>
+<span class="nc" id="L114">        avatarPreview.setImage(new Image(file.toURI().toString(), 128, 128, true, true, true));</span>
+<span class="nc" id="L115">    }</span>
 
     @SuppressWarnings(&quot;UnnecessaryUnicodeEscape&quot;)
     @FXML
     private void signUp() {
-<span class="fc" id="L124">        disposables.add(registrationService.createUser(usernameInput.getText(), cache.getAvatarDataUrl(bufferedImage), passwordInput.getText())</span>
-<span class="fc" id="L125">                .observeOn(FX_SCHEDULER).subscribe(user -&gt; {</span>
-<span class="pc bpc" id="L126" title="1 of 2 branches missed.">                    Dialog.info(isEnglish ? &quot;Registration successful!&quot; : &quot;Registrierung erfolgreich!&quot;,</span>
-<span class="pc bpc" id="L127" title="1 of 2 branches missed.">                            isEnglish ? &quot;You can now sign in with your new account.&quot; : &quot;Sie k\u00f6nnen sich jetzt mit Ihrem neuen Konto anmelden.&quot;);</span>
-<span class="fc" id="L128">                    app.show(loginControllerProvider.get());</span>
-<span class="pc bpc" id="L129" title="1 of 2 branches missed.">                }, error -&gt; Dialog.error(error, isEnglish ? &quot;Registration failed.&quot; : &quot;Registrierung fehlgeschlagen.&quot;)));</span>
-<span class="fc" id="L130">    }</span>
+<span class="fc" id="L120">        disposables.add(registrationService.createUser(usernameInput.getText(), cache.getAvatarDataUrl(bufferedImage), passwordInput.getText())</span>
+<span class="fc" id="L121">                .observeOn(FX_SCHEDULER).subscribe(user -&gt; {</span>
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">                    Dialog.info(isEnglish ? &quot;Registration successful!&quot; : &quot;Registrierung erfolgreich!&quot;,</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">                            isEnglish ? &quot;You can now sign in with your new account.&quot; : &quot;Sie k\u00f6nnen sich jetzt mit Ihrem neuen Konto anmelden.&quot;);</span>
+<span class="fc" id="L124">                    app.show(loginControllerProvider.get());</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">                }, error -&gt; Dialog.error(error, isEnglish ? &quot;Registration failed.&quot; : &quot;Registrierung fehlgeschlagen.&quot;)));</span>
+<span class="fc" id="L126">    }</span>
 
     @FXML
     private void switchToSignIn() {
-<span class="fc" id="L134">        app.show(loginControllerProvider.get());</span>
-<span class="fc" id="L135">    }</span>
+<span class="fc" id="L130">        app.show(loginControllerProvider.get());</span>
+<span class="fc" id="L131">    }</span>
 
     public void setDe() {
-<span class="nc" id="L138">        setLanguage(Locale.GERMAN);</span>
-<span class="nc" id="L139">        isEnglish = false;</span>
-<span class="nc" id="L140">    }</span>
+<span class="nc" id="L134">        setLanguage(Locale.GERMAN);</span>
+<span class="nc" id="L135">        isEnglish = false;</span>
+<span class="nc" id="L136">    }</span>
 
     public void setEn() {
-<span class="nc" id="L143">        setLanguage(Locale.ENGLISH);</span>
-<span class="nc" id="L144">        isEnglish = true;</span>
-<span class="nc" id="L145">    }</span>
+<span class="nc" id="L139">        setLanguage(Locale.ENGLISH);</span>
+<span class="nc" id="L140">        isEnglish = true;</span>
+<span class="nc" id="L141">    }</span>
 
     private void setLanguage(Locale locale) {
-<span class="nc" id="L148">        prefs.setLocale(locale.toLanguageTag());</span>
-<span class="nc" id="L149">        resources = resourcesProvider.get();</span>
-<span class="nc" id="L150">        app.update();</span>
-<span class="nc" id="L151">    }</span>
+<span class="nc" id="L144">        prefs.setLocale(locale.toLanguageTag());</span>
+<span class="nc" id="L145">        resources = resourcesProvider.get();</span>
+<span class="nc" id="L146">        app.update();</span>
+<span class="nc" id="L147">    }</span>
 
     @Override
     public void destroy() {
-<span class="fc" id="L155">        super.destroy();</span>
-<span class="fc" id="L156">        avatarPreview = null;</span>
-<span class="fc" id="L157">    }</span>
+<span class="fc" id="L151">        super.destroy();</span>
+<span class="fc" id="L152">        avatarPreview = null;</span>
+<span class="fc" id="L153">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -164,15 +164,33 @@ public class DataCache {
 <span class="nc" id="L164">        } catch (IOException e) {</span>
 <span class="nc" id="L165">            throw new RuntimeException(e);</span>
 <span class="nc" id="L166">        }</span>
-<span class="nc" id="L167">        return &quot;data:image/png;base64,&quot; + Base64.getEncoder().encodeToString(bytes.toByteArray());</span>
+
+<span class="nc" id="L168">        return &quot;data:image/png;base64,&quot; + Base64.getEncoder().encodeToString(bytes.toByteArray());</span>
     }
 
-    public File provideFile(App app) {
-<span class="nc" id="L171">        FileChooser fileChooser = new FileChooser();</span>
-<span class="nc" id="L172">        fileChooser.setTitle(&quot;Choose Avatar&quot;);</span>
-<span class="nc" id="L173">        fileChooser.setInitialDirectory(new File(System.getProperty(&quot;user.home&quot;)));</span>
-<span class="nc" id="L174">        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(&quot;Image Files&quot;, &quot;*.png&quot;, &quot;*.jpg&quot;));</span>
-<span class="nc" id="L175">        return fileChooser.showOpenDialog(app.getStage());</span>
+    public File provideImageFile(App app) {
+<span class="nc" id="L172">        FileChooser fileChooser = new FileChooser();</span>
+<span class="nc" id="L173">        fileChooser.setTitle(&quot;Choose Avatar&quot;);</span>
+<span class="nc" id="L174">        fileChooser.setInitialDirectory(new File(System.getProperty(&quot;user.home&quot;)));</span>
+<span class="nc" id="L175">        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(&quot;Image Files&quot;, &quot;*.png&quot;, &quot;*.jpg&quot;));</span>
+<span class="nc" id="L176">        return fileChooser.showOpenDialog(app.getStage());</span>
+    }
+
+    public BufferedImage provideBufferedImage(File file) {
+        BufferedImage bufferedImage;
+        try {
+<span class="nc" id="L182">            bufferedImage = ImageIO.read(file);</span>
+<span class="nc" id="L183">        } catch (IOException e) {</span>
+<span class="nc" id="L184">            throw new RuntimeException(e);</span>
+<span class="nc" id="L185">        }</span>
+
+<span class="nc" id="L187">        return resizeImage(bufferedImage);</span>
+    }
+
+    private BufferedImage resizeImage(BufferedImage bufferedImage) {
+<span class="nc" id="L191">        BufferedImage resized = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);</span>
+<span class="nc" id="L192">        resized.getGraphics().drawImage(bufferedImage, 0, 0, null);</span>
+<span class="nc" id="L193">        return resized;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
