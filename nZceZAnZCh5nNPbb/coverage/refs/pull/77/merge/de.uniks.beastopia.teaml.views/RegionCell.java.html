@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RegionCell.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.views</a> &gt; <span class="el_source">RegionCell.java</span></div><h1>RegionCell.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.views;
+
+import de.uniks.beastopia.teaml.App;
+import de.uniks.beastopia.teaml.controller.ingame.TrainerController;
+import de.uniks.beastopia.teaml.rest.Region;
+import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.service.TokenStorage;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.ResourceBundle;
+
+public class RegionCell extends ListCell&lt;Region&gt; {
+
+    private final ResourceBundle resources;
+    @Inject
+    Provider&lt;TrainerController&gt; trainerControllerProvider;
+    @Inject
+    TokenStorage tokenStorage;
+    @Inject
+    DataCache cache;
+    @Inject
+    App app;
+
+    @Inject
+<span class="nc" id="L29">    public RegionCell(ResourceBundle resources) {</span>
+<span class="nc" id="L30">        this.resources = resources;</span>
+<span class="nc" id="L31">    }</span>
+
+    @Override
+    protected void updateItem(Region item, boolean empty) {
+<span class="nc" id="L35">        super.updateItem(item, empty);</span>
+<span class="nc bnc" id="L36" title="All 4 branches missed.">        if (empty || item == null) {</span>
+<span class="nc" id="L37">            setGraphic(null);</span>
+<span class="nc" id="L38">            setText(null);</span>
+        } else {
+<span class="nc" id="L40">            final Button join = new Button(item.name() + &quot; &quot; + resources.getString(&quot;join&quot;));</span>
+<span class="nc" id="L41">            join.setOnAction(event -&gt; {</span>
+<span class="nc" id="L42">                TrainerController controller = trainerControllerProvider.get();</span>
+<span class="nc" id="L43">                cache.setRegion(item);</span>
+<span class="nc" id="L44">                controller.setRegion(item);</span>
+<span class="nc" id="L45">                controller.backController(&quot;menu&quot;);</span>
+<span class="nc" id="L46">                app.show(controller);</span>
+<span class="nc" id="L47">            });</span>
+<span class="nc" id="L48">            setGraphic(join);</span>
+        }
+<span class="nc" id="L50">        setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L51">        getStyleClass().add(&quot;region-cell&quot;);</span>
+<span class="nc" id="L52">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
