@@ -31,72 +31,71 @@ public class ChatWindowController extends Controller {
     @Inject
     MessageService messageService;
 
-<span class="fc" id="L34">    @SuppressWarnings(&quot;MismatchedQueryAndUpdateOfCollection&quot;)</span>
-    private final List&lt;MessageBubbleController&gt; subControllers = new ArrayList&lt;&gt;();
+<span class="fc" id="L34">    private final List&lt;MessageBubbleController&gt; subControllers = new ArrayList&lt;&gt;();</span>
     private Group group;
     private LoadingPage loadingPage;
 
     @Inject
-<span class="fc" id="L40">    public ChatWindowController() {</span>
+<span class="fc" id="L39">    public ChatWindowController() {</span>
 
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L41">    }</span>
 
     public ChatWindowController setupChatWindowController(Group group) {
-<span class="fc" id="L45">        this.group = group;</span>
-<span class="fc" id="L46">        return this;</span>
+<span class="fc" id="L44">        this.group = group;</span>
+<span class="fc" id="L45">        return this;</span>
     }
 
     @Override
     public void init() {
-<span class="fc" id="L51">        super.init();</span>
-<span class="fc" id="L52">        disposables.add(eventListener.listen(&quot;groups.&quot; + group._id() + &quot;.messages.*.created&quot;, Message.class)</span>
-<span class="fc" id="L53">                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L54">                .subscribe(this::addMessage));</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L50">        super.init();</span>
+<span class="fc" id="L51">        disposables.add(eventListener.listen(&quot;groups.&quot; + group._id() + &quot;.messages.*.created&quot;, Message.class)</span>
+<span class="fc" id="L52">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L53">                .subscribe(this::addMessage));</span>
+<span class="fc" id="L54">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L59">        loadingPage = LoadingPage.makeLoadingPage(super.render());</span>
+<span class="fc" id="L58">        loadingPage = LoadingPage.makeLoadingPage(super.render());</span>
 
-<span class="fc" id="L61">        Observable&lt;List&lt;Message&gt;&gt; messagesFromGroup = messageService.getMessagesFromGroup(group._id());</span>
-<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        if (messagesFromGroup != null) {</span>
-<span class="fc" id="L63">            disposables.add(messagesFromGroup</span>
-<span class="fc" id="L64">                    .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L65">                    .subscribe(this::fillInMessages));</span>
+<span class="fc" id="L60">        Observable&lt;List&lt;Message&gt;&gt; messagesFromGroup = messageService.getMessagesFromGroup(group._id());</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">        if (messagesFromGroup != null) {</span>
+<span class="fc" id="L62">            disposables.add(messagesFromGroup</span>
+<span class="fc" id="L63">                    .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L64">                    .subscribe(this::fillInMessages));</span>
         }
 
-<span class="fc" id="L68">        return loadingPage.parent();</span>
+<span class="fc" id="L67">        return loadingPage.parent();</span>
     }
 
     @Override
     public void destroy() {
-<span class="fc" id="L73">        subControllers.forEach(Controller::destroy);</span>
-<span class="fc" id="L74">        super.destroy();</span>
-<span class="fc" id="L75">    }</span>
+<span class="fc" id="L72">        subControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L73">        super.destroy();</span>
+<span class="fc" id="L74">    }</span>
 
     private void addMessage(Event&lt;Message&gt; event) {
-<span class="nc" id="L78">        addMessageData(event.data());</span>
-<span class="nc" id="L79">    }</span>
+<span class="nc" id="L77">        addMessageData(event.data());</span>
+<span class="nc" id="L78">    }</span>
 
     private void addMessageData(Message message) {
-<span class="fc" id="L82">        MessageBubbleController subController = messageBubbleControllerProvider.get()</span>
-<span class="fc" id="L83">                .setMessage(group, message)</span>
-<span class="fc" id="L84">                .setOnDelete(pair -&gt; {</span>
-<span class="nc" id="L85">                    Parent parent = pair.getKey();</span>
-<span class="nc" id="L86">                    MessageBubbleController controller = pair.getValue();</span>
-<span class="nc" id="L87">                    msgList.getChildren().remove(parent);</span>
-<span class="nc" id="L88">                    subControllers.remove(controller);</span>
-<span class="nc" id="L89">                });</span>
-<span class="fc" id="L90">        subController.init();</span>
-<span class="fc" id="L91">        subControllers.add(subController);</span>
-<span class="fc" id="L92">        msgList.getChildren().add(subController.render());</span>
-<span class="fc" id="L93">    }</span>
+<span class="fc" id="L81">        MessageBubbleController subController = messageBubbleControllerProvider.get()</span>
+<span class="fc" id="L82">                .setMessage(group, message)</span>
+<span class="fc" id="L83">                .setOnDelete(pair -&gt; {</span>
+<span class="nc" id="L84">                    Parent parent = pair.getKey();</span>
+<span class="nc" id="L85">                    MessageBubbleController controller = pair.getValue();</span>
+<span class="nc" id="L86">                    msgList.getChildren().remove(parent);</span>
+<span class="nc" id="L87">                    subControllers.remove(controller);</span>
+<span class="nc" id="L88">                });</span>
+<span class="fc" id="L89">        subController.init();</span>
+<span class="fc" id="L90">        subControllers.add(subController);</span>
+<span class="fc" id="L91">        msgList.getChildren().add(subController.render());</span>
+<span class="fc" id="L92">    }</span>
 
     private void fillInMessages(List&lt;Message&gt; msgs) {
-<span class="fc" id="L96">        messages.clear();</span>
-<span class="fc" id="L97">        messages.addAll(msgs);</span>
-<span class="fc" id="L98">        messages.forEach(this::addMessageData);</span>
-<span class="fc" id="L99">        loadingPage.setDone();</span>
-<span class="fc" id="L100">    }</span>
+<span class="fc" id="L95">        messages.clear();</span>
+<span class="fc" id="L96">        messages.addAll(msgs);</span>
+<span class="fc" id="L97">        messages.forEach(this::addMessageData);</span>
+<span class="fc" id="L98">        loadingPage.setDone();</span>
+<span class="fc" id="L99">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

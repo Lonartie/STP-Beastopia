@@ -181,15 +181,10 @@ public class MapController extends Controller {
 <span class="fc" id="L181">        }</span>
 <span class="fc" id="L182">    }</span>
 
-    @Override
-    public void destroy() {
-<span class="fc" id="L186">        super.destroy();</span>
-<span class="fc" id="L187">    }</span>
-
     public void closeMap() {
-<span class="fc" id="L190">        IngameController ingameController = ingameControllerProvider.get();</span>
-<span class="fc" id="L191">        ingameController.setRegion(region);</span>
-<span class="fc" id="L192">        app.show(ingameController);</span>
-<span class="fc" id="L193">    }</span>
+<span class="fc" id="L185">        IngameController ingameController = ingameControllerProvider.get();</span>
+<span class="fc" id="L186">        ingameController.setRegion(region);</span>
+<span class="fc" id="L187">        app.show(ingameController);</span>
+<span class="fc" id="L188">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

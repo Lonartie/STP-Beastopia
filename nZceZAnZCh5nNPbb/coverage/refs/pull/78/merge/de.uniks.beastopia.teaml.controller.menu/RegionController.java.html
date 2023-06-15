@@ -2,7 +2,6 @@
 
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.rest.Region;
-import de.uniks.beastopia.teaml.service.DataCache;
 import de.uniks.beastopia.teaml.service.RegionService;
 import de.uniks.beastopia.teaml.views.RegionCell;
 import javafx.collections.FXCollections;
@@ -18,7 +17,7 @@ import javax.inject.Provider;
 
 public class RegionController extends Controller {
 
-<span class="nc" id="L21">    private final ObservableList&lt;Region&gt; regions = FXCollections.observableArrayList();</span>
+<span class="nc" id="L20">    private final ObservableList&lt;Region&gt; regions = FXCollections.observableArrayList();</span>
     @FXML
     public VBox regionList;
     @FXML
@@ -26,26 +25,21 @@ public class RegionController extends Controller {
     @Inject
     RegionService regionService;
     @Inject
-    DataCache cache;
-    @Inject
     Provider&lt;RegionCell&gt; regionCellProvider;
 
     @Inject
-<span class="nc" id="L34">    public RegionController() {</span>
-<span class="nc" id="L35">    }</span>
+<span class="nc" id="L31">    public RegionController() {</span>
+<span class="nc" id="L32">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L39">        Parent parent = super.render();</span>
-<span class="nc" id="L40">        final ListView&lt;Region&gt; regions = new ListView&lt;&gt;(this.regions);</span>
-<span class="nc" id="L41">        regions.setCellFactory(param -&gt; regionCellProvider.get());</span>
-<span class="nc" id="L42">        regionList.getChildren().add(regions);</span>
-<span class="nc" id="L43">        VBox.setVgrow(regions, javafx.scene.layout.Priority.ALWAYS);</span>
-<span class="nc" id="L44">        disposables.add(regionService.getRegions().subscribe(col -&gt; {</span>
-<span class="nc" id="L45">            cache.setRegions(col);</span>
-<span class="nc" id="L46">            this.regions.setAll(col);</span>
-<span class="nc" id="L47">        }));</span>
-<span class="nc" id="L48">        return parent;</span>
+<span class="nc" id="L36">        Parent parent = super.render();</span>
+<span class="nc" id="L37">        final ListView&lt;Region&gt; regions = new ListView&lt;&gt;(this.regions);</span>
+<span class="nc" id="L38">        regions.setCellFactory(param -&gt; regionCellProvider.get());</span>
+<span class="nc" id="L39">        regionList.getChildren().add(regions);</span>
+<span class="nc" id="L40">        VBox.setVgrow(regions, javafx.scene.layout.Priority.ALWAYS);</span>
+<span class="nc" id="L41">        disposables.add(regionService.getRegions().subscribe(this.regions::setAll));</span>
+<span class="nc" id="L42">        return parent;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

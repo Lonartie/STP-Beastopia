@@ -83,44 +83,33 @@ public class Prefs {
 <span class="nc" id="L83">        return preferences.get(&quot;region&quot;, null);</span>
     }
 
-    public Region getRegion() {
-<span class="nc" id="L87">        return cache.getRegion(preferences.get(&quot;region&quot;, null));</span>
-    }
-
     public void setArea(Area area) {
-<span class="nc" id="L91">        preferences.put(&quot;area&quot;, area._id());</span>
-<span class="nc" id="L92">    }</span>
+<span class="nc" id="L87">        preferences.put(&quot;area&quot;, area._id());</span>
+<span class="nc" id="L88">    }</span>
 
     public Area getArea() {
-<span class="nc" id="L95">        return cache.getArea(preferences.get(&quot;area&quot;, null));</span>
+<span class="nc" id="L91">        return cache.getArea(preferences.get(&quot;area&quot;, null));</span>
     }
 
     public void setPosition(Point2D position) {
-<span class="nc" id="L99">        preferences.putDouble(&quot;positionX&quot;, position.getX());</span>
-<span class="nc" id="L100">        preferences.putDouble(&quot;positionY&quot;, position.getY());</span>
-<span class="nc" id="L101">    }</span>
-
-    public Point2D getPosition() {
-<span class="nc" id="L104">        return new Point2D(</span>
-<span class="nc" id="L105">                preferences.getDouble(&quot;positionX&quot;, 0),</span>
-<span class="nc" id="L106">                preferences.getDouble(&quot;positionY&quot;, 0)</span>
-        );
-    }
+<span class="nc" id="L95">        preferences.putDouble(&quot;positionX&quot;, position.getX());</span>
+<span class="nc" id="L96">        preferences.putDouble(&quot;positionY&quot;, position.getY());</span>
+<span class="nc" id="L97">    }</span>
 
     public void setMusicVolume(double volume) {
-<span class="nc" id="L111">        preferences.putDouble(&quot;musicVolume&quot;, volume);</span>
-<span class="nc" id="L112">    }</span>
+<span class="nc" id="L100">        preferences.putDouble(&quot;musicVolume&quot;, volume);</span>
+<span class="nc" id="L101">    }</span>
 
     public double getMusicVolume() {
-<span class="nc" id="L115">        return preferences.getDouble(&quot;musicVolume&quot;, 0);</span>
+<span class="nc" id="L104">        return preferences.getDouble(&quot;musicVolume&quot;, 0);</span>
     }
 
     public void setSoundVolume(double volume) {
-<span class="nc" id="L119">        preferences.putDouble(&quot;soundVolume&quot;, volume);</span>
-<span class="nc" id="L120">    }</span>
+<span class="nc" id="L108">        preferences.putDouble(&quot;soundVolume&quot;, volume);</span>
+<span class="nc" id="L109">    }</span>
 
     public double getSoundVolume() {
-<span class="nc" id="L123">        return preferences.getDouble(&quot;soundVolume&quot;, 0);</span>
+<span class="nc" id="L112">        return preferences.getDouble(&quot;soundVolume&quot;, 0);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

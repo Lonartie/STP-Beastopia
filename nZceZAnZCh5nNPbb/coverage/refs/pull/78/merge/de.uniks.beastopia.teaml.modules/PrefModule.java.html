@@ -8,12 +8,13 @@ import javax.inject.Singleton;
 import java.util.prefs.Preferences;
 
 @Module
-<span class="fc" id="L11">public class PrefModule {</span>
+@SuppressWarnings(&quot;unused&quot;)
+<span class="fc" id="L12">public class PrefModule {</span>
 
     @Provides
     @Singleton
     Preferences prefs() {
-<span class="nc" id="L16">        return Preferences.userNodeForPackage(Main.class);</span>
+<span class="nc" id="L17">        return Preferences.userNodeForPackage(Main.class);</span>
     }
 
 

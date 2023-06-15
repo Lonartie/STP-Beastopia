@@ -71,7 +71,7 @@ public class IngameController extends Controller {
     private int height;
     private LoadingPage loadingPage;
     Direction direction;
-<span class="fc" id="L74">    ObjectProperty&lt;PlayerState&gt; state = new SimpleObjectProperty&lt;&gt;();</span>
+<span class="fc" id="L74">    final ObjectProperty&lt;PlayerState&gt; state = new SimpleObjectProperty&lt;&gt;();</span>
     Parent player;
     EntityController playerController;
     @Inject
@@ -79,7 +79,7 @@ public class IngameController extends Controller {
     @Inject
     Provider&lt;IngameController&gt; ingameControllerProvider;
     Parent scoreBoardParent;
-<span class="fc" id="L82">    java.util.Map&lt;EntityController, Parent&gt; otherPlayers = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L82">    final java.util.Map&lt;EntityController, Parent&gt; otherPlayers = new HashMap&lt;&gt;();</span>
 <span class="fc" id="L83">    private final List&lt;KeyCode&gt; pressedKeys = new ArrayList&lt;&gt;();</span>
 
     @Inject
@@ -470,25 +470,20 @@ public class IngameController extends Controller {
 <span class="fc" id="L470">        drawPlayer(posx, posy);</span>
 <span class="fc" id="L471">    }</span>
 
-    @SuppressWarnings(&quot;unused&quot;)
-    private void updateRemoteTrainerPos(Direction direction) {
-
-<span class="nc" id="L476">    }</span>
-
 
     @Override
     public String getTitle() {
-<span class="fc" id="L481">        return resources.getString(&quot;titleIngame&quot;);</span>
+<span class="fc" id="L476">        return resources.getString(&quot;titleIngame&quot;);</span>
     }
 
     @Override
     public void destroy() {
-<span class="fc" id="L486">        super.destroy();</span>
-<span class="fc" id="L487">        playerController.destroy();</span>
-<span class="fc" id="L488">        scoreBoardController.destroy();</span>
-<span class="pc bpc" id="L489" title="1 of 2 branches missed.">        for (EntityController controller : otherPlayers.keySet()) {</span>
-<span class="nc" id="L490">            controller.destroy();</span>
-<span class="nc" id="L491">        }</span>
-<span class="fc" id="L492">    }</span>
+<span class="fc" id="L481">        super.destroy();</span>
+<span class="fc" id="L482">        playerController.destroy();</span>
+<span class="fc" id="L483">        scoreBoardController.destroy();</span>
+<span class="pc bpc" id="L484" title="1 of 2 branches missed.">        for (EntityController controller : otherPlayers.keySet()) {</span>
+<span class="nc" id="L485">            controller.destroy();</span>
+<span class="nc" id="L486">        }</span>
+<span class="fc" id="L487">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
