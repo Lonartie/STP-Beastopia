@@ -45,50 +45,51 @@ public class ClientEndpoint {
 
     @OnClose
     public void onClose(Session userSession, CloseReason reason) {
-<span class="nc" id="L48">        this.userSession = null;</span>
-<span class="nc" id="L49">    }</span>
+<span class="nc" id="L48">        this.messageHandlers.clear();</span>
+<span class="nc" id="L49">        this.userSession = null;</span>
+<span class="nc" id="L50">    }</span>
 
     @OnMessage
     public synchronized void onMessage(String Message) {
-<span class="nc bnc" id="L53" title="All 2 branches missed.">        for (final Consumer&lt;String&gt; handler : this.messageHandlers) {</span>
-<span class="nc" id="L54">            handler.accept(Message);</span>
-<span class="nc" id="L55">        }</span>
-<span class="nc" id="L56">    }</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        for (final Consumer&lt;String&gt; handler : this.messageHandlers) {</span>
+<span class="nc" id="L55">            handler.accept(Message);</span>
+<span class="nc" id="L56">        }</span>
+<span class="nc" id="L57">    }</span>
 
     @OnError
     public void onError(Throwable error) {
-<span class="nc" id="L60">        error.printStackTrace();</span>
-<span class="nc" id="L61">    }</span>
+<span class="nc" id="L61">        error.printStackTrace();</span>
+<span class="nc" id="L62">    }</span>
 
     public void addMessageHandler(Consumer&lt;String&gt; handler) {
-<span class="nc" id="L64">        this.messageHandlers.add(handler);</span>
-<span class="nc" id="L65">    }</span>
+<span class="nc" id="L65">        this.messageHandlers.add(handler);</span>
+<span class="nc" id="L66">    }</span>
 
     public void removeMessageHandler(Consumer&lt;String&gt; handler) {
-<span class="nc" id="L68">        this.messageHandlers.remove(handler);</span>
-<span class="nc" id="L69">    }</span>
+<span class="nc" id="L69">        this.messageHandlers.remove(handler);</span>
+<span class="nc" id="L70">    }</span>
 
     public void sendMessage(String message) {
-<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (this.userSession == null) {</span>
-<span class="nc" id="L73">            return;</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (this.userSession == null) {</span>
+<span class="nc" id="L74">            return;</span>
         }
-<span class="nc" id="L75">        this.userSession.getAsyncRemote().sendText(message);</span>
-<span class="nc" id="L76">    }</span>
+<span class="nc" id="L76">        this.userSession.getAsyncRemote().sendText(message);</span>
+<span class="nc" id="L77">    }</span>
 
     public void close() {
-<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (this.userSession == null) {</span>
-<span class="nc" id="L80">            return;</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (this.userSession == null) {</span>
+<span class="nc" id="L81">            return;</span>
         }
         try {
-<span class="nc" id="L83">            this.userSession.close();</span>
-<span class="nc" id="L84">        } catch (Exception e) {</span>
-<span class="nc" id="L85">            e.printStackTrace();</span>
-<span class="nc" id="L86">        }</span>
-<span class="nc" id="L87">    }</span>
+<span class="nc" id="L84">            this.userSession.close();</span>
+<span class="nc" id="L85">        } catch (Exception e) {</span>
+<span class="nc" id="L86">            e.printStackTrace();</span>
+<span class="nc" id="L87">        }</span>
+<span class="nc" id="L88">    }</span>
 
     @SuppressWarnings(&quot;BooleanMethodIsAlwaysInverted&quot;)
     public boolean hasMessageHandlers() {
-<span class="nc bnc" id="L91" title="All 2 branches missed.">        return !this.messageHandlers.isEmpty();</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        return !this.messageHandlers.isEmpty();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

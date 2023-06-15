@@ -3,6 +3,7 @@
 import de.uniks.beastopia.teaml.Main;
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.rest.User;
+import de.uniks.beastopia.teaml.service.DataCache;
 import de.uniks.beastopia.teaml.utils.Prefs;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -29,6 +30,8 @@ public class UserController extends Controller {
     public Button pinButton;
     @Inject
     Prefs prefs;
+    @Inject
+    DataCache cache;
 
     private User user;
     private ImageView pinned;
@@ -40,78 +43,85 @@ public class UserController extends Controller {
     private boolean isAdded;
 
     @Inject
-<span class="nc" id="L43">    public UserController() {</span>
+<span class="nc" id="L46">    public UserController() {</span>
 
-<span class="nc" id="L45">    }</span>
+<span class="nc" id="L48">    }</span>
 
     @SuppressWarnings(&quot;UnusedReturnValue&quot;)
     public UserController setOnUserToggled(Consumer&lt;User&gt; onUserToggled) {
-<span class="nc" id="L49">        this.onUserToggled = onUserToggled;</span>
-<span class="nc" id="L50">        return this;</span>
+<span class="nc" id="L52">        this.onUserToggled = onUserToggled;</span>
+<span class="nc" id="L53">        return this;</span>
     }
 
     @SuppressWarnings(&quot;UnusedReturnValue&quot;)
     public UserController setOnUserPinToggled(Consumer&lt;User&gt; onUserPinToggled) {
-<span class="nc" id="L55">        this.onUserPinToggled = onUserPinToggled;</span>
-<span class="nc" id="L56">        return this;</span>
+<span class="nc" id="L58">        this.onUserPinToggled = onUserPinToggled;</span>
+<span class="nc" id="L59">        return this;</span>
     }
 
     public UserController setIsAdded(boolean isAdded) {
-<span class="nc" id="L60">        this.isAdded = isAdded;</span>
-<span class="nc" id="L61">        return this;</span>
+<span class="nc" id="L63">        this.isAdded = isAdded;</span>
+<span class="nc" id="L64">        return this;</span>
     }
 
     @Override
     public Parent render() {
-<span class="nc" id="L66">        Parent parent = super.render();</span>
-<span class="nc" id="L67">        username.setText(user.name());</span>
+<span class="nc" id="L69">        Parent parent = super.render();</span>
+<span class="nc" id="L70">        username.setText(user.name());</span>
+<span class="nc" id="L71">        avatar.setImage(cache.getImageAvatar(user));</span>
 
-<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (prefs.isPinned(user)) {</span>
-<span class="nc" id="L70">            this.pinButton.setGraphic(pinned);</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (prefs.isPinned(user)) {</span>
+<span class="nc" id="L74">            this.pinButton.setGraphic(pinned);</span>
         } else {
-<span class="nc" id="L72">            this.pinButton.setGraphic(notPinned);</span>
+<span class="nc" id="L76">            this.pinButton.setGraphic(notPinned);</span>
         }
 
-<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (isAdded) {</span>
-<span class="nc" id="L76">            this.addRemoveButton.setGraphic(remove);</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (isAdded) {</span>
+<span class="nc" id="L80">            this.addRemoveButton.setGraphic(remove);</span>
         } else {
-<span class="nc" id="L78">            this.addRemoveButton.setGraphic(add);</span>
+<span class="nc" id="L82">            this.addRemoveButton.setGraphic(add);</span>
         }
 
-<span class="nc" id="L81">        return parent;</span>
+<span class="nc" id="L85">        return parent;</span>
     }
 
     @Override
     public void init() {
         try {
-<span class="nc" id="L87">            pinned = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/filled_pin.png&quot;)).toString());</span>
-<span class="nc" id="L88">            notPinned = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/pin.png&quot;)).toString());</span>
-<span class="nc" id="L89">            add = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/plus.png&quot;)).toString());</span>
-<span class="nc" id="L90">            remove = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/minus.png&quot;)).toString());</span>
-<span class="nc" id="L91">        } catch (URISyntaxException | FileNotFoundException e) {</span>
-<span class="nc" id="L92">            throw new RuntimeException(e);</span>
-<span class="nc" id="L93">        }</span>
-<span class="nc" id="L94">    }</span>
+<span class="nc" id="L91">            pinned = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/filled_pin.png&quot;)).toString());</span>
+<span class="nc" id="L92">            notPinned = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/pin.png&quot;)).toString());</span>
+<span class="nc" id="L93">            add = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/plus.png&quot;)).toString());</span>
+<span class="nc" id="L94">            remove = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/minus.png&quot;)).toString());</span>
+<span class="nc" id="L95">        } catch (URISyntaxException | FileNotFoundException e) {</span>
+<span class="nc" id="L96">            throw new RuntimeException(e);</span>
+<span class="nc" id="L97">        }</span>
+<span class="nc" id="L98">    }</span>
 
     public void setUser(User user) {
-<span class="nc" id="L97">        this.user = user;</span>
-<span class="nc" id="L98">    }</span>
+<span class="nc" id="L101">        this.user = user;</span>
+<span class="nc" id="L102">    }</span>
 
     @FXML
     public void addRemove() {
-<span class="nc" id="L102">        onUserToggled.accept(user);</span>
-<span class="nc" id="L103">    }</span>
+<span class="nc" id="L106">        onUserToggled.accept(user);</span>
+<span class="nc" id="L107">    }</span>
 
     @FXML
     public void pin() {
-<span class="nc" id="L107">        onUserPinToggled.accept(user);</span>
-<span class="nc" id="L108">    }</span>
+<span class="nc" id="L111">        onUserPinToggled.accept(user);</span>
+<span class="nc" id="L112">    }</span>
 
     private ImageView createImage(String imageUrl) throws URISyntaxException, FileNotFoundException {
-<span class="nc" id="L111">        ImageView imageView = new ImageView(imageUrl);</span>
-<span class="nc" id="L112">        imageView.setFitHeight(20.0);</span>
-<span class="nc" id="L113">        imageView.setFitWidth(20.0);</span>
-<span class="nc" id="L114">        return imageView;</span>
+<span class="nc" id="L115">        ImageView imageView = new ImageView(imageUrl);</span>
+<span class="nc" id="L116">        imageView.setFitHeight(20.0);</span>
+<span class="nc" id="L117">        imageView.setFitWidth(20.0);</span>
+<span class="nc" id="L118">        return imageView;</span>
     }
+
+    @Override
+    public void destroy() {
+<span class="nc" id="L123">        avatar = null;</span>
+<span class="nc" id="L124">        super.destroy();</span>
+<span class="nc" id="L125">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

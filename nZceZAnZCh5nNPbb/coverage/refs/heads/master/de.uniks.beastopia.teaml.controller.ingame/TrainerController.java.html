@@ -147,123 +147,124 @@ public class TrainerController extends Controller {
 <span class="fc" id="L147">            disposables.add(trainerService.getAllTrainer(region._id())</span>
 <span class="fc" id="L148">                    .observeOn(FX_SCHEDULER)</span>
 <span class="fc" id="L149">                    .subscribe(trainers -&gt; trainers.stream()</span>
-<span class="fc" id="L150">                            .filter(t -&gt; t.user().equals(tokenStorage.getCurrentUser()._id()))</span>
-<span class="fc" id="L151">                            .findFirst()</span>
-<span class="fc" id="L152">                            .ifPresentOrElse(tr -&gt; {</span>
-<span class="nc" id="L153">                                cache.setTrainer(tr);</span>
-<span class="nc" id="L154">                                showIngameController(region);</span>
-<span class="nc" id="L155">                            }, this::loadCharacterSelection)));</span>
+<span class="fc" id="L150">                                    .filter(t -&gt; t.user().equals(tokenStorage.getCurrentUser()._id()))</span>
+<span class="fc" id="L151">                                    .findFirst()</span>
+<span class="fc" id="L152">                                    .ifPresentOrElse(tr -&gt; {</span>
+<span class="nc" id="L153">                                        cache.setTrainer(tr);</span>
+<span class="nc" id="L154">                                        showIngameController(region);</span>
+<span class="nc" id="L155">                                    }, this::loadCharacterSelection),</span>
+<span class="nc" id="L156">                            error -&gt; Dialog.error(error, &quot;Trainer loading failed!&quot;)));</span>
         } else {
-<span class="fc" id="L157">            loadCharacterSelection();</span>
+<span class="fc" id="L158">            loadCharacterSelection();</span>
         }
 
-<span class="fc" id="L160">        return loadingPage.parent();</span>
+<span class="fc" id="L161">        return loadingPage.parent();</span>
     }
 
     private void loadCharacterSelection() {
-<span class="fc" id="L164">        disposables.add(presetsService.getCharacters()</span>
-<span class="fc" id="L165">                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L166">                .subscribe(characters -&gt; {</span>
-<span class="fc" id="L167">                    cache.setCharacters(characters);</span>
+<span class="fc" id="L165">        disposables.add(presetsService.getCharacters()</span>
+<span class="fc" id="L166">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L167">                .subscribe(characters -&gt; {</span>
+<span class="fc" id="L168">                    cache.setCharacters(characters);</span>
 
-<span class="fc" id="L169">                    showTrainers();</span>
+<span class="fc" id="L170">                    showTrainers();</span>
 
-<span class="fc" id="L171">                    disposables.add(delay().subscribe(t -&gt; {</span>
-<span class="fc bfc" id="L172" title="All 2 branches covered.">                        for (Pair&lt;String, Image&gt; pair : cache.getCharacters()) {</span>
-<span class="pc bpc" id="L173" title="1 of 2 branches missed.">                            if (cache.getCharacterImage(pair.getKey()).getValue() == null) {</span>
-<span class="nc" id="L174">                                cache.setCharacterImage(pair.getKey(), new Image(&quot;https://stpmon.uniks.de/api/v3/presets/characters/&quot; + pair.getKey(), 383 * PREVIEW_SCALING, 96 * PREVIEW_SCALING, true, false));</span>
-<span class="nc" id="L175">                                onUI(this::updateImages);</span>
+<span class="fc" id="L172">                    disposables.add(delay().subscribe(t -&gt; {</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">                        for (Pair&lt;String, Image&gt; pair : cache.getCharacters()) {</span>
+<span class="pc bpc" id="L174" title="1 of 2 branches missed.">                            if (cache.getCharacterImage(pair.getKey()).getValue() == null) {</span>
+<span class="nc" id="L175">                                cache.setCharacterImage(pair.getKey(), new Image(&quot;https://stpmon.uniks.de/api/v3/presets/characters/&quot; + pair.getKey(), 383 * PREVIEW_SCALING, 96 * PREVIEW_SCALING, true, false));</span>
+<span class="nc" id="L176">                                onUI(this::updateImages);</span>
                             }
-<span class="fc" id="L177">                        }</span>
-<span class="fc" id="L178">                    }));</span>
-<span class="fc" id="L179">                    loadingPage.setDone();</span>
-<span class="fc" id="L180">                }));</span>
-<span class="fc" id="L181">    }</span>
+<span class="fc" id="L178">                        }</span>
+<span class="fc" id="L179">                    }));</span>
+<span class="fc" id="L180">                    loadingPage.setDone();</span>
+<span class="fc" id="L181">                }));</span>
+<span class="fc" id="L182">    }</span>
 
     private void showTrainers() {
-<span class="fc bfc" id="L184" title="All 2 branches covered.">        if (trainer == null) {</span>
-<span class="fc" id="L185">            showTrainerSpritePreview(cache.getCharacters().get(0).getKey(), cache.getCharacters().get(0).getValue());</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">        if (trainer == null) {</span>
+<span class="fc" id="L186">            showTrainerSpritePreview(cache.getCharacters().get(0).getKey(), cache.getCharacters().get(0).getValue());</span>
         } else {
-<span class="fc" id="L187">            showTrainerSpritePreview(cache.getCharacterImage(trainer.image()).getKey(), cache.getCharacterImage(trainer.image()).getValue());</span>
+<span class="fc" id="L188">            showTrainerSpritePreview(cache.getCharacterImage(trainer.image()).getKey(), cache.getCharacterImage(trainer.image()).getValue());</span>
 
             // Find index of the found trainer
-<span class="fc" id="L190">            currentIndex.set(IntStream.range(0, cache.getCharacters().size())</span>
-<span class="fc" id="L191">                    .filter(i -&gt; cache.getCharacters().get(i).getKey().equals(trainer.image()))</span>
-<span class="fc" id="L192">                    .findFirst()</span>
-<span class="fc" id="L193">                    .orElse(-1));</span>
+<span class="fc" id="L191">            currentIndex.set(IntStream.range(0, cache.getCharacters().size())</span>
+<span class="fc" id="L192">                    .filter(i -&gt; cache.getCharacters().get(i).getKey().equals(trainer.image()))</span>
+<span class="fc" id="L193">                    .findFirst()</span>
+<span class="fc" id="L194">                    .orElse(-1));</span>
 
-<span class="fc" id="L195">            trainerNameInput.setText(trainer.name());</span>
-<span class="fc" id="L196">            trainerNameInput.positionCaret(trainer.name().length());</span>
+<span class="fc" id="L196">            trainerNameInput.setText(trainer.name());</span>
+<span class="fc" id="L197">            trainerNameInput.positionCaret(trainer.name().length());</span>
         }
-<span class="fc" id="L198">    }</span>
+<span class="fc" id="L199">    }</span>
 
     private void updateImages() {
-<span class="nc" id="L201">        Pair&lt;String, Image&gt; pair = cache.getCharacterImage(currentSprite);</span>
-<span class="nc" id="L202">        showTrainerSpritePreview(pair.getKey(), pair.getValue());</span>
-<span class="nc" id="L203">    }</span>
+<span class="nc" id="L202">        Pair&lt;String, Image&gt; pair = cache.getCharacterImage(currentSprite);</span>
+<span class="nc" id="L203">        showTrainerSpritePreview(pair.getKey(), pair.getValue());</span>
+<span class="nc" id="L204">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L207">        return resources.getString(&quot;titleTrainer&quot;);</span>
+<span class="fc" id="L208">        return resources.getString(&quot;titleTrainer&quot;);</span>
     }
 
     @FXML
     public void chooseLeft() {
-<span class="fc" id="L212">        currentIndex.set(currentIndex.get() - 1);</span>
+<span class="fc" id="L213">        currentIndex.set(currentIndex.get() - 1);</span>
 
-<span class="pc bpc" id="L214" title="1 of 2 branches missed.">        if (currentIndex.get() &lt; 0) {</span>
-<span class="fc" id="L215">            currentIndex.set(cache.getCharacters().size() - 1);</span>
+<span class="pc bpc" id="L215" title="1 of 2 branches missed.">        if (currentIndex.get() &lt; 0) {</span>
+<span class="fc" id="L216">            currentIndex.set(cache.getCharacters().size() - 1);</span>
         }
 
-<span class="fc" id="L218">        showTrainerSpritePreview(</span>
-<span class="fc" id="L219">                cache.getCharacters().get(currentIndex.get()).getKey(),</span>
-<span class="fc" id="L220">                cache.getCharacters().get(currentIndex.get()).getValue()</span>
+<span class="fc" id="L219">        showTrainerSpritePreview(</span>
+<span class="fc" id="L220">                cache.getCharacters().get(currentIndex.get()).getKey(),</span>
+<span class="fc" id="L221">                cache.getCharacters().get(currentIndex.get()).getValue()</span>
         );
-<span class="fc" id="L222">    }</span>
+<span class="fc" id="L223">    }</span>
 
     @FXML
     public void chooseRight() {
-<span class="fc" id="L226">        currentIndex.set(currentIndex.get() + 1);</span>
+<span class="fc" id="L227">        currentIndex.set(currentIndex.get() + 1);</span>
 
-<span class="pc bpc" id="L228" title="1 of 2 branches missed.">        if (currentIndex.get() &gt;= cache.getCharacters().size()) {</span>
-<span class="nc" id="L229">            currentIndex.set(0);</span>
+<span class="pc bpc" id="L229" title="1 of 2 branches missed.">        if (currentIndex.get() &gt;= cache.getCharacters().size()) {</span>
+<span class="nc" id="L230">            currentIndex.set(0);</span>
         }
 
-<span class="fc" id="L232">        showTrainerSpritePreview(</span>
-<span class="fc" id="L233">                cache.getCharacters().get(currentIndex.get()).getKey(),</span>
-<span class="fc" id="L234">                cache.getCharacters().get(currentIndex.get()).getValue()</span>
+<span class="fc" id="L233">        showTrainerSpritePreview(</span>
+<span class="fc" id="L234">                cache.getCharacters().get(currentIndex.get()).getKey(),</span>
+<span class="fc" id="L235">                cache.getCharacters().get(currentIndex.get()).getValue()</span>
         );
-<span class="fc" id="L236">    }</span>
+<span class="fc" id="L237">    }</span>
 
     @SuppressWarnings(&quot;UnusedReturnValue&quot;)
     public TrainerController backController(String controller) {
-<span class="fc" id="L240">        this.backController = controller;</span>
-<span class="fc" id="L241">        return this;</span>
+<span class="fc" id="L241">        this.backController = controller;</span>
+<span class="fc" id="L242">        return this;</span>
     }
 
     public void setRegion(Region region) {
-<span class="fc" id="L245">        this.region = region;</span>
-<span class="fc" id="L246">    }</span>
+<span class="fc" id="L246">        this.region = region;</span>
+<span class="fc" id="L247">    }</span>
 
     public void showTrainerSpritePreview(String charName, Image sprite) {
-<span class="fc" id="L249">        currentSprite = charName;</span>
-<span class="pc bpc" id="L250" title="1 of 2 branches missed.">        saveTrainerButton.setDisable(sprite == null);</span>
-<span class="pc bpc" id="L251" title="1 of 4 branches missed.">        deleteTrainerButton.setDisable(sprite == null || trainer == null);</span>
-<span class="fc" id="L252">        trainerSprite.setFitWidth(16 * PREVIEW_SCALING);</span>
-<span class="fc" id="L253">        trainerSprite.setFitHeight(32 * PREVIEW_SCALING);</span>
-<span class="fc" id="L254">        trainerSprite.setImage(sprite);</span>
-<span class="fc" id="L255">        trainerSprite.setViewport(PREVIEW_VIEWPORT);</span>
-<span class="fc" id="L256">        trainerSprite.setSmooth(false);</span>
+<span class="fc" id="L250">        currentSprite = charName;</span>
+<span class="pc bpc" id="L251" title="1 of 2 branches missed.">        saveTrainerButton.setDisable(sprite == null);</span>
+<span class="pc bpc" id="L252" title="1 of 4 branches missed.">        deleteTrainerButton.setDisable(sprite == null || trainer == null);</span>
+<span class="fc" id="L253">        trainerSprite.setFitWidth(16 * PREVIEW_SCALING);</span>
+<span class="fc" id="L254">        trainerSprite.setFitHeight(32 * PREVIEW_SCALING);</span>
+<span class="fc" id="L255">        trainerSprite.setImage(sprite);</span>
+<span class="fc" id="L256">        trainerSprite.setViewport(PREVIEW_VIEWPORT);</span>
+<span class="fc" id="L257">        trainerSprite.setSmooth(false);</span>
 
-<span class="fc" id="L258">        spriteNameDisplay.setText(stripString(charName));</span>
-<span class="fc" id="L259">    }</span>
+<span class="fc" id="L259">        spriteNameDisplay.setText(stripString(charName));</span>
+<span class="fc" id="L260">    }</span>
 
     public String stripString(String stringToStrip) {
-<span class="fc" id="L262">        stringToStrip = stringToStrip</span>
-<span class="fc" id="L263">                .replace(&quot;_&quot;, &quot; &quot;)</span>
-<span class="fc" id="L264">                .replace(&quot;16x16&quot;, &quot;&quot;);</span>
-<span class="fc" id="L265">        stringToStrip = stringToStrip.substring(0, stringToStrip.lastIndexOf(&quot;.&quot;));</span>
-<span class="fc" id="L266">        return stringToStrip;</span>
+<span class="fc" id="L263">        stringToStrip = stringToStrip</span>
+<span class="fc" id="L264">                .replace(&quot;_&quot;, &quot; &quot;)</span>
+<span class="fc" id="L265">                .replace(&quot;16x16&quot;, &quot;&quot;);</span>
+<span class="fc" id="L266">        stringToStrip = stringToStrip.substring(0, stringToStrip.lastIndexOf(&quot;.&quot;));</span>
+<span class="fc" id="L267">        return stringToStrip;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

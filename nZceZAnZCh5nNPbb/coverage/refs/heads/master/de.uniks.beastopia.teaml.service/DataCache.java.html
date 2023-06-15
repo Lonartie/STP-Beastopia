@@ -1,143 +1,215 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DataCache.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.service</a> &gt; <span class="el_source">DataCache.java</span></div><h1>DataCache.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.service;
 
+import de.uniks.beastopia.teaml.App;
+import de.uniks.beastopia.teaml.Main;
 import de.uniks.beastopia.teaml.rest.Area;
 import de.uniks.beastopia.teaml.rest.Region;
 import de.uniks.beastopia.teaml.rest.Trainer;
 import de.uniks.beastopia.teaml.rest.User;
 import javafx.scene.image.Image;
+import javafx.stage.FileChooser;
 import javafx.util.Pair;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
 @Singleton
 public class DataCache {
-<span class="fc" id="L17">    private List&lt;User&gt; users = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L18">    private List&lt;Region&gt; regions = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L19">    private List&lt;Area&gt; areas = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L20">    @SuppressWarnings(&quot;MismatchedQueryAndUpdateOfCollection&quot;)</span>
+<span class="fc" id="L27">    private List&lt;User&gt; users = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L28">    private List&lt;Region&gt; regions = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L29">    private List&lt;Area&gt; areas = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L30">    @SuppressWarnings(&quot;MismatchedQueryAndUpdateOfCollection&quot;)</span>
     private final List&lt;Trainer&gt; trainers = new ArrayList&lt;&gt;();
-<span class="fc" id="L22">    private final List&lt;Pair&lt;String, Image&gt;&gt; characters = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L32">    private final List&lt;Pair&lt;String, Image&gt;&gt; characters = new ArrayList&lt;&gt;();</span>
     Trainer trainer;
     Region joinedRegion;
 
     @Inject
-<span class="fc" id="L27">    public DataCache() {</span>
-<span class="fc" id="L28">    }</span>
+<span class="fc" id="L37">    public DataCache() {</span>
+<span class="fc" id="L38">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void addUser(User user) {
-<span class="nc" id="L32">        users.add(user);</span>
-<span class="nc" id="L33">    }</span>
+<span class="nc" id="L42">        users.add(user);</span>
+<span class="nc" id="L43">    }</span>
 
     public void setAllUsers(List&lt;User&gt; users) {
-<span class="fc" id="L36">        this.users = new ArrayList&lt;&gt;(users);</span>
-<span class="fc" id="L37">    }</span>
+<span class="fc" id="L46">        this.users = new ArrayList&lt;&gt;(users);</span>
+<span class="fc" id="L47">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void addUsers(List&lt;User&gt; users) {
-<span class="nc" id="L41">        this.users.addAll(users);</span>
-<span class="nc" id="L42">    }</span>
+<span class="nc" id="L51">        this.users.addAll(users);</span>
+<span class="nc" id="L52">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void removeUser(User user) {
-<span class="nc" id="L46">        users.remove(user);</span>
-<span class="nc" id="L47">    }</span>
+<span class="nc" id="L56">        users.remove(user);</span>
+<span class="nc" id="L57">    }</span>
 
     public List&lt;User&gt; getAllUsers() {
-<span class="fc" id="L50">        return users;</span>
+<span class="fc" id="L60">        return users;</span>
     }
 
     public User getUser(String id) {
-<span class="fc" id="L54">        return users.stream()</span>
-<span class="fc" id="L55">                .filter(user -&gt; user._id().equals(id))</span>
-<span class="fc" id="L56">                .findFirst()</span>
-<span class="fc" id="L57">                .orElse(null);</span>
+<span class="fc" id="L64">        return users.stream()</span>
+<span class="fc" id="L65">                .filter(user -&gt; user._id().equals(id))</span>
+<span class="fc" id="L66">                .findFirst()</span>
+<span class="fc" id="L67">                .orElse(null);</span>
     }
 
     public List&lt;Region&gt; getRegions() {
-<span class="nc" id="L61">        return regions;</span>
+<span class="nc" id="L71">        return regions;</span>
     }
 
     public void setRegions(List&lt;Region&gt; regions) {
-<span class="nc" id="L65">        this.regions = new ArrayList&lt;&gt;(regions);</span>
-<span class="nc" id="L66">    }</span>
+<span class="nc" id="L75">        this.regions = new ArrayList&lt;&gt;(regions);</span>
+<span class="nc" id="L76">    }</span>
 
     public Region getRegion(String id) {
-<span class="nc" id="L69">        return regions.stream()</span>
-<span class="nc" id="L70">                .filter(region -&gt; region._id().equals(id))</span>
-<span class="nc" id="L71">                .findFirst()</span>
-<span class="nc" id="L72">                .orElse(null);</span>
+<span class="nc" id="L79">        return regions.stream()</span>
+<span class="nc" id="L80">                .filter(region -&gt; region._id().equals(id))</span>
+<span class="nc" id="L81">                .findFirst()</span>
+<span class="nc" id="L82">                .orElse(null);</span>
     }
 
     public void setRegion(Region region) {
-<span class="nc" id="L76">        this.joinedRegion = region;</span>
-<span class="nc" id="L77">    }</span>
+<span class="nc" id="L86">        this.joinedRegion = region;</span>
+<span class="nc" id="L87">    }</span>
 
     public Region getJoinedRegion() {
-<span class="nc" id="L80">        return joinedRegion;</span>
+<span class="nc" id="L90">        return joinedRegion;</span>
     }
 
     public void setAreas(List&lt;Area&gt; areas) {
-<span class="nc" id="L84">        this.areas = new ArrayList&lt;&gt;(areas);</span>
-<span class="nc" id="L85">    }</span>
+<span class="nc" id="L94">        this.areas = new ArrayList&lt;&gt;(areas);</span>
+<span class="nc" id="L95">    }</span>
 
     public Area getArea(String id) {
-<span class="nc" id="L88">        return areas.stream()</span>
-<span class="nc" id="L89">                .filter(area -&gt; area._id().equals(id))</span>
-<span class="nc" id="L90">                .findFirst()</span>
-<span class="nc" id="L91">                .orElse(null);</span>
+<span class="nc" id="L98">        return areas.stream()</span>
+<span class="nc" id="L99">                .filter(area -&gt; area._id().equals(id))</span>
+<span class="nc" id="L100">                .findFirst()</span>
+<span class="nc" id="L101">                .orElse(null);</span>
     }
 
     public void setTrainer(Trainer trainer) {
-<span class="nc" id="L95">        this.trainer = trainer;</span>
-<span class="nc" id="L96">    }</span>
+<span class="nc" id="L105">        this.trainer = trainer;</span>
+<span class="nc" id="L106">    }</span>
 
     public Trainer getTrainer() {
-<span class="nc" id="L99">        return trainer;</span>
+<span class="nc" id="L109">        return trainer;</span>
     }
 
     public void setCharacters(List&lt;String&gt; characters) {
-<span class="nc" id="L103">        synchronized (this.characters) {</span>
-<span class="nc bnc" id="L104" title="All 2 branches missed.">            for (String character : characters) {</span>
-<span class="nc bnc" id="L105" title="All 2 branches missed.">                if (this.characters.stream().anyMatch(pair -&gt; pair.getKey().equals(character)))</span>
-<span class="nc" id="L106">                    continue;</span>
-<span class="nc" id="L107">                this.characters.add(new Pair&lt;&gt;(character, null));</span>
-<span class="nc" id="L108">            }</span>
+<span class="nc" id="L113">        synchronized (this.characters) {</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">            for (String character : characters) {</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">                if (this.characters.stream().anyMatch(pair -&gt; pair.getKey().equals(character)))</span>
+<span class="nc" id="L116">                    continue;</span>
+<span class="nc" id="L117">                this.characters.add(new Pair&lt;&gt;(character, null));</span>
+<span class="nc" id="L118">            }</span>
 
-<span class="nc" id="L110">            this.characters.removeIf(pair -&gt; characters.stream().noneMatch(character -&gt; character.equals(pair.getKey())));</span>
-<span class="nc" id="L111">        }</span>
-<span class="nc" id="L112">    }</span>
+<span class="nc" id="L120">            this.characters.removeIf(pair -&gt; characters.stream().noneMatch(character -&gt; character.equals(pair.getKey())));</span>
+<span class="nc" id="L121">        }</span>
+<span class="nc" id="L122">    }</span>
 
     public void setCharacterImage(String name, Image image) {
-<span class="nc" id="L115">        synchronized (characters) {</span>
-<span class="nc" id="L116">            characters.removeIf(pair -&gt; pair.getKey().equals(name));</span>
-<span class="nc" id="L117">            characters.add(new Pair&lt;&gt;(name, image));</span>
-<span class="nc" id="L118">        }</span>
-<span class="nc" id="L119">    }</span>
+<span class="nc" id="L125">        synchronized (characters) {</span>
+<span class="nc" id="L126">            characters.removeIf(pair -&gt; pair.getKey().equals(name));</span>
+<span class="nc" id="L127">            characters.add(new Pair&lt;&gt;(name, image));</span>
+<span class="nc" id="L128">        }</span>
+<span class="nc" id="L129">    }</span>
 
     public Trainer getTrainer(String id) {
-<span class="nc" id="L122">        return trainers.stream()</span>
-<span class="nc" id="L123">                .filter(trainer -&gt; trainer._id().equals(id))</span>
-<span class="nc" id="L124">                .findFirst()</span>
-<span class="nc" id="L125">                .orElse(null);</span>
+<span class="nc" id="L132">        return trainers.stream()</span>
+<span class="nc" id="L133">                .filter(trainer -&gt; trainer._id().equals(id))</span>
+<span class="nc" id="L134">                .findFirst()</span>
+<span class="nc" id="L135">                .orElse(null);</span>
     }
 
     public List&lt;Pair&lt;String, Image&gt;&gt; getCharacters() {
-<span class="nc" id="L129">        synchronized (characters) {</span>
-<span class="nc" id="L130">            return new ArrayList&lt;&gt;(characters);</span>
+<span class="nc" id="L139">        synchronized (characters) {</span>
+<span class="nc" id="L140">            return new ArrayList&lt;&gt;(characters);</span>
         }
     }
 
     public Pair&lt;String, Image&gt; getCharacterImage(String image) {
-<span class="nc" id="L135">        synchronized (characters) {</span>
-<span class="nc" id="L136">            return characters.stream()</span>
-<span class="nc" id="L137">                    .filter(pair -&gt; pair.getKey().equals(image))</span>
-<span class="nc" id="L138">                    .findFirst()</span>
-<span class="nc" id="L139">                    .orElse(null);</span>
+<span class="nc" id="L145">        synchronized (characters) {</span>
+<span class="nc" id="L146">            return characters.stream()</span>
+<span class="nc" id="L147">                    .filter(pair -&gt; pair.getKey().equals(image))</span>
+<span class="nc" id="L148">                    .findFirst()</span>
+<span class="nc" id="L149">                    .orElse(null);</span>
         }
+    }
+
+    public Image getImageAvatar(User user) {
+        Image imageAvatar;
+        try {
+<span class="nc bnc" id="L156" title="All 4 branches missed.">            if (user.avatar() != null &amp;&amp; user.avatar().contains(&quot;data:image/png;base64,&quot;)) {</span>
+<span class="nc" id="L157">                String avatar = user.avatar().replace(&quot;data:image/png;base64,&quot;, &quot;&quot;).trim();</span>
+<span class="nc" id="L158">                byte[] imageData = Base64.getDecoder().decode(avatar);</span>
+<span class="nc" id="L159">                imageAvatar = new Image(new ByteArrayInputStream(imageData));</span>
+<span class="nc bnc" id="L160" title="All 4 branches missed.">            } else if (user.avatar() != null &amp;&amp; user.avatar().contains(&quot;https://&quot;)) {</span>
+<span class="nc" id="L161">                imageAvatar = loadImage(user.avatar(), 40.0, 40.0, false, false);</span>
+            } else {
+<span class="nc" id="L163">                imageAvatar = loadImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/user.png&quot;)).toString(),</span>
+                        40.0, 40.0, false, false);
+            }
+<span class="nc" id="L166">        } catch (FileNotFoundException | URISyntaxException e) {</span>
+<span class="nc" id="L167">            throw new RuntimeException(e);</span>
+<span class="nc" id="L168">        }</span>
+<span class="nc" id="L169">        return imageAvatar;</span>
+    }
+
+    @SuppressWarnings(&quot;SameParameterValue&quot;)
+    private static Image loadImage(String imageUrl, double width, double height, boolean preserveRatio, boolean smooth) throws FileNotFoundException, URISyntaxException {
+<span class="nc" id="L174">        return new Image(imageUrl, width, height, preserveRatio, smooth);</span>
+    }
+
+    public String getAvatarDataUrl(BufferedImage bufferedImage) {
+<span class="nc" id="L178">        ByteArrayOutputStream bytes = new ByteArrayOutputStream();</span>
+        try {
+<span class="nc" id="L180">            ImageIO.write(bufferedImage, &quot;png&quot;, bytes);</span>
+<span class="nc" id="L181">        } catch (IOException e) {</span>
+<span class="nc" id="L182">            throw new RuntimeException(e);</span>
+<span class="nc" id="L183">        }</span>
+
+<span class="nc" id="L185">        return &quot;data:image/png;base64,&quot; + Base64.getEncoder().encodeToString(bytes.toByteArray());</span>
+    }
+
+    public File provideImageFile(App app) {
+<span class="nc" id="L189">        FileChooser fileChooser = new FileChooser();</span>
+<span class="nc" id="L190">        fileChooser.setTitle(&quot;Choose Avatar&quot;);</span>
+<span class="nc" id="L191">        fileChooser.setInitialDirectory(new File(System.getProperty(&quot;user.home&quot;)));</span>
+<span class="nc" id="L192">        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(&quot;Image Files&quot;, &quot;*.png&quot;, &quot;*.jpg&quot;));</span>
+<span class="nc" id="L193">        return fileChooser.showOpenDialog(app.getStage());</span>
+    }
+
+    public BufferedImage provideBufferedImage(File file) {
+        BufferedImage bufferedImage;
+        try {
+<span class="nc" id="L199">            bufferedImage = ImageIO.read(file);</span>
+<span class="nc" id="L200">        } catch (IOException e) {</span>
+<span class="nc" id="L201">            throw new RuntimeException(e);</span>
+<span class="nc" id="L202">        }</span>
+
+<span class="nc" id="L204">        return resizeImage(bufferedImage);</span>
+    }
+
+    private BufferedImage resizeImage(BufferedImage bufferedImage) {
+<span class="nc" id="L208">        BufferedImage resized = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);</span>
+<span class="nc" id="L209">        Graphics2D graphics = resized.createGraphics();</span>
+<span class="nc" id="L210">        graphics.drawImage(bufferedImage, 0, 0, 128, 128, null);</span>
+<span class="nc" id="L211">        graphics.dispose();</span>
+<span class="nc" id="L212">        return resized;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
