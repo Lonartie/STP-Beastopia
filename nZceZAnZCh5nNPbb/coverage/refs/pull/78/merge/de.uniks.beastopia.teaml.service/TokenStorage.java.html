@@ -8,36 +8,27 @@ import javax.inject.Singleton;
 @Singleton
 public class TokenStorage {
     private String accessToken;
-    private String refreshToken;
     private User currentUser;
 
     @Inject
-<span class="fc" id="L15">    public TokenStorage() {</span>
+<span class="fc" id="L14">    public TokenStorage() {</span>
 
-<span class="fc" id="L17">    }</span>
+<span class="fc" id="L16">    }</span>
 
     public String getAccessToken() {
-<span class="nc" id="L20">        return accessToken;</span>
+<span class="nc" id="L19">        return accessToken;</span>
     }
 
     public void setAccessToken(String accessToken) {
-<span class="nc" id="L24">        this.accessToken = accessToken;</span>
-<span class="nc" id="L25">    }</span>
-
-    public String getRefreshToken() {
-<span class="nc" id="L28">        return refreshToken;</span>
-    }
-
-    public void setRefreshToken(String token) {
-<span class="nc" id="L32">        this.refreshToken = token;</span>
-<span class="nc" id="L33">    }</span>
+<span class="nc" id="L23">        this.accessToken = accessToken;</span>
+<span class="nc" id="L24">    }</span>
 
     public User getCurrentUser() {
-<span class="fc" id="L36">        return currentUser;</span>
+<span class="fc" id="L27">        return currentUser;</span>
     }
 
     public void setCurrentUser(User user) {
-<span class="nc" id="L40">        this.currentUser = user;</span>
-<span class="nc" id="L41">    }</span>
+<span class="nc" id="L31">        this.currentUser = user;</span>
+<span class="nc" id="L32">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

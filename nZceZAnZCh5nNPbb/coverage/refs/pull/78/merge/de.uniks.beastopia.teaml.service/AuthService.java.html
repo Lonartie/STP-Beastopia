@@ -23,74 +23,72 @@ public class AuthService {
     public Observable&lt;LoginResult&gt; login(String username, String password, boolean rememberMe) {
 <span class="fc" id="L24">        return authApiService.login(new LoginDto(username, password)).map(lr -&gt; {</span>
 <span class="fc" id="L25">            tokenStorage.setAccessToken(lr.accessToken());</span>
-<span class="fc" id="L26">            tokenStorage.setRefreshToken(lr.refreshToken());</span>
-<span class="fc" id="L27">            tokenStorage.setCurrentUser(userApiService.updateUser(lr._id(), new UpdateUserDto(null,</span>
-<span class="fc" id="L28">                    UserApiService.STATUS_ONLINE, null, null, null)).blockingFirst());</span>
-<span class="pc bpc" id="L29" title="1 of 2 branches missed.">            if (rememberMe) {</span>
-<span class="nc" id="L30">                prefs.setRememberMe(lr.refreshToken());</span>
+<span class="fc" id="L26">            tokenStorage.setCurrentUser(userApiService.updateUser(lr._id(), new UpdateUserDto(null,</span>
+<span class="fc" id="L27">                    UserApiService.STATUS_ONLINE, null, null, null)).blockingFirst());</span>
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">            if (rememberMe) {</span>
+<span class="nc" id="L29">                prefs.setRememberMe(lr.refreshToken());</span>
             }
-<span class="fc" id="L32">            return lr;</span>
+<span class="fc" id="L31">            return lr;</span>
         });
     }
 
     public Observable&lt;LoginResult&gt; refresh() {
-<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (!prefs.isRememberMe()) {</span>
-<span class="nc" id="L38">            return Observable.error(new RuntimeException(&quot;No refresh token&quot;));</span>
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        if (!prefs.isRememberMe()) {</span>
+<span class="nc" id="L37">            return Observable.error(new RuntimeException(&quot;No refresh token&quot;));</span>
         }
 
-<span class="fc" id="L41">        return authApiService.refresh(new RefreshDto(prefs.getRememberMeToken())).map(lr -&gt; {</span>
-<span class="fc" id="L42">            tokenStorage.setAccessToken(lr.accessToken());</span>
-<span class="fc" id="L43">            tokenStorage.setRefreshToken(lr.refreshToken());</span>
-<span class="fc" id="L44">            tokenStorage.setCurrentUser(userApiService.updateUser(lr._id(), new UpdateUserDto(null,</span>
-<span class="fc" id="L45">                    UserApiService.STATUS_ONLINE, null, null, null)).blockingFirst());</span>
-<span class="fc" id="L46">            return lr;</span>
+<span class="fc" id="L40">        return authApiService.refresh(new RefreshDto(prefs.getRememberMeToken())).map(lr -&gt; {</span>
+<span class="fc" id="L41">            tokenStorage.setAccessToken(lr.accessToken());</span>
+<span class="fc" id="L42">            tokenStorage.setCurrentUser(userApiService.updateUser(lr._id(), new UpdateUserDto(null,</span>
+<span class="fc" id="L43">                    UserApiService.STATUS_ONLINE, null, null, null)).blockingFirst());</span>
+<span class="fc" id="L44">            return lr;</span>
         });
     }
 
     public Observable&lt;User&gt; logout() {
-<span class="fc" id="L51">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null,</span>
-<span class="fc" id="L52">                UserApiService.STATUS_OFFLINE, null, null, null)).map(user -&gt; {</span>
-<span class="fc" id="L53">            prefs.clearRememberMe();</span>
-<span class="fc" id="L54">            authApiService.logout().subscribe();</span>
-<span class="fc" id="L55">            return tokenStorage.getCurrentUser();</span>
+<span class="fc" id="L49">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null,</span>
+<span class="fc" id="L50">                UserApiService.STATUS_OFFLINE, null, null, null)).map(user -&gt; {</span>
+<span class="fc" id="L51">            prefs.clearRememberMe();</span>
+<span class="fc" id="L52">            authApiService.logout().subscribe();</span>
+<span class="fc" id="L53">            return tokenStorage.getCurrentUser();</span>
         });
     }
 
     public Observable&lt;User&gt; goOffline() {
-<span class="nc" id="L60">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, UserApiService.STATUS_OFFLINE, null, null, null)).map(user -&gt; tokenStorage.getCurrentUser());</span>
+<span class="nc" id="L58">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, UserApiService.STATUS_OFFLINE, null, null, null)).map(user -&gt; tokenStorage.getCurrentUser());</span>
     }
 
     public Observable&lt;User&gt; updatePassword(String password) {
-<span class="fc" id="L64">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, null, null, null, password));</span>
+<span class="fc" id="L62">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, null, null, null, password));</span>
     }
 
     public Observable&lt;User&gt; updateUsername(String username) {
-<span class="nc" id="L68">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(username, null, null, null, null)).map(user -&gt; {</span>
-<span class="nc" id="L69">            tokenStorage.setCurrentUser(user);</span>
-<span class="nc" id="L70">            return user;</span>
+<span class="nc" id="L66">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(username, null, null, null, null)).map(user -&gt; {</span>
+<span class="nc" id="L67">            tokenStorage.setCurrentUser(user);</span>
+<span class="nc" id="L68">            return user;</span>
         });
     }
 
     public Observable&lt;User&gt; updateUsernameAndPassword(String username, String password) {
-<span class="nc" id="L75">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(username, null, null, null, password)).map(user -&gt; {</span>
-<span class="nc" id="L76">            tokenStorage.setCurrentUser(user);</span>
-<span class="nc" id="L77">            return user;</span>
+<span class="nc" id="L73">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(username, null, null, null, password)).map(user -&gt; {</span>
+<span class="nc" id="L74">            tokenStorage.setCurrentUser(user);</span>
+<span class="nc" id="L75">            return user;</span>
         });
     }
 
     @SuppressWarnings(&quot;unused&quot;)
     public Observable&lt;User&gt; updateAvatar(String avatar) {
-<span class="nc" id="L83">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, null, avatar, null, null)).map(user -&gt; {</span>
-<span class="nc" id="L84">            tokenStorage.setCurrentUser(user);</span>
-<span class="nc" id="L85">            return user;</span>
+<span class="nc" id="L81">        return userApiService.updateUser(tokenStorage.getCurrentUser()._id(), new UpdateUserDto(null, null, avatar, null, null)).map(user -&gt; {</span>
+<span class="nc" id="L82">            tokenStorage.setCurrentUser(user);</span>
+<span class="nc" id="L83">            return user;</span>
         });
     }
 
     public Observable&lt;User&gt; deleteUser() {
-<span class="fc" id="L90">        return Observable.create(source -&gt; {</span>
-<span class="fc" id="L91">            userApiService.deleteUser(tokenStorage.getCurrentUser()._id()).subscribe();</span>
-<span class="fc" id="L92">            source.onNext(tokenStorage.getCurrentUser());</span>
-<span class="fc" id="L93">        });</span>
+<span class="fc" id="L88">        return Observable.create(source -&gt; {</span>
+<span class="fc" id="L89">            userApiService.deleteUser(tokenStorage.getCurrentUser()._id()).subscribe();</span>
+<span class="fc" id="L90">            source.onNext(tokenStorage.getCurrentUser());</span>
+<span class="fc" id="L91">        });</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
