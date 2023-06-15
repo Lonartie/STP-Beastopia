@@ -49,7 +49,7 @@ public class DirectMessageController extends Controller {
     @FXML
     public TextField chatInput;
     @FXML
-    public Label chatName; //this label shows the name of the person/group you are chatting with
+    public Label chatName;
     private Node rightSide;
     private Group currentGroup;
     ChatWindowController controller;
@@ -70,54 +70,54 @@ public class DirectMessageController extends Controller {
 <span class="nc bnc" id="L70" title="All 2 branches missed.">                    if (groups == null) {</span>
 <span class="nc" id="L71">                        return;</span>
                     }
-                    //noinspection ReassignedVariable
-<span class="nc" id="L74">                    Group existing = null;</span>
-<span class="nc bnc" id="L75" title="All 2 branches missed.">                    for (Group group : groups) {</span>
-<span class="nc bnc" id="L76" title="All 2 branches missed.">                        if (group.members().size() == 2 &amp;&amp;</span>
-<span class="nc bnc" id="L77" title="All 2 branches missed.">                                group.members().contains(user._id()) &amp;&amp;</span>
-<span class="nc bnc" id="L78" title="All 2 branches missed.">                                group.members().contains(tokenStorage.getCurrentUser()._id())) {</span>
-<span class="nc" id="L79">                            existing = group;</span>
-<span class="nc" id="L80">                            break;</span>
-                        }
-<span class="nc" id="L82">                    }</span>
-
-<span class="nc bnc" id="L84" title="All 2 branches missed.">                    if (existing != null) {</span>
-<span class="nc" id="L85">                        loadGroup(existing);</span>
+<span class="nc" id="L73">                    Group existing = getExistingGroup(groups, user);</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">                    if (existing != null) {</span>
+<span class="nc" id="L75">                        loadGroup(existing);</span>
                     } else {
                         // create new group
-<span class="nc" id="L88">                        String groupName = groupListService.getGroupName(tokenStorage.getCurrentUser()._id(), user._id());</span>
-<span class="nc" id="L89">                        disposables.add(groupListService.addGroup(groupName, List.of(tokenStorage.getCurrentUser()._id(), user._id()))</span>
-<span class="nc" id="L90">                                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L91">                                .subscribe(group -&gt; {</span>
-<span class="nc bnc" id="L92" title="All 2 branches missed.">                                    if (group == null) {</span>
-<span class="nc" id="L93">                                        return;</span>
+<span class="nc" id="L78">                        String groupName = groupListService.getGroupName(tokenStorage.getCurrentUser()._id(), user._id());</span>
+<span class="nc" id="L79">                        disposables.add(groupListService.addGroup(groupName, List.of(tokenStorage.getCurrentUser()._id(), user._id()))</span>
+<span class="nc" id="L80">                                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L81">                                .subscribe(group -&gt; {</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">                                    if (group == null) {</span>
+<span class="nc" id="L83">                                        return;</span>
                                     }
-<span class="nc" id="L95">                                    chatListController.reload();</span>
-<span class="nc" id="L96">                                    loadGroup(group);</span>
-<span class="nc" id="L97">                                }));</span>
+<span class="nc" id="L85">                                    chatListController.reload();</span>
+<span class="nc" id="L86">                                    loadGroup(group);</span>
+<span class="nc" id="L87">                                }));</span>
                     }
-<span class="nc" id="L99">                }));</span>
+<span class="nc" id="L89">                }));</span>
 
-<span class="nc" id="L101">        return this;</span>
+<span class="nc" id="L91">        return this;</span>
+    }
+
+    private Group getExistingGroup(List&lt;Group&gt; groups, User user) {
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        for (Group group : groups) {</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">            if (group.members().size() == 2 &amp;&amp;</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">                    group.members().contains(user._id()) &amp;&amp;</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">                    group.members().contains(tokenStorage.getCurrentUser()._id())) {</span>
+<span class="nc" id="L99">                return group;</span>
+            }
+<span class="nc" id="L101">        }</span>
+<span class="nc" id="L102">        return null;</span>
     }
 
     @Override
     public void init() {
-<span class="fc" id="L106">        super.init();</span>
-<span class="fc" id="L107">        chatListController.setOnGroupClicked(this::loadGroup);</span>
-<span class="pc bpc" id="L108" title="1 of 2 branches missed.">        if (preventDefaultGroupLoading) {</span>
-<span class="nc" id="L109">            chatListController.preventFirstUpdate();</span>
+<span class="fc" id="L107">        super.init();</span>
+<span class="fc" id="L108">        chatListController.setOnGroupClicked(this::loadGroup);</span>
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        if (preventDefaultGroupLoading) {</span>
+<span class="nc" id="L110">            chatListController.preventFirstUpdate();</span>
         }
-<span class="fc" id="L111">        chatListController.init();</span>
-<span class="fc" id="L112">    }</span>
+<span class="fc" id="L112">        chatListController.init();</span>
+<span class="fc" id="L113">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L116">        Parent parent = super.render();</span>
-<span class="fc" id="L117">        rightSide = chatScrollPane;</span>
-<span class="fc" id="L118">        grid.add(chatListController.render(), 0, 1);</span>
+<span class="fc" id="L117">        Parent parent = super.render();</span>
+<span class="fc" id="L118">        rightSide = chatScrollPane;</span>
+<span class="fc" id="L119">        grid.add(chatListController.render(), 0, 1);</span>
 
-        //TODO: show chatBox label
 <span class="fc" id="L121">        return parent;</span>
     }
 

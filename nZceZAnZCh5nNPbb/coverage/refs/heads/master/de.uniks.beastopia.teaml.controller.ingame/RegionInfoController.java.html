@@ -40,15 +40,9 @@ public class RegionInfoController extends Controller {
 <span class="fc" id="L40">        return parent;</span>
     }
 
-    @Override
-    public void destroy() {
-<span class="fc" id="L45">        super.destroy();</span>
+    public void setText(String name, String description) {
+<span class="fc" id="L44">        this.name = name;</span>
+<span class="fc" id="L45">        this.information = description;</span>
 <span class="fc" id="L46">    }</span>
-
-    public RegionInfoController setText(String name, String description) {
-<span class="fc" id="L49">        this.name = name;</span>
-<span class="fc" id="L50">        this.information = description;</span>
-<span class="fc" id="L51">        return this;</span>
-    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -15,8 +15,10 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.net.URISyntaxException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -24,192 +26,187 @@ import java.util.Objects;
 
 @Singleton
 public class DataCache {
-<span class="fc" id="L27">    private List&lt;User&gt; users = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L28">    private List&lt;Region&gt; regions = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L29">    private List&lt;Area&gt; areas = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L30">    @SuppressWarnings(&quot;MismatchedQueryAndUpdateOfCollection&quot;)</span>
+<span class="fc" id="L29">    private List&lt;User&gt; users = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L30">    private List&lt;Area&gt; areas = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L31">    @SuppressWarnings(&quot;MismatchedQueryAndUpdateOfCollection&quot;)</span>
     private final List&lt;Trainer&gt; trainers = new ArrayList&lt;&gt;();
-<span class="fc" id="L32">    private final List&lt;Pair&lt;String, Image&gt;&gt; characters = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L33">    private final List&lt;Pair&lt;String, Image&gt;&gt; characters = new ArrayList&lt;&gt;();</span>
     Trainer trainer;
     Region joinedRegion;
 
     @Inject
-<span class="fc" id="L37">    public DataCache() {</span>
-<span class="fc" id="L38">    }</span>
+<span class="fc" id="L38">    public DataCache() {</span>
+<span class="fc" id="L39">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void addUser(User user) {
-<span class="nc" id="L42">        users.add(user);</span>
-<span class="nc" id="L43">    }</span>
+<span class="nc" id="L43">        users.add(user);</span>
+<span class="nc" id="L44">    }</span>
 
+    /**
+     * Sets the list of all users the server is aware of
+     *
+     * @param users The list of all users
+     */
     public void setAllUsers(List&lt;User&gt; users) {
-<span class="fc" id="L46">        this.users = new ArrayList&lt;&gt;(users);</span>
-<span class="fc" id="L47">    }</span>
+<span class="fc" id="L52">        this.users = new ArrayList&lt;&gt;(users);</span>
+<span class="fc" id="L53">    }</span>
 
+    /**
+     * Adds a range of user to the list of all users the server is aware of
+     *
+     * @param users The list of all users
+     */
     @SuppressWarnings(&quot;unused&quot;)
     public void addUsers(List&lt;User&gt; users) {
-<span class="nc" id="L51">        this.users.addAll(users);</span>
-<span class="nc" id="L52">    }</span>
+<span class="nc" id="L62">        this.users.addAll(users);</span>
+<span class="nc" id="L63">    }</span>
 
+    /**
+     * Removes a user from the list of all users the server is aware of
+     *
+     * @param user The user to remove
+     */
     @SuppressWarnings(&quot;unused&quot;)
     public void removeUser(User user) {
-<span class="nc" id="L56">        users.remove(user);</span>
-<span class="nc" id="L57">    }</span>
+<span class="nc" id="L72">        users.remove(user);</span>
+<span class="nc" id="L73">    }</span>
 
     public List&lt;User&gt; getAllUsers() {
-<span class="fc" id="L60">        return users;</span>
+<span class="fc" id="L76">        return users;</span>
     }
 
     public User getUser(String id) {
-<span class="fc" id="L64">        return users.stream()</span>
-<span class="fc" id="L65">                .filter(user -&gt; user._id().equals(id))</span>
-<span class="fc" id="L66">                .findFirst()</span>
-<span class="fc" id="L67">                .orElse(null);</span>
-    }
-
-    public List&lt;Region&gt; getRegions() {
-<span class="nc" id="L71">        return regions;</span>
-    }
-
-    public void setRegions(List&lt;Region&gt; regions) {
-<span class="nc" id="L75">        this.regions = new ArrayList&lt;&gt;(regions);</span>
-<span class="nc" id="L76">    }</span>
-
-    public Region getRegion(String id) {
-<span class="nc" id="L79">        return regions.stream()</span>
-<span class="nc" id="L80">                .filter(region -&gt; region._id().equals(id))</span>
-<span class="nc" id="L81">                .findFirst()</span>
-<span class="nc" id="L82">                .orElse(null);</span>
+<span class="fc" id="L80">        return users.stream()</span>
+<span class="fc" id="L81">                .filter(user -&gt; user._id().equals(id))</span>
+<span class="fc" id="L82">                .findFirst()</span>
+<span class="fc" id="L83">                .orElse(null);</span>
     }
 
     public void setRegion(Region region) {
-<span class="nc" id="L86">        this.joinedRegion = region;</span>
-<span class="nc" id="L87">    }</span>
+<span class="nc" id="L87">        this.joinedRegion = region;</span>
+<span class="nc" id="L88">    }</span>
 
     public Region getJoinedRegion() {
-<span class="nc" id="L90">        return joinedRegion;</span>
+<span class="nc" id="L91">        return joinedRegion;</span>
     }
 
     public void setAreas(List&lt;Area&gt; areas) {
-<span class="nc" id="L94">        this.areas = new ArrayList&lt;&gt;(areas);</span>
-<span class="nc" id="L95">    }</span>
+<span class="nc" id="L95">        this.areas = new ArrayList&lt;&gt;(areas);</span>
+<span class="nc" id="L96">    }</span>
 
     public Area getArea(String id) {
-<span class="nc" id="L98">        return areas.stream()</span>
-<span class="nc" id="L99">                .filter(area -&gt; area._id().equals(id))</span>
-<span class="nc" id="L100">                .findFirst()</span>
-<span class="nc" id="L101">                .orElse(null);</span>
+<span class="nc" id="L99">        return areas.stream()</span>
+<span class="nc" id="L100">                .filter(area -&gt; area._id().equals(id))</span>
+<span class="nc" id="L101">                .findFirst()</span>
+<span class="nc" id="L102">                .orElse(null);</span>
     }
 
     public void setTrainer(Trainer trainer) {
-<span class="nc" id="L105">        this.trainer = trainer;</span>
-<span class="nc" id="L106">    }</span>
+<span class="nc" id="L106">        this.trainer = trainer;</span>
+<span class="nc" id="L107">    }</span>
 
     public Trainer getTrainer() {
-<span class="nc" id="L109">        return trainer;</span>
+<span class="nc" id="L110">        return trainer;</span>
     }
 
     public void setCharacters(List&lt;String&gt; characters) {
-<span class="nc" id="L113">        synchronized (this.characters) {</span>
-<span class="nc bnc" id="L114" title="All 2 branches missed.">            for (String character : characters) {</span>
-<span class="nc bnc" id="L115" title="All 2 branches missed.">                if (this.characters.stream().anyMatch(pair -&gt; pair.getKey().equals(character)))</span>
-<span class="nc" id="L116">                    continue;</span>
-<span class="nc" id="L117">                this.characters.add(new Pair&lt;&gt;(character, null));</span>
-<span class="nc" id="L118">            }</span>
+<span class="nc" id="L114">        synchronized (this.characters) {</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">            for (String character : characters) {</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">                if (this.characters.stream().anyMatch(pair -&gt; pair.getKey().equals(character)))</span>
+<span class="nc" id="L117">                    continue;</span>
+<span class="nc" id="L118">                this.characters.add(new Pair&lt;&gt;(character, null));</span>
+<span class="nc" id="L119">            }</span>
 
-<span class="nc" id="L120">            this.characters.removeIf(pair -&gt; characters.stream().noneMatch(character -&gt; character.equals(pair.getKey())));</span>
-<span class="nc" id="L121">        }</span>
-<span class="nc" id="L122">    }</span>
+<span class="nc" id="L121">            this.characters.removeIf(pair -&gt; characters.stream().noneMatch(character -&gt; character.equals(pair.getKey())));</span>
+<span class="nc" id="L122">        }</span>
+<span class="nc" id="L123">    }</span>
 
     public void setCharacterImage(String name, Image image) {
-<span class="nc" id="L125">        synchronized (characters) {</span>
-<span class="nc" id="L126">            characters.removeIf(pair -&gt; pair.getKey().equals(name));</span>
-<span class="nc" id="L127">            characters.add(new Pair&lt;&gt;(name, image));</span>
-<span class="nc" id="L128">        }</span>
-<span class="nc" id="L129">    }</span>
+<span class="nc" id="L126">        synchronized (characters) {</span>
+<span class="nc" id="L127">            characters.removeIf(pair -&gt; pair.getKey().equals(name));</span>
+<span class="nc" id="L128">            characters.add(new Pair&lt;&gt;(name, image));</span>
+<span class="nc" id="L129">        }</span>
+<span class="nc" id="L130">    }</span>
 
     public Trainer getTrainer(String id) {
-<span class="nc" id="L132">        return trainers.stream()</span>
-<span class="nc" id="L133">                .filter(trainer -&gt; trainer._id().equals(id))</span>
-<span class="nc" id="L134">                .findFirst()</span>
-<span class="nc" id="L135">                .orElse(null);</span>
+<span class="nc" id="L133">        return trainers.stream()</span>
+<span class="nc" id="L134">                .filter(trainer -&gt; trainer._id().equals(id))</span>
+<span class="nc" id="L135">                .findFirst()</span>
+<span class="nc" id="L136">                .orElse(null);</span>
     }
 
     public List&lt;Pair&lt;String, Image&gt;&gt; getCharacters() {
-<span class="nc" id="L139">        synchronized (characters) {</span>
-<span class="nc" id="L140">            return new ArrayList&lt;&gt;(characters);</span>
+<span class="nc" id="L140">        synchronized (characters) {</span>
+<span class="nc" id="L141">            return new ArrayList&lt;&gt;(characters);</span>
         }
     }
 
     public Pair&lt;String, Image&gt; getCharacterImage(String image) {
-<span class="nc" id="L145">        synchronized (characters) {</span>
-<span class="nc" id="L146">            return characters.stream()</span>
-<span class="nc" id="L147">                    .filter(pair -&gt; pair.getKey().equals(image))</span>
-<span class="nc" id="L148">                    .findFirst()</span>
-<span class="nc" id="L149">                    .orElse(null);</span>
+<span class="nc" id="L146">        synchronized (characters) {</span>
+<span class="nc" id="L147">            return characters.stream()</span>
+<span class="nc" id="L148">                    .filter(pair -&gt; pair.getKey().equals(image))</span>
+<span class="nc" id="L149">                    .findFirst()</span>
+<span class="nc" id="L150">                    .orElse(null);</span>
         }
     }
 
     public Image getImageAvatar(User user) {
         Image imageAvatar;
-        try {
-<span class="nc bnc" id="L156" title="All 4 branches missed.">            if (user.avatar() != null &amp;&amp; user.avatar().contains(&quot;data:image/png;base64,&quot;)) {</span>
-<span class="nc" id="L157">                String avatar = user.avatar().replace(&quot;data:image/png;base64,&quot;, &quot;&quot;).trim();</span>
-<span class="nc" id="L158">                byte[] imageData = Base64.getDecoder().decode(avatar);</span>
-<span class="nc" id="L159">                imageAvatar = new Image(new ByteArrayInputStream(imageData));</span>
-<span class="nc bnc" id="L160" title="All 4 branches missed.">            } else if (user.avatar() != null &amp;&amp; user.avatar().contains(&quot;https://&quot;)) {</span>
-<span class="nc" id="L161">                imageAvatar = loadImage(user.avatar(), 40.0, 40.0, false, false);</span>
-            } else {
-<span class="nc" id="L163">                imageAvatar = loadImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/user.png&quot;)).toString(),</span>
-                        40.0, 40.0, false, false);
-            }
-<span class="nc" id="L166">        } catch (FileNotFoundException | URISyntaxException e) {</span>
-<span class="nc" id="L167">            throw new RuntimeException(e);</span>
-<span class="nc" id="L168">        }</span>
-<span class="nc" id="L169">        return imageAvatar;</span>
+<span class="nc bnc" id="L156" title="All 4 branches missed.">        if (user.avatar() != null &amp;&amp; user.avatar().contains(&quot;data:image/png;base64,&quot;)) {</span>
+<span class="nc" id="L157">            String avatar = user.avatar().replace(&quot;data:image/png;base64,&quot;, &quot;&quot;).trim();</span>
+<span class="nc" id="L158">            byte[] imageData = Base64.getDecoder().decode(avatar);</span>
+<span class="nc" id="L159">            imageAvatar = new Image(new ByteArrayInputStream(imageData));</span>
+<span class="nc bnc" id="L160" title="All 4 branches missed.">        } else if (user.avatar() != null &amp;&amp; user.avatar().contains(&quot;https://&quot;)) {</span>
+<span class="nc" id="L161">            imageAvatar = loadImage(user.avatar(), 40.0, 40.0, false, false);</span>
+        } else {
+<span class="nc" id="L163">            imageAvatar = loadImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/user.png&quot;)).toString(),</span>
+                    40.0, 40.0, false, false);
+        }
+<span class="nc" id="L166">        return imageAvatar;</span>
     }
 
     @SuppressWarnings(&quot;SameParameterValue&quot;)
-    private static Image loadImage(String imageUrl, double width, double height, boolean preserveRatio, boolean smooth) throws FileNotFoundException, URISyntaxException {
-<span class="nc" id="L174">        return new Image(imageUrl, width, height, preserveRatio, smooth);</span>
+    private static Image loadImage(String imageUrl, double width, double height, boolean preserveRatio, boolean smooth) {
+<span class="nc" id="L171">        return new Image(imageUrl, width, height, preserveRatio, smooth);</span>
     }
 
     public String getAvatarDataUrl(BufferedImage bufferedImage) {
-<span class="nc" id="L178">        ByteArrayOutputStream bytes = new ByteArrayOutputStream();</span>
+<span class="nc" id="L175">        ByteArrayOutputStream bytes = new ByteArrayOutputStream();</span>
         try {
-<span class="nc" id="L180">            ImageIO.write(bufferedImage, &quot;png&quot;, bytes);</span>
-<span class="nc" id="L181">        } catch (IOException e) {</span>
-<span class="nc" id="L182">            throw new RuntimeException(e);</span>
-<span class="nc" id="L183">        }</span>
+<span class="nc" id="L177">            ImageIO.write(bufferedImage, &quot;png&quot;, bytes);</span>
+<span class="nc" id="L178">        } catch (IOException e) {</span>
+<span class="nc" id="L179">            throw new RuntimeException(e);</span>
+<span class="nc" id="L180">        }</span>
 
-<span class="nc" id="L185">        return &quot;data:image/png;base64,&quot; + Base64.getEncoder().encodeToString(bytes.toByteArray());</span>
+<span class="nc" id="L182">        return &quot;data:image/png;base64,&quot; + Base64.getEncoder().encodeToString(bytes.toByteArray());</span>
     }
 
     public File provideImageFile(App app) {
-<span class="nc" id="L189">        FileChooser fileChooser = new FileChooser();</span>
-<span class="nc" id="L190">        fileChooser.setTitle(&quot;Choose Avatar&quot;);</span>
-<span class="nc" id="L191">        fileChooser.setInitialDirectory(new File(System.getProperty(&quot;user.home&quot;)));</span>
-<span class="nc" id="L192">        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(&quot;Image Files&quot;, &quot;*.png&quot;, &quot;*.jpg&quot;));</span>
-<span class="nc" id="L193">        return fileChooser.showOpenDialog(app.getStage());</span>
+<span class="nc" id="L186">        FileChooser fileChooser = new FileChooser();</span>
+<span class="nc" id="L187">        fileChooser.setTitle(&quot;Choose Avatar&quot;);</span>
+<span class="nc" id="L188">        fileChooser.setInitialDirectory(new File(System.getProperty(&quot;user.home&quot;)));</span>
+<span class="nc" id="L189">        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(&quot;Image Files&quot;, &quot;*.png&quot;, &quot;*.jpg&quot;, &quot;*.jpeg&quot;));</span>
+<span class="nc" id="L190">        return fileChooser.showOpenDialog(app.getStage());</span>
     }
 
     public BufferedImage provideBufferedImage(File file) {
         BufferedImage bufferedImage;
         try {
-<span class="nc" id="L199">            bufferedImage = ImageIO.read(file);</span>
-<span class="nc" id="L200">        } catch (IOException e) {</span>
-<span class="nc" id="L201">            throw new RuntimeException(e);</span>
-<span class="nc" id="L202">        }</span>
+<span class="nc" id="L196">            bufferedImage = ImageIO.read(file);</span>
+<span class="nc" id="L197">        } catch (IOException e) {</span>
+<span class="nc" id="L198">            throw new RuntimeException(e);</span>
+<span class="nc" id="L199">        }</span>
 
-<span class="nc" id="L204">        return resizeImage(bufferedImage);</span>
+<span class="nc" id="L201">        return resizeImage(bufferedImage);</span>
     }
 
     private BufferedImage resizeImage(BufferedImage bufferedImage) {
-<span class="nc" id="L208">        BufferedImage resized = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);</span>
-<span class="nc" id="L209">        Graphics2D graphics = resized.createGraphics();</span>
-<span class="nc" id="L210">        graphics.drawImage(bufferedImage, 0, 0, 128, 128, null);</span>
-<span class="nc" id="L211">        graphics.dispose();</span>
-<span class="nc" id="L212">        return resized;</span>
+<span class="nc" id="L205">        BufferedImage resized = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);</span>
+<span class="nc" id="L206">        Graphics2D graphics = resized.createGraphics();</span>
+<span class="nc" id="L207">        graphics.drawImage(bufferedImage, 0, 0, 64, 64, null);</span>
+<span class="nc" id="L208">        graphics.dispose();</span>
+<span class="nc" id="L209">        return resized;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
