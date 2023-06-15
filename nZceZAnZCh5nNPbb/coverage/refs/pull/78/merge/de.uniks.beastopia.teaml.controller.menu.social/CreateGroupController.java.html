@@ -8,6 +8,7 @@ import de.uniks.beastopia.teaml.service.TokenStorage;
 import de.uniks.beastopia.teaml.utils.Dialog;
 import de.uniks.beastopia.teaml.utils.Prefs;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -20,10 +21,9 @@ import java.util.List;
 
 public class CreateGroupController extends Controller {
 
-<span class="fc" id="L23">    private final List&lt;User&gt; addedUsersList = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L24">    private final List&lt;Controller&gt; addedUserControllers = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L25">    private final List&lt;Controller&gt; availableUserControllers = new ArrayList&lt;&gt;();</span>
-
+<span class="fc" id="L24">    private final List&lt;User&gt; addedUsersList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L25">    private final List&lt;Controller&gt; addedUserControllers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L26">    private final List&lt;Controller&gt; availableUserControllers = new ArrayList&lt;&gt;();</span>
     @FXML
     public TextField usernameField;
     @FXML
@@ -68,106 +68,99 @@ public class CreateGroupController extends Controller {
         }
 
 <span class="fc bfc" id="L70" title="All 2 branches covered.">        for (User user : reverse(sortByPin(cache.getAllUsers()))) {</span>
-<span class="fc bfc" id="L71" title="All 2 branches covered.">            if (addedUsersList.contains(user) ||</span>
-<span class="fc bfc" id="L72" title="All 2 branches covered.">                    !user.name().toLowerCase().startsWith(usernameField.getText().toLowerCase())) {</span>
-<span class="fc" id="L73">                continue;</span>
+<span class="fc bfc" id="L71" title="All 4 branches covered.">            if (addedUsersList.contains(user) || !user.name().toLowerCase().startsWith(usernameField.getText().toLowerCase())) {</span>
+<span class="fc" id="L72">                continue;</span>
             }
+<span class="fc" id="L74">            users.getChildren().add(0, showUser(user));</span>
+<span class="fc" id="L75">        }</span>
+<span class="fc" id="L76">    }</span>
 
-<span class="fc" id="L76">            UserController controller = userControllerProvider.get()</span>
-<span class="fc" id="L77">                    .setIsAdded(false);</span>
-<span class="fc" id="L78">            controller.setUser(user);</span>
-<span class="fc" id="L79">            controller.setOnUserToggled(this::toggleUser);</span>
-<span class="fc" id="L80">            controller.setOnUserPinToggled(u -&gt; {</span>
-<span class="nc bnc" id="L81" title="All 2 branches missed.">                prefs.setPinned(u, !prefs.isPinned(u));</span>
-<span class="nc" id="L82">                updateLists();</span>
-<span class="nc" id="L83">            });</span>
-<span class="fc" id="L84">            controller.init();</span>
-<span class="fc" id="L85">            users.getChildren().add(0, controller.render());</span>
-<span class="fc" id="L86">        }</span>
-<span class="fc" id="L87">    }</span>
+    private Parent showUser(User user) {
+<span class="fc" id="L79">        UserController controller = userControllerProvider.get()</span>
+<span class="fc" id="L80">                .setIsAdded(false);</span>
+<span class="fc" id="L81">        controller.setUser(user);</span>
+<span class="fc" id="L82">        controller.setOnUserToggled(this::toggleUser);</span>
+<span class="fc" id="L83">        controller.setOnUserPinToggled(u -&gt; {</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">            prefs.setPinned(u, !prefs.isPinned(u));</span>
+<span class="nc" id="L85">            updateLists();</span>
+<span class="nc" id="L86">        });</span>
+<span class="fc" id="L87">        controller.init();</span>
+<span class="fc" id="L88">        return controller.render();</span>
+    }
 
     @FXML
     public void updateAddedUserList() {
-<span class="fc" id="L91">        addedUserControllers.clear();</span>
-<span class="fc" id="L92">        addedUsers.getChildren().clear();</span>
+<span class="fc" id="L93">        addedUserControllers.clear();</span>
+<span class="fc" id="L94">        addedUsers.getChildren().clear();</span>
 
-<span class="fc bfc" id="L94" title="All 2 branches covered.">        for (User user : reverse(sortByPin(addedUsersList))) {</span>
-<span class="fc" id="L95">            UserController controller = userControllerProvider.get()</span>
-<span class="fc" id="L96">                    .setIsAdded(true);</span>
-<span class="fc" id="L97">            controller.setUser(user);</span>
-<span class="fc" id="L98">            controller.setOnUserToggled(this::toggleUser);</span>
-<span class="fc" id="L99">            controller.setOnUserPinToggled(u -&gt; {</span>
-<span class="nc bnc" id="L100" title="All 2 branches missed.">                prefs.setPinned(u, !prefs.isPinned(u));</span>
-<span class="nc" id="L101">                updateLists();</span>
-<span class="nc" id="L102">            });</span>
-<span class="fc" id="L103">            controller.init();</span>
-<span class="fc" id="L104">            addedUsers.getChildren().add(0, controller.render());</span>
-<span class="fc" id="L105">        }</span>
-<span class="fc" id="L106">    }</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        for (User user : reverse(sortByPin(addedUsersList))) {</span>
+<span class="fc" id="L97">            addedUsers.getChildren().add(0, showUser(user));</span>
+<span class="fc" id="L98">        }</span>
+<span class="fc" id="L99">    }</span>
 
     private void toggleUser(User user) {
-<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        if (addedUsersList.contains(user)) {</span>
-<span class="nc" id="L110">            addedUsersList.remove(user);</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">        if (addedUsersList.contains(user)) {</span>
+<span class="nc" id="L103">            addedUsersList.remove(user);</span>
         } else {
-<span class="fc" id="L112">            addedUsersList.add(user);</span>
+<span class="fc" id="L105">            addedUsersList.add(user);</span>
         }
 
-<span class="fc" id="L115">        updateLists();</span>
-<span class="fc" id="L116">    }</span>
+<span class="fc" id="L108">        updateLists();</span>
+<span class="fc" id="L109">    }</span>
 
     private void updateLists() {
-<span class="fc" id="L119">        updateUserList();</span>
-<span class="fc" id="L120">        updateAddedUserList();</span>
-<span class="fc" id="L121">    }</span>
+<span class="fc" id="L112">        updateUserList();</span>
+<span class="fc" id="L113">        updateAddedUserList();</span>
+<span class="fc" id="L114">    }</span>
 
     private List&lt;User&gt; sortByPin(List&lt;User&gt; users) {
-<span class="fc" id="L124">        List&lt;User&gt; result = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L125">        List&lt;User&gt; sortedUsers = new ArrayList&lt;&gt;(users);</span>
-<span class="fc" id="L126">        sortedUsers.sort(Comparator.comparing(u -&gt; u.name().toLowerCase()));</span>
-<span class="fc" id="L127">        result.addAll(sortedUsers.stream().filter(prefs::isPinned).toList());</span>
-<span class="pc bpc" id="L128" title="1 of 2 branches missed.">        result.addAll(sortedUsers.stream().filter(u -&gt; !prefs.isPinned(u)).toList());</span>
-<span class="fc" id="L129">        return result;</span>
+<span class="fc" id="L117">        List&lt;User&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L118">        List&lt;User&gt; sortedUsers = new ArrayList&lt;&gt;(users);</span>
+<span class="fc" id="L119">        sortedUsers.sort(Comparator.comparing(u -&gt; u.name().toLowerCase()));</span>
+<span class="fc" id="L120">        result.addAll(sortedUsers.stream().filter(prefs::isPinned).toList());</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">        result.addAll(sortedUsers.stream().filter(u -&gt; !prefs.isPinned(u)).toList());</span>
+<span class="fc" id="L122">        return result;</span>
     }
 
     private static List&lt;User&gt; reverse(List&lt;User&gt; users) {
-<span class="fc" id="L133">        List&lt;User&gt; result = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L134" title="All 2 branches covered.">        for (int i = users.size() - 1; i &gt;= 0; i--) {</span>
-<span class="fc" id="L135">            result.add(users.get(i));</span>
+<span class="fc" id="L126">        List&lt;User&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        for (int i = users.size() - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L128">            result.add(users.get(i));</span>
         }
-<span class="fc" id="L137">        return result;</span>
+<span class="fc" id="L130">        return result;</span>
     }
 
     @FXML
     public void back() {
-<span class="fc" id="L142">        app.show(directMessageControllerProvider.get());</span>
-<span class="fc" id="L143">    }</span>
+<span class="fc" id="L135">        app.show(directMessageControllerProvider.get());</span>
+<span class="fc" id="L136">    }</span>
 
     public void createGroup() {
-<span class="fc bfc" id="L146" title="All 2 branches covered.">        if (groupNameField.getText().isEmpty()) {</span>
-<span class="fc" id="L147">            Dialog.error(resources.getString(&quot;groupNameMissing&quot;), resources.getString(&quot;enterGroupName&quot;));</span>
-<span class="fc" id="L148">            return;</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">        if (groupNameField.getText().isEmpty()) {</span>
+<span class="fc" id="L140">            Dialog.error(resources.getString(&quot;groupNameMissing&quot;), resources.getString(&quot;enterGroupName&quot;));</span>
+<span class="fc" id="L141">            return;</span>
         }
-<span class="fc" id="L150">        List&lt;String&gt; userIds = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L151" title="All 2 branches covered.">        for (User user : addedUsersList) {</span>
-<span class="fc" id="L152">            userIds.add(user._id());</span>
-<span class="fc" id="L153">        }</span>
+<span class="fc" id="L143">        List&lt;String&gt; userIds = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        for (User user : addedUsersList) {</span>
+<span class="fc" id="L145">            userIds.add(user._id());</span>
+<span class="fc" id="L146">        }</span>
 
-<span class="fc" id="L155">        userIds.add(tokenStorage.getCurrentUser()._id());</span>
+<span class="fc" id="L148">        userIds.add(tokenStorage.getCurrentUser()._id());</span>
 
-<span class="fc" id="L157">        disposables.add(groupListService.addGroup(groupNameField.getText(), userIds)</span>
-<span class="fc" id="L158">                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L159">                .subscribe(group -&gt; {</span>
-<span class="fc" id="L160">                    DirectMessageController directMessageController = directMessageControllerProvider.get();</span>
-<span class="fc" id="L161">                    app.show(directMessageController);</span>
-<span class="pc" id="L162">                }, error -&gt; Dialog.error(error, &quot;error&quot;)));</span>
+<span class="fc" id="L150">        disposables.add(groupListService.addGroup(groupNameField.getText(), userIds)</span>
+<span class="fc" id="L151">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L152">                .subscribe(group -&gt; {</span>
+<span class="fc" id="L153">                    DirectMessageController directMessageController = directMessageControllerProvider.get();</span>
+<span class="fc" id="L154">                    app.show(directMessageController);</span>
+<span class="pc" id="L155">                }, error -&gt; Dialog.error(error, &quot;error&quot;)));</span>
 
-<span class="fc" id="L164">    }</span>
+<span class="fc" id="L157">    }</span>
 
     @Override
     public void destroy() {
-<span class="fc" id="L168">        super.destroy();</span>
-<span class="fc" id="L169">        addedUserControllers.forEach(Controller::destroy);</span>
-<span class="fc" id="L170">        availableUserControllers.forEach(Controller::destroy);</span>
-<span class="fc" id="L171">    }</span>
+<span class="fc" id="L161">        super.destroy();</span>
+<span class="fc" id="L162">        addedUserControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L163">        availableUserControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L164">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -49,97 +49,105 @@ public class ChatListController extends Controller {
 
     @Override
     public void init() {
-<span class="fc" id="L52">        disposables.add(eventListener.listen(&quot;groups.*.*&quot;, Group.class).observeOn(FX_SCHEDULER).subscribe(group -&gt; {</span>
-<span class="nc bnc" id="L53" title="All 2 branches missed.">            if (chatList != null) {</span>
-<span class="nc" id="L54">                reload();</span>
-            }
-<span class="nc" id="L56">        }));</span>
-<span class="fc" id="L57">    }</span>
+<span class="fc" id="L52">        disposables.add(eventListener.listen(&quot;groups.*.*&quot;, Group.class)</span>
+<span class="fc" id="L53">                .observeOn(FX_SCHEDULER)</span>
+<span class="pc" id="L54">                .subscribe(group -&gt; reload()));</span>
+<span class="fc" id="L55">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L61">        Parent parent = super.render();</span>
-<span class="fc" id="L62">        reload();</span>
-<span class="fc" id="L63">        return parent;</span>
+<span class="fc" id="L59">        Parent parent = super.render();</span>
+<span class="fc" id="L60">        reload();</span>
+<span class="fc" id="L61">        return parent;</span>
     }
 
     public void reload() {
-<span class="fc" id="L67">        disposables.add(groupListService.getGroups().observeOn(FX_SCHEDULER).subscribe(groups -&gt; {</span>
-<span class="fc" id="L68">            this.groups.clear();</span>
-<span class="fc" id="L69">            this.groups.addAll(groups);</span>
-<span class="fc" id="L70">            chatList.getChildren().clear();</span>
-<span class="fc" id="L71">            updateGroupList();</span>
-<span class="fc" id="L72">        }));</span>
-<span class="fc" id="L73">    }</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (chatList == null) {</span>
+<span class="nc" id="L66">            return;</span>
+        }
+<span class="fc" id="L68">        disposables.add(groupListService.getGroups().observeOn(FX_SCHEDULER).subscribe(groups -&gt; {</span>
+<span class="fc" id="L69">            this.groups.clear();</span>
+<span class="fc" id="L70">            this.groups.addAll(groups);</span>
+<span class="fc" id="L71">            chatList.getChildren().clear();</span>
+<span class="fc" id="L72">            updateGroupList();</span>
+<span class="fc" id="L73">        }));</span>
+<span class="fc" id="L74">    }</span>
 
     public void setOnGroupClicked(Consumer&lt;Group&gt; onGroupClicked) {
-<span class="fc" id="L76">        this.onGroupClicked = onGroupClicked;</span>
-<span class="fc" id="L77">    }</span>
+<span class="fc" id="L77">        this.onGroupClicked = onGroupClicked;</span>
+<span class="fc" id="L78">    }</span>
 
     @Override
     public void destroy() {
-<span class="nc" id="L81">        clearSubControllers();</span>
-<span class="nc" id="L82">        super.destroy();</span>
-<span class="nc" id="L83">    }</span>
+<span class="nc" id="L82">        clearSubControllers();</span>
+<span class="nc" id="L83">        super.destroy();</span>
+<span class="nc" id="L84">    }</span>
 
     public void updateGroupList() {
-<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        if (groups.size() == 0) {</span>
-<span class="nc" id="L87">            return;</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        if (groups.size() == 0) {</span>
+<span class="nc" id="L88">            return;</span>
         }
 
-<span class="fc" id="L90">        clearSubControllers();</span>
-<span class="fc" id="L91">        chatList.getChildren().clear();</span>
+<span class="fc" id="L91">        clearSubControllers();</span>
+<span class="fc" id="L92">        chatList.getChildren().clear();</span>
 
         // &lt;ida&gt;_&lt;idb&gt; is the name of a group with two members
-<span class="fc" id="L94">        HashMap&lt;Parent, Group&gt; groupMap = new HashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L95" title="All 2 branches covered.">        for (Group group : groups) {</span>
-<span class="fc" id="L96">            boolean groupPinned = prefs.isPinned(group);</span>
-<span class="pc bpc" id="L97" title="1 of 2 branches missed.">            if (group.members().size() == 2 &amp;&amp;</span>
-<span class="nc bnc" id="L98" title="All 2 branches missed.">                    groupListService.isSingleChat(group) &amp;&amp;</span>
-<span class="nc bnc" id="L99" title="All 2 branches missed.">                    group.members().contains(tokenStorage.getCurrentUser()._id())) {</span>
-<span class="nc" id="L100">                ChatUserController chatUserController = chatUserControllerProvider.get();</span>
-<span class="nc" id="L101">                subControllers.add(chatUserController);</span>
-<span class="nc" id="L102">                chatUserController.setOnGroupClicked(onGroupClicked);</span>
-<span class="nc" id="L103">                chatUserController.setGroup(group);</span>
-<span class="nc" id="L104">                chatUserController.init();</span>
-<span class="nc" id="L105">                chatUserController.setOnPinChanged(e -&gt; updateGroupList());</span>
-<span class="nc" id="L106">                Parent parent = chatUserController.render();</span>
-<span class="nc bnc" id="L107" title="All 2 branches missed.">                if (groupPinned) {</span>
-<span class="nc" id="L108">                    chatList.getChildren().add(0, parent);</span>
-                } else {
-<span class="nc" id="L110">                    chatList.getChildren().add(parent);</span>
-                }
-<span class="nc" id="L112">                groupMap.put(parent, group);</span>
-<span class="nc" id="L113">            } else {</span>
-<span class="fc" id="L114">                ChatGroupController chatGroupController = chatGroupControllerProvider.get();</span>
-<span class="fc" id="L115">                subControllers.add(chatGroupController);</span>
-<span class="fc" id="L116">                chatGroupController.setOnGroupClicked(onGroupClicked);</span>
-<span class="fc" id="L117">                chatGroupController.setGroup(group);</span>
-<span class="fc" id="L118">                chatGroupController.init();</span>
-<span class="pc" id="L119">                chatGroupController.setOnPinChanged(e -&gt; updateGroupList());</span>
-<span class="fc" id="L120">                Parent parent = chatGroupController.render();</span>
-<span class="fc bfc" id="L121" title="All 2 branches covered.">                if (groupPinned) {</span>
-<span class="fc" id="L122">                    chatList.getChildren().add(0, parent);</span>
-                } else {
-<span class="fc" id="L124">                    chatList.getChildren().add(parent);</span>
-                }
-<span class="fc" id="L126">                groupMap.put(parent, group);</span>
+<span class="fc" id="L95">        HashMap&lt;Parent, Group&gt; groupMap = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        for (Group group : groups) {</span>
+<span class="fc" id="L97">            boolean groupPinned = prefs.isPinned(group);</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">            if (group.members().size() == 2 &amp;&amp;</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">                    groupListService.isSingleChat(group) &amp;&amp;</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">                    group.members().contains(tokenStorage.getCurrentUser()._id())) {</span>
+<span class="nc" id="L101">                createUserController(group, groupPinned, groupMap);</span>
+            } else {
+<span class="fc" id="L103">                createGroupController(group, groupPinned, groupMap);</span>
             }
-<span class="fc" id="L128">        }</span>
+<span class="fc" id="L105">        }</span>
 
-<span class="pc bpc" id="L130" title="2 of 4 branches missed.">        if (firstRender &amp;&amp; chatList.getChildren().size() &gt; 0) {</span>
-<span class="fc" id="L131">            firstRender = false;</span>
+<span class="pc bpc" id="L107" title="2 of 4 branches missed.">        if (firstRender &amp;&amp; chatList.getChildren().size() &gt; 0) {</span>
+<span class="fc" id="L108">            firstRender = false;</span>
             //noinspection SuspiciousMethodCalls
-<span class="fc" id="L133">            onGroupClicked.accept(groupMap.get(chatList.getChildren().get(0)));</span>
+<span class="fc" id="L110">            onGroupClicked.accept(groupMap.get(chatList.getChildren().get(0)));</span>
         }
-<span class="fc" id="L135">    }</span>
+<span class="fc" id="L112">    }</span>
+
+    private void createGroupController(Group group, boolean groupPinned, HashMap&lt;Parent, Group&gt; groupMap) {
+<span class="fc" id="L115">        ChatGroupController chatGroupController = chatGroupControllerProvider.get();</span>
+<span class="fc" id="L116">        subControllers.add(chatGroupController);</span>
+<span class="fc" id="L117">        chatGroupController.setOnGroupClicked(onGroupClicked);</span>
+<span class="fc" id="L118">        chatGroupController.setGroup(group);</span>
+<span class="fc" id="L119">        chatGroupController.init();</span>
+<span class="pc" id="L120">        chatGroupController.setOnPinChanged(e -&gt; updateGroupList());</span>
+<span class="fc" id="L121">        Parent parent = chatGroupController.render();</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (groupPinned) {</span>
+<span class="fc" id="L123">            chatList.getChildren().add(0, parent);</span>
+        } else {
+<span class="fc" id="L125">            chatList.getChildren().add(parent);</span>
+        }
+<span class="fc" id="L127">        groupMap.put(parent, group);</span>
+<span class="fc" id="L128">    }</span>
+
+    private void createUserController(Group group, boolean groupPinned, HashMap&lt;Parent, Group&gt; groupMap) {
+<span class="nc" id="L131">        ChatUserController chatUserController = chatUserControllerProvider.get();</span>
+<span class="nc" id="L132">        subControllers.add(chatUserController);</span>
+<span class="nc" id="L133">        chatUserController.setOnGroupClicked(onGroupClicked);</span>
+<span class="nc" id="L134">        chatUserController.setGroup(group);</span>
+<span class="nc" id="L135">        chatUserController.init();</span>
+<span class="nc" id="L136">        chatUserController.setOnPinChanged(e -&gt; updateGroupList());</span>
+<span class="nc" id="L137">        Parent parent = chatUserController.render();</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (groupPinned) {</span>
+<span class="nc" id="L139">            chatList.getChildren().add(0, parent);</span>
+        } else {
+<span class="nc" id="L141">            chatList.getChildren().add(parent);</span>
+        }
+<span class="nc" id="L143">        groupMap.put(parent, group);</span>
+<span class="nc" id="L144">    }</span>
 
     private void clearSubControllers() {
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">        for (Controller controller : subControllers) {</span>
-<span class="nc" id="L139">            controller.destroy();</span>
-<span class="nc" id="L140">        }</span>
-<span class="fc" id="L141">        subControllers.clear();</span>
-<span class="fc" id="L142">    }</span>
-
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">        for (Controller controller : subControllers) {</span>
+<span class="nc" id="L148">            controller.destroy();</span>
+<span class="nc" id="L149">        }</span>
+<span class="fc" id="L150">        subControllers.clear();</span>
+<span class="fc" id="L151">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
