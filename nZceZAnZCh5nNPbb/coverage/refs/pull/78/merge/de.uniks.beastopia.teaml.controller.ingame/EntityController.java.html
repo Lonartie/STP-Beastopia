@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EntityController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.ingame</a> &gt; <span class="el_source">EntityController.java</span></div><h1>EntityController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.ingame;
+
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.MoveTrainerDto;
+import de.uniks.beastopia.teaml.rest.Trainer;
+import de.uniks.beastopia.teaml.service.PresetsService;
+import de.uniks.beastopia.teaml.sockets.UDPEventListener;
+import de.uniks.beastopia.teaml.utils.Direction;
+import de.uniks.beastopia.teaml.utils.PlayerState;
+import io.reactivex.rxjava3.disposables.Disposable;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.fxml.FXML;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Parent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.function.Consumer;
+
+public class EntityController extends Controller {
+<span class="fc" id="L27">    private static final Map&lt;String, Image&gt; SPRITESHEET = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L28">    int PORT_WIDTH = 16;</span>
+<span class="fc" id="L29">    int PORT_HEIGHT = 32;</span>
+<span class="fc" id="L30">    int SPRITE_STEP = 16;</span>
+<span class="fc" id="L31">    int STATE_STEP = 32;</span>
+<span class="fc" id="L32">    int DIRECTION_STEP = 96;</span>
+<span class="fc" id="L33">    int index = 0;</span>
+    Trainer trainer;
+    Parent parent;
+    Direction direction;
+<span class="fc" id="L37">    ObjectProperty&lt;PlayerState&gt; state = new SimpleObjectProperty&lt;&gt;();</span>
+    Consumer&lt;MoveTrainerDto&gt; onTrainerUpdate;
+
+    @FXML
+    public ImageView entityView;
+    @Inject
+    PresetsService presetsService;
+    @Inject
+    UDPEventListener udpEventListener;
+    Disposable eventListener;
+<span class="fc" id="L47">    Timer timer = null;</span>
+
+    @Inject
+<span class="fc" id="L50">    public EntityController() {</span>
+<span class="fc" id="L51">    }</span>
+
+    public void setOnTrainerUpdate(Consumer&lt;MoveTrainerDto&gt; onTrainerUpdate) {
+<span class="nc" id="L54">        this.onTrainerUpdate = onTrainerUpdate;</span>
+<span class="nc" id="L55">    }</span>
+
+    public ObjectProperty&lt;PlayerState&gt; playerState() {
+<span class="fc" id="L58">        return state;</span>
+    }
+
+    @Override
+    public void init() {
+<span class="fc" id="L63">        super.init();</span>
+<span class="fc" id="L64">        direction = Direction.DOWN;</span>
+<span class="fc" id="L65">        listenToMovements();</span>
+<span class="fc" id="L66">    }</span>
+
+    private void listenToMovements() {
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (eventListener != null) {</span>
+<span class="fc" id="L70">            eventListener.dispose();</span>
+        }
+<span class="fc" id="L72">        eventListener = udpEventListener.listen(&quot;areas.*.trainers.&quot; + trainer._id() + &quot;.moved&quot;, MoveTrainerDto.class).observeOn(FX_SCHEDULER).subscribe(event -&gt; {</span>
+<span class="nc" id="L73">            resetUpdateTimer();</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            if (event.data() == null) {</span>
+<span class="nc" id="L75">                return;</span>
+            }
+
+<span class="nc bnc" id="L78" title="All 5 branches missed.">            switch (event.data().direction()) {</span>
+<span class="nc" id="L79">                case 0 -&gt; direction = Direction.RIGHT;</span>
+<span class="nc" id="L80">                case 1 -&gt; direction = Direction.UP;</span>
+<span class="nc" id="L81">                case 2 -&gt; direction = Direction.LEFT;</span>
+<span class="nc" id="L82">                case 3 -&gt; direction = Direction.DOWN;</span>
+            }
+<span class="nc" id="L84">            index = (index + 1) % 6;</span>
+<span class="nc" id="L85">            updateViewPort();</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">            if (!event.data().area().equals(trainer.area())) {</span>
+<span class="nc" id="L87">                trainer = new Trainer(trainer.createdAt(), trainer.updatedAt(), trainer._id(), trainer.region(), trainer.user(), trainer.name(), trainer.image(), trainer.coins(), event.data().area(), trainer.x(), trainer.y(), trainer.direction(), trainer.npc());</span>
+<span class="nc" id="L88">                listenToMovements();</span>
+            }
+<span class="nc" id="L90">            onTrainerUpdate.accept(event.data());</span>
+<span class="nc" id="L91">        }, error -&gt; {</span>
+<span class="nc" id="L92">            throw new RuntimeException(error);</span>
+        });
+<span class="fc" id="L94">        resetUpdateTimer();</span>
+<span class="fc" id="L95">    }</span>
+
+    private void resetUpdateTimer() {
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        if (timer != null) {</span>
+<span class="fc" id="L99">            timer.cancel();</span>
+<span class="fc" id="L100">            timer.purge();</span>
+        }
+<span class="fc" id="L102">        timer = new Timer();</span>
+<span class="fc" id="L103">        System.out.println(&quot;Resetting timer for trainer: &quot; + trainer._id() + &quot; in area: &quot; + trainer.area());</span>
+<span class="fc" id="L104">        timer.schedule(createUpdateTimerTask(), 3000);</span>
+<span class="fc" id="L105">    }</span>
+
+    public void setTrainer(Trainer trainer) {
+<span class="fc" id="L108">        this.trainer = trainer;</span>
+<span class="fc" id="L109">    }</span>
+
+    public Trainer getTrainer() {
+<span class="nc" id="L112">        return this.trainer;</span>
+    }
+
+    private TimerTask createUpdateTimerTask() {
+<span class="fc" id="L116">        EntityController self = this;</span>
+<span class="fc" id="L117">        return new TimerTask() {</span>
+            @Override
+            public void run() {
+<span class="fc" id="L120">                self.onUI(() -&gt; {</span>
+<span class="fc" id="L121">                    System.out.println(&quot;Reconnecting to trainer update for: &quot; + trainer._id() + &quot; in area: &quot; + trainer.area());</span>
+<span class="fc" id="L122">                    listenToMovements();</span>
+<span class="fc" id="L123">                });</span>
+<span class="fc" id="L124">            }</span>
+        };
+    }
+
+    public void updateViewPort() {
+<span class="fc" id="L129">        entityView.setViewport(getViewport());</span>
+<span class="fc" id="L130">    }</span>
+
+    @Override
+    public Parent render() {
+<span class="fc" id="L134">        int VIEW_SIZE = 40;</span>
+<span class="fc" id="L135">        parent = super.render();</span>
+<span class="fc" id="L136">        entityView.toFront();</span>
+<span class="fc" id="L137">        entityView.setPreserveRatio(true);</span>
+<span class="fc" id="L138">        entityView.setSmooth(true);</span>
+<span class="fc" id="L139">        entityView.setFitWidth(VIEW_SIZE);</span>
+<span class="fc" id="L140">        entityView.setFitHeight(VIEW_SIZE);</span>
+<span class="fc" id="L141">        updateViewPort();</span>
+
+<span class="pc bpc" id="L143" title="3 of 4 branches missed.">        if (!SPRITESHEET.containsKey(trainer.image()) || SPRITESHEET.get(trainer.image()) == null) {</span>
+<span class="fc" id="L144">            disposables.add(presetsService.getCharacterSprites(trainer.image()).observeOn(FX_SCHEDULER).subscribe(image -&gt; {</span>
+<span class="fc" id="L145">                SPRITESHEET.put(trainer.image(), image);</span>
+<span class="fc" id="L146">                entityView.setImage(image);</span>
+<span class="fc" id="L147">            }));</span>
+        } else {
+<span class="nc" id="L149">            entityView.setImage(SPRITESHEET.get(trainer.image()));</span>
+        }
+<span class="fc" id="L151">        return parent;</span>
+    }
+
+    private Rectangle2D getViewport() {
+<span class="fc" id="L155">        return new Rectangle2D(direction.ordinal() * DIRECTION_STEP + index * SPRITE_STEP, state.get().ordinal() * STATE_STEP + STATE_STEP, PORT_WIDTH, PORT_HEIGHT);</span>
+    }
+
+    @Override
+    public void destroy() {
+<span class="nc" id="L160">        eventListener.dispose();</span>
+<span class="nc" id="L161">        super.destroy();</span>
+<span class="nc" id="L162">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

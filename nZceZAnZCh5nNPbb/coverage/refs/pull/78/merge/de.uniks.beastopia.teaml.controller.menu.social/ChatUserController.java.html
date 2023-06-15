@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ChatUserController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.menu.social</a> &gt; <span class="el_source">ChatUserController.java</span></div><h1>ChatUserController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.menu.social;
+
+import de.uniks.beastopia.teaml.Main;
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.Group;
+import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.service.FriendListService;
+import de.uniks.beastopia.teaml.service.TokenStorage;
+import de.uniks.beastopia.teaml.utils.Prefs;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+
+import javax.inject.Inject;
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
+import java.util.Objects;
+import java.util.function.Consumer;
+
+public class ChatUserController extends Controller {
+
+    @FXML
+    public ImageView chatAvatar;
+    @FXML
+    HBox _rootElement;
+    @FXML
+    Button pinGroupBtn;
+    @FXML
+    Button deleteGroupBtn;
+    @FXML
+    Button editGroupBtn;
+    @FXML
+    Text name;
+
+    @Inject
+    TokenStorage tokenStorage;
+    @Inject
+    FriendListService friendListService;
+    @Inject
+    Prefs prefs;
+    @Inject
+    DataCache cache;
+
+    private Group group;
+    private ImageView pinnedImg;
+    private ImageView notPinnedImg;
+<span class="fc" id="L50">    private Consumer&lt;Group&gt; onPinChanged = null;</span>
+<span class="fc" id="L51">    private Consumer&lt;Group&gt; onGroupClicked = null;</span>
+
+    @Inject
+<span class="fc" id="L54">    public ChatUserController() {</span>
+
+<span class="fc" id="L56">    }</span>
+
+    @Override
+    public void init() {
+        try {
+<span class="fc" id="L61">            pinnedImg = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/filled_pin.png&quot;)).toString());</span>
+<span class="fc" id="L62">            notPinnedImg = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/pin.png&quot;)).toString());</span>
+<span class="nc" id="L63">        } catch (URISyntaxException | FileNotFoundException e) {</span>
+<span class="nc" id="L64">            throw new RuntimeException(e);</span>
+<span class="fc" id="L65">        }</span>
+<span class="fc" id="L66">    }</span>
+
+    public void setOnGroupClicked(Consumer&lt;Group&gt; onGroupClicked) {
+<span class="fc" id="L69">        this.onGroupClicked = onGroupClicked;</span>
+<span class="fc" id="L70">    }</span>
+
+
+    public void setOnPinChanged(Consumer&lt;Group&gt; onPinChanged) {
+<span class="fc" id="L74">        this.onPinChanged = onPinChanged;</span>
+<span class="fc" id="L75">    }</span>
+
+    @SuppressWarnings(&quot;UnusedReturnValue&quot;)
+    public ChatUserController setGroup(Group group) {
+<span class="fc" id="L79">        this.group = group;</span>
+<span class="fc" id="L80">        return this;</span>
+    }
+
+    @Override
+    public Parent render() {
+<span class="fc" id="L85">        Parent parent = super.render();</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        String otherID = group.members().get(0).equals(tokenStorage.getCurrentUser()._id())</span>
+<span class="fc" id="L87">                ? group.members().get(1)</span>
+<span class="pc" id="L88">                : group.members().get(0);</span>
+
+<span class="fc" id="L90">        cache.getAllUsers().stream()</span>
+<span class="fc" id="L91">                .filter(user -&gt; user._id().equals(otherID))</span>
+<span class="fc" id="L92">                .findFirst()</span>
+<span class="fc" id="L93">                .ifPresent(user -&gt; {</span>
+<span class="fc" id="L94">                    name.setText(user.name());</span>
+<span class="fc" id="L95">                    chatAvatar.setImage(cache.getImageAvatar(user));</span>
+<span class="fc" id="L96">                });</span>
+
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">        if (prefs.isPinned(this.group)) {</span>
+<span class="fc" id="L99">            this.pinGroupBtn.setGraphic(pinnedImg);</span>
+        } else {
+<span class="nc" id="L101">            this.pinGroupBtn.setGraphic(notPinnedImg);</span>
+        }
+
+<span class="fc" id="L104">        return parent;</span>
+    }
+
+    @SuppressWarnings(&quot;unused&quot;)
+    public void mouseClicked() {
+<span class="fc" id="L109">        onGroupClicked.accept(group);</span>
+<span class="fc" id="L110">    }</span>
+
+    private ImageView createImage(String imageUrl) throws URISyntaxException, FileNotFoundException {
+<span class="fc" id="L113">        ImageView imageView = new ImageView(imageUrl);</span>
+<span class="fc" id="L114">        imageView.setFitHeight(25.0);</span>
+<span class="fc" id="L115">        imageView.setFitWidth(25.0);</span>
+<span class="fc" id="L116">        return imageView;</span>
+    }
+
+    @SuppressWarnings(&quot;unused&quot;)
+    public void editGroup() {
+        //TODO: show edit group dialog
+<span class="nc" id="L122">    }</span>
+
+    @SuppressWarnings(&quot;unused&quot;)
+    public void deleteGroup() {
+        //TODO: delete group
+<span class="nc" id="L127">    }</span>
+
+    @SuppressWarnings(&quot;unused&quot;)
+    @FXML
+    public void pinGroup() {
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        if (!prefs.isPinned(this.group)) {</span>
+<span class="nc" id="L133">            pinGroupBtn.setGraphic(pinnedImg);</span>
+<span class="nc" id="L134">            prefs.setPinned(this.group, true);</span>
+        } else {
+<span class="fc" id="L136">            pinGroupBtn.setGraphic(notPinnedImg);</span>
+<span class="fc" id="L137">            prefs.setPinned(this.group, false);</span>
+        }
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">        if (onPinChanged != null) {</span>
+<span class="fc" id="L140">            onPinChanged.accept(group);</span>
+        }
+<span class="fc" id="L142">    }</span>
+
+    @Override
+    public void destroy() {
+<span class="nc" id="L146">        chatAvatar = null;</span>
+<span class="nc" id="L147">        super.destroy();</span>
+<span class="nc" id="L148">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
