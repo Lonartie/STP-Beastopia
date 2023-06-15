@@ -74,91 +74,96 @@ public class EntityController extends Controller {
 <span class="nc bnc" id="L74" title="All 2 branches missed.">            if (event.data() == null) {</span>
 <span class="nc" id="L75">                return;</span>
             }
-
-<span class="nc bnc" id="L78" title="All 5 branches missed.">            switch (event.data().direction()) {</span>
-<span class="nc" id="L79">                case 0 -&gt; direction = Direction.RIGHT;</span>
-<span class="nc" id="L80">                case 1 -&gt; direction = Direction.UP;</span>
-<span class="nc" id="L81">                case 2 -&gt; direction = Direction.LEFT;</span>
-<span class="nc" id="L82">                case 3 -&gt; direction = Direction.DOWN;</span>
-            }
-<span class="nc" id="L84">            index = (index + 1) % 6;</span>
-<span class="nc" id="L85">            updateViewPort();</span>
-<span class="nc bnc" id="L86" title="All 2 branches missed.">            if (!event.data().area().equals(trainer.area())) {</span>
-<span class="nc" id="L87">                trainer = new Trainer(trainer.createdAt(), trainer.updatedAt(), trainer._id(), trainer.region(), trainer.user(), trainer.name(), trainer.image(), trainer.coins(), event.data().area(), trainer.x(), trainer.y(), trainer.direction(), trainer.npc());</span>
-<span class="nc" id="L88">                listenToMovements();</span>
-            }
-<span class="nc" id="L90">            onTrainerUpdate.accept(event.data());</span>
-<span class="nc" id="L91">        }, error -&gt; {</span>
-<span class="nc" id="L92">            throw new RuntimeException(error);</span>
+<span class="nc" id="L77">            updateTrainer(event.data());</span>
+<span class="nc" id="L78">        }, error -&gt; {</span>
+<span class="nc" id="L79">            throw new RuntimeException(error);</span>
         });
-<span class="fc" id="L94">        resetUpdateTimer();</span>
-<span class="fc" id="L95">    }</span>
+<span class="fc" id="L81">        resetUpdateTimer();</span>
+<span class="fc" id="L82">    }</span>
+
+    private void updateTrainer(MoveTrainerDto data) {
+<span class="nc bnc" id="L85" title="All 5 branches missed.">        switch (data.direction()) {</span>
+<span class="nc" id="L86">            case 0 -&gt; direction = Direction.RIGHT;</span>
+<span class="nc" id="L87">            case 1 -&gt; direction = Direction.UP;</span>
+<span class="nc" id="L88">            case 2 -&gt; direction = Direction.LEFT;</span>
+<span class="nc" id="L89">            case 3 -&gt; direction = Direction.DOWN;</span>
+        }
+<span class="nc" id="L91">        index = (index + 1) % 6;</span>
+<span class="nc" id="L92">        updateViewPort();</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        if (!data.area().equals(trainer.area())) {</span>
+<span class="nc" id="L94">            trainer = new Trainer(trainer.createdAt(), trainer.updatedAt(), trainer._id(), trainer.region(),</span>
+<span class="nc" id="L95">                    trainer.user(), trainer.name(), trainer.image(), trainer.coins(), data.area(), trainer.x(),</span>
+<span class="nc" id="L96">                    trainer.y(), trainer.direction(), trainer.npc());</span>
+<span class="nc" id="L97">            listenToMovements();</span>
+        }
+<span class="nc" id="L99">        onTrainerUpdate.accept(data);</span>
+<span class="nc" id="L100">    }</span>
 
     private void resetUpdateTimer() {
-<span class="fc bfc" id="L98" title="All 2 branches covered.">        if (timer != null) {</span>
-<span class="fc" id="L99">            timer.cancel();</span>
-<span class="fc" id="L100">            timer.purge();</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (timer != null) {</span>
+<span class="fc" id="L104">            timer.cancel();</span>
+<span class="fc" id="L105">            timer.purge();</span>
         }
-<span class="fc" id="L102">        timer = new Timer();</span>
-<span class="fc" id="L103">        System.out.println(&quot;Resetting timer for trainer: &quot; + trainer._id() + &quot; in area: &quot; + trainer.area());</span>
-<span class="fc" id="L104">        timer.schedule(createUpdateTimerTask(), 3000);</span>
-<span class="fc" id="L105">    }</span>
+<span class="fc" id="L107">        timer = new Timer();</span>
+<span class="fc" id="L108">        System.out.println(&quot;Resetting timer for trainer: &quot; + trainer._id() + &quot; in area: &quot; + trainer.area());</span>
+<span class="fc" id="L109">        timer.schedule(createUpdateTimerTask(), 3000);</span>
+<span class="fc" id="L110">    }</span>
 
     public void setTrainer(Trainer trainer) {
-<span class="fc" id="L108">        this.trainer = trainer;</span>
-<span class="fc" id="L109">    }</span>
+<span class="fc" id="L113">        this.trainer = trainer;</span>
+<span class="fc" id="L114">    }</span>
 
     public Trainer getTrainer() {
-<span class="nc" id="L112">        return this.trainer;</span>
+<span class="nc" id="L117">        return this.trainer;</span>
     }
 
     private TimerTask createUpdateTimerTask() {
-<span class="fc" id="L116">        EntityController self = this;</span>
-<span class="fc" id="L117">        return new TimerTask() {</span>
+<span class="fc" id="L121">        EntityController self = this;</span>
+<span class="fc" id="L122">        return new TimerTask() {</span>
             @Override
             public void run() {
-<span class="fc" id="L120">                self.onUI(() -&gt; {</span>
-<span class="fc" id="L121">                    System.out.println(&quot;Reconnecting to trainer update for: &quot; + trainer._id() + &quot; in area: &quot; + trainer.area());</span>
-<span class="fc" id="L122">                    listenToMovements();</span>
-<span class="fc" id="L123">                });</span>
-<span class="fc" id="L124">            }</span>
+<span class="fc" id="L125">                self.onUI(() -&gt; {</span>
+<span class="fc" id="L126">                    System.out.println(&quot;Reconnecting to trainer update for: &quot; + trainer._id() + &quot; in area: &quot; + trainer.area());</span>
+<span class="fc" id="L127">                    listenToMovements();</span>
+<span class="fc" id="L128">                });</span>
+<span class="fc" id="L129">            }</span>
         };
     }
 
     public void updateViewPort() {
-<span class="fc" id="L129">        entityView.setViewport(getViewport());</span>
-<span class="fc" id="L130">    }</span>
+<span class="fc" id="L134">        entityView.setViewport(getViewport());</span>
+<span class="fc" id="L135">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L134">        int VIEW_SIZE = 40;</span>
-<span class="fc" id="L135">        parent = super.render();</span>
-<span class="fc" id="L136">        entityView.toFront();</span>
-<span class="fc" id="L137">        entityView.setPreserveRatio(true);</span>
-<span class="fc" id="L138">        entityView.setSmooth(true);</span>
-<span class="fc" id="L139">        entityView.setFitWidth(VIEW_SIZE);</span>
-<span class="fc" id="L140">        entityView.setFitHeight(VIEW_SIZE);</span>
-<span class="fc" id="L141">        updateViewPort();</span>
+<span class="fc" id="L139">        int VIEW_SIZE = 40;</span>
+<span class="fc" id="L140">        parent = super.render();</span>
+<span class="fc" id="L141">        entityView.toFront();</span>
+<span class="fc" id="L142">        entityView.setPreserveRatio(true);</span>
+<span class="fc" id="L143">        entityView.setSmooth(true);</span>
+<span class="fc" id="L144">        entityView.setFitWidth(VIEW_SIZE);</span>
+<span class="fc" id="L145">        entityView.setFitHeight(VIEW_SIZE);</span>
+<span class="fc" id="L146">        updateViewPort();</span>
 
-<span class="pc bpc" id="L143" title="3 of 4 branches missed.">        if (!SPRITESHEET.containsKey(trainer.image()) || SPRITESHEET.get(trainer.image()) == null) {</span>
-<span class="fc" id="L144">            disposables.add(presetsService.getCharacterSprites(trainer.image()).observeOn(FX_SCHEDULER).subscribe(image -&gt; {</span>
-<span class="fc" id="L145">                SPRITESHEET.put(trainer.image(), image);</span>
-<span class="fc" id="L146">                entityView.setImage(image);</span>
-<span class="fc" id="L147">            }));</span>
+<span class="pc bpc" id="L148" title="3 of 4 branches missed.">        if (!SPRITESHEET.containsKey(trainer.image()) || SPRITESHEET.get(trainer.image()) == null) {</span>
+<span class="fc" id="L149">            disposables.add(presetsService.getCharacterSprites(trainer.image()).observeOn(FX_SCHEDULER).subscribe(image -&gt; {</span>
+<span class="fc" id="L150">                SPRITESHEET.put(trainer.image(), image);</span>
+<span class="fc" id="L151">                entityView.setImage(image);</span>
+<span class="fc" id="L152">            }));</span>
         } else {
-<span class="nc" id="L149">            entityView.setImage(SPRITESHEET.get(trainer.image()));</span>
+<span class="nc" id="L154">            entityView.setImage(SPRITESHEET.get(trainer.image()));</span>
         }
-<span class="fc" id="L151">        return parent;</span>
+<span class="fc" id="L156">        return parent;</span>
     }
 
     private Rectangle2D getViewport() {
-<span class="fc" id="L155">        return new Rectangle2D(direction.ordinal() * DIRECTION_STEP + index * SPRITE_STEP, state.get().ordinal() * STATE_STEP + STATE_STEP, PORT_WIDTH, PORT_HEIGHT);</span>
+<span class="fc" id="L160">        return new Rectangle2D(direction.ordinal() * DIRECTION_STEP + index * SPRITE_STEP, state.get().ordinal() * STATE_STEP + STATE_STEP, PORT_WIDTH, PORT_HEIGHT);</span>
     }
 
     @Override
     public void destroy() {
-<span class="nc" id="L160">        eventListener.dispose();</span>
-<span class="nc" id="L161">        super.destroy();</span>
-<span class="nc" id="L162">    }</span>
+<span class="nc" id="L165">        eventListener.dispose();</span>
+<span class="nc" id="L166">        super.destroy();</span>
+<span class="nc" id="L167">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
