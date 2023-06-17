@@ -3,7 +3,6 @@
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.rest.Monster;
 import de.uniks.beastopia.teaml.service.DataCache;
-import de.uniks.beastopia.teaml.service.TokenStorage;
 import de.uniks.beastopia.teaml.service.TrainerService;
 import de.uniks.beastopia.teaml.utils.Prefs;
 import javafx.fxml.FXML;
@@ -20,18 +19,14 @@ import java.util.function.Consumer;
 
 public class BeastListController extends Controller {
 
-<span class="nc" id="L23">    private final List&lt;Monster&gt; monsters = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L24">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L22">    private final List&lt;Monster&gt; monsters = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L23">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
     @FXML
     public VBox VBoxBeasts;
     @FXML
     public VBox VBoxBeastList;
     @Inject
-    Provider&lt;IngameController&gt; ingameControllerProvider;
-    @Inject
     Provider&lt;BeastController&gt; beastControllerProvider;
-    @Inject
-    TokenStorage tokenStorage;
     @Inject
     DataCache cache;
     @Inject
@@ -42,58 +37,59 @@ public class BeastListController extends Controller {
     private Consumer&lt;Monster&gt; onBeastClicked;
 
     @Inject
-<span class="nc" id="L45">    public BeastListController() {</span>
+<span class="nc" id="L40">    public BeastListController() {</span>
 
-<span class="nc" id="L47">    }</span>
+<span class="nc" id="L42">    }</span>
 
     public void setOnBeastClicked(Consumer&lt;Monster&gt; onBeastClicked) {
-<span class="nc" id="L50">        this.onBeastClicked = onBeastClicked;</span>
-<span class="nc" id="L51">    }</span>
+<span class="nc" id="L45">        this.onBeastClicked = onBeastClicked;</span>
+<span class="nc" id="L46">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L55">        Parent parent = super.render();</span>
-<span class="nc" id="L56">        disposables.add(trainerService.getTrainerMonsters(prefs.getRegionID(), cache.getTrainer()._id())</span>
-<span class="nc" id="L57">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L58">                .subscribe(monsters -&gt; {</span>
-<span class="nc" id="L59">                    this.monsters.addAll(monsters);</span>
-<span class="nc" id="L60">                    reload();</span>
-<span class="nc" id="L61">                }));</span>
-<span class="nc" id="L62">        return parent;</span>
+<span class="nc" id="L50">        Parent parent = super.render();</span>
+<span class="nc" id="L51">        disposables.add(trainerService.getTrainerMonsters(prefs.getRegionID(), cache.getTrainer()._id())</span>
+<span class="nc" id="L52">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L53">                .subscribe(monsters -&gt; {</span>
+<span class="nc" id="L54">                    this.monsters.addAll(monsters);</span>
+<span class="nc" id="L55">                    reload();</span>
+<span class="nc" id="L56">                }));</span>
+<span class="nc" id="L57">        return parent;</span>
     }
 
     private void reload() {
-<span class="nc bnc" id="L66" title="All 2 branches missed.">        for (Monster monster : monsters) {</span>
-<span class="nc" id="L67">            BeastController beastController = beastControllerProvider.get()</span>
-<span class="nc" id="L68">                    .setBeast(monster);</span>
-<span class="nc" id="L69">            beastController.setOnBeastClicked(onBeastClicked);</span>
-<span class="nc" id="L70">            beastController.init();</span>
-<span class="nc" id="L71">            subControllers.add(beastController);</span>
-<span class="nc" id="L72">            Parent parent = beastController.render();</span>
-<span class="nc" id="L73">            VBoxBeasts.getChildren().add(parent);</span>
-<span class="nc" id="L74">        }</span>
-<span class="nc" id="L75">    }</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        for (Monster monster : monsters) {</span>
+<span class="nc" id="L62">            BeastController beastController = beastControllerProvider.get()</span>
+<span class="nc" id="L63">                    .setBeast(monster);</span>
+<span class="nc" id="L64">            beastController.setOnBeastClicked(onBeastClicked);</span>
+<span class="nc" id="L65">            beastController.init();</span>
+<span class="nc" id="L66">            subControllers.add(beastController);</span>
+<span class="nc" id="L67">            Parent parent = beastController.render();</span>
+<span class="nc" id="L68">            VBoxBeasts.getChildren().add(parent);</span>
+<span class="nc" id="L69">        }</span>
+<span class="nc" id="L70">    }</span>
 
     @FXML
     public void close() {
-<span class="nc" id="L79">        onCloseRequest.run();</span>
-<span class="nc" id="L80">    }</span>
+<span class="nc" id="L74">        onCloseRequest.run();</span>
+<span class="nc" id="L75">    }</span>
 
     @FXML
     public void handleKeyEvent(KeyEvent event) {
-<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (event.getCode().equals(KeyCode.B)) {</span>
-<span class="nc" id="L85">            onCloseRequest.run();</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (event.getCode().equals(KeyCode.B)) {</span>
+<span class="nc" id="L80">            onCloseRequest.run();</span>
         }
-<span class="nc" id="L87">    }</span>
+<span class="nc" id="L82">    }</span>
 
     public void setOnCloseRequest(Runnable onCloseRequest) {
-<span class="nc" id="L90">        this.onCloseRequest = onCloseRequest;</span>
-<span class="nc" id="L91">    }</span>
+<span class="nc" id="L85">        this.onCloseRequest = onCloseRequest;</span>
+<span class="nc" id="L86">    }</span>
 
     public void destroy() {
-<span class="nc bnc" id="L94" title="All 2 branches missed.">        for (Controller subController : subControllers) {</span>
-<span class="nc" id="L95">            subController.destroy();</span>
-<span class="nc" id="L96">        }</span>
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L89">        super.destroy();</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        for (Controller subController : subControllers) {</span>
+<span class="nc" id="L91">            subController.destroy();</span>
+<span class="nc" id="L92">        }</span>
+<span class="nc" id="L93">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

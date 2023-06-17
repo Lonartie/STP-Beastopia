@@ -41,14 +41,14 @@ public class BeastController extends Controller {
     @Override
     public Parent render() {
 <span class="nc" id="L43">        Parent parent = super.render();</span>
-<span class="nc" id="L44">        disposables.add(presetsService.getMonsterType(monster._id())</span>
+<span class="nc" id="L44">        disposables.add(presetsService.getMonsterType(monster.type())</span>
 <span class="nc" id="L45">                .observeOn(FX_SCHEDULER)</span>
 <span class="nc" id="L46">                .subscribe(monsterType -&gt; name.setText(monsterType.name())));</span>
 
 <span class="nc" id="L48">        hp.setText(&quot;HP: &quot; + monster.currentAttributes().health() + &quot; / &quot; + monster.attributes().health());</span>
 <span class="nc" id="L49">        level.setText(String.valueOf(monster.level()));</span>
 
-<span class="nc" id="L51">        disposables.add(presetsService.getMonsterImage(monster._id())</span>
+<span class="nc" id="L51">        disposables.add(presetsService.getMonsterImage(monster.type())</span>
 <span class="nc" id="L52">                .observeOn(FX_SCHEDULER)</span>
 <span class="nc" id="L53">                .subscribe(monsterImage -&gt; avatar.setImage(monsterImage)));</span>
 

@@ -66,9 +66,9 @@ public class ChatWindowController extends Controller {
 
     @Override
     public void destroy() {
-<span class="fc" id="L69">        subControllers.forEach(Controller::destroy);</span>
-<span class="fc" id="L70">        super.destroy();</span>
-<span class="fc" id="L71">    }</span>
+<span class="nc" id="L69">        subControllers.forEach(Controller::destroy);</span>
+<span class="nc" id="L70">        super.destroy();</span>
+<span class="nc" id="L71">    }</span>
 
     private void addMessage(Event&lt;Message&gt; event) {
 <span class="nc" id="L74">        addMessageData(event.data());</span>

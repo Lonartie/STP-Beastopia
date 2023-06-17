@@ -49,12 +49,12 @@ public class PresetsService {
 <span class="nc" id="L49">        return new Rectangle2D(x * tileSize, y * tileSize, tileSize, tileSize);</span>
     }
 
-    public Observable&lt;MonsterTypeDto&gt; getMonsterType(String name) {
-<span class="nc" id="L53">        return presetsApiService.getMonsterType(name);</span>
+    public Observable&lt;MonsterTypeDto&gt; getMonsterType(int type) {
+<span class="nc" id="L53">        return presetsApiService.getMonsterType(type);</span>
     }
 
-    public Observable&lt;Image&gt; getMonsterImage(String name) {
-<span class="nc" id="L57">        return presetsApiService.getMonsterImage(name)</span>
+    public Observable&lt;Image&gt; getMonsterImage(int type) {
+<span class="nc" id="L57">        return presetsApiService.getMonsterImage(type)</span>
 <span class="nc" id="L58">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
     }
 }
