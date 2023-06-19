@@ -60,7 +60,7 @@ public class BeastDetailController extends Controller {
 <span class="nc" id="L60">        defense.setText(&quot;Defense: &quot; + monster.currentAttributes().defense());</span>
 <span class="nc" id="L61">        hp.setText(&quot;HP: &quot; + monster.currentAttributes().health() + &quot; / &quot; + monster.attributes().health());</span>
 
-<span class="nc" id="L63">        disposables.add(presetsService.getMonsterType(monster._id())</span>
+<span class="nc" id="L63">        disposables.add(presetsService.getMonsterType(monster.type())</span>
 <span class="nc" id="L64">                .observeOn(FX_SCHEDULER)</span>
 <span class="nc" id="L65">                .subscribe(monsterType -&gt; {</span>
 <span class="nc" id="L66">                    name.setText(monsterType.name());</span>
@@ -68,7 +68,7 @@ public class BeastDetailController extends Controller {
 <span class="nc" id="L68">                    description.setText(monsterType.description());</span>
 <span class="nc" id="L69">                }));</span>
 
-<span class="nc" id="L71">        disposables.add(presetsService.getMonsterImage(monster._id())</span>
+<span class="nc" id="L71">        disposables.add(presetsService.getMonsterImage(monster.type())</span>
 <span class="nc" id="L72">                .observeOn(FX_SCHEDULER)</span>
 <span class="nc" id="L73">                .subscribe(monsterImage -&gt; ImageViewAvatar.setImage(monsterImage)));</span>
 
