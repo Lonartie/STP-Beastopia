@@ -7,6 +7,7 @@ import de.uniks.beastopia.teaml.service.TokenStorage;
 import de.uniks.beastopia.teaml.utils.Dialog;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -19,6 +20,10 @@ public class DeleteUserController extends Controller {
     public TextField usernameField;
     @FXML
     public PasswordField passwordField;
+    @FXML
+    Button deleteUserButton;
+    @FXML
+    Button cancelButton;
     @Inject
     AuthService authService;
     @Inject
@@ -27,41 +32,41 @@ public class DeleteUserController extends Controller {
     Provider&lt;LoginController&gt; loginControllerProvider;
 
     @Inject
-<span class="nc" id="L30">    public DeleteUserController() {</span>
+<span class="fc" id="L35">    public DeleteUserController() {</span>
 
-<span class="nc" id="L32">    }</span>
+<span class="fc" id="L37">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L36">        Parent parent = super.render();</span>
-<span class="nc" id="L37">        usernameField.setText(tokenStorage.getCurrentUser().name());</span>
-<span class="nc" id="L38">        return parent;</span>
+<span class="fc" id="L41">        Parent parent = super.render();</span>
+<span class="fc" id="L42">        usernameField.setText(tokenStorage.getCurrentUser().name());</span>
+<span class="fc" id="L43">        return parent;</span>
     }
 
     @Override
     public String getTitle() {
-<span class="nc" id="L43">        return resources.getString(&quot;titleDeleteUser&quot;);</span>
+<span class="fc" id="L48">        return resources.getString(&quot;titleDeleteUser&quot;);</span>
     }
 
     public void deleteUser() {
-<span class="nc bnc" id="L47" title="All 2 branches missed.">        if (!passwordField.getText().isEmpty()) {</span>
-<span class="nc" id="L48">            disposables.add(authService.login(tokenStorage.getCurrentUser().name(), passwordField.getText(), false)</span>
-<span class="nc" id="L49">                    .observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="nc" id="L50">                            lr -&gt; deleteConfirmed(),</span>
-<span class="nc" id="L51">                            error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;))));</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if (!passwordField.getText().isEmpty()) {</span>
+<span class="fc" id="L53">            disposables.add(authService.login(tokenStorage.getCurrentUser().name(), passwordField.getText(), false)</span>
+<span class="fc" id="L54">                    .observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="fc" id="L55">                            lr -&gt; deleteConfirmed(),</span>
+<span class="nc" id="L56">                            error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;))));</span>
         }
-<span class="nc" id="L53">    }</span>
+<span class="fc" id="L58">    }</span>
 
     private void deleteConfirmed() {
-<span class="nc" id="L56">        disposables.add(authService.deleteUser()</span>
-<span class="nc" id="L57">                .observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="nc" id="L58">                        lr -&gt; app.show(loginControllerProvider.get()),</span>
-<span class="nc" id="L59">                        error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;))));</span>
-<span class="nc" id="L60">    }</span>
+<span class="fc" id="L61">        disposables.add(authService.deleteUser()</span>
+<span class="fc" id="L62">                .observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="nc" id="L63">                        lr -&gt; app.show(loginControllerProvider.get()),</span>
+<span class="fc" id="L64">                        error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;))));</span>
+<span class="fc" id="L65">    }</span>
 
     public void cancel() {
-<span class="nc" id="L63">        app.showPrevious();</span>
-<span class="nc" id="L64">    }</span>
+<span class="fc" id="L68">        app.showPrevious();</span>
+<span class="fc" id="L69">    }</span>
 }
 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
