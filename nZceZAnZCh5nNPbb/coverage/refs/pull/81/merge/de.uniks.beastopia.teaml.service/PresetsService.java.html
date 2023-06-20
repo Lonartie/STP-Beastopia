@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PresetsService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.service</a> &gt; <span class="el_source">PresetsService.java</span></div><h1>PresetsService.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.service;
 
 import com.google.gson.Gson;
+import de.uniks.beastopia.teaml.rest.MonsterTypeDto;
 import de.uniks.beastopia.teaml.rest.PresetsApiService;
 import de.uniks.beastopia.teaml.rest.TileSet;
 import de.uniks.beastopia.teaml.rest.TileSetDescription;
@@ -18,34 +19,43 @@ public class PresetsService {
     PresetsApiService presetsApiService;
 
     @Inject
-<span class="fc" id="L21">    public PresetsService() {</span>
-<span class="fc" id="L22">    }</span>
+<span class="fc" id="L22">    public PresetsService() {</span>
+<span class="fc" id="L23">    }</span>
 
     public Observable&lt;List&lt;String&gt;&gt; getCharacters() {
-<span class="fc" id="L25">        return presetsApiService.getCharacters();</span>
+<span class="fc" id="L26">        return presetsApiService.getCharacters();</span>
     }
 
     public Observable&lt;Image&gt; getCharacterSprites(String fileName) {
-<span class="fc" id="L29">        return presetsApiService.getCharacterSprites(fileName)</span>
-<span class="fc" id="L30">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
+<span class="fc" id="L30">        return presetsApiService.getCharacterSprites(fileName)</span>
+<span class="fc" id="L31">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
     }
 
     public Observable&lt;Image&gt; getImage(TileSet tileSet) {
-<span class="nc" id="L34">        return presetsApiService.getTileset(tileSet.image())</span>
-<span class="nc" id="L35">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
+<span class="nc" id="L35">        return presetsApiService.getTileset(tileSet.image())</span>
+<span class="nc" id="L36">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
     }
 
     public Observable&lt;TileSet&gt; getTileset(TileSetDescription description) {
-<span class="nc" id="L39">        return presetsApiService.getTileset(new File(description.source()).getName())</span>
-<span class="nc" id="L40">                .map((ResponseBody body) -&gt; new Gson().fromJson(body.string(), TileSet.class));</span>
+<span class="nc" id="L40">        return presetsApiService.getTileset(new File(description.source()).getName())</span>
+<span class="nc" id="L41">                .map((ResponseBody body) -&gt; new Gson().fromJson(body.string(), TileSet.class));</span>
     }
 
     public Rectangle2D getTileViewPort(int id, TileSet tileSet) {
-<span class="nc" id="L44">        int columns = tileSet.columns();</span>
-<span class="nc" id="L45">        int tileSize = tileSet.tileheight();</span>
-<span class="nc" id="L46">        int x = (id - 1) % columns;</span>
-<span class="nc" id="L47">        int y = (id - 1) / columns;</span>
-<span class="nc" id="L48">        return new Rectangle2D(x * tileSize, y * tileSize, tileSize, tileSize);</span>
+<span class="nc" id="L45">        int columns = tileSet.columns();</span>
+<span class="nc" id="L46">        int tileSize = tileSet.tileheight();</span>
+<span class="nc" id="L47">        int x = (id - 1) % columns;</span>
+<span class="nc" id="L48">        int y = (id - 1) / columns;</span>
+<span class="nc" id="L49">        return new Rectangle2D(x * tileSize, y * tileSize, tileSize, tileSize);</span>
+    }
+
+    public Observable&lt;MonsterTypeDto&gt; getMonsterType(int type) {
+<span class="nc" id="L53">        return presetsApiService.getMonsterType(type);</span>
+    }
+
+    public Observable&lt;Image&gt; getMonsterImage(int type) {
+<span class="nc" id="L57">        return presetsApiService.getMonsterImage(type)</span>
+<span class="nc" id="L58">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

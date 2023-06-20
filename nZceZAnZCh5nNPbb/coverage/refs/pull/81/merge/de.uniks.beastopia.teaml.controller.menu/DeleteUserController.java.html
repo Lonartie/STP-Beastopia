@@ -30,51 +30,43 @@ public class DeleteUserController extends Controller {
     TokenStorage tokenStorage;
     @Inject
     Provider&lt;LoginController&gt; loginControllerProvider;
-    @Inject
-    Provider&lt;EditProfileController&gt; editProfileControllerProvider;
-    private String backController;
 
     @Inject
-<span class="fc" id="L38">    public DeleteUserController() {</span>
+<span class="fc" id="L35">    public DeleteUserController() {</span>
 
-<span class="fc" id="L40">    }</span>
-
-    public DeleteUserController backController (String controller) {
-<span class="nc" id="L43">        this.backController = controller;</span>
-<span class="nc" id="L44">        return this;</span>
-    }
+<span class="fc" id="L37">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L49">        Parent parent = super.render();</span>
-<span class="fc" id="L50">        usernameField.setText(tokenStorage.getCurrentUser().name());</span>
-<span class="fc" id="L51">        return parent;</span>
+<span class="fc" id="L41">        Parent parent = super.render();</span>
+<span class="fc" id="L42">        usernameField.setText(tokenStorage.getCurrentUser().name());</span>
+<span class="fc" id="L43">        return parent;</span>
     }
 
     @Override
     public String getTitle() {
-<span class="fc" id="L56">        return resources.getString(&quot;titleDeleteUser&quot;);</span>
+<span class="fc" id="L48">        return resources.getString(&quot;titleDeleteUser&quot;);</span>
     }
 
     public void deleteUser() {
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (!passwordField.getText().isEmpty()) {</span>
-<span class="fc" id="L61">            disposables.add(authService.login(tokenStorage.getCurrentUser().name(), passwordField.getText(), false)</span>
-<span class="fc" id="L62">                    .observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="fc" id="L63">                            lr -&gt; deleteConfirmed(),</span>
-<span class="nc" id="L64">                            error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;))));</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if (!passwordField.getText().isEmpty()) {</span>
+<span class="fc" id="L53">            disposables.add(authService.login(tokenStorage.getCurrentUser().name(), passwordField.getText(), false)</span>
+<span class="fc" id="L54">                    .observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="fc" id="L55">                            lr -&gt; deleteConfirmed(),</span>
+<span class="nc" id="L56">                            error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;))));</span>
         }
-<span class="fc" id="L66">    }</span>
+<span class="fc" id="L58">    }</span>
 
     private void deleteConfirmed() {
-<span class="fc" id="L69">        disposables.add(authService.deleteUser()</span>
-<span class="fc" id="L70">                .observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="nc" id="L71">                        lr -&gt; app.show(loginControllerProvider.get()),</span>
-<span class="fc" id="L72">                        error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;))));</span>
-<span class="fc" id="L73">    }</span>
+<span class="fc" id="L61">        disposables.add(authService.deleteUser()</span>
+<span class="fc" id="L62">                .observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="nc" id="L63">                        lr -&gt; app.show(loginControllerProvider.get()),</span>
+<span class="fc" id="L64">                        error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;))));</span>
+<span class="fc" id="L65">    }</span>
 
     public void cancel() {
-<span class="fc" id="L76">        app.show(editProfileControllerProvider.get().backController(backController));</span>
-<span class="fc" id="L77">    }</span>
+<span class="fc" id="L68">        app.showPrevious();</span>
+<span class="fc" id="L69">    }</span>
 }
 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
