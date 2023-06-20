@@ -26,33 +26,33 @@ public class BeastController extends Controller {
     private Consumer&lt;Monster&gt; onBeastClicked;
 
     @Inject
-<span class="nc" id="L29">    public BeastController() {</span>
-<span class="nc" id="L30">    }</span>
+<span class="fc" id="L29">    public BeastController() {</span>
+<span class="fc" id="L30">    }</span>
 
     public void setOnBeastClicked(Consumer&lt;Monster&gt; onBeastClicked) {
 <span class="nc" id="L33">        this.onBeastClicked = onBeastClicked;</span>
 <span class="nc" id="L34">    }</span>
 
     public BeastController setBeast(Monster monster) {
-<span class="nc" id="L37">        this.monster = monster;</span>
-<span class="nc" id="L38">        return this;</span>
+<span class="fc" id="L37">        this.monster = monster;</span>
+<span class="fc" id="L38">        return this;</span>
     }
 
     @Override
     public Parent render() {
-<span class="nc" id="L43">        Parent parent = super.render();</span>
-<span class="nc" id="L44">        disposables.add(presetsService.getMonsterType(monster.type())</span>
-<span class="nc" id="L45">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L46">                .subscribe(monsterType -&gt; name.setText(monsterType.name())));</span>
+<span class="fc" id="L43">        Parent parent = super.render();</span>
+<span class="fc" id="L44">        disposables.add(presetsService.getMonsterType(monster.type())</span>
+<span class="fc" id="L45">                .observeOn(FX_SCHEDULER)</span>
+<span class="pc" id="L46">                .subscribe(monsterType -&gt; name.setText(monsterType.name())));</span>
 
-<span class="nc" id="L48">        hp.setText(&quot;HP: &quot; + monster.currentAttributes().health() + &quot; / &quot; + monster.attributes().health());</span>
-<span class="nc" id="L49">        level.setText(String.valueOf(monster.level()));</span>
+<span class="fc" id="L48">        hp.setText(&quot;HP: &quot; + monster.currentAttributes().health() + &quot; / &quot; + monster.attributes().health());</span>
+<span class="fc" id="L49">        level.setText(String.valueOf(monster.level()));</span>
 
-<span class="nc" id="L51">        disposables.add(presetsService.getMonsterImage(monster.type())</span>
-<span class="nc" id="L52">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L53">                .subscribe(monsterImage -&gt; avatar.setImage(monsterImage)));</span>
+<span class="fc" id="L51">        disposables.add(presetsService.getMonsterImage(monster.type())</span>
+<span class="fc" id="L52">                .observeOn(FX_SCHEDULER)</span>
+<span class="pc" id="L53">                .subscribe(monsterImage -&gt; avatar.setImage(monsterImage)));</span>
 
-<span class="nc" id="L55">        return parent;</span>
+<span class="fc" id="L55">        return parent;</span>
     }
 
     @FXML
