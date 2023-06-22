@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SoundController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.ingame</a> &gt; <span class="el_source">SoundController.java</span></div><h1>SoundController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.ingame;
+
+import de.uniks.beastopia.teaml.Main;
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.utils.Prefs;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.util.Objects;
+
+@Singleton
+public class SoundController extends Controller {
+    @Inject
+    DataCache cache;
+    @Inject
+    Prefs prefs;
+
+    private MediaPlayer bgmPlayer;
+<span class="nc" id="L25">    private String currentTrack = &quot;&quot;;</span>
+
+    @Inject
+<span class="nc" id="L28">    public SoundController() {</span>
+<span class="nc" id="L29">    }</span>
+
+    public void play(String fileName) {
+        try {
+<span class="nc bnc" id="L33" title="All 2 branches missed.">            if (fileName.startsWith(&quot;bgm:&quot;)) {</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">                if (currentTrack.equals(fileName)) {</span>
+<span class="nc" id="L35">                    return;</span>
+                }
+
+<span class="nc bnc" id="L38" title="All 2 branches missed.">                if (bgmPlayer != null) {</span>
+<span class="nc" id="L39">                    bgmPlayer.stop();</span>
+                }
+<span class="nc" id="L41">                Media bgmMedia = new Media(Objects.requireNonNull(Main.class.getResource(&quot;assets/sounds/bgm_&quot; + fileName.substring(4) + &quot;.mp3&quot;)).toURI().toURL().toString());</span>
+<span class="nc" id="L42">                bgmPlayer = new MediaPlayer(bgmMedia);</span>
+
+<span class="nc" id="L44">                bgmPlayer.setCycleCount(MediaPlayer.INDEFINITE);</span>
+<span class="nc" id="L45">                bgmPlayer.setVolume(prefs.getMusicVolume() / 100.0);</span>
+<span class="nc" id="L46">                bgmPlayer.play();</span>
+
+<span class="nc" id="L48">                currentTrack = fileName;</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">            } else if (fileName.startsWith(&quot;sfx:&quot;)) {</span>
+<span class="nc" id="L50">                AudioClip sfxPlayer = new AudioClip(Objects.requireNonNull(Main.class.getResource(&quot;assets/sounds/sfx_&quot; + fileName.substring(4) + &quot;.mp3&quot;)).toURI().toString());</span>
+
+<span class="nc" id="L52">                sfxPlayer.setVolume(prefs.getSoundVolume() / 100.0);</span>
+<span class="nc" id="L53">                sfxPlayer.play();</span>
+            }
+<span class="nc" id="L55">        } catch (URISyntaxException | NullPointerException | MalformedURLException e) {</span>
+<span class="nc" id="L56">            e.printStackTrace();</span>
+<span class="nc" id="L57">        }</span>
+<span class="nc" id="L58">    }</span>
+
+    public void stopBGM() {
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        if (bgmPlayer != null) {</span>
+<span class="nc" id="L62">            bgmPlayer.stop();</span>
+<span class="nc" id="L63">            bgmPlayer = null;</span>
+
+<span class="nc" id="L65">            currentTrack = &quot;&quot;;</span>
+        }
+<span class="nc" id="L67">    }</span>
+
+    public void updateVolume() {
+<span class="nc" id="L70">        bgmPlayer.setVolume(prefs.getMusicVolume() / 100.0);</span>
+<span class="nc" id="L71">    }</span>
+
+    public MediaPlayer getBgmPlayer() {
+<span class="nc" id="L74">        return bgmPlayer;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
