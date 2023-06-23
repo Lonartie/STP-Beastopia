@@ -2,6 +2,7 @@
 
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.utils.Prefs;
+import de.uniks.beastopia.teaml.utils.SoundController;
 import de.uniks.beastopia.teaml.utils.ThemeSettings;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -19,7 +20,7 @@ import java.util.ResourceBundle;
 
 public class SettingsController extends Controller {
 
-<span class="fc" id="L22">    private final ArrayList&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L23">    private final ArrayList&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
     @FXML
     public RadioButton selectEnglishLanguage;
     @FXML
@@ -49,102 +50,127 @@ public class SettingsController extends Controller {
     Provider&lt;ResourceBundle&gt; resourcesProvider;
     @Inject
     Provider&lt;KeybindElementController&gt; keybindElementControllerProvider;
+    @Inject
+    Provider&lt;SoundController&gt; soundControllerProvider;
+    SoundController soundController;
+<span class="fc" id="L56">    double debounceDelay = 250; // Delay in milliseconds</span>
+<span class="fc" id="L57">    long lastValueChangeTime = 0;</span>
 
 
     @Inject
-<span class="fc" id="L55">    public SettingsController() {</span>
-<span class="fc" id="L56">    }</span>
+<span class="fc" id="L61">    public SettingsController() {</span>
+<span class="fc" id="L62">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L60">        Parent parent = super.render();</span>
-<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (prefs.getLocale().contains(&quot;de&quot;)) {</span>
-<span class="fc" id="L62">            selectGermanLanguage.setSelected(true);</span>
+<span class="fc" id="L66">        Parent parent = super.render();</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (prefs.getLocale().contains(&quot;de&quot;)) {</span>
+<span class="fc" id="L68">            selectGermanLanguage.setSelected(true);</span>
         } else {
-<span class="fc" id="L64">            selectEnglishLanguage.setSelected(true);</span>
+<span class="fc" id="L70">            selectEnglishLanguage.setSelected(true);</span>
         }
 
-<span class="fc" id="L67">        darkRadioButton.setSelected(prefs.getTheme().equals(&quot;dark&quot;));</span>
-<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        summerRadioButton.setSelected(!prefs.getTheme().equals(&quot;dark&quot;));</span>
+<span class="fc" id="L73">        darkRadioButton.setSelected(prefs.getTheme().equals(&quot;dark&quot;));</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        summerRadioButton.setSelected(!prefs.getTheme().equals(&quot;dark&quot;));</span>
 
-<span class="fc" id="L70">        musicVolumeSlider.setValue(prefs.getMusicVolume());</span>
-<span class="fc" id="L71">        soundVolumeSlider.setValue(prefs.getSoundVolume());</span>
+<span class="fc" id="L76">        musicVolumeSlider.setValue(prefs.getMusicVolume());</span>
+<span class="fc" id="L77">        soundVolumeSlider.setValue(prefs.getSoundVolume());</span>
 
-<span class="fc" id="L73">        showKeyBindings();</span>
+<span class="fc" id="L79">        showKeyBindings();</span>
 
-<span class="fc" id="L75">        return parent;</span>
+<span class="fc" id="L81">        soundController = soundControllerProvider.get();</span>
+
+<span class="fc" id="L83">        return parent;</span>
     }
 
     private void showKeyBindings() {
-<span class="fc" id="L79">        vboxKeybindings.getChildren().clear();</span>
-<span class="fc" id="L80">        vboxKeybindings.getChildren().add(createController(&quot;ESC&quot;, &quot;OpensPauseMenu&quot;).render());</span>
-<span class="fc" id="L81">        vboxKeybindings.getChildren().add(createController(&quot;W&quot;, &quot;MoveUp&quot;).render());</span>
-<span class="fc" id="L82">        vboxKeybindings.getChildren().add(createController(&quot;A&quot;, &quot;MoveLeft&quot;).render());</span>
-<span class="fc" id="L83">        vboxKeybindings.getChildren().add(createController(&quot;S&quot;, &quot;MoveDown&quot;).render());</span>
-<span class="fc" id="L84">        vboxKeybindings.getChildren().add(createController(&quot;D&quot;, &quot;MoveRight&quot;).render());</span>
-<span class="fc" id="L85">        vboxKeybindings.getChildren().add(createController(&quot;B&quot;, &quot;OpensBeastList&quot;).render());</span>
-<span class="fc" id="L86">        vboxKeybindings.getChildren().add(createController(&quot;M&quot;, &quot;OpenMap&quot;).render());</span>
-<span class="fc" id="L87">    }</span>
+<span class="fc" id="L87">        vboxKeybindings.getChildren().clear();</span>
+<span class="fc" id="L88">        vboxKeybindings.getChildren().add(createController(&quot;ESC&quot;, &quot;OpensPauseMenu&quot;).render());</span>
+<span class="fc" id="L89">        vboxKeybindings.getChildren().add(createController(&quot;W&quot;, &quot;MoveUp&quot;).render());</span>
+<span class="fc" id="L90">        vboxKeybindings.getChildren().add(createController(&quot;A&quot;, &quot;MoveLeft&quot;).render());</span>
+<span class="fc" id="L91">        vboxKeybindings.getChildren().add(createController(&quot;S&quot;, &quot;MoveDown&quot;).render());</span>
+<span class="fc" id="L92">        vboxKeybindings.getChildren().add(createController(&quot;D&quot;, &quot;MoveRight&quot;).render());</span>
+<span class="fc" id="L93">        vboxKeybindings.getChildren().add(createController(&quot;B&quot;, &quot;OpensBeastList&quot;).render());</span>
+<span class="fc" id="L94">        vboxKeybindings.getChildren().add(createController(&quot;M&quot;, &quot;OpenMap&quot;).render());</span>
+<span class="fc" id="L95">    }</span>
 
     @FXML
     public void setEn() {
-<span class="fc" id="L91">        setLanguage(Locale.ENGLISH);</span>
-<span class="fc" id="L92">    }</span>
+<span class="fc" id="L99">        setLanguage(Locale.ENGLISH);</span>
+<span class="fc" id="L100">    }</span>
 
     @FXML
     public void setDe() {
-<span class="fc" id="L96">        setLanguage(Locale.GERMAN);</span>
-<span class="fc" id="L97">    }</span>
+<span class="fc" id="L104">        setLanguage(Locale.GERMAN);</span>
+<span class="fc" id="L105">    }</span>
 
     private void setLanguage(Locale locale) {
-<span class="fc" id="L100">        prefs.setLocale(locale.toLanguageTag());</span>
-<span class="fc" id="L101">        resources = resourcesProvider.get();</span>
-<span class="fc" id="L102">        app.update();</span>
-<span class="fc" id="L103">    }</span>
+<span class="fc" id="L108">        prefs.setLocale(locale.toLanguageTag());</span>
+<span class="fc" id="L109">        resources = resourcesProvider.get();</span>
+<span class="fc" id="L110">        app.update();</span>
+<span class="fc" id="L111">    }</span>
 
     @FXML
     public void setDarkTheme() {
-<span class="fc" id="L107">        prefs.setTheme(&quot;dark&quot;);</span>
-<span class="fc" id="L108">        themeSettings.updateSceneTheme.accept(&quot;dark&quot;);</span>
-<span class="fc" id="L109">    }</span>
+<span class="fc" id="L115">        prefs.setTheme(&quot;dark&quot;);</span>
+<span class="fc" id="L116">        themeSettings.updateSceneTheme.accept(&quot;dark&quot;);</span>
+<span class="fc" id="L117">    }</span>
 
     @FXML
     public void setSummerTheme() {
-<span class="fc" id="L113">        prefs.setTheme(&quot;summer&quot;);</span>
-<span class="fc" id="L114">        themeSettings.updateSceneTheme.accept(&quot;summer&quot;);</span>
-<span class="fc" id="L115">    }</span>
+<span class="fc" id="L121">        prefs.setTheme(&quot;summer&quot;);</span>
+<span class="fc" id="L122">        themeSettings.updateSceneTheme.accept(&quot;summer&quot;);</span>
+<span class="fc" id="L123">    }</span>
 
     @FXML
     public void changeMusicVolume() {
-<span class="nc" id="L119">        prefs.setMusicVolume(musicVolumeSlider.getValue());</span>
-<span class="nc" id="L120">    }</span>
+<span class="nc" id="L127">        prefs.setMusicVolume(musicVolumeSlider.getValue());</span>
+
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (soundController.getBgmPlayer() != null) {</span>
+<span class="nc" id="L130">            soundController.updateVolume();</span>
+        } else {
+<span class="nc" id="L132">            soundController.play(&quot;bgm:city&quot;);</span>
+        }
+<span class="nc" id="L134">    }</span>
 
     @FXML
     public void changeSoundVolume() {
-<span class="nc" id="L124">        prefs.setSoundVolume(soundVolumeSlider.getValue());</span>
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L138">        soundVolumeSlider.valueProperty().addListener((observable, oldValue, newValue) -&gt; {</span>
+<span class="nc" id="L139">            prefs.setSoundVolume(soundVolumeSlider.getValue());</span>
+
+<span class="nc" id="L141">            long currentTime = System.currentTimeMillis();</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">            if (currentTime - lastValueChangeTime &gt; debounceDelay) {</span>
+<span class="nc" id="L143">                soundController.play(&quot;sfx:bump&quot;);</span>
+<span class="nc" id="L144">                lastValueChangeTime = currentTime;</span>
+            }
+<span class="nc" id="L146">        });</span>
+<span class="nc" id="L147">    }</span>
 
     @FXML
     public void back() {
-<span class="fc" id="L129">        app.showPrevious();</span>
-<span class="fc" id="L130">    }</span>
+<span class="fc" id="L151">        app.showPrevious();</span>
+
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">        if (soundController.getBgmPlayer() != null) {</span>
+<span class="nc" id="L154">            soundController.stopBGM();</span>
+        }
+<span class="fc" id="L156">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L134">        return resources.getString(&quot;titleSettings&quot;);</span>
+<span class="fc" id="L160">        return resources.getString(&quot;titleSettings&quot;);</span>
     }
 
     private KeybindElementController createController(String key, String action) {
-<span class="fc" id="L138">        KeybindElementController controller = keybindElementControllerProvider.get();</span>
-<span class="fc" id="L139">        controller.setKeyAndAction(key, action);</span>
-<span class="fc" id="L140">        subControllers.add(controller);</span>
-<span class="fc" id="L141">        return controller;</span>
+<span class="fc" id="L164">        KeybindElementController controller = keybindElementControllerProvider.get();</span>
+<span class="fc" id="L165">        controller.setKeyAndAction(key, action);</span>
+<span class="fc" id="L166">        subControllers.add(controller);</span>
+<span class="fc" id="L167">        return controller;</span>
     }
 
     @Override
     public void destroy() {
-<span class="fc" id="L146">        super.destroy();</span>
-<span class="fc" id="L147">        subControllers.forEach(Controller::destroy);</span>
-<span class="fc" id="L148">    }</span>
+<span class="fc" id="L172">        super.destroy();</span>
+<span class="fc" id="L173">        subControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L174">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
