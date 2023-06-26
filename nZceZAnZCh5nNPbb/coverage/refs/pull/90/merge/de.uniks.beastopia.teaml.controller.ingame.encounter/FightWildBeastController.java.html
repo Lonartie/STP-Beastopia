@@ -66,16 +66,14 @@ public class FightWildBeastController extends Controller {
 <span class="fc" id="L66">        disposables.add(trainerService.getTrainerMonster(prefs.getRegionID(), trainerId, beastId).observeOn(FX_SCHEDULER).concatMap(b -&gt; { //Nacheinander ausführen</span>
 <span class="fc" id="L67">            this.type = b.type();</span>
 <span class="fc" id="L68">            return presetsService.getMonsterImage(this.type);</span>
-<span class="fc" id="L69">        }).observeOn(FX_SCHEDULER).subscribe(beastImage -&gt; {</span>
-<span class="fc" id="L70">            image.setImage(beastImage);</span>
-<span class="fc" id="L71">        }));</span>
+<span class="fc" id="L69">        }).observeOn(FX_SCHEDULER).subscribe(beastImage -&gt; image.setImage(beastImage)));</span>
 
-<span class="fc" id="L73">        return parent;</span>
+<span class="fc" id="L71">        return parent;</span>
     }
 
     @FXML
     public void startFight() {
         //TODO show Encounter screen
-<span class="nc" id="L79">    }</span>
+<span class="nc" id="L77">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
