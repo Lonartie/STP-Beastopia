@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.ingame</a> &gt; <span class="el_source">MapController.java</span></div><h1>MapController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.ingame;
+
+import de.uniks.beastopia.teaml.App;
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.*;
+import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.service.PresetsService;
+import de.uniks.beastopia.teaml.service.RegionService;
+import de.uniks.beastopia.teaml.utils.LoadingPage;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.HashMap;
+
+public class MapController extends Controller {
+    @FXML
+    public Pane mapPane;
+    @FXML
+    public AnchorPane anchorPane;
+    @Inject
+    App app;
+    @Inject
+    DataCache cache;
+    @Inject
+    PresetsService presetsService;
+    @Inject
+    RegionService regionService;
+    @Inject
+    Provider&lt;RegionInfoController&gt; regionInfoControllerProvider;
+    @SuppressWarnings(&quot;unused&quot;)
+    private Region region;
+    private LoadingPage loadingPage;
+    private TileSet tileSet;
+    private Image image;
+    private Map map;
+    private Area currentArea;
+
+    @Inject
+<span class="fc" id="L50">    public MapController() {</span>
+<span class="fc" id="L51">    }</span>
+
+    @Override
+    public String getTitle() {
+<span class="fc" id="L55">        return resources.getString(&quot;TitleMap&quot;);</span>
+    }
+
+    @Override
+    public void init() {
+<span class="fc" id="L60">        super.init();</span>
+<span class="fc" id="L61">        Trainer trainerData = cache.getTrainer();</span>
+<span class="fc" id="L62">        currentArea = cache.getArea(trainerData.area());</span>
+<span class="fc" id="L63">    }</span>
+
+    @Override
+    public Parent render() {
+<span class="fc" id="L67">        loadingPage = LoadingPage.makeLoadingPage(super.render());</span>
+<span class="fc" id="L68">        disposables.add(regionService.getRegion(cache.getJoinedRegion()._id())</span>
+<span class="fc" id="L69">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L70">                .subscribe(region -&gt; {</span>
+<span class="fc" id="L71">                            this.region = region;</span>
+<span class="fc" id="L72">                            this.map = region.map();</span>
+<span class="fc" id="L73">                            this.tileSet = presetsService.getTileset(map.tilesets().get(0)).blockingFirst();</span>
+<span class="fc" id="L74">                            this.image = presetsService.getImage(tileSet).blockingFirst();</span>
+<span class="fc" id="L75">                            loadingPage.setDone();</span>
+<span class="fc" id="L76">                            drawMap();</span>
+<span class="fc" id="L77">                        },</span>
+                        error -&gt; {
+<span class="nc" id="L79">                            throw new RuntimeException(error);</span>
+                        }
+                ));
+<span class="fc" id="L82">        return loadingPage.parent();</span>
+    }
+
+    private void drawMap() {
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        for (Layer layer : this.map.layers()) {</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">            if (layer.type().equals(&quot;tilelayer&quot;)) {</span>
+<span class="fc" id="L88">                drawTileLayer(layer);</span>
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">            } else if (layer.type().equals(&quot;objectgroup&quot;)) {</span>
+<span class="fc" id="L90">                drawObjectGroup(layer);</span>
+            }
+<span class="fc" id="L92">        }</span>
+<span class="fc" id="L93">    }</span>
+
+    private void drawObjectGroup(Layer layer) {
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        for (MapObject object : layer.objects()) {</span>
+<span class="fc" id="L97">            RegionInfoController regionInfo = regionInfoControllerProvider.get();</span>
+<span class="fc" id="L98">            regionInfo.init();</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">            if (object.name().equals(currentArea.name())) {</span>
+<span class="fc" id="L100">                markOwnPlayer(object);</span>
+            }
+<span class="fc bfc" id="L102" title="All 2 branches covered.">            if (object.polygon() == null) {</span>
+<span class="fc" id="L103">                drawRectangle(object, regionInfo);</span>
+            } else {
+<span class="fc" id="L105">                drawPolygon(object, regionInfo);</span>
+            }
+<span class="fc" id="L107">        }</span>
+<span class="fc" id="L108">    }</span>
+
+    private void drawRectangle(MapObject object, RegionInfoController regionInfo) {
+<span class="fc" id="L111">        Rectangle r = new Rectangle();</span>
+<span class="fc" id="L112">        r.setX(object.x());</span>
+<span class="fc" id="L113">        r.setY(object.y());</span>
+<span class="fc" id="L114">        r.setWidth(object.width());</span>
+<span class="fc" id="L115">        r.setHeight(object.height());</span>
+<span class="fc" id="L116">        r.setFill(Color.TRANSPARENT);</span>
+<span class="fc" id="L117">        r.setOnMouseEntered(event -&gt; setRegionInfo(object, regionInfo, event));</span>
+<span class="fc" id="L118">        r.setOnMouseExited(event -&gt; anchorPane.getChildren().remove(anchorPane.getChildren().size() - 1));</span>
+<span class="fc" id="L119">        anchorPane.getChildren().add(r);</span>
+<span class="fc" id="L120">    }</span>
+
+    private void drawPolygon(MapObject object, RegionInfoController regionInfo) {
+<span class="fc" id="L123">        Polygon p = new Polygon();</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        for (HashMap&lt;String, Double&gt; point : object.polygon()) {</span>
+<span class="fc" id="L125">            double x = point.get(&quot;x&quot;) + object.x();</span>
+<span class="fc" id="L126">            double y = point.get(&quot;y&quot;) + object.y();</span>
+<span class="fc" id="L127">            p.getPoints().addAll(x, y);</span>
+<span class="fc" id="L128">        }</span>
+<span class="fc" id="L129">        p.setFill(Color.TRANSPARENT);</span>
+<span class="pc" id="L130">        p.setOnMouseEntered(event -&gt; setRegionInfo(object, regionInfo, event));</span>
+<span class="pc" id="L131">        p.setOnMouseExited(event -&gt; anchorPane.getChildren().remove(anchorPane.getChildren().size() - 1));</span>
+<span class="fc" id="L132">        anchorPane.getChildren().add(p);</span>
+<span class="fc" id="L133">    }</span>
+
+    private void markOwnPlayer(MapObject object) {
+<span class="fc" id="L136">        Circle c = new Circle();</span>
+<span class="fc" id="L137">        c.setRadius(5);</span>
+<span class="fc" id="L138">        c.setCenterX(object.x());</span>
+<span class="fc" id="L139">        c.setCenterY(object.y());</span>
+<span class="fc" id="L140">        c.setFill(Color.BLUEVIOLET);</span>
+<span class="fc" id="L141">        anchorPane.getChildren().add(c);</span>
+<span class="fc" id="L142">    }</span>
+
+    private void setRegionInfo(MapObject object, RegionInfoController regionInfo, MouseEvent event) {
+<span class="fc" id="L145">        String name = object.name();</span>
+<span class="fc" id="L146">        String description = object.properties().get(0).get(&quot;value&quot;);</span>
+<span class="fc" id="L147">        regionInfo.setText(name, description);</span>
+<span class="fc" id="L148">        double maxX = anchorPane.widthProperty().getValue();</span>
+<span class="fc" id="L149">        double maxY = anchorPane.heightProperty().getValue();</span>
+<span class="fc" id="L150">        anchorPane.getChildren().add(regionInfo.render());</span>
+<span class="fc" id="L151">        int lastChild = anchorPane.getChildren().size() - 1;</span>
+
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">        if (event.getX() + 10 + 231 &gt; maxX) {</span>
+<span class="nc" id="L154">            anchorPane.getChildren().get(lastChild).setLayoutX(event.getX() - 231 - 10);</span>
+        } else {
+<span class="fc" id="L156">            anchorPane.getChildren().get(lastChild).setLayoutX(event.getX() + 10);</span>
+        }
+
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">        if (event.getY() + 10 + 131 &gt; maxY) {</span>
+<span class="nc" id="L160">            anchorPane.getChildren().get(lastChild).setLayoutY(event.getY() - 131 - 10);</span>
+        } else {
+<span class="fc" id="L162">            anchorPane.getChildren().get(lastChild).setLayoutY(event.getY() + 10);</span>
+        }
+<span class="fc" id="L164">    }</span>
+
+    private void drawTileLayer(Layer layer) {
+<span class="fc" id="L167">        int TILE_SIZE = 16;</span>
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">        if (layer.chunks() != null) {</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">            for (Chunk chunk : layer.chunks()) {</span>
+<span class="fc" id="L170">                int chunkX = chunk.x();</span>
+<span class="fc" id="L171">                int chunkY = chunk.y();</span>
+<span class="fc" id="L172">                int index = 0;</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">                for (int id : chunk.data()) {</span>
+<span class="fc" id="L174">                    int x = index % chunk.width() + chunkX;</span>
+<span class="fc" id="L175">                    int y = index / chunk.height() + chunkY;</span>
+<span class="fc" id="L176">                    index++;</span>
+<span class="fc" id="L177">                    ImageView view = new ImageView();</span>
+<span class="fc" id="L178">                    view.setPreserveRatio(true);</span>
+<span class="fc" id="L179">                    view.setSmooth(true);</span>
+<span class="fc" id="L180">                    view.setImage(image);</span>
+<span class="fc" id="L181">                    view.setFitWidth(TILE_SIZE + 1);</span>
+<span class="fc" id="L182">                    view.setFitHeight(TILE_SIZE + 1);</span>
+<span class="fc" id="L183">                    view.setViewport(presetsService.getTileViewPort(id, tileSet));</span>
+<span class="fc" id="L184">                    view.setTranslateX(x * TILE_SIZE);</span>
+<span class="fc" id="L185">                    view.setTranslateY(y * TILE_SIZE);</span>
+<span class="fc" id="L186">                    anchorPane.getChildren().add(view);</span>
+<span class="fc" id="L187">                }</span>
+<span class="fc" id="L188">            }</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        } else if (layer.data() != null) {</span>
+<span class="nc" id="L190">            int chunkX = layer.x();</span>
+<span class="nc" id="L191">            int chunkY = layer.y();</span>
+<span class="nc" id="L192">            int index = 0;</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">            for (int id : layer.data()) {</span>
+<span class="nc" id="L194">                int x = index % layer.width() + chunkX;</span>
+<span class="nc" id="L195">                int y = index / layer.height() + chunkY;</span>
+<span class="nc" id="L196">                index++;</span>
+<span class="nc" id="L197">                ImageView view = new ImageView();</span>
+<span class="nc" id="L198">                view.setPreserveRatio(true);</span>
+<span class="nc" id="L199">                view.setSmooth(true);</span>
+<span class="nc" id="L200">                view.setImage(image);</span>
+<span class="nc" id="L201">                view.setFitWidth(TILE_SIZE + 1);</span>
+<span class="nc" id="L202">                view.setFitHeight(TILE_SIZE + 1);</span>
+<span class="nc" id="L203">                view.setViewport(presetsService.getTileViewPort(id, tileSet));</span>
+<span class="nc" id="L204">                view.setTranslateX(x * TILE_SIZE);</span>
+<span class="nc" id="L205">                view.setTranslateY(y * TILE_SIZE);</span>
+<span class="nc" id="L206">                anchorPane.getChildren().add(view);</span>
+<span class="nc" id="L207">            }</span>
+        }
+<span class="fc" id="L209">    }</span>
+
+    public void closeMap() {
+<span class="fc" id="L212">        app.showPrevious();</span>
+<span class="fc" id="L213">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
