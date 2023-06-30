@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml;
+
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.utils.RingBuffer;
+import fr.brouillard.oss.cssfx.CSSFX;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+public class App extends Application {
+    private final static int MAX_SUB_MENUS = 6;
+    private MainComponent mainComponent;
+    private Stage stage;
+    private Controller controller;
+    private Scene scene;
+<span class="fc" id="L23">    private int windowSizeX = 800;</span>
+<span class="fc" id="L24">    private int windowSizeY = 600;</span>
+<span class="fc" id="L25">    private final List&lt;Runnable&gt; cleanupTasks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L26">    private final RingBuffer&lt;Controller&gt; history = new RingBuffer&lt;&gt;(MAX_SUB_MENUS);</span>
+
+<span class="fc" id="L28">    public App() {</span>
+<span class="fc" id="L29">        this.mainComponent = de.uniks.beastopia.teaml.DaggerMainComponent.builder().mainApp(this).build();</span>
+<span class="fc" id="L30">    }</span>
+
+<span class="fc" id="L32">    public App(MainComponent mainComponent) {</span>
+<span class="fc" id="L33">        this.mainComponent = mainComponent;</span>
+<span class="fc" id="L34">    }</span>
+
+    public void setHistory(List&lt;Controller&gt; controllers) {
+<span class="fc" id="L37">        history.clear();</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (Controller controller : controllers) {</span>
+<span class="fc" id="L39">            history.push(controller);</span>
+<span class="fc" id="L40">        }</span>
+<span class="fc" id="L41">    }</span>
+
+    public void setMainComponent(MainComponent mainComponent) {
+<span class="fc" id="L44">        this.mainComponent = mainComponent;</span>
+<span class="fc" id="L45">    }</span>
+
+    public Stage getStage() {
+<span class="fc" id="L48">        return stage;</span>
+    }
+
+    public void addCleanupTask(Runnable task) {
+<span class="fc" id="L52">        cleanupTasks.add(task);</span>
+<span class="fc" id="L53">    }</span>
+
+    @Override
+    public void start(Stage primaryStage) {
+<span class="fc" id="L57">        stage = primaryStage;</span>
+<span class="fc" id="L58">        stage.setWidth(windowSizeX);</span>
+<span class="fc" id="L59">        stage.setHeight(windowSizeY);</span>
+<span class="fc" id="L60">        stage.setTitle(&quot;Beastopia&quot;);</span>
+
+<span class="fc" id="L62">        checkJavaVersion();</span>
+
+<span class="fc" id="L64">        stage.widthProperty().addListener((observable, oldValue, newValue) -&gt; {</span>
+<span class="nc" id="L65">            windowSizeX = newValue.intValue();</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">            if (controller != null) {</span>
+<span class="nc" id="L67">                controller.onResize(windowSizeX, windowSizeY);</span>
+            }
+<span class="nc" id="L69">        });</span>
+
+<span class="fc" id="L71">        stage.heightProperty().addListener((observable, oldValue, newValue) -&gt; {</span>
+<span class="nc" id="L72">            windowSizeY = newValue.intValue();</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">            if (controller != null) {</span>
+<span class="nc" id="L74">                controller.onResize(windowSizeX, windowSizeY);</span>
+            }
+<span class="nc" id="L76">        });</span>
+
+<span class="fc" id="L78">        scene = new Scene(new Label(&quot;Loading...&quot;));</span>
+<span class="fc" id="L79">        stage.setScene(scene);</span>
+
+<span class="fc" id="L81">        scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource(&quot;views/summer.css&quot;)).toString());</span>
+<span class="fc" id="L82">        CSSFX.start(scene);</span>
+<span class="fc" id="L83">        setAppIcon();</span>
+
+<span class="fc" id="L85">        stage.show();</span>
+
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        if (mainComponent == null) {</span>
+<span class="nc" id="L88">            return;</span>
+        }
+
+<span class="fc" id="L91">        mainComponent.themeSettings().updateSceneTheme = theme -&gt; {</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">            if (theme.equals(&quot;dark&quot;)) {</span>
+<span class="fc" id="L93">                scene.getStylesheets().removeIf(style -&gt; style.endsWith(&quot;views/summer.css&quot;));</span>
+<span class="fc" id="L94">                scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource(&quot;views/dark.css&quot;)).toString());</span>
+            } else {
+<span class="nc" id="L96">                scene.getStylesheets().removeIf(style -&gt; style.endsWith(&quot;views/dark.css&quot;));</span>
+<span class="nc" id="L97">                scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource(&quot;views/summer.css&quot;)).toString());</span>
+            }
+<span class="fc" id="L99">        };</span>
+
+<span class="fc" id="L101">        mainComponent.themeSettings().updateSceneTheme.accept(</span>
+<span class="fc" id="L102">                mainComponent.prefs().getTheme()</span>
+        );
+
+<span class="fc" id="L105">        show(mainComponent.loginController());</span>
+<span class="fc" id="L106">    }</span>
+
+    @Override
+    public void stop() {
+<span class="fc" id="L110">        cleanupTasks.forEach(Runnable::run);</span>
+<span class="fc" id="L111">        history.clear();</span>
+<span class="fc" id="L112">    }</span>
+
+    public void showPrevious() {
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">        if (!history.isEmpty()) {</span>
+<span class="fc" id="L116">            controller.destroy();</span>
+
+<span class="fc" id="L118">            controller = history.peek();</span>
+<span class="fc" id="L119">            history.pop();</span>
+
+<span class="fc" id="L121">            initAndRender();</span>
+        }
+<span class="fc" id="L123">    }</span>
+
+    public void show(Controller controller) {
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if (this.controller != null) {</span>
+<span class="fc" id="L127">            this.controller.destroy();</span>
+<span class="fc" id="L128">            history.push(this.controller);</span>
+        }
+
+<span class="fc" id="L131">        this.controller = controller;</span>
+<span class="fc" id="L132">        initAndRender();</span>
+<span class="fc" id="L133">    }</span>
+
+    private void initAndRender() {
+<span class="fc bfc" id="L136" title="All 2 branches covered.">        if (controller == null) {</span>
+<span class="fc" id="L137">            return;</span>
+        }
+
+<span class="fc" id="L140">        controller.init();</span>
+<span class="fc" id="L141">        update();</span>
+<span class="fc" id="L142">    }</span>
+
+    public void update() {
+<span class="fc bfc" id="L145" title="All 2 branches covered.">        if (controller.getTitle() != null) {</span>
+<span class="fc" id="L146">            stage.setTitle(controller.getTitle());</span>
+        }
+<span class="fc" id="L148">        stage.getScene().setRoot(controller.render());</span>
+<span class="fc" id="L149">        controller.onResize(windowSizeX, windowSizeY);</span>
+<span class="fc" id="L150">    }</span>
+
+    private void setAppIcon() {
+<span class="fc" id="L153">        final Image icon = new Image(Objects.requireNonNull(App.class.getResource(&quot;assets/bt_icon.png&quot;)).toString());</span>
+<span class="fc" id="L154">        stage.getIcons().add(icon);</span>
+<span class="fc" id="L155">    }</span>
+
+    private void checkJavaVersion() {
+<span class="fc" id="L158">        String versionString = System.getProperty(&quot;java.version&quot;);</span>
+<span class="fc" id="L159">        String regex = &quot;17\\..*&quot;;</span>
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">        if (!versionString.matches(regex)) {</span>
+<span class="nc" id="L161">            Alert alert = new Alert(Alert.AlertType.WARNING);</span>
+<span class="nc" id="L162">            alert.setTitle(&quot;Java Version Warning&quot;);</span>
+<span class="nc" id="L163">            alert.setHeaderText(&quot;Java Version Warning&quot;);</span>
+<span class="nc" id="L164">            alert.setContentText(&quot;You are using Java &quot; + versionString + &quot;.\n&quot; +</span>
+                    &quot;This application was tested with Java 17.\n&quot; +
+                    &quot;Please use Java 17 to avoid any problems.&quot;);
+<span class="nc" id="L167">            alert.showAndWait();</span>
+        }
+<span class="fc" id="L169">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
