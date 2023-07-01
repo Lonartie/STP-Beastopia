@@ -30,7 +30,7 @@ public class SettingsController extends Controller {
     @FXML
     public RadioButton darkRadioButton;
     @FXML
-    public RadioButton summerRadioButton;
+    public RadioButton lightRadioButton;
     @FXML
     public ToggleGroup theme;
     @FXML
@@ -71,7 +71,7 @@ public class SettingsController extends Controller {
         }
 
 <span class="fc" id="L73">        darkRadioButton.setSelected(prefs.getTheme().equals(&quot;dark&quot;));</span>
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        summerRadioButton.setSelected(!prefs.getTheme().equals(&quot;dark&quot;));</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        lightRadioButton.setSelected(!prefs.getTheme().equals(&quot;dark&quot;));</span>
 
 <span class="fc" id="L76">        musicVolumeSlider.setValue(prefs.getMusicVolume());</span>
 <span class="fc" id="L77">        soundVolumeSlider.setValue(prefs.getSoundVolume());</span>
@@ -117,9 +117,9 @@ public class SettingsController extends Controller {
 <span class="fc" id="L117">    }</span>
 
     @FXML
-    public void setSummerTheme() {
-<span class="fc" id="L121">        prefs.setTheme(&quot;summer&quot;);</span>
-<span class="fc" id="L122">        themeSettings.updateSceneTheme.accept(&quot;summer&quot;);</span>
+    public void setLightTheme() {
+<span class="fc" id="L121">        prefs.setTheme(&quot;light&quot;);</span>
+<span class="fc" id="L122">        themeSettings.updateSceneTheme.accept(&quot;light&quot;);</span>
 <span class="fc" id="L123">    }</span>
 
     @FXML

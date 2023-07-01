@@ -57,5 +57,9 @@ public class PresetsService {
 <span class="nc" id="L57">        return presetsApiService.getMonsterImage(type)</span>
 <span class="nc" id="L58">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
     }
+
+    public Observable&lt;List&lt;MonsterTypeDto&gt;&gt; getAllBeasts() {
+<span class="nc" id="L62">        return presetsApiService.getMonsters();</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
