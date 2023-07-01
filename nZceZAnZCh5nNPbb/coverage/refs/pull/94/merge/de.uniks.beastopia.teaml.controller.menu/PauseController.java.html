@@ -2,8 +2,8 @@
 
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.controller.ingame.TrainerController;
+import de.uniks.beastopia.teaml.controller.ingame.beast.EditBeastTeamController;
 import de.uniks.beastopia.teaml.controller.menu.social.FriendListController;
-import de.uniks.beastopia.teaml.rest.Region;
 import de.uniks.beastopia.teaml.utils.SoundController;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -28,63 +28,63 @@ public class PauseController extends Controller {
     @Inject
     Provider&lt;TrainerController&gt; trainerControllerProvider;
     @Inject
+    Provider&lt;EditBeastTeamController&gt; editBeastTeamControllerProvider;
+    @Inject
     Provider&lt;SoundController&gt; soundControllerProvider;
 
     @FXML
     private VBox friendListContainer;
-    private Region region;
     private Runnable onCloseRequest;
 
     @Inject
-<span class="fc" id="L39">    public PauseController() {</span>
+<span class="fc" id="L40">    public PauseController() {</span>
 
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L42">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L45">        Parent parent = super.render();</span>
-<span class="fc" id="L46">        Controller subController = friendListControllerProvider.get();</span>
-<span class="fc" id="L47">        subControllers.add(subController);</span>
-<span class="fc" id="L48">        friendListContainer.getChildren().add(subController.render());</span>
-<span class="fc" id="L49">        return parent;</span>
+<span class="fc" id="L46">        Parent parent = super.render();</span>
+<span class="fc" id="L47">        Controller subController = friendListControllerProvider.get();</span>
+<span class="fc" id="L48">        subControllers.add(subController);</span>
+<span class="fc" id="L49">        friendListContainer.getChildren().add(subController.render());</span>
+<span class="fc" id="L50">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="fc" id="L54">        subControllers.forEach(Controller::destroy);</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L55">        subControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L56">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L59">        return resources.getString(&quot;titlePause&quot;);</span>
+<span class="fc" id="L60">        return resources.getString(&quot;titlePause&quot;);</span>
     }
 
     @FXML
     public void editProfileButtonPressed() {
-<span class="nc" id="L64">        app.show(editProfileControllerProvider.get());</span>
-<span class="nc" id="L65">    }</span>
+<span class="nc" id="L65">        app.show(editProfileControllerProvider.get());</span>
+<span class="nc" id="L66">    }</span>
 
     @FXML
     public void settingsButtonPressed() {
-<span class="nc" id="L69">        app.show(settingsControllerProvider.get());</span>
-<span class="nc" id="L70">    }</span>
+<span class="nc" id="L70">        app.show(settingsControllerProvider.get());</span>
+<span class="nc" id="L71">    }</span>
 
     @FXML
     public void mainMenuButtonPressed() {
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        if (soundControllerProvider.get().getBgmPlayer() != null) {</span>
-<span class="nc" id="L75">            soundControllerProvider.get().stopBGM();</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (soundControllerProvider.get().getBgmPlayer() != null) {</span>
+<span class="nc" id="L76">            soundControllerProvider.get().stopBGM();</span>
         }
-<span class="fc" id="L77">        app.show(menuControllerProvider.get());</span>
-<span class="fc" id="L78">    }</span>
+<span class="fc" id="L78">        app.show(menuControllerProvider.get());</span>
+<span class="fc" id="L79">    }</span>
 
     @FXML
     public void trainerMenuButtonPressed() {
-<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (soundControllerProvider.get().getBgmPlayer() != null) {</span>
-<span class="nc" id="L83">            soundControllerProvider.get().stopBGM();</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (soundControllerProvider.get().getBgmPlayer() != null) {</span>
+<span class="nc" id="L84">            soundControllerProvider.get().stopBGM();</span>
         }
 
-<span class="nc" id="L86">        TrainerController controller = trainerControllerProvider.get();</span>
-<span class="nc" id="L87">        controller.setRegion(region);</span>
+<span class="nc" id="L87">        TrainerController controller = trainerControllerProvider.get();</span>
 <span class="nc" id="L88">        controller.backController(&quot;pause&quot;);</span>
 <span class="nc" id="L89">        app.show(controller);</span>
 <span class="nc" id="L90">    }</span>
@@ -98,8 +98,9 @@ public class PauseController extends Controller {
 <span class="fc" id="L98">        onCloseRequest.run();</span>
 <span class="fc" id="L99">    }</span>
 
-    public void setRegion(Region region) {
-<span class="nc" id="L102">        this.region = region;</span>
-<span class="nc" id="L103">    }</span>
+    public void beastTeamButtonPressed() {
+<span class="nc" id="L102">        EditBeastTeamController beastTeam = editBeastTeamControllerProvider.get();</span>
+<span class="nc" id="L103">        app.show(beastTeam);</span>
+<span class="nc" id="L104">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
