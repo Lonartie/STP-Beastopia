@@ -175,125 +175,126 @@ public class TrainerController extends Controller {
 <span class="fc" id="L175">                    disposables.add(delay().subscribe(t -&gt; {</span>
 <span class="fc bfc" id="L176" title="All 2 branches covered.">                        for (Pair&lt;String, Image&gt; pair : cache.getCharacters()) {</span>
 <span class="pc bpc" id="L177" title="1 of 2 branches missed.">                            if (cache.getCharacterImage(pair.getKey()).getValue() == null) {</span>
-<span class="nc" id="L178">                                cache.setCharacterImage(pair.getKey(), new Image(&quot;https://stpmon.uniks.de/api/v3/presets/characters/&quot; + pair.getKey(), 383 * PREVIEW_SCALING, 96 * PREVIEW_SCALING, true, false));</span>
-<span class="nc" id="L179">                                onUI(this::updateImages);</span>
+<span class="nc" id="L178">                                disposables.add(presetsService.getCharacterSprites(pair.getKey(), true).subscribe(image -&gt; {</span>
+<span class="nc" id="L179">                                    cache.setCharacterImage(pair.getKey(), image);</span>
+<span class="nc" id="L180">                                    onUI(this::updateImages);</span>
+<span class="nc" id="L181">                                }));</span>
                             }
-<span class="fc" id="L181">                        }</span>
-<span class="fc" id="L182">                    }));</span>
-<span class="fc" id="L183">                    loadingPage.setDone();</span>
-<span class="fc" id="L184">                }));</span>
-<span class="fc" id="L185">    }</span>
+<span class="fc" id="L183">                        }</span>
+<span class="fc" id="L184">                    }));</span>
+<span class="fc" id="L185">                    loadingPage.setDone();</span>
+<span class="fc" id="L186">                }));</span>
+<span class="fc" id="L187">    }</span>
 
     private void showTrainers() {
-<span class="fc bfc" id="L188" title="All 2 branches covered.">        if (trainer == null) {</span>
-<span class="fc" id="L189">            showTrainerSpritePreview(cache.getCharacters().get(0).getKey(), cache.getCharacters().get(0).getValue());</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">        if (trainer == null) {</span>
+<span class="fc" id="L191">            showTrainerSpritePreview(cache.getCharacters().get(0).getKey(), cache.getCharacters().get(0).getValue());</span>
         } else {
-<span class="fc" id="L191">            showTrainerSpritePreview(cache.getCharacterImage(trainer.image()).getKey(), cache.getCharacterImage(trainer.image()).getValue());</span>
+<span class="fc" id="L193">            showTrainerSpritePreview(cache.getCharacterImage(trainer.image()).getKey(), cache.getCharacterImage(trainer.image()).getValue());</span>
 
             // Find index of the found trainer
-<span class="fc" id="L194">            currentIndex.set(IntStream.range(0, cache.getCharacters().size())</span>
-<span class="fc" id="L195">                    .filter(i -&gt; cache.getCharacters().get(i).getKey().equals(trainer.image()))</span>
-<span class="fc" id="L196">                    .findFirst()</span>
-<span class="fc" id="L197">                    .orElse(-1));</span>
+<span class="fc" id="L196">            currentIndex.set(IntStream.range(0, cache.getCharacters().size())</span>
+<span class="fc" id="L197">                    .filter(i -&gt; cache.getCharacters().get(i).getKey().equals(trainer.image()))</span>
+<span class="fc" id="L198">                    .findFirst()</span>
+<span class="fc" id="L199">                    .orElse(-1));</span>
 
-<span class="fc" id="L199">            trainerNameInput.setText(trainer.name());</span>
-<span class="fc" id="L200">            trainerNameInput.positionCaret(trainer.name().length());</span>
+<span class="fc" id="L201">            trainerNameInput.setText(trainer.name());</span>
+<span class="fc" id="L202">            trainerNameInput.positionCaret(trainer.name().length());</span>
         }
-<span class="fc" id="L202">    }</span>
+<span class="fc" id="L204">    }</span>
 
     private void updateImages() {
-<span class="nc" id="L205">        Pair&lt;String, Image&gt; pair = cache.getCharacterImage(currentSprite);</span>
-<span class="nc" id="L206">        showTrainerSpritePreview(pair.getKey(), pair.getValue());</span>
-<span class="nc" id="L207">    }</span>
+<span class="nc" id="L207">        Pair&lt;String, Image&gt; pair = cache.getCharacterImage(currentSprite);</span>
+<span class="nc" id="L208">        showTrainerSpritePreview(pair.getKey(), pair.getValue());</span>
+<span class="nc" id="L209">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L211">        return resources.getString(&quot;titleTrainer&quot;);</span>
+<span class="fc" id="L213">        return resources.getString(&quot;titleTrainer&quot;);</span>
     }
 
     @FXML
     public void chooseLeft() {
-<span class="fc" id="L216">        currentIndex.set(currentIndex.get() - 1);</span>
+<span class="fc" id="L218">        currentIndex.set(currentIndex.get() - 1);</span>
 
-<span class="pc bpc" id="L218" title="1 of 2 branches missed.">        if (currentIndex.get() &lt; 0) {</span>
-<span class="fc" id="L219">            currentIndex.set(cache.getCharacters().size() - 1);</span>
+<span class="pc bpc" id="L220" title="1 of 2 branches missed.">        if (currentIndex.get() &lt; 0) {</span>
+<span class="fc" id="L221">            currentIndex.set(cache.getCharacters().size() - 1);</span>
         }
 
-<span class="fc" id="L222">        showTrainerSpritePreview(</span>
-<span class="fc" id="L223">                cache.getCharacters().get(currentIndex.get()).getKey(),</span>
-<span class="fc" id="L224">                cache.getCharacters().get(currentIndex.get()).getValue()</span>
+<span class="fc" id="L224">        showTrainerSpritePreview(</span>
+<span class="fc" id="L225">                cache.getCharacters().get(currentIndex.get()).getKey(),</span>
+<span class="fc" id="L226">                cache.getCharacters().get(currentIndex.get()).getValue()</span>
         );
-<span class="fc" id="L226">    }</span>
+<span class="fc" id="L228">    }</span>
 
     @FXML
     public void chooseRight() {
-<span class="fc" id="L230">        currentIndex.set(currentIndex.get() + 1);</span>
+<span class="fc" id="L232">        currentIndex.set(currentIndex.get() + 1);</span>
 
-<span class="pc bpc" id="L232" title="1 of 2 branches missed.">        if (currentIndex.get() &gt;= cache.getCharacters().size()) {</span>
-<span class="nc" id="L233">            currentIndex.set(0);</span>
+<span class="pc bpc" id="L234" title="1 of 2 branches missed.">        if (currentIndex.get() &gt;= cache.getCharacters().size()) {</span>
+<span class="nc" id="L235">            currentIndex.set(0);</span>
         }
 
-<span class="fc" id="L236">        showTrainerSpritePreview(</span>
-<span class="fc" id="L237">                cache.getCharacters().get(currentIndex.get()).getKey(),</span>
-<span class="fc" id="L238">                cache.getCharacters().get(currentIndex.get()).getValue()</span>
+<span class="fc" id="L238">        showTrainerSpritePreview(</span>
+<span class="fc" id="L239">                cache.getCharacters().get(currentIndex.get()).getKey(),</span>
+<span class="fc" id="L240">                cache.getCharacters().get(currentIndex.get()).getValue()</span>
         );
-<span class="fc" id="L240">    }</span>
+<span class="fc" id="L242">    }</span>
 
     @SuppressWarnings(&quot;UnusedReturnValue&quot;)
     public TrainerController backController(String controller) {
-<span class="fc" id="L244">        this.backController = controller;</span>
-<span class="fc" id="L245">        return this;</span>
+<span class="fc" id="L246">        this.backController = controller;</span>
+<span class="fc" id="L247">        return this;</span>
     }
 
     public void showTrainerSpritePreview(String charName, Image sprite) {
-<span class="fc" id="L249">        currentSprite = charName;</span>
-<span class="pc bpc" id="L250" title="1 of 2 branches missed.">        saveTrainerButton.setDisable(sprite == null);</span>
-<span class="pc bpc" id="L251" title="1 of 4 branches missed.">        deleteTrainerButton.setDisable(sprite == null || trainer == null);</span>
-<span class="fc" id="L252">        trainerSprite.setFitWidth(16 * PREVIEW_SCALING);</span>
-<span class="fc" id="L253">        trainerSprite.setFitHeight(32 * PREVIEW_SCALING);</span>
+<span class="fc" id="L251">        currentSprite = charName;</span>
+<span class="pc bpc" id="L252" title="1 of 2 branches missed.">        saveTrainerButton.setDisable(sprite == null);</span>
+<span class="pc bpc" id="L253" title="1 of 4 branches missed.">        deleteTrainerButton.setDisable(sprite == null || trainer == null);</span>
 <span class="fc" id="L254">        trainerSprite.setImage(sprite);</span>
-<span class="fc" id="L255">        trainerSprite.setViewport(PREVIEW_VIEWPORT);</span>
-<span class="fc" id="L256">        trainerSprite.setSmooth(false);</span>
-
-<span class="fc" id="L258">        spriteNameDisplay.setText(stripString(charName));</span>
-<span class="fc" id="L259">    }</span>
+<span class="fc" id="L255">        trainerSprite.setFitWidth(16 * PREVIEW_SCALING);</span>
+<span class="fc" id="L256">        trainerSprite.setFitHeight(32 * PREVIEW_SCALING);</span>
+<span class="fc" id="L257">        trainerSprite.setViewport(PREVIEW_VIEWPORT);</span>
+<span class="fc" id="L258">        trainerSprite.setSmooth(false);</span>
+<span class="fc" id="L259">        spriteNameDisplay.setText(stripString(charName));</span>
+<span class="fc" id="L260">    }</span>
 
     public String stripString(String stringToStrip) {
-<span class="fc" id="L262">        stringToStrip = stringToStrip</span>
-<span class="fc" id="L263">                .replace(&quot;_&quot;, &quot; &quot;)</span>
-<span class="fc" id="L264">                .replace(&quot;16x16&quot;, &quot;&quot;);</span>
-<span class="fc" id="L265">        stringToStrip = stringToStrip.substring(0, stringToStrip.lastIndexOf(&quot;.&quot;));</span>
-<span class="fc" id="L266">        return stringToStrip;</span>
+<span class="fc" id="L263">        stringToStrip = stringToStrip</span>
+<span class="fc" id="L264">                .replace(&quot;_&quot;, &quot; &quot;)</span>
+<span class="fc" id="L265">                .replace(&quot;16x16&quot;, &quot;&quot;);</span>
+<span class="fc" id="L266">        stringToStrip = stringToStrip.substring(0, stringToStrip.lastIndexOf(&quot;.&quot;));</span>
+<span class="fc" id="L267">        return stringToStrip;</span>
     }
 
     private void checkTrainerAchievement() {
-<span class="fc" id="L270">        Achievement firstTrainerAchievement = cache.getMyAchievements().stream()</span>
-<span class="fc" id="L271">                .filter(achievement -&gt; achievement.id().equals(&quot;FirstTrainer&quot;))</span>
-<span class="fc" id="L272">                .findFirst()</span>
-<span class="fc" id="L273">                .orElse(null);</span>
+<span class="fc" id="L271">        Achievement firstTrainerAchievement = cache.getMyAchievements().stream()</span>
+<span class="fc" id="L272">                .filter(achievement -&gt; achievement.id().equals(&quot;FirstTrainer&quot;))</span>
+<span class="fc" id="L273">                .findFirst()</span>
+<span class="fc" id="L274">                .orElse(null);</span>
 
-<span class="pc bpc" id="L275" title="1 of 2 branches missed.">        if (firstTrainerAchievement == null) {</span>
-<span class="nc" id="L276">            firstTrainerAchievement = new Achievement(null, null, &quot;FirstTrainer&quot;, tokenStorage.getCurrentUser()._id(), new Date(), 100);</span>
-<span class="nc" id="L277">            cache.addMyAchievement(firstTrainerAchievement);</span>
-<span class="nc" id="L278">            Dialog.info(resources.getString(&quot;achievementUnlockHeader&quot;), resources.getString(&quot;achievementUnlockedPre&quot;) + &quot;\n&quot; + resources.getString(&quot;achievementFirstTrainer&quot;));</span>
+<span class="pc bpc" id="L276" title="1 of 2 branches missed.">        if (firstTrainerAchievement == null) {</span>
+<span class="nc" id="L277">            firstTrainerAchievement = new Achievement(null, null, &quot;FirstTrainer&quot;, tokenStorage.getCurrentUser()._id(), new Date(), 100);</span>
+<span class="nc" id="L278">            cache.addMyAchievement(firstTrainerAchievement);</span>
+<span class="nc" id="L279">            Dialog.info(resources.getString(&quot;achievementUnlockHeader&quot;), resources.getString(&quot;achievementUnlockedPre&quot;) + &quot;\n&quot; + resources.getString(&quot;achievementFirstTrainer&quot;));</span>
 
-<span class="nc" id="L280">            disposables.add(achievementsService.updateUserAchievement(tokenStorage.getCurrentUser()._id(), &quot;FirstTrainer&quot;, firstTrainerAchievement).subscribe());</span>
+<span class="nc" id="L281">            disposables.add(achievementsService.updateUserAchievement(tokenStorage.getCurrentUser()._id(), &quot;FirstTrainer&quot;, firstTrainerAchievement).subscribe());</span>
         }
-<span class="fc" id="L282">    }</span>
+<span class="fc" id="L283">    }</span>
 
     private void checkRegionAchievement() {
-<span class="fc" id="L285">        Achievement firstRegionAchievement = cache.getMyAchievements().stream()</span>
-<span class="fc" id="L286">                .filter(achievement -&gt; achievement.id().equals(&quot;FirstRegion&quot;))</span>
-<span class="fc" id="L287">                .findFirst()</span>
-<span class="fc" id="L288">                .orElse(null);</span>
+<span class="fc" id="L286">        Achievement firstRegionAchievement = cache.getMyAchievements().stream()</span>
+<span class="fc" id="L287">                .filter(achievement -&gt; achievement.id().equals(&quot;FirstRegion&quot;))</span>
+<span class="fc" id="L288">                .findFirst()</span>
+<span class="fc" id="L289">                .orElse(null);</span>
 
-<span class="pc bpc" id="L290" title="1 of 2 branches missed.">        if (firstRegionAchievement == null) {</span>
-<span class="nc" id="L291">            firstRegionAchievement = new Achievement(null, null, &quot;FirstRegion&quot;, tokenStorage.getCurrentUser()._id(), new Date(), 100);</span>
-<span class="nc" id="L292">            cache.addMyAchievement(firstRegionAchievement);</span>
-<span class="nc" id="L293">            Dialog.info(resources.getString(&quot;achievementUnlockHeader&quot;), resources.getString(&quot;achievementUnlockedPre&quot;) + &quot;\n&quot; + resources.getString(&quot;achievementFirstRegion&quot;));</span>
+<span class="pc bpc" id="L291" title="1 of 2 branches missed.">        if (firstRegionAchievement == null) {</span>
+<span class="nc" id="L292">            firstRegionAchievement = new Achievement(null, null, &quot;FirstRegion&quot;, tokenStorage.getCurrentUser()._id(), new Date(), 100);</span>
+<span class="nc" id="L293">            cache.addMyAchievement(firstRegionAchievement);</span>
+<span class="nc" id="L294">            Dialog.info(resources.getString(&quot;achievementUnlockHeader&quot;), resources.getString(&quot;achievementUnlockedPre&quot;) + &quot;\n&quot; + resources.getString(&quot;achievementFirstRegion&quot;));</span>
 
-<span class="nc" id="L295">            disposables.add(achievementsService.updateUserAchievement(tokenStorage.getCurrentUser()._id(), &quot;FirstRegion&quot;, firstRegionAchievement).subscribe());</span>
+<span class="nc" id="L296">            disposables.add(achievementsService.updateUserAchievement(tokenStorage.getCurrentUser()._id(), &quot;FirstRegion&quot;, firstRegionAchievement).subscribe());</span>
         }
-<span class="fc" id="L297">    }</span>
+<span class="fc" id="L298">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

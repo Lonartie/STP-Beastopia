@@ -146,7 +146,7 @@ public class EntityController extends Controller {
 <span class="fc" id="L146">        updateViewPort();</span>
 
 <span class="pc bpc" id="L148" title="3 of 4 branches missed.">        if (!SPRITESHEET.containsKey(trainer.image()) || SPRITESHEET.get(trainer.image()) == null) {</span>
-<span class="fc" id="L149">            disposables.add(presetsService.getCharacterSprites(trainer.image()).observeOn(FX_SCHEDULER).subscribe(image -&gt; {</span>
+<span class="fc" id="L149">            disposables.add(presetsService.getCharacterSprites(trainer.image(), false).observeOn(FX_SCHEDULER).subscribe(image -&gt; {</span>
 <span class="fc" id="L150">                SPRITESHEET.put(trainer.image(), image);</span>
 <span class="fc" id="L151">                entityView.setImage(image);</span>
 <span class="fc" id="L152">            }));</span>
