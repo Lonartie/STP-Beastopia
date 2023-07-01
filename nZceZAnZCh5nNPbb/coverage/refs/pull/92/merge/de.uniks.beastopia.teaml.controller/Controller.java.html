@@ -29,64 +29,67 @@ import java.util.concurrent.TimeUnit;
     @Inject
     protected App app;
 
-<span class="fc" id="L32">    protected final CompositeDisposable disposables = new CompositeDisposable();</span>
+<span class="fc" id="L32">    protected CompositeDisposable disposables = new CompositeDisposable();</span>
 
     public void init() {
-
-<span class="fc" id="L36">    }</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (!disposables.isDisposed()) {</span>
+<span class="fc" id="L36">            disposables.dispose();</span>
+        }
+<span class="fc" id="L38">        disposables = new CompositeDisposable();</span>
+<span class="fc" id="L39">    }</span>
 
     public void destroy() {
-<span class="fc" id="L39">        disposables.dispose();</span>
-<span class="fc" id="L40">        FX_SCHEDULER.shutdown();</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L42">        disposables.dispose();</span>
+<span class="fc" id="L43">        FX_SCHEDULER.shutdown();</span>
+<span class="fc" id="L44">    }</span>
 
     public String getTitle() {
-<span class="fc" id="L44">        return null;</span>
+<span class="fc" id="L47">        return null;</span>
     }
 
     @SuppressWarnings(&quot;unused&quot;)
     public void onDestroy(Runnable action) {
-<span class="nc" id="L49">        disposables.add(Disposable.fromRunnable(action));</span>
-<span class="nc" id="L50">    }</span>
+<span class="nc" id="L52">        disposables.add(Disposable.fromRunnable(action));</span>
+<span class="nc" id="L53">    }</span>
 
     public void onUI(Runnable action) {
-<span class="fc" id="L53">        disposables.add(Observable.just(action).observeOn(FX_SCHEDULER).subscribe(Runnable::run));</span>
-<span class="fc" id="L54">    }</span>
+<span class="fc" id="L56">        disposables.add(Observable.just(action).observeOn(FX_SCHEDULER).subscribe(Runnable::run));</span>
+<span class="fc" id="L57">    }</span>
 
     public Parent render() {
-<span class="fc" id="L57">        List&lt;String&gt; parts = new ArrayList&lt;&gt;(Arrays.stream(getClass().getPackageName().split(&quot;\\.&quot;)).toList());</span>
+<span class="fc" id="L60">        List&lt;String&gt; parts = new ArrayList&lt;&gt;(Arrays.stream(getClass().getPackageName().split(&quot;\\.&quot;)).toList());</span>
 
         // de.uniks.beastopia.teaml.controller.menu.social -&gt; controller.menu.social
         //noinspection OptionalGetWithoutIsPresent
-<span class="fc bfc" id="L61" title="All 2 branches covered.">        while (!parts.stream().findFirst().get().equals(&quot;controller&quot;)) {</span>
-<span class="fc" id="L62">            parts.remove(0);</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        while (!parts.stream().findFirst().get().equals(&quot;controller&quot;)) {</span>
+<span class="fc" id="L65">            parts.remove(0);</span>
         }
         // controller.menu.social -&gt; menu.social
-<span class="fc" id="L65">        parts.remove(0);</span>
-<span class="fc" id="L66">        String path = String.join(&quot;/&quot;, parts);</span>
-<span class="fc" id="L67">        return load(path + &quot;/&quot; + getClass().getSimpleName().replace(&quot;Controller&quot;, &quot;&quot;));</span>
+<span class="fc" id="L68">        parts.remove(0);</span>
+<span class="fc" id="L69">        String path = String.join(&quot;/&quot;, parts);</span>
+<span class="fc" id="L70">        return load(path + &quot;/&quot; + getClass().getSimpleName().replace(&quot;Controller&quot;, &quot;&quot;));</span>
     }
 
     protected Observable&lt;Long&gt; delay() {
-<span class="fc" id="L71">        return Observable.timer(50, TimeUnit.MILLISECONDS);</span>
+<span class="fc" id="L74">        return Observable.timer(50, TimeUnit.MILLISECONDS);</span>
     }
 
     protected Observable&lt;Long&gt; delay(@SuppressWarnings(&quot;SameParameterValue&quot;) long ms) {
-<span class="fc" id="L75">        return Observable.timer(ms, TimeUnit.MILLISECONDS);</span>
+<span class="fc" id="L78">        return Observable.timer(ms, TimeUnit.MILLISECONDS);</span>
     }
 
     public void onResize(int width, int height) {
 
-<span class="fc" id="L80">    }</span>
+<span class="fc" id="L83">    }</span>
 
     protected Parent load(String view) {
-<span class="fc" id="L83">        final FXMLLoader loader = new FXMLLoader(Main.class.getResource(&quot;views/&quot; + view + &quot;.fxml&quot;));</span>
-<span class="fc" id="L84">        loader.setControllerFactory(c -&gt; this);</span>
-<span class="fc" id="L85">        loader.setResources(resources);</span>
+<span class="fc" id="L86">        final FXMLLoader loader = new FXMLLoader(Main.class.getResource(&quot;views/&quot; + view + &quot;.fxml&quot;));</span>
+<span class="fc" id="L87">        loader.setControllerFactory(c -&gt; this);</span>
+<span class="fc" id="L88">        loader.setResources(resources);</span>
         try {
-<span class="fc" id="L87">            return loader.load();</span>
-<span class="nc" id="L88">        } catch (IOException e) {</span>
-<span class="nc" id="L89">            throw new RuntimeException(e);</span>
+<span class="fc" id="L90">            return loader.load();</span>
+<span class="nc" id="L91">        } catch (IOException e) {</span>
+<span class="nc" id="L92">            throw new RuntimeException(e);</span>
         }
     }
 }

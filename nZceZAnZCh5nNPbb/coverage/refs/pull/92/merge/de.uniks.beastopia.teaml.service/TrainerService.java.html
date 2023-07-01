@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TrainerService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.service</a> &gt; <span class="el_source">TrainerService.java</span></div><h1>TrainerService.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.service;
 
-import de.uniks.beastopia.teaml.rest.CreateTrainerDto;
-import de.uniks.beastopia.teaml.rest.Trainer;
-import de.uniks.beastopia.teaml.rest.Monster;
-import de.uniks.beastopia.teaml.rest.TrainerApiService;
-import de.uniks.beastopia.teaml.rest.UpdateTrainerDto;
+import de.uniks.beastopia.teaml.rest.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -15,31 +11,31 @@ public class TrainerService {
     TrainerApiService trainerApiService;
 
     @Inject
-<span class="fc" id="L18">    TrainerService() {</span>
-<span class="fc" id="L19">    }</span>
+<span class="fc" id="L14">    TrainerService() {</span>
+<span class="fc" id="L15">    }</span>
 
     public Observable&lt;Trainer&gt; createTrainer(String regionId, String name, String image) {
-<span class="fc" id="L22">        return trainerApiService.createTrainer(regionId, new CreateTrainerDto(name, image));</span>
+<span class="fc" id="L18">        return trainerApiService.createTrainer(regionId, new CreateTrainerDto(name, image));</span>
     }
 
     public Observable&lt;List&lt;Trainer&gt;&gt; getAllTrainer(String regionId) {
-<span class="fc" id="L26">        return trainerApiService.getAllTrainer(regionId);</span>
+<span class="fc" id="L22">        return trainerApiService.getAllTrainer(regionId);</span>
     }
 
     public Observable&lt;Trainer&gt; getTrainer(String regionId, String trainerId) {
-<span class="fc" id="L30">        return trainerApiService.getTrainer(regionId, trainerId);</span>
+<span class="fc" id="L26">        return trainerApiService.getTrainer(regionId, trainerId);</span>
     }
 
     public Observable&lt;Trainer&gt; deleteTrainer(String regionId, String trainerId) {
-<span class="fc" id="L34">        return trainerApiService.deleteTrainer(regionId, trainerId);</span>
+<span class="fc" id="L30">        return trainerApiService.deleteTrainer(regionId, trainerId);</span>
     }
 
-    public Observable&lt;Trainer&gt; updateTrainer(String regionId, String trainerId, String name, String image) {
-<span class="nc" id="L38">        return trainerApiService.updateTrainer(regionId, trainerId, new UpdateTrainerDto(name, image));</span>
+    public Observable&lt;Trainer&gt; updateTrainer(String regionId, String trainerId, String name, String image, List&lt;String&gt; team) {
+<span class="nc" id="L34">        return trainerApiService.updateTrainer(regionId, trainerId, new UpdateTrainerDto(name, image, team));</span>
     }
 
     public Observable&lt;List&lt;Monster&gt;&gt; getTrainerMonsters(String regionId, String trainerId) {
-<span class="nc" id="L42">        return trainerApiService.getTrainerMonsters(regionId, trainerId);</span>
+<span class="nc" id="L38">        return trainerApiService.getTrainerMonsters(regionId, trainerId);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
