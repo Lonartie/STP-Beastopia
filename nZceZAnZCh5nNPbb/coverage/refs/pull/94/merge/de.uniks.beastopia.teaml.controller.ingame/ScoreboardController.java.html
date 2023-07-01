@@ -192,26 +192,29 @@ public class ScoreboardController extends Controller {
         }
 
 <span class="pc bpc" id="L194" title="1 of 2 branches missed.">        if (scoreboardFilterController != null) {</span>
-<span class="nc" id="L195">            scoreboardFilterController.destroy();</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">            if (scoreboardFilterController.isFilterApplied()) {</span>
+<span class="nc" id="L196">                scoreboardFilterController.removeFilter();</span>
+            }
+<span class="nc" id="L198">            scoreboardFilterController.destroy();</span>
         }
 
-<span class="fc" id="L198">        scoreboardFilterController = scoreboardFilterControllerProvider.get()</span>
-<span class="fc" id="L199">                .setCurrentAchievements(currentAchievements)</span>
-<span class="fc" id="L200">                .setSubControllers(scoreboardControllers)</span>
-<span class="fc" id="L201">                .setParentPane(scoreBoard);</span>
+<span class="fc" id="L201">        scoreboardFilterController = scoreboardFilterControllerProvider.get()</span>
+<span class="fc" id="L202">                .setCurrentAchievements(currentAchievements)</span>
+<span class="fc" id="L203">                .setSubControllers(scoreboardControllers)</span>
+<span class="fc" id="L204">                .setParentPane(scoreBoard);</span>
 
-<span class="fc" id="L203">        Parent parent = scoreboardFilterController.render();</span>
-<span class="fc" id="L204">        achievements.getChildren().clear();</span>
-<span class="fc" id="L205">        achievements.getChildren().add(parent);</span>
-<span class="fc" id="L206">    }</span>
+<span class="fc" id="L206">        Parent parent = scoreboardFilterController.render();</span>
+<span class="fc" id="L207">        achievements.getChildren().clear();</span>
+<span class="fc" id="L208">        achievements.getChildren().add(parent);</span>
+<span class="fc" id="L209">    }</span>
 
     @Override
     public void destroy() {
-<span class="nc" id="L210">        super.destroy();</span>
-<span class="nc" id="L211">        scoreboardControllers.forEach(Controller::destroy);</span>
-<span class="nc bnc" id="L212" title="All 2 branches missed.">        if (userInfoController != null) {</span>
-<span class="nc" id="L213">            userInfoController.destroy();</span>
+<span class="nc" id="L213">        super.destroy();</span>
+<span class="nc" id="L214">        scoreboardControllers.forEach(Controller::destroy);</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        if (userInfoController != null) {</span>
+<span class="nc" id="L216">            userInfoController.destroy();</span>
         }
-<span class="nc" id="L215">    }</span>
+<span class="nc" id="L218">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
