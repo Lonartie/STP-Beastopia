@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StartFightNPCController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.ingame.encounter</a> &gt; <span class="el_source">StartFightNPCController.java</span></div><h1>StartFightNPCController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.ingame.encounter;
+
+
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.Encounter;
+import de.uniks.beastopia.teaml.rest.Opponent;
+import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.service.EncounterOpponentsService;
+import de.uniks.beastopia.teaml.service.PresetsService;
+import de.uniks.beastopia.teaml.service.TrainerService;
+import de.uniks.beastopia.teaml.utils.Prefs;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+
+import javax.inject.Inject;
+
+
+import static de.uniks.beastopia.teaml.controller.ingame.TrainerController.PREVIEW_VIEWPORT;
+import static de.uniks.beastopia.teaml.service.PresetsService.PREVIEW_SCALING;
+
+public class StartFightNPCController extends Controller {
+    @FXML
+    public Label headline;
+    @FXML
+    public ImageView image;
+    private Encounter encounter;
+    @Inject
+    Prefs prefs;
+    @Inject
+    TrainerService trainerService;
+    @Inject
+    DataCache cache;
+    @Inject
+    EncounterOpponentsService encounterOpponentsService;
+    @Inject
+    PresetsService presetsService;
+    @Inject
+<span class="fc" id="L40">    public StartFightNPCController() {</span>
+
+<span class="fc" id="L42">    }</span>
+
+    public void setControllerInfo(Encounter encounter) {
+<span class="fc" id="L45">        this.encounter = encounter;</span>
+<span class="fc" id="L46">    }</span>
+
+    @Override
+    public String getTitle() {
+<span class="fc" id="L50">        return resources.getString(&quot;titleEncounter&quot;);</span>
+    }
+
+    @Override
+    public Parent render() {
+<span class="fc" id="L55">        Parent parent = super.render();</span>
+
+<span class="fc" id="L57">        disposables.add(encounterOpponentsService.getEncounterOpponents(cache.getJoinedRegion()._id(), encounter._id())</span>
+<span class="fc" id="L58">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L59">                .subscribe(ops -&gt; {</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">                    for (Opponent o : ops) {</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">                        if (!(o.trainer().equals(cache.getTrainer()._id()))) {</span>
+<span class="fc" id="L62">                            disposables.add(trainerService.getTrainer(cache.getJoinedRegion()._id(), o.trainer())</span>
+<span class="fc" id="L63">                                    .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L64">                                    .subscribe(t -&gt; {</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">                                        String message = (prefs.getLocale().contains(&quot;de&quot;)) ? &quot; startet einen Kampf &quot; +</span>
+<span class="fc" id="L66">                                                &quot;gegen dich!&quot; : &quot; starts a fight against you!&quot;;</span>
+<span class="fc" id="L67">                                        headline.setText(t.name() + message);</span>
+<span class="fc" id="L68">                                        disposables.add(presetsService</span>
+<span class="fc" id="L69">                                                .getCharacterSprites(t.image(), true)</span>
+<span class="fc" id="L70">                                                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L71">                                                .subscribe(i -&gt; {</span>
+<span class="fc" id="L72">                                                    image.setImage(i);</span>
+<span class="fc" id="L73">                                                    image.setViewport(PREVIEW_VIEWPORT);</span>
+<span class="fc" id="L74">                                                    image.setFitWidth(32 * PREVIEW_SCALING);</span>
+<span class="fc" id="L75">                                                    image.setFitHeight(64 * PREVIEW_SCALING);</span>
+<span class="fc" id="L76">                                                }));</span>
+<span class="fc" id="L77">                                    }));</span>
+<span class="fc" id="L78">                            return;</span>
+                        }
+<span class="nc" id="L80">                    }</span>
+<span class="nc" id="L81">                }));</span>
+
+<span class="fc" id="L83">        return parent;</span>
+    }
+    @FXML
+    public void startFight() {
+        //TODO start EncounterScreen
+<span class="nc" id="L88">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
