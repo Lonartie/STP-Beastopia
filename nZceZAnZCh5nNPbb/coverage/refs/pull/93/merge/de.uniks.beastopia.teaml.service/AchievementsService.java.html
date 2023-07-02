@@ -7,7 +7,6 @@ import de.uniks.beastopia.teaml.rest.UpdateAchievementDto;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
-import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings(&quot;unused&quot;)
@@ -17,31 +16,31 @@ public class AchievementsService {
     AchievementsApiService achievementsApiService;
 
     @Inject
-<span class="nc" id="L20">    public AchievementsService() {</span>
-<span class="nc" id="L21">    }</span>
+<span class="nc" id="L19">    public AchievementsService() {</span>
+<span class="nc" id="L20">    }</span>
 
     public Observable&lt;List&lt;AchievementsSummary&gt;&gt; getAchievements() {
-<span class="nc" id="L24">        return achievementsApiService.getAchievements();</span>
+<span class="nc" id="L23">        return achievementsApiService.getAchievements();</span>
     }
 
     public Observable&lt;AchievementsSummary&gt; getAchievement(String id) {
-<span class="nc" id="L28">        return achievementsApiService.getAchievement(id);</span>
+<span class="nc" id="L27">        return achievementsApiService.getAchievement(id);</span>
     }
 
     public Observable&lt;List&lt;Achievement&gt;&gt; getUserAchievements(String userId) {
-<span class="nc" id="L32">        return achievementsApiService.getUserAchievements(userId);</span>
+<span class="nc" id="L31">        return achievementsApiService.getUserAchievements(userId);</span>
     }
 
     public Observable&lt;Achievement&gt; getUserAchievement(String userId, String id) {
-<span class="nc" id="L36">        return achievementsApiService.getUserAchievement(userId, id);</span>
+<span class="nc" id="L35">        return achievementsApiService.getUserAchievement(userId, id);</span>
     }
 
     public Observable&lt;Achievement&gt; updateUserAchievement(String userId, String id, Achievement achievement) {
-<span class="nc" id="L40">        return achievementsApiService.updateUserAchievement(userId, id, new UpdateAchievementDto(new Date(), achievement.progress()));</span>
+<span class="nc" id="L39">        return achievementsApiService.updateUserAchievement(userId, id, new UpdateAchievementDto(achievement.unlockedAt(), achievement.progress()));</span>
     }
 
     public Observable&lt;Achievement&gt; deleteUserAchievement(String userId, String id) {
-<span class="nc" id="L44">        return achievementsApiService.deleteUserAchievement(userId, id);</span>
+<span class="nc" id="L43">        return achievementsApiService.deleteUserAchievement(userId, id);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

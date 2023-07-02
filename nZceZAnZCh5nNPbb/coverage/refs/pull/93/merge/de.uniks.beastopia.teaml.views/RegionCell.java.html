@@ -38,14 +38,13 @@ public class RegionCell extends ListCell&lt;Region&gt; {
 <span class="nc" id="L38">            join.setOnAction(event -&gt; {</span>
 <span class="nc" id="L39">                TrainerController controller = trainerControllerProvider.get();</span>
 <span class="nc" id="L40">                cache.setRegion(item);</span>
-<span class="nc" id="L41">                controller.setRegion(item);</span>
-<span class="nc" id="L42">                controller.backController(&quot;menu&quot;);</span>
-<span class="nc" id="L43">                app.show(controller);</span>
-<span class="nc" id="L44">            });</span>
-<span class="nc" id="L45">            setGraphic(join);</span>
+<span class="nc" id="L41">                controller.backController(&quot;menu&quot;);</span>
+<span class="nc" id="L42">                app.show(controller);</span>
+<span class="nc" id="L43">            });</span>
+<span class="nc" id="L44">            setGraphic(join);</span>
+<span class="nc" id="L45">            setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L46">            getStyleClass().add(&quot;region-cell&quot;);</span>
         }
-<span class="nc" id="L47">        setAlignment(Pos.CENTER);</span>
-<span class="nc" id="L48">        getStyleClass().add(&quot;region-cell&quot;);</span>
-<span class="nc" id="L49">    }</span>
+<span class="nc" id="L48">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

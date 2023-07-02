@@ -4,12 +4,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dagger.Module;
 import dagger.Provides;
 import de.uniks.beastopia.teaml.Main;
-import de.uniks.beastopia.teaml.rest.*;
+import de.uniks.beastopia.teaml.rest.AchievementsApiService;
+import de.uniks.beastopia.teaml.rest.AreaApiService;
+import de.uniks.beastopia.teaml.rest.AuthApiService;
+import de.uniks.beastopia.teaml.rest.GroupApiService;
+import de.uniks.beastopia.teaml.rest.MessageApiService;
+import de.uniks.beastopia.teaml.rest.PresetsApiService;
+import de.uniks.beastopia.teaml.rest.RegionApiService;
+import de.uniks.beastopia.teaml.rest.TrainerApiService;
+import de.uniks.beastopia.teaml.rest.UserApiService;
 import de.uniks.beastopia.teaml.service.TokenStorage;
 import javafx.util.Pair;
+import okhttp3.Dispatcher;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -17,163 +29,213 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
 
 
 @Module
-<span class="fc" id="L25">public class HttpModule {</span>
-<span class="fc" id="L26">    private static final List&lt;String&gt; RATE_LIMIT_FREE_ENDPOINTS = List.of(&quot;presets/&quot;);</span>
-
-    private static final int MAX_REQUESTS = 9;
-    private static final int MAX_REQUESTS_TIME_FRAME_SECONDS = 12;
-<span class="fc" id="L30">    private static final List&lt;Pair&lt;Date, String&gt;&gt; LAST_REQUESTS = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L31">    private static final List&lt;Pair&lt;Date, String&gt;&gt; ALL_REQUESTS = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L32">    private static final Semaphore SEMAPHORE = new Semaphore(1);</span>
-
-    private static int getRequestsLastTimeFrame() {
-<span class="nc" id="L35">        long currentTime = new Date().getTime();</span>
-<span class="nc" id="L36">        long timeBeginFrame = currentTime - (MAX_REQUESTS_TIME_FRAME_SECONDS * 1000);</span>
-<span class="nc bnc" id="L37" title="All 2 branches missed.">        LAST_REQUESTS.removeIf(pair -&gt; pair.getKey().getTime() &lt; timeBeginFrame);</span>
-<span class="nc" id="L38">        return LAST_REQUESTS.size();</span>
+<span class="fc" id="L39">public class HttpModule {</span>
+<span class="fc" id="L40">    public record EndpointRateLimit(</span>
+            String endpoint,
+            int maxRequests,
+            int timeFrameSeconds
+    ) {
     }
 
-    private static long getRequiredDelay() {
-<span class="nc" id="L42">        long currentTime = new Date().getTime();</span>
-<span class="nc" id="L43">        LAST_REQUESTS.sort((o1, o2) -&gt; (int) (o1.getKey().getTime() - o2.getKey().getTime()));</span>
-<span class="nc" id="L44">        long timeOfFirstRequest = LAST_REQUESTS.get(0).getKey().getTime();</span>
-<span class="nc" id="L45">        return (MAX_REQUESTS_TIME_FRAME_SECONDS * 1000) - (currentTime - timeOfFirstRequest);</span>
+<span class="fc" id="L47">    private static final List&lt;EndpointRateLimit&gt; ENDPOINT_RATE_LIMITS = List.of(</span>
+            new EndpointRateLimit(&quot;monsters/.*/image&quot;, 120, 61),
+            new EndpointRateLimit(&quot;characters/.*&quot;, 90, 61),
+            new EndpointRateLimit(&quot;default&quot;, 10, 11)
+    );
+    private static final HashMap&lt;String, List&lt;Pair&lt;Date, String&gt;&gt;&gt; LAST_REQUESTS;
+    private static final HashMap&lt;String, List&lt;Pair&lt;Date, String&gt;&gt;&gt; ALL_REQUESTS;
+    private static final HashMap&lt;String, Semaphore&gt; SEMAPHORES;
+
+    static {
+<span class="fc" id="L57">        LAST_REQUESTS = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L58">        ALL_REQUESTS = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L59">        SEMAPHORES = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L60">        ENDPOINT_RATE_LIMITS.forEach(endpoint -&gt; SEMAPHORES.put(endpoint.endpoint(), new Semaphore(1)));</span>
+<span class="fc" id="L61">        ENDPOINT_RATE_LIMITS.forEach(endpoint -&gt; LAST_REQUESTS.put(endpoint.endpoint(), new ArrayList&lt;&gt;()));</span>
+<span class="fc" id="L62">        ENDPOINT_RATE_LIMITS.forEach(endpoint -&gt; ALL_REQUESTS.put(endpoint.endpoint(), new ArrayList&lt;&gt;()));</span>
+<span class="fc" id="L63">    }</span>
+
+    private static boolean wouldExceedRateLimit(EndpointRateLimit endpointLimit) {
+<span class="nc" id="L66">        List&lt;Pair&lt;Date, String&gt;&gt; list = ALL_REQUESTS.get(endpointLimit.endpoint()).stream()</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">                .filter(p -&gt; p.getKey().getTime() &gt;= new Date().getTime() - endpointLimit.timeFrameSeconds() * 1000L)</span>
+<span class="nc" id="L68">                .toList();</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        return list.size() &gt;= endpointLimit.maxRequests();</span>
     }
+
+    private static void cleanupOldRequests(EndpointRateLimit endpointLimit) {
+<span class="nc" id="L73">        long currentTime = new Date().getTime();</span>
+<span class="nc" id="L74">        long timeBeginFrame = currentTime - (endpointLimit.timeFrameSeconds() * 1000L);</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        ALL_REQUESTS.get(endpointLimit.endpoint()).removeIf(pair -&gt; pair.getKey().getTime() &lt; timeBeginFrame);</span>
+<span class="nc" id="L76">    }</span>
+
+    private static final int MAX_REQUESTS = 1500;
 
     @Provides
     @Singleton
     @SuppressWarnings(&quot;unused&quot;)
     static OkHttpClient client(TokenStorage tokenStorage) {
-<span class="nc" id="L52">        return new OkHttpClient.Builder()</span>
-<span class="nc" id="L53">                .addInterceptor(chain -&gt; {</span>
-<span class="nc bnc" id="L54" title="All 2 branches missed.">                    if (RATE_LIMIT_FREE_ENDPOINTS.stream().anyMatch(chain.request().url().toString()::contains)) {</span>
-<span class="nc" id="L55">                        System.out.println(&quot;Request: &quot; + chain.request().url());</span>
-<span class="nc" id="L56">                        return chain.proceed(chain.request());</span>
-                    }
+<span class="nc" id="L84">        Dispatcher dispatcher = new Dispatcher(new ThreadPoolExecutor(MAX_REQUESTS, MAX_REQUESTS, 1, java.util.concurrent.TimeUnit.MINUTES, new java.util.concurrent.SynchronousQueue&lt;&gt;()));</span>
+<span class="nc" id="L85">        dispatcher.setMaxRequests(MAX_REQUESTS);</span>
+<span class="nc" id="L86">        dispatcher.setMaxRequestsPerHost(MAX_REQUESTS);</span>
+<span class="nc" id="L87">        return new OkHttpClient.Builder()</span>
+<span class="nc" id="L88">                .dispatcher(dispatcher)</span>
+<span class="nc" id="L89">                .addInterceptor(chain -&gt; {</span>
+<span class="nc" id="L90">                    String requestUrl = chain.request().url().toString();</span>
+<span class="nc" id="L91">                    EndpointRateLimit endpointRateLimit = ENDPOINT_RATE_LIMITS.stream()</span>
+<span class="nc" id="L92">                            .filter(endpoint -&gt; requestUrl.matches(&quot;.*&quot; + endpoint.endpoint() + &quot;.*&quot;))</span>
+<span class="nc" id="L93">                            .findFirst()</span>
+<span class="nc" id="L94">                            .orElse(ENDPOINT_RATE_LIMITS.get(ENDPOINT_RATE_LIMITS.size() - 1));</span>
 
+<span class="nc" id="L96">                    String endpoint = endpointRateLimit.endpoint();</span>
+<span class="nc" id="L97">                    Semaphore semaphore = SEMAPHORES.get(endpoint);</span>
                     try {
-<span class="nc" id="L60">                        SEMAPHORE.acquire();</span>
-<span class="nc bnc" id="L61" title="All 2 branches missed.">                        if (getRequestsLastTimeFrame() &gt;= MAX_REQUESTS) {</span>
-<span class="nc" id="L62">                            long timeToSleep = getRequiredDelay();</span>
-<span class="nc bnc" id="L63" title="All 2 branches missed.">                            if (timeToSleep &gt; 0) {</span>
-<span class="nc" id="L64">                                Thread.sleep(timeToSleep);</span>
-                            } else {
-<span class="nc" id="L66">                                System.out.println(&quot;TIME CALCULATION WRONG?!&quot;);</span>
+<span class="nc" id="L99">                        semaphore.acquire();</span>
+
+<span class="nc bnc" id="L101" title="All 2 branches missed.">                        while (wouldExceedRateLimit(endpointRateLimit)) {</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">                            if (chain.call().isCanceled()) {</span>
+<span class="nc" id="L103">                                throw new InterruptedException();</span>
                             }
+
+                            //noinspection BusyWait
+<span class="nc" id="L107">                            Thread.sleep(100);</span>
                         }
-<span class="nc" id="L69">                        Pair&lt;Date, String&gt; request = new Pair&lt;&gt;(new Date(), chain.request().url().toString());</span>
-<span class="nc" id="L70">                        LAST_REQUESTS.add(request);</span>
-<span class="nc" id="L71">                        ALL_REQUESTS.add(request);</span>
 
-<span class="nc" id="L73">                        final String token = tokenStorage.getAccessToken();</span>
-<span class="nc bnc" id="L74" title="All 2 branches missed.">                        if (token == null) {</span>
-<span class="nc" id="L75">                            System.out.println(&quot;Request: &quot; + chain.request().url());</span>
-<span class="nc" id="L76">                            return chain.proceed(chain.request());</span>
+<span class="nc" id="L110">                        cleanupOldRequests(endpointRateLimit);</span>
+
+<span class="nc" id="L112">                        Pair&lt;Date, String&gt; request = new Pair&lt;&gt;(new Date(), chain.request().url().toString());</span>
+<span class="nc" id="L113">                        LAST_REQUESTS.get(endpoint).add(request);</span>
+<span class="nc" id="L114">                        ALL_REQUESTS.get(endpoint).add(request);</span>
+
+<span class="nc" id="L116">                        final String token = tokenStorage.getAccessToken();</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">                        if (token == null) {</span>
+<span class="nc" id="L118">                            System.out.println(&quot;Request: &quot; + chain.request().url());</span>
+<span class="nc" id="L119">                            return chain.proceed(chain.request());</span>
                         }
-<span class="nc" id="L78">                        final Request newRequest = chain</span>
-<span class="nc" id="L79">                                .request()</span>
-<span class="nc" id="L80">                                .newBuilder()</span>
-<span class="nc" id="L81">                                .addHeader(&quot;Authorization&quot;, &quot;Bearer &quot; + token)</span>
-<span class="nc" id="L82">                                .build();</span>
+<span class="nc" id="L121">                        final Request newRequest = chain</span>
+<span class="nc" id="L122">                                .request()</span>
+<span class="nc" id="L123">                                .newBuilder()</span>
+<span class="nc" id="L124">                                .addHeader(&quot;Authorization&quot;, &quot;Bearer &quot; + token)</span>
+<span class="nc" id="L125">                                .build();</span>
 
-<span class="nc" id="L84">                        System.out.println(&quot;Request: &quot; + chain.request().url());</span>
-<span class="nc" id="L85">                        Response response = chain.proceed(newRequest);</span>
-<span class="nc bnc" id="L86" title="All 2 branches missed.">                        if (response.code() == 429) {</span>
-<span class="nc" id="L87">                            System.out.println(&quot;RATE LIMIT EXCEEDED\nLast 15 seconds requests were:&quot;);</span>
+<span class="nc" id="L127">                        System.out.println(&quot;Request: &quot; + chain.request().url());</span>
+<span class="nc" id="L128">                        Response response = chain.proceed(newRequest);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">                        while (response.code() == 429) {</span>
+<span class="nc" id="L130">                            System.out.println(&quot;RATE LIMIT EXCEEDED\nLast &quot; + endpointRateLimit.timeFrameSeconds() + &quot; seconds requests were:&quot;);</span>
 
-<span class="nc bnc" id="L89" title="All 4 branches missed.">                            for (Pair&lt;Date, String&gt; pair : ALL_REQUESTS.stream().filter(p -&gt; p.getKey().getTime() &gt; new Date().getTime() - 15000).toList()) {</span>
-<span class="nc" id="L90">                                System.out.println(&quot;\t&quot; + pair.getKey() + &quot; &quot; + pair.getValue());</span>
-<span class="nc" id="L91">                            }</span>
-<span class="nc" id="L92">                            System.exit(1);</span>
-                        }
-<span class="nc" id="L94">                        return response;</span>
+<span class="nc" id="L132">                            List&lt;Pair&lt;Date, String&gt;&gt; list = ALL_REQUESTS.get(endpoint).stream()</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">                                    .filter(p -&gt; p.getKey().getTime() &gt; new Date().getTime() - endpointRateLimit.timeFrameSeconds() * 1000L)</span>
+<span class="nc" id="L134">                                    .toList();</span>
 
-<span class="nc" id="L96">                    } catch (InterruptedException e) {</span>
-<span class="nc" id="L97">                        throw new RuntimeException(e);</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">                            for (Pair&lt;Date, String&gt; pair : list) {</span>
+<span class="nc" id="L137">                                System.out.println(&quot;\t&quot; + pair.getKey() + &quot; &quot; + pair.getValue());</span>
+<span class="nc" id="L138">                            }</span>
+
+<span class="nc" id="L140">                            System.out.println(&quot;Total count: &quot; + list.size());</span>
+                            //noinspection BusyWait
+<span class="nc" id="L142">                            Thread.sleep(1000);</span>
+<span class="nc" id="L143">                            response.close();</span>
+
+<span class="nc" id="L145">                            semaphore.release();</span>
+<span class="nc" id="L146">                            response = chain.call().clone().execute();</span>
+<span class="nc" id="L147">                            semaphore.acquire();</span>
+<span class="nc" id="L148">                        }</span>
+<span class="nc" id="L149">                        return response;</span>
+
+<span class="nc" id="L151">                    } catch (InterruptedException e) {</span>
+<span class="nc" id="L152">                        System.out.println(&quot;Request was interrupted&quot;);</span>
+<span class="nc" id="L153">                        return new Response.Builder()</span>
+<span class="nc" id="L154">                                .code(500)</span>
+<span class="nc" id="L155">                                .body(ResponseBody.create(MediaType.parse(&quot;text/json&quot;), &quot;{}&quot;))</span>
+<span class="nc" id="L156">                                .message(&quot;Request was interrupted&quot;)</span>
+<span class="nc" id="L157">                                .protocol(Protocol.HTTP_2)</span>
+<span class="nc" id="L158">                                .request(chain.request())</span>
+<span class="nc" id="L159">                                .build();</span>
                     } finally {
-<span class="nc" id="L99">                        SEMAPHORE.release();</span>
+<span class="nc" id="L161">                        semaphore.release();</span>
                     }
-<span class="nc" id="L101">                }).build();</span>
+<span class="nc" id="L163">                }).build();</span>
     }
 
     @Provides
     @Singleton
     @SuppressWarnings(&quot;unused&quot;)
     Retrofit retrofit(OkHttpClient client, ObjectMapper objectMapper) {
-<span class="nc" id="L108">        return new Retrofit.Builder()</span>
-<span class="nc" id="L109">                .baseUrl(Main.API_URL + &quot;/&quot;)</span>
-<span class="nc" id="L110">                .client(client)</span>
-<span class="nc" id="L111">                .addConverterFactory(JacksonConverterFactory.create(objectMapper))</span>
-<span class="nc" id="L112">                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())</span>
-<span class="nc" id="L113">                .build();</span>
+<span class="nc" id="L170">        return new Retrofit.Builder()</span>
+<span class="nc" id="L171">                .baseUrl(Main.API_URL + &quot;/&quot;)</span>
+<span class="nc" id="L172">                .client(client)</span>
+<span class="nc" id="L173">                .addConverterFactory(JacksonConverterFactory.create(objectMapper))</span>
+<span class="nc" id="L174">                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())</span>
+<span class="nc" id="L175">                .build();</span>
     }
 
     @Provides
     @Singleton
     @SuppressWarnings(&quot;unused&quot;)
     UserApiService user(Retrofit retrofit) {
-<span class="nc" id="L120">        return retrofit.create(UserApiService.class);</span>
+<span class="nc" id="L182">        return retrofit.create(UserApiService.class);</span>
     }
 
     @Provides
     @Singleton
     @SuppressWarnings(&quot;unused&quot;)
     AuthApiService auth(Retrofit retrofit) {
-<span class="nc" id="L127">        return retrofit.create(AuthApiService.class);</span>
+<span class="nc" id="L189">        return retrofit.create(AuthApiService.class);</span>
     }
 
     @Provides
     @Singleton
     @SuppressWarnings(&quot;unused&quot;)
     GroupApiService group(Retrofit retrofit) {
-<span class="nc" id="L134">        return retrofit.create(GroupApiService.class);</span>
+<span class="nc" id="L196">        return retrofit.create(GroupApiService.class);</span>
     }
 
     @Provides
     @Singleton
     @SuppressWarnings(&quot;unused&quot;)
     MessageApiService message(Retrofit retrofit) {
-<span class="nc" id="L141">        return retrofit.create(MessageApiService.class);</span>
+<span class="nc" id="L203">        return retrofit.create(MessageApiService.class);</span>
     }
 
     @Provides
     @Singleton
     @SuppressWarnings(&quot;unused&quot;)
     RegionApiService region(Retrofit retrofit) {
-<span class="nc" id="L148">        return retrofit.create(RegionApiService.class);</span>
+<span class="nc" id="L210">        return retrofit.create(RegionApiService.class);</span>
     }
 
     @Provides
     @Singleton
     @SuppressWarnings(&quot;unused&quot;)
     AreaApiService area(Retrofit retrofit) {
-<span class="nc" id="L155">        return retrofit.create(AreaApiService.class);</span>
+<span class="nc" id="L217">        return retrofit.create(AreaApiService.class);</span>
     }
 
     @Provides
     @Singleton
     @SuppressWarnings(&quot;unused&quot;)
     PresetsApiService presets(Retrofit retrofit) {
-<span class="nc" id="L162">        return retrofit.create(PresetsApiService.class);</span>
+<span class="nc" id="L224">        return retrofit.create(PresetsApiService.class);</span>
     }
 
     @Provides
     @Singleton
     @SuppressWarnings(&quot;unused&quot;)
     TrainerApiService trainer(Retrofit retrofit) {
-<span class="nc" id="L169">        return retrofit.create(TrainerApiService.class);</span>
+<span class="nc" id="L231">        return retrofit.create(TrainerApiService.class);</span>
     }
 
     @Provides
     @Singleton
     @SuppressWarnings(&quot;unused&quot;)
     AchievementsApiService achievements(Retrofit retrofit) {
-<span class="nc" id="L176">        return retrofit.create(AchievementsApiService.class);</span>
+<span class="nc" id="L238">        return retrofit.create(AchievementsApiService.class);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

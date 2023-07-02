@@ -2,13 +2,11 @@
 
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.controller.ingame.TrainerController;
+import de.uniks.beastopia.teaml.controller.ingame.beast.EditBeastTeamController;
 import de.uniks.beastopia.teaml.controller.menu.social.FriendListController;
-import de.uniks.beastopia.teaml.rest.Region;
 import de.uniks.beastopia.teaml.utils.SoundController;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 
 import javax.inject.Inject;
@@ -18,7 +16,7 @@ import java.util.List;
 
 public class PauseController extends Controller {
 
-<span class="fc" id="L21">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L19">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
     @Inject
     Provider&lt;FriendListController&gt; friendListControllerProvider;
     @Inject
@@ -30,11 +28,13 @@ public class PauseController extends Controller {
     @Inject
     Provider&lt;TrainerController&gt; trainerControllerProvider;
     @Inject
+    Provider&lt;EditBeastTeamController&gt; editBeastTeamControllerProvider;
+    @Inject
     Provider&lt;SoundController&gt; soundControllerProvider;
 
     @FXML
     private VBox friendListContainer;
-    private Region region;
+    private Runnable onCloseRequest;
 
     @Inject
 <span class="fc" id="L40">    public PauseController() {</span>
@@ -85,20 +85,22 @@ public class PauseController extends Controller {
         }
 
 <span class="nc" id="L87">        TrainerController controller = trainerControllerProvider.get();</span>
-<span class="nc" id="L88">        controller.setRegion(region);</span>
-<span class="nc" id="L89">        controller.backController(&quot;pause&quot;);</span>
-<span class="nc" id="L90">        app.show(controller);</span>
-<span class="nc" id="L91">    }</span>
+<span class="nc" id="L88">        controller.backController(&quot;pause&quot;);</span>
+<span class="nc" id="L89">        app.show(controller);</span>
+<span class="nc" id="L90">    }</span>
+
+    public void setOnCloseRequest(Runnable onCloseRequest) {
+<span class="fc" id="L93">        this.onCloseRequest = onCloseRequest;</span>
+<span class="fc" id="L94">    }</span>
 
     @FXML
-    public void pauseMenu(KeyEvent keyEvent) {
-<span class="pc bpc" id="L95" title="1 of 2 branches missed.">        if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {</span>
-<span class="fc" id="L96">            app.showPrevious();</span>
-        }
-<span class="fc" id="L98">    }</span>
+    public void pauseMenu() {
+<span class="fc" id="L98">        onCloseRequest.run();</span>
+<span class="fc" id="L99">    }</span>
 
-    public void setRegion(Region region) {
-<span class="nc" id="L101">        this.region = region;</span>
-<span class="nc" id="L102">    }</span>
+    public void beastTeamButtonPressed() {
+<span class="nc" id="L102">        EditBeastTeamController beastTeam = editBeastTeamControllerProvider.get();</span>
+<span class="nc" id="L103">        app.show(beastTeam);</span>
+<span class="nc" id="L104">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

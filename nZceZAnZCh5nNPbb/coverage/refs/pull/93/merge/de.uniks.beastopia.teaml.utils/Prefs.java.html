@@ -8,6 +8,9 @@ import de.uniks.beastopia.teaml.service.DataCache;
 import javafx.geometry.Point2D;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.prefs.Preferences;
 
@@ -19,97 +22,118 @@ public class Prefs {
     DataCache cache;
 
     @Inject
-<span class="nc" id="L22">    public Prefs() {</span>
-<span class="nc" id="L23">    }</span>
+<span class="nc" id="L25">    public Prefs() {</span>
+<span class="nc" id="L26">    }</span>
 
     public boolean isPinned(User user) {
-<span class="nc" id="L26">        return preferences.getBoolean(user._id() + &quot;_pinned&quot;, false);</span>
+<span class="nc" id="L29">        return preferences.getBoolean(user._id() + &quot;_pinned&quot;, false);</span>
     }
 
     public boolean isPinned(Group group) {
-<span class="nc" id="L30">        return preferences.getBoolean(group._id() + &quot;_pinned&quot;, false);</span>
+<span class="nc" id="L33">        return preferences.getBoolean(group._id() + &quot;_pinned&quot;, false);</span>
     }
 
     public void setPinned(User user, boolean pinned) {
-<span class="nc" id="L34">        preferences.putBoolean(user._id() + &quot;_pinned&quot;, pinned);</span>
-<span class="nc" id="L35">    }</span>
+<span class="nc" id="L37">        preferences.putBoolean(user._id() + &quot;_pinned&quot;, pinned);</span>
+<span class="nc" id="L38">    }</span>
 
     public void setPinned(Group group, boolean pinned) {
-<span class="nc" id="L38">        preferences.putBoolean(group._id() + &quot;_pinned&quot;, pinned);</span>
-<span class="nc" id="L39">    }</span>
+<span class="nc" id="L41">        preferences.putBoolean(group._id() + &quot;_pinned&quot;, pinned);</span>
+<span class="nc" id="L42">    }</span>
 
     public boolean isRememberMe() {
-<span class="nc bnc" id="L42" title="All 2 branches missed.">        return preferences.get(&quot;rememberMe&quot;, null) != null;</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        return preferences.get(&quot;rememberMe&quot;, null) != null;</span>
     }
 
     public String getRememberMeToken() {
-<span class="nc" id="L46">        return preferences.get(&quot;rememberMe&quot;, null);</span>
+<span class="nc" id="L49">        return preferences.get(&quot;rememberMe&quot;, null);</span>
     }
 
     public void setRememberMe(String refreshToken) {
-<span class="nc" id="L50">        preferences.put(&quot;rememberMe&quot;, refreshToken);</span>
-<span class="nc" id="L51">    }</span>
+<span class="nc" id="L53">        preferences.put(&quot;rememberMe&quot;, refreshToken);</span>
+<span class="nc" id="L54">    }</span>
 
     public void clearRememberMe() {
-<span class="nc" id="L54">        preferences.remove(&quot;rememberMe&quot;);</span>
-<span class="nc" id="L55">    }</span>
+<span class="nc" id="L57">        preferences.remove(&quot;rememberMe&quot;);</span>
+<span class="nc" id="L58">    }</span>
 
     public String getTheme() {
-<span class="nc bnc" id="L58" title="All 2 branches missed.">        return preferences.getBoolean(&quot;DarkTheme&quot;, false) ? &quot;dark&quot; : &quot;light&quot;;</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        return preferences.getBoolean(&quot;DarkTheme&quot;, false) ? &quot;dark&quot; : &quot;light&quot;;</span>
     }
 
     public void setTheme(String theme) {
-<span class="nc" id="L62">        preferences.putBoolean(&quot;DarkTheme&quot;, theme.equals(&quot;dark&quot;));</span>
-<span class="nc" id="L63">    }</span>
+<span class="nc" id="L65">        preferences.putBoolean(&quot;DarkTheme&quot;, theme.equals(&quot;dark&quot;));</span>
+<span class="nc" id="L66">    }</span>
 
     public String getLocale() {
-<span class="nc" id="L66">        String userLocale = Locale.getDefault().toLanguageTag();</span>
-<span class="nc bnc" id="L67" title="All 4 branches missed.">        if (!userLocale.equals(&quot;en-EN&quot;) &amp;&amp; !userLocale.equals(&quot;de-DE&quot;)) {</span>
-<span class="nc" id="L68">            userLocale = &quot;en-EN&quot;;</span>
+<span class="nc" id="L69">        String userLocale = Locale.getDefault().toLanguageTag();</span>
+<span class="nc bnc" id="L70" title="All 4 branches missed.">        if (!userLocale.equals(&quot;en-EN&quot;) &amp;&amp; !userLocale.equals(&quot;de-DE&quot;)) {</span>
+<span class="nc" id="L71">            userLocale = &quot;en-EN&quot;;</span>
         }
 
-<span class="nc" id="L71">        return preferences.get(&quot;locale&quot;, userLocale);</span>
+<span class="nc" id="L74">        return preferences.get(&quot;locale&quot;, userLocale);</span>
     }
 
     public void setLocale(String locale) {
-<span class="nc" id="L75">        preferences.put(&quot;locale&quot;, locale);</span>
-<span class="nc" id="L76">    }</span>
+<span class="nc" id="L78">        preferences.put(&quot;locale&quot;, locale);</span>
+<span class="nc" id="L79">    }</span>
 
     public void setCurrentRegion(Region region) {
-<span class="nc" id="L79">        preferences.put(&quot;region&quot;, region._id());</span>
-<span class="nc" id="L80">    }</span>
+<span class="nc" id="L82">        preferences.put(&quot;region&quot;, region._id());</span>
+<span class="nc" id="L83">    }</span>
 
     public String getRegionID() {
-<span class="nc" id="L83">        return preferences.get(&quot;region&quot;, null);</span>
+<span class="nc" id="L86">        return preferences.get(&quot;region&quot;, null);</span>
     }
 
     public void setArea(Area area) {
-<span class="nc" id="L87">        preferences.put(&quot;area&quot;, area._id());</span>
-<span class="nc" id="L88">    }</span>
+<span class="nc" id="L90">        preferences.put(&quot;area&quot;, area._id());</span>
+<span class="nc" id="L91">    }</span>
 
     public Area getArea() {
-<span class="nc" id="L91">        return cache.getArea(preferences.get(&quot;area&quot;, null));</span>
+<span class="nc" id="L94">        return cache.getArea(preferences.get(&quot;area&quot;, null));</span>
     }
 
     public void setPosition(Point2D position) {
-<span class="nc" id="L95">        preferences.putDouble(&quot;positionX&quot;, position.getX());</span>
-<span class="nc" id="L96">        preferences.putDouble(&quot;positionY&quot;, position.getY());</span>
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L98">        preferences.putDouble(&quot;positionX&quot;, position.getX());</span>
+<span class="nc" id="L99">        preferences.putDouble(&quot;positionY&quot;, position.getY());</span>
+<span class="nc" id="L100">    }</span>
 
     public void setMusicVolume(double volume) {
-<span class="nc" id="L100">        preferences.putDouble(&quot;musicVolume&quot;, volume);</span>
-<span class="nc" id="L101">    }</span>
+<span class="nc" id="L103">        preferences.putDouble(&quot;musicVolume&quot;, volume);</span>
+<span class="nc" id="L104">    }</span>
 
     public double getMusicVolume() {
-<span class="nc" id="L104">        return preferences.getDouble(&quot;musicVolume&quot;, 50.0);</span>
+<span class="nc" id="L107">        return preferences.getDouble(&quot;musicVolume&quot;, 50.0);</span>
     }
 
     public void setSoundVolume(double volume) {
-<span class="nc" id="L108">        preferences.putDouble(&quot;soundVolume&quot;, volume);</span>
-<span class="nc" id="L109">    }</span>
+<span class="nc" id="L111">        preferences.putDouble(&quot;soundVolume&quot;, volume);</span>
+<span class="nc" id="L112">    }</span>
 
     public double getSoundVolume() {
-<span class="nc" id="L112">        return preferences.getDouble(&quot;soundVolume&quot;, 50.0);</span>
+<span class="nc" id="L115">        return preferences.getDouble(&quot;soundVolume&quot;, 50.0);</span>
+    }
+
+    public List&lt;String&gt; getUserHistory() {
+<span class="nc" id="L119">        String userHistoryString = preferences.get(&quot;userHistory&quot;, null);</span>
+<span class="nc" id="L120">        List&lt;String&gt; userHistory = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        if (userHistoryString != null) {</span>
+<span class="nc" id="L122">            userHistory.addAll(Arrays.asList(userHistoryString.split(&quot;;&quot;)));</span>
+        }
+<span class="nc" id="L124">        return userHistory;</span>
+    }
+
+    public void setUserHistory(List&lt;String&gt; userHistory) {
+<span class="nc" id="L128">        preferences.put(&quot;userHistory&quot;, String.join(&quot;;&quot;, userHistory));</span>
+<span class="nc" id="L129">    }</span>
+
+    public void addVisitedArea(String areas) {
+<span class="nc" id="L132">        preferences.put(&quot;visitedAreas&quot;, areas);</span>
+<span class="nc" id="L133">    }</span>
+
+    public String getVisitedAreas() {
+<span class="nc" id="L136">        return preferences.get(&quot;visitedAreas&quot;, null);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
