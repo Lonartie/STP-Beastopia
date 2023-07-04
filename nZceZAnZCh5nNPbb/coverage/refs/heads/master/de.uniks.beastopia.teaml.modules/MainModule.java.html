@@ -3,10 +3,10 @@
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import dagger.Module;
 import dagger.Provides;
-import de.uniks.beastopia.teaml.utils.Prefs;
-import de.uniks.beastopia.teaml.utils.ThemeSettings;
+import de.uniks.beastopia.teaml.utils.*;
 
 import javax.inject.Singleton;
 import java.util.Locale;
@@ -24,15 +24,17 @@ import java.util.ResourceBundle;
     @Singleton
     ObjectMapper objectMapper() {
 <span class="nc" id="L26">        return new ObjectMapper()</span>
-<span class="nc" id="L27">                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)</span>
-<span class="nc" id="L28">                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)</span>
-<span class="nc" id="L29">                .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);</span>
+<span class="nc" id="L27">                .registerModule(new SimpleModule().addDeserializer(Variant.class, new VariantDeserializer&lt;&gt;()))</span>
+<span class="nc" id="L28">                .registerModule(new SimpleModule().addSerializer(new VariantSerializer&lt;&gt;()))</span>
+<span class="nc" id="L29">                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)</span>
+<span class="nc" id="L30">                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)</span>
+<span class="nc" id="L31">                .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);</span>
     }
 
     @Provides
     @Singleton
     ThemeSettings themeSettings() {
-<span class="fc" id="L35">        return new ThemeSettings();</span>
+<span class="fc" id="L37">        return new ThemeSettings();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
