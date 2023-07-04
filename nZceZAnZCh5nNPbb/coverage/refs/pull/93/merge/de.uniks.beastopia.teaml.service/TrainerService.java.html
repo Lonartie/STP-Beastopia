@@ -31,11 +31,15 @@ public class TrainerService {
     }
 
     public Observable&lt;Trainer&gt; updateTrainer(String regionId, String trainerId, String name, String image, List&lt;String&gt; team) {
-<span class="nc" id="L34">        return trainerApiService.updateTrainer(regionId, trainerId, new UpdateTrainerDto(name, image, team));</span>
+<span class="fc" id="L34">        return trainerApiService.updateTrainer(regionId, trainerId, new UpdateTrainerDto(name, image, team));</span>
     }
 
     public Observable&lt;List&lt;Monster&gt;&gt; getTrainerMonsters(String regionId, String trainerId) {
-<span class="nc" id="L38">        return trainerApiService.getTrainerMonsters(regionId, trainerId);</span>
+<span class="fc" id="L38">        return trainerApiService.getTrainerMonsters(regionId, trainerId);</span>
+    }
+
+    public Observable&lt;Monster&gt; getTrainerMonster(String regionId, String trainerId, String monsterId) {
+<span class="fc" id="L42">        return trainerApiService.getTrainerMonster(regionId, trainerId, monsterId);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
