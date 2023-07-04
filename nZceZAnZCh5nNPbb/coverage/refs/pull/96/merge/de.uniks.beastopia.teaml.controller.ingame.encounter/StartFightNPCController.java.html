@@ -62,29 +62,27 @@ public class StartFightNPCController extends Controller {
 <span class="fc" id="L62">                            disposables.add(trainerService.getTrainer(cache.getJoinedRegion()._id(), o.trainer())</span>
 <span class="fc" id="L63">                                    .observeOn(FX_SCHEDULER)</span>
 <span class="fc" id="L64">                                    .subscribe(t -&gt; {</span>
-<span class="pc bpc" id="L65" title="1 of 2 branches missed.">                                        String message = (prefs.getLocale().contains(&quot;de&quot;)) ? &quot; startet einen Kampf &quot; +</span>
-<span class="fc" id="L66">                                                &quot;gegen dich!&quot; : &quot; starts a fight against you!&quot;;</span>
-<span class="fc" id="L67">                                        headline.setText(t.name() + message);</span>
-<span class="fc" id="L68">                                        disposables.add(presetsService</span>
-<span class="fc" id="L69">                                                .getCharacterSprites(t.image(), true)</span>
-<span class="fc" id="L70">                                                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L71">                                                .subscribe(i -&gt; {</span>
-<span class="fc" id="L72">                                                    image.setImage(i);</span>
-<span class="fc" id="L73">                                                    image.setViewport(PREVIEW_VIEWPORT);</span>
-<span class="fc" id="L74">                                                    image.setFitWidth(32 * PREVIEW_SCALING);</span>
-<span class="fc" id="L75">                                                    image.setFitHeight(64 * PREVIEW_SCALING);</span>
-<span class="fc" id="L76">                                                }));</span>
-<span class="fc" id="L77">                                    }));</span>
-<span class="fc" id="L78">                            return;</span>
+<span class="fc" id="L65">                                        headline.setText(t.name() + &quot; &quot; + resources.getString(&quot;npcStart&quot;));</span>
+<span class="fc" id="L66">                                        disposables.add(presetsService</span>
+<span class="fc" id="L67">                                                .getCharacterSprites(t.image(), true)</span>
+<span class="fc" id="L68">                                                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L69">                                                .subscribe(i -&gt; {</span>
+<span class="fc" id="L70">                                                    image.setImage(i);</span>
+<span class="fc" id="L71">                                                    image.setViewport(PREVIEW_VIEWPORT);</span>
+<span class="fc" id="L72">                                                    image.setFitWidth(32 * PREVIEW_SCALING);</span>
+<span class="fc" id="L73">                                                    image.setFitHeight(64 * PREVIEW_SCALING);</span>
+<span class="fc" id="L74">                                                }));</span>
+<span class="fc" id="L75">                                    }));</span>
+<span class="fc" id="L76">                            return;</span>
                         }
-<span class="nc" id="L80">                    }</span>
-<span class="nc" id="L81">                }));</span>
+<span class="nc" id="L78">                    }</span>
+<span class="nc" id="L79">                }));</span>
 
-<span class="fc" id="L83">        return parent;</span>
+<span class="fc" id="L81">        return parent;</span>
     }
     @FXML
     public void startFight() {
         //TODO start EncounterScreen
-<span class="nc" id="L88">    }</span>
+<span class="nc" id="L86">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
