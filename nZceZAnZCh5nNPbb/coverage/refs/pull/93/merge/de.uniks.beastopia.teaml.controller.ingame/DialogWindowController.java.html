@@ -82,54 +82,55 @@ public class DialogWindowController extends Controller {
 
     @Override
     public Parent render() {
-<span class="fc" id="L85">        Parent parent = super.render();</span>
+<span class="fc" id="L85">        super.init();</span>
+<span class="fc" id="L86">        Parent parent = super.render();</span>
 
-<span class="fc bfc" id="L87" title="All 2 branches covered.">        for (int i = 0; i &lt; choices.size(); i++) {</span>
-<span class="fc" id="L88">            AtomicInteger index = new AtomicInteger(i);</span>
-<span class="pc bpc" id="L89" title="1 of 2 branches missed.">            if (buttonImages.isEmpty()) {</span>
-<span class="nc" id="L90">                Button choiceButton = new Button(choices.get(i));</span>
-<span class="nc" id="L91">                choiceButton.setOnAction(ev -&gt; {</span>
-<span class="nc bnc" id="L92" title="All 2 branches missed.">                    if (onButtonClicked != null) {</span>
-<span class="nc" id="L93">                        onButtonClicked.accept(index.get());</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        for (int i = 0; i &lt; choices.size(); i++) {</span>
+<span class="fc" id="L89">            AtomicInteger index = new AtomicInteger(i);</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">            if (buttonImages.isEmpty()) {</span>
+<span class="nc" id="L91">                Button choiceButton = new Button(choices.get(i));</span>
+<span class="nc" id="L92">                choiceButton.setOnAction(ev -&gt; {</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">                    if (onButtonClicked != null) {</span>
+<span class="nc" id="L94">                        onButtonClicked.accept(index.get());</span>
                     }
-<span class="nc" id="L95">                });</span>
-<span class="nc" id="L96">                choiceBox.getChildren().add(choiceButton);</span>
-<span class="nc" id="L97">            } else {</span>
-<span class="fc" id="L98">                ImageView buttonImageView = new ImageView(buttonImages.get(i));</span>
-<span class="fc" id="L99">                buttonImageView.setFitWidth(64);</span>
-<span class="fc" id="L100">                buttonImageView.setFitHeight(64);</span>
-<span class="fc" id="L101">                Text choiceButton = new Text(choices.get(i));</span>
-<span class="fc" id="L102">                choiceButton.setTextAlignment(TextAlignment.CENTER);</span>
-<span class="fc" id="L103">                VBox buttonBox = new VBox();</span>
-<span class="fc" id="L104">                buttonBox.setOnMouseClicked(ev -&gt; {</span>
-<span class="pc bpc" id="L105" title="1 of 2 branches missed.">                    if (onButtonClicked != null) {</span>
-<span class="fc" id="L106">                        onButtonClicked.accept(index.get());</span>
+<span class="nc" id="L96">                });</span>
+<span class="nc" id="L97">                choiceBox.getChildren().add(choiceButton);</span>
+<span class="nc" id="L98">            } else {</span>
+<span class="fc" id="L99">                ImageView buttonImageView = new ImageView(buttonImages.get(i));</span>
+<span class="fc" id="L100">                buttonImageView.setFitWidth(64);</span>
+<span class="fc" id="L101">                buttonImageView.setFitHeight(64);</span>
+<span class="fc" id="L102">                Text choiceButton = new Text(choices.get(i));</span>
+<span class="fc" id="L103">                choiceButton.setTextAlignment(TextAlignment.CENTER);</span>
+<span class="fc" id="L104">                VBox buttonBox = new VBox();</span>
+<span class="fc" id="L105">                buttonBox.setOnMouseClicked(ev -&gt; {</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">                    if (onButtonClicked != null) {</span>
+<span class="fc" id="L107">                        onButtonClicked.accept(index.get());</span>
                     }
-<span class="fc" id="L108">                });</span>
-<span class="fc" id="L109">                buttonBox.getChildren().add(choiceButton);</span>
-<span class="fc" id="L110">                buttonBox.getChildren().add(buttonImageView);</span>
-<span class="fc" id="L111">                choiceBox.getChildren().add(buttonBox);</span>
+<span class="fc" id="L109">                });</span>
+<span class="fc" id="L110">                buttonBox.getChildren().add(choiceButton);</span>
+<span class="fc" id="L111">                buttonBox.getChildren().add(buttonImageView);</span>
+<span class="fc" id="L112">                choiceBox.getChildren().add(buttonBox);</span>
             }
         }
 
-<span class="fc" id="L115">        trainerImageView.setImage(trainerImage);</span>
-<span class="fc" id="L116">        dialogText.setText(text);</span>
+<span class="fc" id="L116">        trainerImageView.setImage(trainerImage);</span>
+<span class="fc" id="L117">        dialogText.setText(text);</span>
 
-<span class="fc" id="L118">        return parent;</span>
+<span class="fc" id="L119">        return parent;</span>
     }
 
     @FXML
     public void close() {
-<span class="pc bpc" id="L123" title="1 of 2 branches missed.">        if (onCloseRequested != null) {</span>
-<span class="fc" id="L124">            onCloseRequested.run();</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if (onCloseRequested != null) {</span>
+<span class="fc" id="L125">            onCloseRequested.run();</span>
         }
-<span class="fc" id="L126">    }</span>
+<span class="fc" id="L127">    }</span>
 
     @FXML
     public void handleKeyEvent(KeyEvent event) {
-<span class="pc bpc" id="L130" title="1 of 2 branches missed.">        if (event.getCode().equals(KeyCode.T)) {</span>
-<span class="fc" id="L131">            onCloseRequested.run();</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        if (event.getCode().equals(KeyCode.T)) {</span>
+<span class="fc" id="L132">            onCloseRequested.run();</span>
         }
-<span class="fc" id="L133">    }</span>
+<span class="fc" id="L134">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
