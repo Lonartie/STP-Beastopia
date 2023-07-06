@@ -63,7 +63,11 @@ public class PresetsService {
     }
 
     public Observable&lt;AbilityDto&gt; getAbility(int id) {
-<span class="nc" id="L66">        return presetsApiService.getAbility(id);</span>
+<span class="fc" id="L66">        return presetsApiService.getAbility(id);</span>
+    }
+
+    public Observable&lt;List&lt;AbilityDto&gt;&gt; getAbilities() {
+<span class="fc" id="L70">        return presetsApiService.getAbilities();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
