@@ -100,13 +100,13 @@ public class EncounterController extends Controller {
     Prefs prefs;
 
     //monster on the substitute's bench
-<span class="nc" id="L103">    @SuppressWarnings(&quot;FieldCanBeLocal&quot;)</span>
+<span class="nc" id="L103">    @SuppressWarnings(&quot;FieldMayBeFinal&quot;)</span>
     private List&lt;Monster&gt; ownMonsters = new ArrayList&lt;&gt;();
-<span class="nc" id="L105">    @SuppressWarnings(&quot;FieldCanBeLocal&quot;)</span>
+<span class="nc" id="L105">    @SuppressWarnings({&quot;FieldCanBeLocal&quot;, &quot;FieldMayBeFinal&quot;})</span>
     private List&lt;Monster&gt; allyMonsters = new ArrayList&lt;&gt;();
-<span class="nc" id="L107">    @SuppressWarnings(&quot;FieldCanBeLocal&quot;)</span>
+<span class="nc" id="L107">    @SuppressWarnings({&quot;FieldCanBeLocal&quot;, &quot;FieldMayBeFinal&quot;})</span>
     private List&lt;Monster&gt; enemyMonsters = new ArrayList&lt;&gt;();
-<span class="nc" id="L109">    @SuppressWarnings(&quot;FieldCanBeLocal&quot;)</span>
+<span class="nc" id="L109">    @SuppressWarnings({&quot;FieldCanBeLocal&quot;, &quot;FieldMayBeFinal&quot;})</span>
     private List&lt;Monster&gt; enemyAllyMonsters = new ArrayList&lt;&gt;();
 
     //monsters in the fight
@@ -226,9 +226,9 @@ public class EncounterController extends Controller {
 <span class="nc" id="L226">    }</span>
 
     private void setAttackBoxes(int size) {
-<span class="nc" id="L229">        Stack&lt;String&gt; stack = new Stack&lt;&gt;();</span>
+<span class="nc" id="L229">        Stack&lt;Integer&gt; stack = new Stack&lt;&gt;();</span>
 <span class="nc" id="L230">        Set&lt;String&gt; keys = ownMonster.abilities().keySet();</span>
-<span class="nc" id="L231">        keys.forEach(stack::push);</span>
+<span class="nc" id="L231">        keys.stream().map(Integer::parseInt).forEach(stack::push);</span>
 <span class="nc bnc" id="L232" title="All 5 branches missed.">        switch (size) {</span>
             case 4:
 <span class="nc" id="L234">                setAttack4(presetsService.getAbility(stack.pop()).blockingFirst());</span>

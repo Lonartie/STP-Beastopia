@@ -62,12 +62,12 @@ public class PresetsService {
 <span class="nc" id="L62">        return presetsApiService.getMonsters();</span>
     }
 
-    public Observable&lt;List&lt;AbilityDto&gt;&gt; getAllAbilities() {
-<span class="nc" id="L66">        return presetsApiService.getAbilities();</span>
+    public Observable&lt;AbilityDto&gt; getAbility(int id) {
+<span class="fc" id="L66">        return presetsApiService.getAbility(id);</span>
     }
 
-    public Observable&lt;AbilityDto&gt; getAbility(String id) {
-<span class="nc" id="L70">        return presetsApiService.getAbility(id);</span>
+    public Observable&lt;List&lt;AbilityDto&gt;&gt; getAbilities() {
+<span class="fc" id="L70">        return presetsApiService.getAbilities();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
