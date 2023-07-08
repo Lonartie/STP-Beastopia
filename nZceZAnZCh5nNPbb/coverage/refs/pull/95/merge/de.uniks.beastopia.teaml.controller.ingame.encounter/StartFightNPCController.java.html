@@ -89,35 +89,28 @@ public class StartFightNPCController extends Controller {
 <span class="nc" id="L89">        disposables.add(encounterOpponentsService.getTrainerOpponents(cache.getJoinedRegion()._id(),</span>
 <span class="nc" id="L90">                        cache.getTrainer()._id())</span>
 <span class="nc" id="L91">                .map(o -&gt; {</span>
-<span class="nc bnc" id="L92" title="All 2 branches missed.">                    if (o.size() == 2) {</span>
-<span class="nc" id="L93">                        List&lt;Monster&gt; myMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(0).trainer()).blockingFirst();</span>
-<span class="nc" id="L94">                        List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(1).trainer()).blockingFirst();</span>
-<span class="nc" id="L95">                        encounterController.setOwnMonster(myMonsters.stream().filter(m -&gt; m._id().equals(o.get(0).monster())).findFirst().orElseThrow());</span>
-<span class="nc" id="L96">                        encounterController.setEnemyMonster(enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(1).monster())).findFirst().orElseThrow());</span>
-<span class="nc bnc" id="L97" title="All 2 branches missed.">                    } else if (o.size() == 3) {</span>
-<span class="nc" id="L98">                        List&lt;Monster&gt; myMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(0).trainer()).blockingFirst();</span>
-<span class="nc" id="L99">                        List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(1).trainer()).blockingFirst();</span>
-<span class="nc" id="L100">                        List&lt;Monster&gt; enemyAllyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(2).trainer()).blockingFirst();</span>
-<span class="nc" id="L101">                        encounterController.setOwnMonster(myMonsters.stream().filter(m -&gt; m._id().equals(o.get(0).monster())).findFirst().orElseThrow());</span>
-<span class="nc" id="L102">                        encounterController.setEnemyMonster(enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(1).monster())).findFirst().orElseThrow());</span>
-<span class="nc" id="L103">                        encounterController.setEnemyAllyMonster(enemyAllyMonsters.stream().filter(m -&gt; m._id().equals(o.get(2).monster())).findFirst().orElseThrow());</span>
-<span class="nc bnc" id="L104" title="All 2 branches missed.">                    } else if (o.size() == 4) {</span>
-<span class="nc" id="L105">                        List&lt;Monster&gt; myMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(0).trainer()).blockingFirst();</span>
-<span class="nc" id="L106">                        List&lt;Monster&gt; myAllyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(1).trainer()).blockingFirst();</span>
-<span class="nc" id="L107">                        List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(2).trainer()).blockingFirst();</span>
-<span class="nc" id="L108">                        List&lt;Monster&gt; enemyAllyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(3).trainer()).blockingFirst();</span>
-<span class="nc" id="L109">                        encounterController.setOwnMonster(myMonsters.stream().filter(m -&gt; m._id().equals(o.get(0).monster())).findFirst().orElseThrow());</span>
-<span class="nc" id="L110">                        encounterController.setAllyMonster(myAllyMonsters.stream().filter(m -&gt; m._id().equals(o.get(1).monster())).findFirst().orElseThrow());</span>
-<span class="nc" id="L111">                        encounterController.setEnemyMonster(enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(2).monster())).findFirst().orElseThrow());</span>
-<span class="nc" id="L112">                        encounterController.setEnemyAllyMonster(enemyAllyMonsters.stream().filter(m -&gt; m._id().equals(o.get(3).monster())).findFirst().orElseThrow());</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">                    if (o.size() == 1) {</span>
+<span class="nc" id="L93">                        List&lt;Monster&gt; myMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), cache.getTrainer()._id()).blockingFirst();</span>
+<span class="nc" id="L94">                        List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(0).trainer()).blockingFirst();</span>
+                        //noinspection OptionalGetWithoutIsPresent
+<span class="nc" id="L96">                        encounterController.setOwnMonster(myMonsters.stream().filter(m -&gt; m._id().equals(cache.getTrainer().team().stream().findFirst().get())).findFirst().orElseThrow());</span>
+<span class="nc" id="L97">                        encounterController.setEnemyMonster(enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(0).monster())).findFirst().orElseThrow());</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">                    } else if (o.size() == 2) {</span>
+<span class="nc" id="L99">                        List&lt;Monster&gt; myMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), cache.getTrainer()._id()).blockingFirst();</span>
+<span class="nc" id="L100">                        List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(0).trainer()).blockingFirst();</span>
+<span class="nc" id="L101">                        List&lt;Monster&gt; enemyAllyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(1).trainer()).blockingFirst();</span>
+                        //noinspection OptionalGetWithoutIsPresent
+<span class="nc" id="L103">                        encounterController.setOwnMonster(myMonsters.stream().filter(m -&gt; m._id().equals(cache.getTrainer().team().stream().findFirst().get())).findFirst().orElseThrow());</span>
+<span class="nc" id="L104">                        encounterController.setEnemyMonster(enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(0).monster())).findFirst().orElseThrow());</span>
+<span class="nc" id="L105">                        encounterController.setEnemyAllyMonster(enemyAllyMonsters.stream().filter(m -&gt; m._id().equals(o.get(1).monster())).findFirst().orElseThrow());</span>
                     }
-<span class="nc" id="L114">                    return o;</span>
+<span class="nc" id="L107">                    return o;</span>
                 })
-<span class="nc" id="L116">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L117">                .subscribe(o -&gt; {</span>
-<span class="nc" id="L118">                    encounterController.init();</span>
-<span class="nc" id="L119">                    app.show(encounterController);</span>
-<span class="nc" id="L120">                }));</span>
-<span class="nc" id="L121">    }</span>
+<span class="nc" id="L109">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L110">                .subscribe(o -&gt; {</span>
+<span class="nc" id="L111">                    encounterController.init();</span>
+<span class="nc" id="L112">                    app.show(encounterController);</span>
+<span class="nc" id="L113">                }));</span>
+<span class="nc" id="L114">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
