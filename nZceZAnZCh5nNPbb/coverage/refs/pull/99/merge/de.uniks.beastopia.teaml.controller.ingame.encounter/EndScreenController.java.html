@@ -57,80 +57,74 @@ public class EndScreenController extends Controller {
     }
 
     @Override
-    public void init() {
-<span class="nc" id="L61">        super.init();</span>
-
-<span class="nc" id="L63">    }</span>
-
-    @Override
     public Parent render() {
-<span class="nc" id="L67">        Parent parent = super.render();</span>
+<span class="nc" id="L61">        Parent parent = super.render();</span>
 
-<span class="nc" id="L69">        disposables.add(presetsService.getMonsterImage(winner1.type())</span>
-<span class="nc" id="L70">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L71">                .subscribe(monsterImage -&gt; winnerImg.setImage(monsterImage)));</span>
+<span class="nc" id="L63">        disposables.add(presetsService.getMonsterImage(winner1.type())</span>
+<span class="nc" id="L64">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L65">                .subscribe(monsterImage -&gt; winnerImg.setImage(monsterImage)));</span>
 
-<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (winner2 != null) {</span>
-<span class="nc" id="L74">            ImageView secondWinner = new ImageView();</span>
-<span class="nc" id="L75">            secondWinner.setX(125);</span>
-<span class="nc" id="L76">            secondWinner.setY(125);</span>
-<span class="nc" id="L77">            disposables.add(presetsService.getMonsterImage(winner2.type())</span>
-<span class="nc" id="L78">                    .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L79">                    .subscribe(secondWinner::setImage));</span>
-<span class="nc" id="L80">            leftMonsterContainer.getChildren().add(secondWinner);</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (winner2 != null) {</span>
+<span class="nc" id="L68">            ImageView secondWinner = new ImageView();</span>
+<span class="nc" id="L69">            secondWinner.setX(125);</span>
+<span class="nc" id="L70">            secondWinner.setY(125);</span>
+<span class="nc" id="L71">            disposables.add(presetsService.getMonsterImage(winner2.type())</span>
+<span class="nc" id="L72">                    .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L73">                    .subscribe(secondWinner::setImage));</span>
+<span class="nc" id="L74">            leftMonsterContainer.getChildren().add(secondWinner);</span>
         }
 
-<span class="nc" id="L83">        disposables.add(presetsService.getMonsterImage(loser1.type())</span>
-<span class="nc" id="L84">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L85">                .subscribe(monsterImage -&gt; loserImg.setImage(monsterImage)));</span>
+<span class="nc" id="L77">        disposables.add(presetsService.getMonsterImage(loser1.type())</span>
+<span class="nc" id="L78">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L79">                .subscribe(monsterImage -&gt; loserImg.setImage(monsterImage)));</span>
 
-<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (loser2 != null) {</span>
-<span class="nc" id="L88">            ImageView secondLoser = new ImageView();</span>
-<span class="nc" id="L89">            secondLoser.setX(125);</span>
-<span class="nc" id="L90">            secondLoser.setY(125);</span>
-<span class="nc" id="L91">            disposables.add(presetsService.getMonsterImage(loser2.type())</span>
-<span class="nc" id="L92">                    .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L93">                    .subscribe(secondLoser::setImage));</span>
-<span class="nc" id="L94">            rightMonsterContainer.getChildren().add(secondLoser);</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (loser2 != null) {</span>
+<span class="nc" id="L82">            ImageView secondLoser = new ImageView();</span>
+<span class="nc" id="L83">            secondLoser.setX(125);</span>
+<span class="nc" id="L84">            secondLoser.setY(125);</span>
+<span class="nc" id="L85">            disposables.add(presetsService.getMonsterImage(loser2.type())</span>
+<span class="nc" id="L86">                    .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L87">                    .subscribe(secondLoser::setImage));</span>
+<span class="nc" id="L88">            rightMonsterContainer.getChildren().add(secondLoser);</span>
         }
 
-<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (isWinner) {</span>
-<span class="nc" id="L98">            resultLabel.setText(resources.getString(&quot;fightWon&quot;));</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (isWinner) {</span>
+<span class="nc" id="L92">            resultLabel.setText(resources.getString(&quot;fightWon&quot;));</span>
         } else {
-<span class="nc" id="L100">            resultLabel.setText(resources.getString(&quot;fightLost&quot;));</span>
+<span class="nc" id="L94">            resultLabel.setText(resources.getString(&quot;fightLost&quot;));</span>
         }
 
-<span class="nc" id="L103">        return parent;</span>
+<span class="nc" id="L97">        return parent;</span>
     }
 
     public void onLeaveButtonClicked() {
-<span class="nc" id="L107">        app.show(ingameControllerProvider.get());</span>
-<span class="nc" id="L108">    }</span>
+<span class="nc" id="L101">        app.show(ingameControllerProvider.get());</span>
+<span class="nc" id="L102">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void setWinner(boolean winner) {
-<span class="nc" id="L112">        isWinner = winner;</span>
-<span class="nc" id="L113">    }</span>
+<span class="nc" id="L106">        isWinner = winner;</span>
+<span class="nc" id="L107">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void setWinnerMonster1(Monster winner1) {
-<span class="nc" id="L117">        this.winner1 = winner1;</span>
-<span class="nc" id="L118">    }</span>
+<span class="nc" id="L111">        this.winner1 = winner1;</span>
+<span class="nc" id="L112">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void setWinnerMonster2(Monster winner2) {
-<span class="nc" id="L122">        this.winner2 = winner2;</span>
-<span class="nc" id="L123">    }</span>
+<span class="nc" id="L116">        this.winner2 = winner2;</span>
+<span class="nc" id="L117">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void setLoserMonster1(Monster loser1) {
-<span class="nc" id="L127">        this.loser1 = loser1;</span>
-<span class="nc" id="L128">    }</span>
+<span class="nc" id="L121">        this.loser1 = loser1;</span>
+<span class="nc" id="L122">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void setLoserMonster2(Monster loser2) {
-<span class="nc" id="L132">        this.loser2 = loser2;</span>
-<span class="nc" id="L133">    }</span>
+<span class="nc" id="L126">        this.loser2 = loser2;</span>
+<span class="nc" id="L127">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
