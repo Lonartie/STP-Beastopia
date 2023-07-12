@@ -3,6 +3,7 @@
 
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.rest.Encounter;
+import de.uniks.beastopia.teaml.rest.Monster;
 import de.uniks.beastopia.teaml.rest.Opponent;
 import de.uniks.beastopia.teaml.service.DataCache;
 import de.uniks.beastopia.teaml.service.EncounterOpponentsService;
@@ -15,7 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 
 import javax.inject.Inject;
-
+import java.util.List;
 
 import static de.uniks.beastopia.teaml.controller.ingame.TrainerController.PREVIEW_VIEWPORT;
 import static de.uniks.beastopia.teaml.service.PresetsService.PREVIEW_SCALING;
@@ -35,54 +36,81 @@ public class StartFightNPCController extends Controller {
     @Inject
     EncounterOpponentsService encounterOpponentsService;
     @Inject
-    PresetsService presetsService;
+    EncounterController encounterController;
     @Inject
-<span class="fc" id="L40">    public StartFightNPCController() {</span>
+    PresetsService presetsService;
 
-<span class="fc" id="L42">    }</span>
+    @Inject
+<span class="fc" id="L44">    public StartFightNPCController() {</span>
+
+<span class="fc" id="L46">    }</span>
 
     public void setControllerInfo(Encounter encounter) {
-<span class="fc" id="L45">        this.encounter = encounter;</span>
-<span class="fc" id="L46">    }</span>
+<span class="fc" id="L49">        this.encounter = encounter;</span>
+<span class="fc" id="L50">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L50">        return resources.getString(&quot;titleEncounter&quot;);</span>
+<span class="fc" id="L54">        return resources.getString(&quot;titleEncounter&quot;);</span>
     }
 
     @Override
     public Parent render() {
-<span class="fc" id="L55">        Parent parent = super.render();</span>
+<span class="fc" id="L59">        Parent parent = super.render();</span>
 
-<span class="fc" id="L57">        disposables.add(encounterOpponentsService.getEncounterOpponents(cache.getJoinedRegion()._id(), encounter._id())</span>
-<span class="fc" id="L58">                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L59">                .subscribe(ops -&gt; {</span>
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">                    for (Opponent o : ops) {</span>
-<span class="pc bpc" id="L61" title="1 of 2 branches missed.">                        if (!(o.trainer().equals(cache.getTrainer()._id()))) {</span>
-<span class="fc" id="L62">                            disposables.add(trainerService.getTrainer(cache.getJoinedRegion()._id(), o.trainer())</span>
-<span class="fc" id="L63">                                    .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L64">                                    .subscribe(t -&gt; {</span>
-<span class="fc" id="L65">                                        headline.setText(t.name() + &quot; &quot; + resources.getString(&quot;npcStart&quot;));</span>
-<span class="fc" id="L66">                                        disposables.add(presetsService</span>
-<span class="fc" id="L67">                                                .getCharacterSprites(t.image(), true)</span>
-<span class="fc" id="L68">                                                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L69">                                                .subscribe(i -&gt; {</span>
-<span class="fc" id="L70">                                                    image.setImage(i);</span>
-<span class="fc" id="L71">                                                    image.setViewport(PREVIEW_VIEWPORT);</span>
-<span class="fc" id="L72">                                                    image.setFitWidth(32 * PREVIEW_SCALING);</span>
-<span class="fc" id="L73">                                                    image.setFitHeight(64 * PREVIEW_SCALING);</span>
-<span class="fc" id="L74">                                                }));</span>
-<span class="fc" id="L75">                                    }));</span>
-<span class="fc" id="L76">                            return;</span>
+<span class="fc" id="L61">        disposables.add(encounterOpponentsService.getEncounterOpponents(cache.getJoinedRegion()._id(), encounter._id())</span>
+<span class="fc" id="L62">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L63">                .subscribe(ops -&gt; {</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">                    for (Opponent o : ops) {</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">                        if (!(o.trainer().equals(cache.getTrainer()._id()))) {</span>
+<span class="fc" id="L66">                            disposables.add(trainerService.getTrainer(cache.getJoinedRegion()._id(), o.trainer())</span>
+<span class="fc" id="L67">                                    .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L68">                                    .subscribe(t -&gt; {</span>
+<span class="fc" id="L69">                                        headline.setText(t.name() + &quot; &quot; + resources.getString(&quot;npcStart&quot;));</span>
+<span class="fc" id="L70">                                        disposables.add(presetsService</span>
+<span class="fc" id="L71">                                                .getCharacterSprites(t.image(), true)</span>
+<span class="fc" id="L72">                                                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L73">                                                .subscribe(i -&gt; {</span>
+<span class="fc" id="L74">                                                    image.setImage(i);</span>
+<span class="fc" id="L75">                                                    image.setViewport(PREVIEW_VIEWPORT);</span>
+<span class="fc" id="L76">                                                    image.setFitWidth(32 * PREVIEW_SCALING);</span>
+<span class="fc" id="L77">                                                    image.setFitHeight(64 * PREVIEW_SCALING);</span>
+<span class="fc" id="L78">                                                }));</span>
+<span class="fc" id="L79">                                    }));</span>
+<span class="fc" id="L80">                            return;</span>
                         }
-<span class="nc" id="L78">                    }</span>
-<span class="nc" id="L79">                }));</span>
+<span class="nc" id="L82">                    }</span>
+<span class="nc" id="L83">                }));</span>
 
-<span class="fc" id="L81">        return parent;</span>
+<span class="fc" id="L85">        return parent;</span>
     }
     @FXML
     public void startFight() {
-        //TODO start EncounterScreen
-<span class="nc" id="L86">    }</span>
+<span class="nc" id="L89">        disposables.add(encounterOpponentsService.getTrainerOpponents(cache.getJoinedRegion()._id(),</span>
+<span class="nc" id="L90">                        cache.getTrainer()._id())</span>
+<span class="nc" id="L91">                .map(o -&gt; {</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">                    if (o.size() == 1) {</span>
+<span class="nc" id="L93">                        List&lt;Monster&gt; myMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), cache.getTrainer()._id()).blockingFirst();</span>
+<span class="nc" id="L94">                        List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(0).trainer()).blockingFirst();</span>
+                        //noinspection OptionalGetWithoutIsPresent
+<span class="nc" id="L96">                        encounterController.setOwnMonster(myMonsters.stream().filter(m -&gt; m._id().equals(cache.getTrainer().team().stream().findFirst().get())).findFirst().orElseThrow());</span>
+<span class="nc" id="L97">                        encounterController.setEnemyMonster(enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(0).monster())).findFirst().orElseThrow());</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">                    } else if (o.size() == 2) {</span>
+<span class="nc" id="L99">                        List&lt;Monster&gt; myMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), cache.getTrainer()._id()).blockingFirst();</span>
+<span class="nc" id="L100">                        List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(0).trainer()).blockingFirst();</span>
+<span class="nc" id="L101">                        List&lt;Monster&gt; enemyAllyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(1).trainer()).blockingFirst();</span>
+                        //noinspection OptionalGetWithoutIsPresent
+<span class="nc" id="L103">                        encounterController.setOwnMonster(myMonsters.stream().filter(m -&gt; m._id().equals(cache.getTrainer().team().stream().findFirst().get())).findFirst().orElseThrow());</span>
+<span class="nc" id="L104">                        encounterController.setEnemyMonster(enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(0).monster())).findFirst().orElseThrow());</span>
+<span class="nc" id="L105">                        encounterController.setEnemyAllyMonster(enemyAllyMonsters.stream().filter(m -&gt; m._id().equals(o.get(1).monster())).findFirst().orElseThrow());</span>
+                    }
+<span class="nc" id="L107">                    return o;</span>
+                })
+<span class="nc" id="L109">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L110">                .subscribe(o -&gt; {</span>
+<span class="nc" id="L111">                    encounterController.init();</span>
+<span class="nc" id="L112">                    app.show(encounterController);</span>
+<span class="nc" id="L113">                }));</span>
+<span class="nc" id="L114">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
