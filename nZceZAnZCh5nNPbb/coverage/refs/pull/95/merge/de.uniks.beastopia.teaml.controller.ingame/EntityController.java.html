@@ -62,14 +62,14 @@ public class EntityController extends Controller {
     public void init() {
 <span class="fc" id="L63">        super.init();</span>
 <span class="fc" id="L64">        direction = Direction.DOWN;</span>
-<span class="fc" id="L65">        listenToMovements();</span>
+//        listenToMovements();
 <span class="fc" id="L66">    }</span>
 
     private void listenToMovements() {
-<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (eventListener != null) {</span>
-<span class="fc" id="L70">            eventListener.dispose();</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (eventListener != null) {</span>
+<span class="nc" id="L70">            eventListener.dispose();</span>
         }
-<span class="fc" id="L72">        eventListener = udpEventListener.listen(&quot;areas.*.trainers.&quot; + trainer._id() + &quot;.moved&quot;, MoveTrainerDto.class).observeOn(FX_SCHEDULER).subscribe(event -&gt; {</span>
+<span class="nc" id="L72">        eventListener = udpEventListener.listen(&quot;areas.*.trainers.&quot; + trainer._id() + &quot;.moved&quot;, MoveTrainerDto.class).observeOn(FX_SCHEDULER).subscribe(event -&gt; {</span>
 <span class="nc" id="L73">            resetUpdateTimer();</span>
 <span class="nc bnc" id="L74" title="All 2 branches missed.">            if (event.data() == null) {</span>
 <span class="nc" id="L75">                return;</span>
@@ -78,10 +78,10 @@ public class EntityController extends Controller {
 <span class="nc" id="L78">        }, error -&gt; {</span>
 <span class="nc" id="L79">            throw new RuntimeException(error);</span>
         });
-<span class="fc" id="L81">        resetUpdateTimer();</span>
-<span class="fc" id="L82">    }</span>
+<span class="nc" id="L81">        resetUpdateTimer();</span>
+<span class="nc" id="L82">    }</span>
 
-    private void updateTrainer(MoveTrainerDto data) {
+    public void updateTrainer(MoveTrainerDto data) {
 <span class="nc bnc" id="L85" title="All 5 branches missed.">        switch (data.direction()) {</span>
 <span class="nc" id="L86">            case 0 -&gt; direction = Direction.RIGHT;</span>
 <span class="nc" id="L87">            case 1 -&gt; direction = Direction.UP;</span>
@@ -94,20 +94,20 @@ public class EntityController extends Controller {
 <span class="nc" id="L94">            trainer = new Trainer(trainer.createdAt(), trainer.updatedAt(), trainer._id(), trainer.region(),</span>
 <span class="nc" id="L95">                    trainer.user(), trainer.name(), trainer.image(), trainer.team(), trainer.coins(), data.area(), trainer.x(),</span>
 <span class="nc" id="L96">                    trainer.y(), trainer.direction(), trainer.npc());</span>
-<span class="nc" id="L97">            listenToMovements();</span>
+//            listenToMovements();
         }
 <span class="nc" id="L99">        onTrainerUpdate.accept(data);</span>
 <span class="nc" id="L100">    }</span>
 
     private void resetUpdateTimer() {
-<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (timer != null) {</span>
-<span class="fc" id="L104">            timer.cancel();</span>
-<span class="fc" id="L105">            timer.purge();</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (timer != null) {</span>
+<span class="nc" id="L104">            timer.cancel();</span>
+<span class="nc" id="L105">            timer.purge();</span>
         }
-<span class="fc" id="L107">        timer = new Timer();</span>
+<span class="nc" id="L107">        timer = new Timer();</span>
 //        System.out.println(&quot;Resetting timer for trainer: &quot; + trainer._id() + &quot; in area: &quot; + trainer.area());
-<span class="fc" id="L109">        timer.schedule(createUpdateTimerTask(), 3000);</span>
-<span class="fc" id="L110">    }</span>
+<span class="nc" id="L109">        timer.schedule(createUpdateTimerTask(), 3000);</span>
+<span class="nc" id="L110">    }</span>
 
     public void setTrainer(Trainer trainer) {
 <span class="fc" id="L113">        this.trainer = trainer;</span>
@@ -118,15 +118,15 @@ public class EntityController extends Controller {
     }
 
     private TimerTask createUpdateTimerTask() {
-<span class="fc" id="L121">        EntityController self = this;</span>
-<span class="fc" id="L122">        return new TimerTask() {</span>
+<span class="nc" id="L121">        EntityController self = this;</span>
+<span class="nc" id="L122">        return new TimerTask() {</span>
             @Override
             public void run() {
-<span class="fc" id="L125">                self.onUI(() -&gt; {</span>
+<span class="nc" id="L125">                self.onUI(() -&gt; {</span>
 //                    System.out.println(&quot;Reconnecting to trainer update for: &quot; + trainer._id() + &quot; in area: &quot; + trainer.area());
-<span class="fc" id="L127">                    listenToMovements();</span>
-<span class="fc" id="L128">                });</span>
-<span class="fc" id="L129">            }</span>
+<span class="nc" id="L127">                    listenToMovements();</span>
+<span class="nc" id="L128">                });</span>
+<span class="nc" id="L129">            }</span>
         };
     }
 
@@ -162,7 +162,7 @@ public class EntityController extends Controller {
 
     @Override
     public void destroy() {
-<span class="nc" id="L165">        eventListener.dispose();</span>
+//        eventListener.dispose();
 <span class="nc" id="L166">        super.destroy();</span>
 <span class="nc" id="L167">    }</span>
 }
