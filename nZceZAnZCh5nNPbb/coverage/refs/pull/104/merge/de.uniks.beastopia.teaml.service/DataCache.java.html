@@ -281,12 +281,19 @@ public class DataCache {
 <span class="nc" id="L281">        return this.currentOpponents;</span>
     }
 
+    public Opponent getOpponent(String trainerId) {
+<span class="nc" id="L285">        return currentOpponents.stream()</span>
+<span class="nc" id="L286">                .filter(o -&gt; o.trainer().equals(trainerId))</span>
+<span class="nc" id="L287">                .findFirst()</span>
+<span class="nc" id="L288">                .orElse(null);</span>
+    }
+
     public void setCurrentEncounter(Encounter encounter) {
-<span class="nc" id="L285">        this.currentEncounter = encounter;</span>
-<span class="nc" id="L286">    }</span>
+<span class="nc" id="L292">        this.currentEncounter = encounter;</span>
+<span class="nc" id="L293">    }</span>
 
     public Encounter getCurrentEncounter() {
-<span class="nc" id="L289">        return this.currentEncounter;</span>
+<span class="nc" id="L296">        return this.currentEncounter;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
