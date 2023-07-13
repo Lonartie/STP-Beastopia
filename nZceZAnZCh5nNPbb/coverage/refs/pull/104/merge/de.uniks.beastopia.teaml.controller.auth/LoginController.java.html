@@ -76,88 +76,94 @@ public class LoginController extends Controller {
 <span class="nc" id="L76">            disposables.add(authService.refresh().observeOn(FX_SCHEDULER).subscribe(</span>
                     lr -&gt; {
 <span class="nc" id="L78">                        app.show(menuControllerProvider.get());</span>
-<span class="nc" id="L79">                        loadingPage.setDone();</span>
-<span class="nc" id="L80">                    },</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">                        if (loadingPage != null) {</span>
+<span class="nc" id="L80">                            loadingPage.setDone();</span>
+                        }
+<span class="nc" id="L82">                    },</span>
                     error -&gt; {
-<span class="nc" id="L82">                        loadingPage.setDone();</span>
-<span class="nc" id="L83">                        Dialog.error(error, &quot;Remember me failed!&quot;);</span>
-<span class="nc" id="L84">                    }));</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">                        if (loadingPage != null) {</span>
+<span class="nc" id="L85">                            loadingPage.setDone();</span>
+                        }
+<span class="nc" id="L87">                        Dialog.error(error, &quot;Remember me failed!&quot;);</span>
+<span class="nc" id="L88">                    }));</span>
         }
-<span class="fc" id="L86">        userHistory = prefs.getUserHistory();</span>
-<span class="fc" id="L87">        Collections.reverse(userHistory);</span>
-<span class="fc" id="L88">    }</span>
+<span class="fc" id="L90">        userHistory = prefs.getUserHistory();</span>
+<span class="fc" id="L91">        Collections.reverse(userHistory);</span>
+<span class="fc" id="L92">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L92">        loadingPage = LoadingPage.makeLoadingPage(super.render());</span>
+<span class="fc" id="L96">        loadingPage = LoadingPage.makeLoadingPage(super.render());</span>
 
-<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        if (!prefs.isRememberMe()) {</span>
-<span class="fc" id="L95">            onUI(() -&gt; loadingPage.setDone());</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">        if (!prefs.isRememberMe()) {</span>
+<span class="fc" id="L99">            onUI(() -&gt; loadingPage.setDone());</span>
         }
 
-<span class="fc" id="L98">        banner.setImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/beastopia_banner.png&quot;))));</span>
-<span class="fc" id="L99">        usernameInput.valueProperty().bindBidirectional(username);</span>
-<span class="fc" id="L100">        passwordInput.textProperty().bindBidirectional(password);</span>
-<span class="fc" id="L101">        usernameInput.getItems().addAll(userHistory);</span>
-<span class="fc" id="L102">        usernameInput.setOnAction(event -&gt; username.set(usernameInput.getSelectionModel().getSelectedItem()));</span>
-<span class="fc" id="L103">        usernameInput.valueProperty().addListener((observable, oldValue, newValue) -&gt; {</span>
-<span class="pc bpc" id="L104" title="1 of 2 branches missed.">            if (newValue != null) {</span>
-<span class="fc" id="L105">                username.set(newValue);</span>
+<span class="fc" id="L102">        banner.setImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/beastopia_banner.png&quot;))));</span>
+<span class="fc" id="L103">        usernameInput.valueProperty().bindBidirectional(username);</span>
+<span class="fc" id="L104">        passwordInput.textProperty().bindBidirectional(password);</span>
+<span class="fc" id="L105">        usernameInput.getItems().addAll(userHistory);</span>
+<span class="fc" id="L106">        usernameInput.setOnAction(event -&gt; username.set(usernameInput.getSelectionModel().getSelectedItem()));</span>
+<span class="fc" id="L107">        usernameInput.valueProperty().addListener((observable, oldValue, newValue) -&gt; {</span>
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">            if (newValue != null) {</span>
+<span class="fc" id="L109">                username.set(newValue);</span>
             }
-<span class="fc" id="L107">        });</span>
-<span class="pc bpc" id="L108" title="1 of 2 branches missed.">        if (prefs.getLocale().contains(&quot;de&quot;)) {</span>
-<span class="nc" id="L109">            selectGermanLanguage.setSelected(true);</span>
+<span class="fc" id="L111">        });</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">        if (prefs.getLocale().contains(&quot;de&quot;)) {</span>
+<span class="nc" id="L113">            selectGermanLanguage.setSelected(true);</span>
         } else {
-<span class="fc" id="L111">            selectEnglishLanguage.setSelected(true);</span>
+<span class="fc" id="L115">            selectEnglishLanguage.setSelected(true);</span>
         }
 
 
-<span class="fc" id="L115">        isInValid = username.isEmpty().or(password.length().lessThan(8));</span>
-<span class="fc" id="L116">        loginButton.disableProperty().bind(isInValid);</span>
+<span class="fc" id="L119">        isInValid = username.isEmpty().or(password.length().lessThan(8));</span>
+<span class="fc" id="L120">        loginButton.disableProperty().bind(isInValid);</span>
 
-<span class="fc" id="L118">        return loadingPage.parent();</span>
+<span class="fc" id="L122">        return loadingPage.parent();</span>
     }
 
     @FXML
     public void login() {
-<span class="pc bpc" id="L123" title="1 of 2 branches missed.">        if (isInValid.get()) {</span>
-<span class="nc" id="L124">            return;</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (isInValid.get()) {</span>
+<span class="nc" id="L128">            return;</span>
         }
 
-<span class="fc" id="L127">        disposables.add(authService.login(usernameInput.getSelectionModel().getSelectedItem(), passwordInput.getText(), rememberMe.isSelected())</span>
-<span class="fc" id="L128">                .observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="fc" id="L131">        disposables.add(authService.login(usernameInput.getSelectionModel().getSelectedItem(), passwordInput.getText(), rememberMe.isSelected())</span>
+<span class="fc" id="L132">                .observeOn(FX_SCHEDULER).subscribe(</span>
                         lr -&gt; {
-<span class="pc bpc" id="L130" title="3 of 4 branches missed.">                            if (userHistory.size() == 5 &amp;&amp; !userHistory.contains(lr.name())) {</span>
-<span class="nc" id="L131">                                userHistory.remove(4);</span>
+<span class="pc bpc" id="L134" title="3 of 4 branches missed.">                            if (userHistory.size() == 5 &amp;&amp; !userHistory.contains(lr.name())) {</span>
+<span class="nc" id="L135">                                userHistory.remove(4);</span>
                             }
-<span class="fc" id="L133">                            Collections.reverse(userHistory);</span>
-<span class="pc bpc" id="L134" title="1 of 2 branches missed.">                            if (!userHistory.contains(lr.name())) {</span>
-<span class="fc" id="L135">                                userHistory.add(lr.name());</span>
+<span class="fc" id="L137">                            Collections.reverse(userHistory);</span>
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">                            if (!userHistory.contains(lr.name())) {</span>
+<span class="fc" id="L139">                                userHistory.add(lr.name());</span>
                             }
-<span class="fc" id="L137">                            prefs.setUserHistory(userHistory);</span>
-<span class="fc" id="L138">                            app.show(menuControllerProvider.get());</span>
-<span class="fc" id="L139">                        },</span>
-<span class="fc" id="L140">                        error -&gt; Dialog.error(error, &quot;Login failed!&quot;)));</span>
-<span class="fc" id="L141">    }</span>
+<span class="fc" id="L141">                            prefs.setUserHistory(userHistory);</span>
+<span class="fc" id="L142">                            app.show(menuControllerProvider.get());</span>
+<span class="fc" id="L143">                        },</span>
+<span class="fc" id="L144">                        error -&gt; Dialog.error(error, &quot;Login failed!&quot;)));</span>
+<span class="fc" id="L145">    }</span>
 
     @FXML
     public void register() {
-<span class="fc" id="L145">        app.show(registrationControllerProvider.get());</span>
-<span class="fc" id="L146">    }</span>
+<span class="fc" id="L149">        app.show(registrationControllerProvider.get());</span>
+<span class="fc" id="L150">    }</span>
 
     public void setDe() {
-<span class="nc" id="L149">        setLanguage(Locale.GERMAN);</span>
-<span class="nc" id="L150">    }</span>
-
-    public void setEn() {
-<span class="nc" id="L153">        setLanguage(Locale.ENGLISH);</span>
+<span class="nc" id="L153">        setLanguage(Locale.GERMAN);</span>
 <span class="nc" id="L154">    }</span>
 
+    public void setEn() {
+<span class="nc" id="L157">        setLanguage(Locale.ENGLISH);</span>
+<span class="nc" id="L158">    }</span>
+
     private void setLanguage(Locale locale) {
-<span class="nc" id="L157">        prefs.setLocale(locale.toLanguageTag());</span>
-<span class="nc" id="L158">        resources = resourcesProvider.get();</span>
-<span class="nc" id="L159">        app.update();</span>
-<span class="nc" id="L160">        loadingPage.setDone();</span>
-<span class="nc" id="L161">    }</span>
+<span class="nc" id="L161">        prefs.setLocale(locale.toLanguageTag());</span>
+<span class="nc" id="L162">        resources = resourcesProvider.get();</span>
+<span class="nc" id="L163">        app.update();</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (loadingPage != null) {</span>
+<span class="nc" id="L165">            loadingPage.setDone();</span>
+        }
+<span class="nc" id="L167">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
