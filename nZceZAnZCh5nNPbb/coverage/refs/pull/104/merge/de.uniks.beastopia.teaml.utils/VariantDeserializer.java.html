@@ -26,7 +26,7 @@ public class VariantDeserializer&lt;T, U&gt; extends StdDeserializer&lt;Variant&
 <span class="nc bnc" id="L26" title="All 2 branches missed.">        if (superClass instanceof ParameterizedType parameterizedType) {</span>
 <span class="nc" id="L27">            Type[] typeArguments = parameterizedType.getActualTypeArguments();</span>
 
-<span class="nc bnc" id="L29" title="All 2 branches missed.">            if (typeArguments.length &gt;= 2) {</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">            if (typeArguments.length == 2) {</span>
 <span class="nc" id="L30">                Type tType = typeArguments[0];</span>
 <span class="nc" id="L31">                Type uType = typeArguments[1];</span>
 

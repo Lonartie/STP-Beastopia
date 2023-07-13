@@ -113,7 +113,7 @@ public class ChangeBeastController extends Controller {
         } else {
 <span class="nc" id="L114">            disposables.add(encounterOpponentsService.getTrainerOpponents(cache.getJoinedRegion()._id(), cache.getTrainer()._id())</span>
 <span class="nc" id="L115">                    .subscribe(opponents -&gt; {</span>
-<span class="nc" id="L116">                        String opponentId = cache.getOpponent(cache.getTrainer()._id())._id();</span>
+<span class="nc" id="L116">                        String opponentId = cache.getOpponentByTrainerID(cache.getTrainer()._id())._id();</span>
 <span class="nc bnc" id="L117" title="All 2 branches missed.">                        String monsterId = (opponents.get(0).monster() == null) ? fightingMonsters.get(0)._id() : null;</span>
 
 <span class="nc" id="L119">                        disposables.add(encounterOpponentsService.updateEncounterOpponent(</span>

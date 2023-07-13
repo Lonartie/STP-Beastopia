@@ -281,7 +281,7 @@ public class DataCache {
 <span class="nc" id="L281">        return this.currentOpponents;</span>
     }
 
-    public Opponent getOpponent(String trainerId) {
+    public Opponent getOpponentByTrainerID(String trainerId) {
 <span class="nc" id="L285">        return currentOpponents.stream()</span>
 <span class="nc" id="L286">                .filter(o -&gt; o.trainer().equals(trainerId))</span>
 <span class="nc" id="L287">                .findFirst()</span>
