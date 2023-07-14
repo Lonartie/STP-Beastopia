@@ -2,7 +2,6 @@
 
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.rest.Monster;
-import de.uniks.beastopia.teaml.rest.Trainer;
 import de.uniks.beastopia.teaml.service.DataCache;
 import de.uniks.beastopia.teaml.service.EncounterOpponentsService;
 import de.uniks.beastopia.teaml.service.PresetsService;
@@ -45,104 +44,94 @@ public class FightWildBeastController extends Controller {
     private int type;
 
     @Inject
-<span class="fc" id="L48">    public FightWildBeastController() {</span>
+<span class="fc" id="L47">    public FightWildBeastController() {</span>
 
-<span class="fc" id="L50">    }</span>
+<span class="fc" id="L49">    }</span>
 
     public void setControllerInfo(String beastId, String trainerId) {
-<span class="fc" id="L53">        this.beastId = beastId;</span>
-<span class="fc" id="L54">        this.trainerId = trainerId;</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L52">        this.beastId = beastId;</span>
+<span class="fc" id="L53">        this.trainerId = trainerId;</span>
+<span class="fc" id="L54">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L59">        return resources.getString(&quot;titleEncounter&quot;);</span>
+<span class="fc" id="L58">        return resources.getString(&quot;titleEncounter&quot;);</span>
     }
 
     @Override
     public Parent render() {
-<span class="fc" id="L64">        Parent parent = super.render();</span>
+<span class="fc" id="L63">        Parent parent = super.render();</span>
 
-<span class="fc" id="L66">        disposables.add(trainerService.getTrainerMonster(prefs.getRegionID(), trainerId, beastId)</span>
-<span class="fc" id="L67">                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L68">                .concatMap(b -&gt; { //Nacheinander ausführen</span>
-<span class="fc" id="L69">                    this.type = b.type();</span>
-<span class="fc" id="L70">                    return presetsService.getMonsterType(this.type);</span>
-<span class="fc" id="L71">                }).observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L72">                .subscribe(type -&gt; {</span>
-<span class="pc bpc" id="L73" title="1 of 2 branches missed.">                    if (prefs.getLocale().contains(&quot;de&quot;)) {</span>
-<span class="nc" id="L74">                        headline.setText(&quot;Ein wildes &quot; + type.name() + &quot; erscheint!&quot;);</span>
+<span class="fc" id="L65">        disposables.add(trainerService.getTrainerMonster(prefs.getRegionID(), trainerId, beastId)</span>
+<span class="fc" id="L66">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L67">                .concatMap(b -&gt; { //Nacheinander ausführen</span>
+<span class="fc" id="L68">                    this.type = b.type();</span>
+<span class="fc" id="L69">                    return presetsService.getMonsterType(this.type);</span>
+<span class="fc" id="L70">                }).observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L71">                .subscribe(type -&gt; {</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">                    if (prefs.getLocale().contains(&quot;de&quot;)) {</span>
+<span class="nc" id="L73">                        headline.setText(&quot;Ein wildes &quot; + type.name() + &quot; erscheint!&quot;);</span>
                     } else {
-<span class="fc" id="L76">                        headline.setText(&quot;A wild &quot; + type.name() + &quot; appears!&quot;);</span>
+<span class="fc" id="L75">                        headline.setText(&quot;A wild &quot; + type.name() + &quot; appears!&quot;);</span>
                     }
-<span class="fc" id="L78">                }));</span>
+<span class="fc" id="L77">                }));</span>
 
-<span class="fc" id="L80">        disposables.add(trainerService.getTrainerMonster(prefs.getRegionID(), trainerId, beastId)</span>
-<span class="fc" id="L81">                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L82">                .concatMap(b -&gt; { //Nacheinander ausführen</span>
-<span class="fc" id="L83">                    this.type = b.type();</span>
-<span class="fc" id="L84">                    return presetsService.getMonsterImage(this.type);</span>
-<span class="fc" id="L85">                }).observeOn(FX_SCHEDULER).subscribe(beastImage -&gt; image.setImage(beastImage)));</span>
+<span class="fc" id="L79">        disposables.add(trainerService.getTrainerMonster(prefs.getRegionID(), trainerId, beastId)</span>
+<span class="fc" id="L80">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L81">                .concatMap(b -&gt; { //Nacheinander ausführen</span>
+<span class="fc" id="L82">                    this.type = b.type();</span>
+<span class="fc" id="L83">                    return presetsService.getMonsterImage(this.type);</span>
+<span class="fc" id="L84">                }).observeOn(FX_SCHEDULER).subscribe(beastImage -&gt; image.setImage(beastImage)));</span>
 
-<span class="fc" id="L87">        return parent;</span>
+<span class="fc" id="L86">        return parent;</span>
     }
 
     @FXML
     public void startFight() {
-<span class="nc" id="L92">        disposables.add(encounterOpponentsService.getEncounterOpponents(cache.getJoinedRegion()._id(), cache.getCurrentEncounter()._id())</span>
-<span class="nc" id="L93">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L94">                .subscribe(o -&gt; {</span>
-<span class="nc" id="L95">                    cache.setCurrentOpponents(o);</span>
+<span class="nc" id="L91">        disposables.add(encounterOpponentsService.getEncounterOpponents(cache.getJoinedRegion()._id(), cache.getCurrentEncounter()._id())</span>
+<span class="nc" id="L92">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L93">                .subscribe(o -&gt; {</span>
+<span class="nc" id="L94">                    cache.setCurrentOpponents(o);</span>
 
-<span class="nc" id="L97">                    Monster ownMonster = null;</span>
-<span class="nc" id="L98">                    Monster enemyMonster = null;</span>
-<span class="nc" id="L99">                    Monster allyMonster = null;</span>
-<span class="nc" id="L100">                    Monster enemyAllyMonster = null;</span>
-<span class="nc" id="L101">                    Trainer enemyTrainer = null;</span>
-<span class="nc" id="L102">                    Trainer enemyAllyTrainer = null;</span>
-<span class="nc" id="L103">                    Trainer allyTrainer = null;</span>
+<span class="nc" id="L96">                    Monster allyMonster = null;</span>
+<span class="nc" id="L97">                    Monster enemyAllyMonster = null;</span>
+<span class="nc" id="L98">                    String enemyAllyTrainer = null;</span>
+<span class="nc" id="L99">                    String allyTrainer = null;</span>
 
-<span class="nc bnc" id="L105" title="All 2 branches missed.">                    if (o.size() == 2) {</span>
-<span class="nc" id="L106">                        List&lt;Monster&gt; myMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(1).trainer()).blockingFirst();</span>
-<span class="nc" id="L107">                        List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(0).trainer()).blockingFirst();</span>
-<span class="nc" id="L108">                        ownMonster = myMonsters.stream().filter(m -&gt; m._id().equals(o.get(1).monster())).findFirst().orElseThrow();</span>
-<span class="nc" id="L109">                        enemyMonster = enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(0).monster())).findFirst().orElseThrow();</span>
-<span class="nc" id="L110">                        enemyTrainer = cache.getTrainer(o.get(0).trainer());</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">                    } else if (o.size() == 3) {</span>
-<span class="nc" id="L112">                        List&lt;Monster&gt; myMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(0).trainer()).blockingFirst();</span>
-<span class="nc" id="L113">                        List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(1).trainer()).blockingFirst();</span>
-<span class="nc" id="L114">                        List&lt;Monster&gt; enemyAllyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(2).trainer()).blockingFirst();</span>
-<span class="nc" id="L115">                        ownMonster = myMonsters.stream().filter(m -&gt; m._id().equals(o.get(0).monster())).findFirst().orElseThrow();</span>
-<span class="nc" id="L116">                        enemyMonster = enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(1).monster())).findFirst().orElseThrow();</span>
-<span class="nc" id="L117">                        enemyAllyMonster = enemyAllyMonsters.stream().filter(m -&gt; m._id().equals(o.get(2).monster())).findFirst().orElseThrow();</span>
-<span class="nc" id="L118">                        enemyTrainer = cache.getTrainer(o.get(1).trainer());</span>
-<span class="nc" id="L119">                        enemyAllyTrainer = cache.getTrainer(o.get(2).trainer());</span>
-<span class="nc bnc" id="L120" title="All 2 branches missed.">                    } else if (o.size() == 4) {</span>
-<span class="nc" id="L121">                        List&lt;Monster&gt; myMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(0).trainer()).blockingFirst();</span>
-<span class="nc" id="L122">                        List&lt;Monster&gt; myAllyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(1).trainer()).blockingFirst();</span>
-<span class="nc" id="L123">                        List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(2).trainer()).blockingFirst();</span>
-<span class="nc" id="L124">                        List&lt;Monster&gt; enemyAllyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(3).trainer()).blockingFirst();</span>
-<span class="nc" id="L125">                        ownMonster = myMonsters.stream().filter(m -&gt; m._id().equals(o.get(0).monster())).findFirst().orElseThrow();</span>
-<span class="nc" id="L126">                        allyMonster = myAllyMonsters.stream().filter(m -&gt; m._id().equals(o.get(1).monster())).findFirst().orElseThrow();</span>
-<span class="nc" id="L127">                        enemyMonster = enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(2).monster())).findFirst().orElseThrow();</span>
-<span class="nc" id="L128">                        enemyAllyMonster = enemyAllyMonsters.stream().filter(m -&gt; m._id().equals(o.get(3).monster())).findFirst().orElseThrow();</span>
-<span class="nc" id="L129">                        allyTrainer = cache.getTrainer(o.get(1).trainer());</span>
-<span class="nc" id="L130">                        enemyTrainer = cache.getTrainer(o.get(2).trainer());</span>
-<span class="nc" id="L131">                        enemyAllyTrainer = cache.getTrainer(o.get(3).trainer());</span>
+<span class="nc" id="L101">                    String enemyTrainer = o.get(0).trainer();</span>
+<span class="nc" id="L102">                    List&lt;Monster&gt; myMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(1).trainer()).blockingFirst();</span>
+<span class="nc" id="L103">                    List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(0).trainer()).blockingFirst();</span>
+<span class="nc" id="L104">                    Monster ownMonster = myMonsters.stream().filter(m -&gt; m._id().equals(o.get(1).monster())).findFirst().orElseThrow();</span>
+<span class="nc" id="L105">                    Monster enemyMonster = enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(0).monster())).findFirst().orElseThrow();</span>
+
+<span class="nc bnc" id="L107" title="All 2 branches missed.">                    if (o.size() == 3) {</span>
+<span class="nc" id="L108">                        List&lt;Monster&gt; enemyAllyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(2).trainer()).blockingFirst();</span>
+<span class="nc" id="L109">                        enemyAllyMonster = enemyAllyMonsters.stream().filter(m -&gt; m._id().equals(o.get(2).monster())).findFirst().orElseThrow();</span>
+<span class="nc" id="L110">                        enemyAllyTrainer = o.get(2).trainer();</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">                    } else if (o.size() == 4) {</span>
+<span class="nc" id="L112">                        List&lt;Monster&gt; myAllyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(1).trainer()).blockingFirst();</span>
+<span class="nc" id="L113">                        List&lt;Monster&gt; enemyAllyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(3).trainer()).blockingFirst();</span>
+<span class="nc" id="L114">                        allyMonster = myAllyMonsters.stream().filter(m -&gt; m._id().equals(o.get(1).monster())).findFirst().orElseThrow();</span>
+<span class="nc" id="L115">                        enemyAllyMonster = enemyAllyMonsters.stream().filter(m -&gt; m._id().equals(o.get(3).monster())).findFirst().orElseThrow();</span>
+<span class="nc" id="L116">                        allyTrainer = o.get(1).trainer();</span>
+<span class="nc" id="L117">                        enemyTrainer = o.get(0).trainer();</span>
+<span class="nc" id="L118">                        enemyAllyTrainer = o.get(3).trainer();</span>
                     }
 
-<span class="nc" id="L134">                    EncounterController controller = encounterControllerProvider.get()</span>
-<span class="nc" id="L135">                            .setOwnMonster(ownMonster)</span>
-<span class="nc" id="L136">                            .setEnemyMonster(enemyMonster)</span>
-<span class="nc" id="L137">                            .setAllyMonster(allyMonster)</span>
-<span class="nc" id="L138">                            .setEnemyAllyMonster(enemyAllyMonster)</span>
-<span class="nc" id="L139">                            .setEnemyTrainer(enemyTrainer)</span>
-<span class="nc" id="L140">                            .setAllyTrainer(allyTrainer)</span>
-<span class="nc" id="L141">                            .setEnemyAllyTrainer(enemyAllyTrainer);</span>
+<span class="nc" id="L121">                    EncounterController controller = encounterControllerProvider.get()</span>
+<span class="nc" id="L122">                            .setOwnMonster(ownMonster)</span>
+<span class="nc" id="L123">                            .setEnemyMonster(enemyMonster)</span>
+<span class="nc" id="L124">                            .setOwnMonsters(myMonsters)</span>
+<span class="nc" id="L125">                            .setEnemyMonsters(enemyMonsters)</span>
+<span class="nc" id="L126">                            .setAllyMonster(allyMonster)</span>
+<span class="nc" id="L127">                            .setEnemyAllyMonster(enemyAllyMonster)</span>
+<span class="nc" id="L128">                            .setEnemyTrainer(enemyTrainer)</span>
+<span class="nc" id="L129">                            .setAllyTrainer(allyTrainer)</span>
+<span class="nc" id="L130">                            .setEnemyAllyTrainer(enemyAllyTrainer);</span>
 
-<span class="nc" id="L143">                    app.show(controller);</span>
-<span class="nc" id="L144">                }));</span>
+<span class="nc" id="L132">                    app.show(controller);</span>
+<span class="nc" id="L133">                }));</span>
 
-<span class="nc" id="L146">    }</span>
+<span class="nc" id="L135">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
