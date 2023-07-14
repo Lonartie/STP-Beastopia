@@ -80,12 +80,13 @@ public class UserInfoController extends Controller {
 <span class="fc bfc" id="L80" title="All 2 branches covered.">        for (Achievement achievement : userAchievements) {</span>
 <span class="pc bpc" id="L81" title="1 of 2 branches missed.">            String buttonText = cache.getAchievementDescriptions().get(achievement.id()) + (achievement.progress() &lt; 100.0 ? (&quot; (&quot; + achievement.progress() + &quot;/100)&quot;) : &quot;&quot;);</span>
 <span class="fc" id="L82">            Button button = new Button(buttonText);</span>
-<span class="fc" id="L83">            button.setPrefWidth(Double.MAX_VALUE);</span>
-<span class="fc" id="L84">            achievementPane.getChildren().add(button);</span>
-<span class="fc" id="L85">        }</span>
+<span class="fc" id="L83">            button.setStyle(&quot;-fx-font-size: 12px;&quot;);</span>
+<span class="fc" id="L84">            button.setPrefWidth(Double.MAX_VALUE);</span>
+<span class="fc" id="L85">            achievementPane.getChildren().add(button);</span>
+<span class="fc" id="L86">        }</span>
 
-<span class="fc" id="L87">        achievementList.setContent(achievementPane);</span>
-<span class="fc" id="L88">        return parent;</span>
+<span class="fc" id="L88">        achievementList.setContent(achievementPane);</span>
+<span class="fc" id="L89">        return parent;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
