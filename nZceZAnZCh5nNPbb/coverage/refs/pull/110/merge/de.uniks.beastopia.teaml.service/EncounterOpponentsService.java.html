@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EncounterOpponentsService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.service</a> &gt; <span class="el_source">EncounterOpponentsService.java</span></div><h1>EncounterOpponentsService.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.service;
+
+import de.uniks.beastopia.teaml.rest.*;
+import de.uniks.beastopia.teaml.utils.Variant;
+import io.reactivex.rxjava3.core.Observable;
+
+import javax.inject.Inject;
+import java.util.List;
+
+public class EncounterOpponentsService {
+    @Inject
+    EncounterOpponentsApiService encounterOpponentsApiService;
+
+    @Inject
+<span class="fc" id="L15">    public EncounterOpponentsService() {</span>
+<span class="fc" id="L16">    }</span>
+
+    public Observable&lt;List&lt;Opponent&gt;&gt; getTrainerOpponents(String regionId, String trainerId) {
+<span class="fc" id="L19">        return encounterOpponentsApiService.getTrainerOpponents(regionId, trainerId);</span>
+    }
+
+    public Observable&lt;List&lt;Opponent&gt;&gt; getEncounterOpponents(String regionId, String encounterId) {
+<span class="fc" id="L23">        return encounterOpponentsApiService.getEncounterOpponents(regionId, encounterId);</span>
+    }
+
+    public Observable&lt;Opponent&gt; getEncounterOpponent(String regionId, String encounterId, String opponentId) {
+<span class="fc" id="L27">        return encounterOpponentsApiService.getEncounterOpponent(regionId, encounterId, opponentId);</span>
+    }
+
+    @SuppressWarnings(&quot;SameParameterValue&quot;)
+    public Observable&lt;Opponent&gt; updateEncounterOpponent(String regionId, String encounterId, String opponentId, String monster, AbilityMove abilityMove) {
+<span class="fc" id="L32">        Variant&lt;AbilityMove, ChangeMonsterMove&gt; move = new Variant&lt;&gt;();</span>
+<span class="fc" id="L33">        move.setT(abilityMove);</span>
+<span class="fc" id="L34">        return encounterOpponentsApiService.updateEncounterOpponent(regionId, encounterId, opponentId,</span>
+                new UpdateOpponentDto(monster, move));
+    }
+
+    @SuppressWarnings(&quot;SameParameterValue&quot;)
+    public Observable&lt;Opponent&gt; updateEncounterOpponent(String regionId, String encounterId, String opponentId, String monster, ChangeMonsterMove changeMonsterMove) {
+<span class="fc" id="L40">        Variant&lt;AbilityMove, ChangeMonsterMove&gt; move = new Variant&lt;&gt;();</span>
+<span class="fc" id="L41">        move.setU(changeMonsterMove);</span>
+<span class="fc" id="L42">        return encounterOpponentsApiService.updateEncounterOpponent(regionId, encounterId, opponentId,</span>
+                new UpdateOpponentDto(monster, move));
+    }
+
+    public Observable&lt;Opponent&gt; deleteOpponent(String region_id, String encounter_id, String opponent_id) {
+<span class="fc" id="L47">        return encounterOpponentsApiService.deleteOpponent(region_id, encounter_id, opponent_id);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
