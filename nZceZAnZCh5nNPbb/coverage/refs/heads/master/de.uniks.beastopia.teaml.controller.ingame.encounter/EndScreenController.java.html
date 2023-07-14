@@ -98,33 +98,35 @@ public class EndScreenController extends Controller {
     }
 
     public void onLeaveButtonClicked() {
-<span class="nc" id="L101">        app.show(ingameControllerProvider.get());</span>
-<span class="nc" id="L102">    }</span>
+<span class="nc" id="L101">        IngameController controller = ingameControllerProvider.get();</span>
+<span class="nc" id="L102">        controller.setRegion(dataCache.getJoinedRegion());</span>
+<span class="nc" id="L103">        app.show(controller);</span>
+<span class="nc" id="L104">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void setWinner(boolean winner) {
-<span class="nc" id="L106">        isWinner = winner;</span>
-<span class="nc" id="L107">    }</span>
+<span class="nc" id="L108">        isWinner = winner;</span>
+<span class="nc" id="L109">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void setWinnerMonster1(Monster winner1) {
-<span class="nc" id="L111">        this.winner1 = winner1;</span>
-<span class="nc" id="L112">    }</span>
+<span class="nc" id="L113">        this.winner1 = winner1;</span>
+<span class="nc" id="L114">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void setWinnerMonster2(Monster winner2) {
-<span class="nc" id="L116">        this.winner2 = winner2;</span>
-<span class="nc" id="L117">    }</span>
+<span class="nc" id="L118">        this.winner2 = winner2;</span>
+<span class="nc" id="L119">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void setLoserMonster1(Monster loser1) {
-<span class="nc" id="L121">        this.loser1 = loser1;</span>
-<span class="nc" id="L122">    }</span>
+<span class="nc" id="L123">        this.loser1 = loser1;</span>
+<span class="nc" id="L124">    }</span>
 
     @SuppressWarnings(&quot;unused&quot;)
     public void setLoserMonster2(Monster loser2) {
-<span class="nc" id="L126">        this.loser2 = loser2;</span>
-<span class="nc" id="L127">    }</span>
+<span class="nc" id="L128">        this.loser2 = loser2;</span>
+<span class="nc" id="L129">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
