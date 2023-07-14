@@ -756,7 +756,7 @@ public class IngameController extends Controller {
 <span class="nc" id="L756">                    PixelReader reader = image.getPixelReader();</span>
 <span class="nc" id="L757">                    WritableImage newImage = new WritableImage(reader, (int) viewPort.getMinX(), (int) viewPort.getMinY(), (int) viewPort.getWidth(), (int) viewPort.getHeight());</span>
 <span class="nc bnc" id="L758" title="All 2 branches missed.">                    if (trainer.npc().encountered().contains(cache.getTrainer()._id())) {</span>
-<span class="nc" id="L759">                        talk(newImage, &quot;Welcome back! \n You already received one starter Beast, have a nice day!&quot;</span>
+<span class="nc" id="L759">                        talk(newImage, &quot; Welcome back! \n You already received one starter Beast, have a nice day! &quot;</span>
                                 , null, null, null);
                     } else {
 <span class="nc" id="L762">                        List&lt;String&gt; beastNames = new ArrayList&lt;&gt;();</span>
@@ -769,7 +769,7 @@ public class IngameController extends Controller {
 <span class="nc" id="L769">                            Image beastImage = presetsService.getMonsterImage(id).blockingFirst();</span>
 <span class="nc" id="L770">                            beastImages.add(beastImage);</span>
 <span class="nc" id="L771">                        }</span>
-<span class="nc" id="L772">                        talk(newImage, &quot;Welcome! \n Please select a starter Beast.&quot;, beastNames, beastImages, (i -&gt; {</span>
+<span class="nc" id="L772">                        talk(newImage, &quot; Welcome! \n Please select a starter Beast. &quot;, beastNames, beastImages, (i -&gt; {</span>
 <span class="nc" id="L773">                            String message = &quot;Details: &quot; + monsterTypeDtoList.get(i).name() + &quot;\n&quot; + monsterTypeDtoList.get(i).description();</span>
 <span class="nc" id="L774">                            talk(newImage, message, List.of(&quot;Take it!&quot;, &quot;I don't want this one&quot;), null, (j -&gt; {</span>
 <span class="nc bnc" id="L775" title="All 2 branches missed.">                                if (j == 0) {</span>
@@ -791,7 +791,7 @@ public class IngameController extends Controller {
 <span class="nc" id="L791">                    Rectangle2D viewPort = new Rectangle2D(3 * 96, 32, 16, 32);</span>
 <span class="nc" id="L792">                    PixelReader reader = image.getPixelReader();</span>
 <span class="nc" id="L793">                    WritableImage newImage = new WritableImage(reader, (int) viewPort.getMinX(), (int) viewPort.getMinY(), (int) viewPort.getWidth(), (int) viewPort.getHeight());</span>
-<span class="nc" id="L794">                    talk(newImage, &quot;Hello! \t what can I do for you?&quot;, List.of(&quot;Heal all Beasts&quot;), null, (i -&gt; {</span>
+<span class="nc" id="L794">                    talk(newImage, &quot; Hello! \n what can I do for you? &quot;, List.of(&quot;Heal all Beasts&quot;), null, (i -&gt; {</span>
 <span class="nc" id="L795">                        udpEventListener.send(createTalkMessage(cache.getTrainer()._id(), trainer._id(), Optional.empty()));</span>
 <span class="nc" id="L796">                        closeTalk();</span>
 <span class="nc" id="L797">                    }));</span>
