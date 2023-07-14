@@ -36,9 +36,9 @@ public class StartFightNPCController extends Controller {
     EncounterController encounterController;
     @Inject
     PresetsService presetsService;
-<span class="fc" id="L39">    private int myTrainer = -5;</span>
-<span class="fc" id="L40">    private int enemyTrainer = -5;</span>
-<span class="fc" id="L41">    private int enemyAllyTrainer = -5;</span>
+<span class="fc" id="L39">    private int myTrainerOpponentIndex = -5;</span>
+<span class="fc" id="L40">    private int enemyTrainerOpponentIndex = -5;</span>
+<span class="fc" id="L41">    private int enemyAllyTrainerOpponentIndex = -5;</span>
 
     @Inject
 <span class="fc" id="L44">    public StartFightNPCController() {</span>
@@ -94,36 +94,36 @@ public class StartFightNPCController extends Controller {
 <span class="nc bnc" id="L94" title="All 2 branches missed.">                    if (o.size() == 2) {</span>
 <span class="nc bnc" id="L95" title="All 2 branches missed.">                        for (int i = 0; i &lt; o.size(); i++) {</span>
 <span class="nc bnc" id="L96" title="All 2 branches missed.">                            if (o.get(i).trainer().equals(cache.getTrainer()._id())) {</span>
-<span class="nc" id="L97">                                myTrainer = i;</span>
+<span class="nc" id="L97">                                myTrainerOpponentIndex = i;</span>
                             } else {
-<span class="nc" id="L99">                                enemyTrainer = i;</span>
+<span class="nc" id="L99">                                enemyTrainerOpponentIndex = i;</span>
                             }
                         }
 <span class="nc bnc" id="L102" title="All 2 branches missed.">                    } else if (o.size() == 3) {</span>
 <span class="nc bnc" id="L103" title="All 2 branches missed.">                        for (int i = 0; i &lt; o.size(); i++) {</span>
 <span class="nc bnc" id="L104" title="All 2 branches missed.">                            if (o.get(i).trainer().equals(cache.getTrainer()._id())) {</span>
-<span class="nc" id="L105">                                myTrainer = i;</span>
+<span class="nc" id="L105">                                myTrainerOpponentIndex = i;</span>
                             } else {
-<span class="nc bnc" id="L107" title="All 2 branches missed.">                                if (enemyTrainer == -5) {</span>
-<span class="nc" id="L108">                                    enemyTrainer = i;</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">                                if (enemyTrainerOpponentIndex == -5) {</span>
+<span class="nc" id="L108">                                    enemyTrainerOpponentIndex = i;</span>
                                 } else {
-<span class="nc" id="L110">                                    enemyAllyTrainer = i;</span>
+<span class="nc" id="L110">                                    enemyAllyTrainerOpponentIndex = i;</span>
                                 }
                             }
                         }
                     }
 
 <span class="nc" id="L116">                    List&lt;Monster&gt; myMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), cache.getTrainer()._id()).blockingFirst();</span>
-<span class="nc" id="L117">                    List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(enemyTrainer).trainer()).blockingFirst();</span>
-<span class="nc" id="L118">                    encounterController.setEnemyTrainer(o.get(enemyTrainer).trainer());</span>
+<span class="nc" id="L117">                    List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(enemyTrainerOpponentIndex).trainer()).blockingFirst();</span>
+<span class="nc" id="L118">                    encounterController.setEnemyTrainer(o.get(enemyTrainerOpponentIndex).trainer());</span>
                     //noinspection OptionalGetWithoutIsPresent
 <span class="nc" id="L120">                    encounterController.setOwnMonster(myMonsters.stream().filter(m -&gt; m._id().equals(cache.getTrainer().team().stream().findFirst().get())).findFirst().orElseThrow());</span>
-<span class="nc" id="L121">                    encounterController.setEnemyMonster(enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(enemyTrainer).monster())).findFirst().orElseThrow());</span>
+<span class="nc" id="L121">                    encounterController.setEnemyMonster(enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(enemyTrainerOpponentIndex).monster())).findFirst().orElseThrow());</span>
 
 <span class="nc bnc" id="L123" title="All 2 branches missed.">                    if (o.size() == 3) {</span>
 <span class="nc" id="L124">                        List&lt;Monster&gt; enemyAllyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(1).trainer()).blockingFirst();</span>
-<span class="nc" id="L125">                        encounterController.setEnemyAllyTrainer((o.get(enemyAllyTrainer).trainer()));</span>
-<span class="nc" id="L126">                        encounterController.setEnemyAllyMonster(enemyAllyMonsters.stream().filter(m -&gt; m._id().equals(o.get(enemyAllyTrainer).monster())).findFirst().orElseThrow());</span>
+<span class="nc" id="L125">                        encounterController.setEnemyAllyTrainer((o.get(enemyAllyTrainerOpponentIndex).trainer()));</span>
+<span class="nc" id="L126">                        encounterController.setEnemyAllyMonster(enemyAllyMonsters.stream().filter(m -&gt; m._id().equals(o.get(enemyAllyTrainerOpponentIndex).monster())).findFirst().orElseThrow());</span>
                     }
 <span class="nc" id="L128">                    return o;</span>
                 })
