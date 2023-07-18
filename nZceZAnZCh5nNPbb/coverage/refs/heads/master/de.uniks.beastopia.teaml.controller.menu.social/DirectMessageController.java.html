@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -23,7 +24,7 @@ import java.util.List;
 
 public class DirectMessageController extends Controller {
 
-<span class="fc" id="L26">    @SuppressWarnings(&quot;MismatchedQueryAndUpdateOfCollection&quot;)</span>
+<span class="fc" id="L27">    @SuppressWarnings(&quot;MismatchedQueryAndUpdateOfCollection&quot;)</span>
     private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();
 
     @FXML
@@ -53,134 +54,136 @@ public class DirectMessageController extends Controller {
     private Node rightSide;
     private Group currentGroup;
     ChatWindowController controller;
-<span class="fc" id="L56">    private boolean preventDefaultGroupLoading = false;</span>
+<span class="fc" id="L57">    private boolean preventDefaultGroupLoading = false;</span>
 
     @Inject
-<span class="fc" id="L59">    public DirectMessageController() {</span>
+<span class="fc" id="L60">    public DirectMessageController() {</span>
 
-<span class="fc" id="L61">    }</span>
+<span class="fc" id="L62">    }</span>
 
     public DirectMessageController setupDirectMessageController(User user) {
-<span class="nc" id="L64">        preventDefaultGroupLoading = true;</span>
+<span class="nc" id="L65">        preventDefaultGroupLoading = true;</span>
 
         // check if group already exists
-<span class="nc" id="L67">        disposables.add(groupListService.getGroups()</span>
-<span class="nc" id="L68">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L69">                .subscribe(groups -&gt; {</span>
-<span class="nc bnc" id="L70" title="All 2 branches missed.">                    if (groups == null) {</span>
-<span class="nc" id="L71">                        return;</span>
+<span class="nc" id="L68">        disposables.add(groupListService.getGroups()</span>
+<span class="nc" id="L69">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L70">                .subscribe(groups -&gt; {</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">                    if (groups == null) {</span>
+<span class="nc" id="L72">                        return;</span>
                     }
-<span class="nc" id="L73">                    Group existing = getExistingGroup(groups, user);</span>
-<span class="nc bnc" id="L74" title="All 2 branches missed.">                    if (existing != null) {</span>
-<span class="nc" id="L75">                        loadGroup(existing);</span>
+<span class="nc" id="L74">                    Group existing = getExistingGroup(groups, user);</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">                    if (existing != null) {</span>
+<span class="nc" id="L76">                        loadGroup(existing);</span>
                     } else {
                         // create new group
-<span class="nc" id="L78">                        String groupName = groupListService.getGroupName(tokenStorage.getCurrentUser()._id(), user._id());</span>
-<span class="nc" id="L79">                        disposables.add(groupListService.addGroup(groupName, List.of(tokenStorage.getCurrentUser()._id(), user._id()))</span>
-<span class="nc" id="L80">                                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L81">                                .subscribe(group -&gt; {</span>
-<span class="nc bnc" id="L82" title="All 2 branches missed.">                                    if (group == null) {</span>
-<span class="nc" id="L83">                                        return;</span>
+<span class="nc" id="L79">                        String groupName = groupListService.getGroupName(tokenStorage.getCurrentUser()._id(), user._id());</span>
+<span class="nc" id="L80">                        disposables.add(groupListService.addGroup(groupName, List.of(tokenStorage.getCurrentUser()._id(), user._id()))</span>
+<span class="nc" id="L81">                                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L82">                                .subscribe(group -&gt; {</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">                                    if (group == null) {</span>
+<span class="nc" id="L84">                                        return;</span>
                                     }
-<span class="nc" id="L85">                                    chatListController.reload();</span>
-<span class="nc" id="L86">                                    loadGroup(group);</span>
-<span class="nc" id="L87">                                }));</span>
+<span class="nc" id="L86">                                    chatListController.reload();</span>
+<span class="nc" id="L87">                                    loadGroup(group);</span>
+<span class="nc" id="L88">                                }));</span>
                     }
-<span class="nc" id="L89">                }));</span>
+<span class="nc" id="L90">                }));</span>
 
-<span class="nc" id="L91">        return this;</span>
+<span class="nc" id="L92">        return this;</span>
     }
 
     private Group getExistingGroup(List&lt;Group&gt; groups, User user) {
-<span class="nc bnc" id="L95" title="All 2 branches missed.">        for (Group group : groups) {</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">            if (group.members().size() == 2 &amp;&amp;</span>
-<span class="nc bnc" id="L97" title="All 2 branches missed.">                    group.members().contains(user._id()) &amp;&amp;</span>
-<span class="nc bnc" id="L98" title="All 2 branches missed.">                    group.members().contains(tokenStorage.getCurrentUser()._id())) {</span>
-<span class="nc" id="L99">                return group;</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        for (Group group : groups) {</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">            if (group.members().size() == 2 &amp;&amp;</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">                    group.members().contains(user._id()) &amp;&amp;</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">                    group.members().contains(tokenStorage.getCurrentUser()._id())) {</span>
+<span class="nc" id="L100">                return group;</span>
             }
-<span class="nc" id="L101">        }</span>
-<span class="nc" id="L102">        return null;</span>
+<span class="nc" id="L102">        }</span>
+<span class="nc" id="L103">        return null;</span>
     }
 
     @Override
     public void init() {
-<span class="fc" id="L107">        super.init();</span>
-<span class="fc" id="L108">        chatListController.setOnGroupClicked(this::loadGroup);</span>
-<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        if (preventDefaultGroupLoading) {</span>
-<span class="nc" id="L110">            chatListController.preventFirstUpdate();</span>
+<span class="fc" id="L108">        super.init();</span>
+<span class="fc" id="L109">        chatListController.setOnGroupClicked(this::loadGroup);</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">        if (preventDefaultGroupLoading) {</span>
+<span class="nc" id="L111">            chatListController.preventFirstUpdate();</span>
         }
-<span class="fc" id="L112">        chatListController.init();</span>
-<span class="fc" id="L113">    }</span>
+<span class="fc" id="L113">        chatListController.init();</span>
+<span class="fc" id="L114">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L117">        Parent parent = super.render();</span>
-<span class="fc" id="L118">        rightSide = chatScrollPane;</span>
-<span class="fc" id="L119">        grid.add(chatListController.render(), 0, 1);</span>
+<span class="fc" id="L118">        Parent parent = super.render();</span>
+<span class="fc" id="L119">        rightSide = chatScrollPane;</span>
+<span class="fc" id="L120">        grid.add(chatListController.render(), 0, 1);</span>
 
-<span class="fc" id="L121">        return parent;</span>
+<span class="fc" id="L122">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="fc" id="L126">        subControllers.forEach(Controller::destroy);</span>
-<span class="fc" id="L127">        super.destroy();</span>
-<span class="fc" id="L128">    }</span>
+<span class="fc" id="L127">        subControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L128">        super.destroy();</span>
+<span class="fc" id="L129">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L132">        return resources.getString(&quot;titleDirectMessage&quot;);</span>
+<span class="fc" id="L133">        return resources.getString(&quot;titleDirectMessage&quot;);</span>
     }
 
     public void back() {
-<span class="fc" id="L136">        app.showPrevious();</span>
-<span class="fc" id="L137">    }</span>
+<span class="fc" id="L137">        app.showPrevious();</span>
+<span class="fc" id="L138">    }</span>
 
     @FXML
     public void createGroup() {
-<span class="nc" id="L141">        app.show(createGroupControllerProvider.get());</span>
-<span class="nc" id="L142">    }</span>
+<span class="nc" id="L142">        app.show(createGroupControllerProvider.get());</span>
+<span class="nc" id="L143">    }</span>
 
     public void sendMessage() {
-<span class="pc bpc" id="L145" title="2 of 4 branches missed.">        if (currentGroup == null || chatInput.getText().isBlank()) {</span>
-<span class="nc" id="L146">            return;</span>
+<span class="pc bpc" id="L146" title="2 of 4 branches missed.">        if (currentGroup == null || chatInput.getText().isBlank()) {</span>
+<span class="nc" id="L147">            return;</span>
         }
 
-<span class="fc" id="L149">        String message = chatInput.getText();</span>
-<span class="fc" id="L150">        disposables.add(messageService</span>
-<span class="fc" id="L151">                .sendMessageToGroup(currentGroup, message)</span>
-<span class="fc" id="L152">                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L153">                .subscribe(r -&gt; {</span>
-<span class="pc bpc" id="L154" title="1 of 2 branches missed.">                            if (r == null) {</span>
-<span class="nc" id="L155">                                return;</span>
+<span class="fc" id="L150">        String message = chatInput.getText();</span>
+<span class="fc" id="L151">        disposables.add(messageService</span>
+<span class="fc" id="L152">                .sendMessageToGroup(currentGroup, message)</span>
+<span class="fc" id="L153">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L154">                .subscribe(r -&gt; {</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">                            if (r == null) {</span>
+<span class="nc" id="L156">                                return;</span>
                             }
-<span class="fc" id="L157">                            chatInput.setText(&quot;&quot;);</span>
-<span class="fc" id="L158">                        }</span>
+<span class="fc" id="L158">                            chatInput.setText(&quot;&quot;);</span>
+<span class="fc" id="L159">                        }</span>
                 ));
-<span class="fc" id="L160">    }</span>
+<span class="fc" id="L161">    }</span>
 
     private void loadGroup(Group group) {
-<span class="fc" id="L163">        currentGroup = group;</span>
-<span class="fc" id="L164">        grid.getChildren().remove(rightSide);</span>
-<span class="pc bpc" id="L165" title="1 of 2 branches missed.">        if (controller != null) {</span>
-<span class="nc" id="L166">            controller.destroy();</span>
+<span class="fc" id="L164">        currentGroup = group;</span>
+<span class="fc" id="L165">        grid.getChildren().remove(rightSide);</span>
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">        if (controller != null) {</span>
+<span class="nc" id="L167">            controller.destroy();</span>
         }
-<span class="fc" id="L168">        controller = chatWindowControllerProvider.get().setupChatWindowController(group);</span>
+<span class="fc" id="L169">        controller = chatWindowControllerProvider.get().setupChatWindowController(group);</span>
 
-<span class="pc bpc" id="L170" title="1 of 2 branches missed.">        if (!groupListService.isSingleChat(group)) {</span>
-<span class="fc" id="L171">            chatNameLabel.setText(group.name());</span>
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">        if (!groupListService.isSingleChat(group)) {</span>
+<span class="fc" id="L172">            chatNameLabel.setText(group.name());</span>
         } else {
-<span class="nc" id="L173">            List&lt;String&gt; memberList = group.members();</span>
-<span class="nc bnc" id="L174" title="All 2 branches missed.">            if (memberList.get(0).equals(tokenStorage.getCurrentUser()._id())) {</span>
-<span class="nc" id="L175">                chatNameLabel.setText(cache.getUser(memberList.get(1)).name());</span>
+<span class="nc" id="L174">            List&lt;String&gt; memberList = group.members();</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">            if (memberList.get(0).equals(tokenStorage.getCurrentUser()._id())) {</span>
+<span class="nc" id="L176">                chatNameLabel.setText(cache.getUser(memberList.get(1)).name());</span>
             } else {
-<span class="nc" id="L177">                chatNameLabel.setText(cache.getUser(memberList.get(0)).name());</span>
+<span class="nc" id="L178">                chatNameLabel.setText(cache.getUser(memberList.get(0)).name());</span>
             }
         }
 
-<span class="fc" id="L181">        controller.init();</span>
-<span class="fc" id="L182">        rightSide = controller.render();</span>
-<span class="fc" id="L183">        grid.add(rightSide, 1, 1);</span>
-<span class="fc" id="L184">    }</span>
+<span class="fc" id="L182">        controller.init();</span>
+<span class="fc" id="L183">        rightSide = controller.render();</span>
+<span class="fc" id="L184">        grid.add(rightSide, 1, 1);</span>
+<span class="fc" id="L185">        GridPane.setVgrow(rightSide, Priority.ALWAYS);</span>
+<span class="fc" id="L186">        GridPane.setHgrow(rightSide, Priority.ALWAYS);</span>
+<span class="fc" id="L187">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
