@@ -96,7 +96,7 @@ public class MessageBubbleController extends Controller {
 <span class="nc" id="L96">        } else {</span>
 <span class="fc" id="L97">            LocalDateTime localDateTime = LocalDateTime.ofInstant(message.updatedAt().toInstant(), ZoneId.systemDefault());</span>
 <span class="fc" id="L98">            String time = localDateTime.format(TIME_FORMAT);</span>
-<span class="fc" id="L99">            timestamp.setText(time + &quot; &quot; + resources.getString(&quot;edited&quot;));</span>
+<span class="fc" id="L99">            timestamp.setText(time);</span>
         }
 
 <span class="fc" id="L102">        return parent;</span>
@@ -115,58 +115,63 @@ public class MessageBubbleController extends Controller {
 <span class="pc bpc" id="L115" title="1 of 2 branches missed.">        if (editMode) {</span>
 <span class="nc" id="L116">            return;</span>
         }
-<span class="fc" id="L118">        elementsBox.getChildren().add(1, editMessageBody);</span>
-<span class="fc" id="L119">        elementsBox.getChildren().remove(messageBody);</span>
-<span class="fc" id="L120">        editMessageBody.setText(message.body());</span>
-<span class="fc" id="L121">        editMode = true;</span>
-<span class="fc" id="L122">    }</span>
+
+<span class="fc" id="L119">        editButton.setVisible(false);</span>
+
+<span class="fc" id="L121">        elementsBox.getChildren().add(1, editMessageBody);</span>
+<span class="fc" id="L122">        elementsBox.getChildren().remove(messageBody);</span>
+<span class="fc" id="L123">        editMessageBody.setText(message.body());</span>
+<span class="fc" id="L124">        editMode = true;</span>
+<span class="fc" id="L125">    }</span>
 
     @FXML
     public void keyEvent(KeyEvent event) {
-<span class="fc bfc" id="L126" title="All 2 branches covered.">        if (event.getCode().equals(KeyCode.ESCAPE)) {</span>
-<span class="fc" id="L127">            cancelEdit();</span>
-<span class="fc" id="L128">            event.consume();</span>
-<span class="pc bpc" id="L129" title="1 of 2 branches missed.">        } else if (event.getCode().equals(KeyCode.ENTER)) {</span>
-<span class="fc" id="L130">            acceptEdit();</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        if (event.getCode().equals(KeyCode.ESCAPE)) {</span>
+<span class="fc" id="L130">            cancelEdit();</span>
 <span class="fc" id="L131">            event.consume();</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        } else if (event.getCode().equals(KeyCode.ENTER)) {</span>
+<span class="fc" id="L133">            acceptEdit();</span>
+<span class="fc" id="L134">            event.consume();</span>
         }
-<span class="fc" id="L133">    }</span>
+<span class="fc" id="L136">    }</span>
 
     private void acceptEdit() {
-<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        if (!editMode) {</span>
-<span class="nc" id="L137">            return;</span>
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">        if (!editMode) {</span>
+<span class="nc" id="L140">            return;</span>
         }
 
-<span class="fc" id="L140">        disposables.add(messageService.updateMessage(group, message, editMessageBody.getText()).observeOn(FX_SCHEDULER).subscribe(message -&gt; {</span>
-<span class="fc" id="L141">            this.message = message;</span>
-<span class="fc" id="L142">            messageBody.setText(message.body());</span>
-<span class="fc" id="L143">            elementsBox.getChildren().add(1, messageBody);</span>
-<span class="fc" id="L144">            elementsBox.getChildren().remove(editMessageBody);</span>
-<span class="fc" id="L145">            editMode = false;</span>
-<span class="pc" id="L146">        }, throwable -&gt; Dialog.error(throwable, &quot;Problem while updating message&quot;)));</span>
-<span class="fc" id="L147">    }</span>
+<span class="fc" id="L143">        disposables.add(messageService.updateMessage(group, message, editMessageBody.getText()).observeOn(FX_SCHEDULER).subscribe(message -&gt; {</span>
+<span class="fc" id="L144">            this.message = message;</span>
+<span class="fc" id="L145">            messageBody.setText(message.body());</span>
+<span class="fc" id="L146">            elementsBox.getChildren().add(1, messageBody);</span>
+<span class="fc" id="L147">            elementsBox.getChildren().remove(editMessageBody);</span>
+<span class="fc" id="L148">            editMode = false;</span>
+<span class="fc" id="L149">            editButton.setVisible(true);</span>
+<span class="pc" id="L150">        }, throwable -&gt; Dialog.error(throwable, &quot;Problem while updating message&quot;)));</span>
+<span class="fc" id="L151">    }</span>
 
     private void cancelEdit() {
-<span class="pc bpc" id="L150" title="1 of 2 branches missed.">        if (!editMode) {</span>
-<span class="nc" id="L151">            return;</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">        if (!editMode) {</span>
+<span class="nc" id="L155">            return;</span>
         }
 
-<span class="fc" id="L154">        elementsBox.getChildren().add(1, messageBody);</span>
-<span class="fc" id="L155">        elementsBox.getChildren().remove(editMessageBody);</span>
-<span class="fc" id="L156">        editMode = false;</span>
-<span class="fc" id="L157">    }</span>
+<span class="fc" id="L158">        elementsBox.getChildren().add(1, messageBody);</span>
+<span class="fc" id="L159">        elementsBox.getChildren().remove(editMessageBody);</span>
+<span class="fc" id="L160">        editMode = false;</span>
+<span class="fc" id="L161">        editButton.setVisible(true);</span>
+<span class="fc" id="L162">    }</span>
 
     @FXML
     public void deleteMessage() {
-<span class="pc bpc" id="L161" title="1 of 2 branches missed.">        if (editMode) {</span>
-<span class="nc" id="L162">            return;</span>
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">        if (editMode) {</span>
+<span class="nc" id="L167">            return;</span>
         }
 
-<span class="fc" id="L165">        disposables.add(messageService.deleteMessage(group, message)</span>
-<span class="fc" id="L166">                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L167">                .subscribe(</span>
-<span class="fc" id="L168">                        msg -&gt; onDelete.accept(new Pair&lt;&gt;(parent, this)),</span>
-<span class="fc" id="L169">                        error -&gt; Dialog.error(error, &quot;Problem while deleting message&quot;)));</span>
-<span class="fc" id="L170">    }</span>
+<span class="fc" id="L170">        disposables.add(messageService.deleteMessage(group, message)</span>
+<span class="fc" id="L171">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L172">                .subscribe(</span>
+<span class="fc" id="L173">                        msg -&gt; onDelete.accept(new Pair&lt;&gt;(parent, this)),</span>
+<span class="fc" id="L174">                        error -&gt; Dialog.error(error, &quot;Problem while deleting message&quot;)));</span>
+<span class="fc" id="L175">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
