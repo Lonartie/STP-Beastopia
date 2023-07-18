@@ -89,14 +89,14 @@ public class MessageBubbleController extends Controller {
 <span class="fc" id="L89">        cache.getAllUsers().stream().filter(user -&gt; user._id().equals(message.sender())).findFirst().ifPresent(user -&gt; senderName.setText(user.name()));</span>
 <span class="fc" id="L90">        messageBody.setText(message.body());</span>
 
-<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if (message.updatedAt() == null) {</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if (message.updatedAt().equals(message.createdAt())) {</span>
 <span class="nc" id="L93">            LocalDateTime localDateTimeCreated = LocalDateTime.ofInstant(message.createdAt().toInstant(), ZoneId.systemDefault());</span>
 <span class="nc" id="L94">            String createdAt = localDateTimeCreated.format(TIME_FORMAT);</span>
 <span class="nc" id="L95">            timestamp.setText(createdAt);</span>
 <span class="nc" id="L96">        } else {</span>
 <span class="fc" id="L97">            LocalDateTime localDateTime = LocalDateTime.ofInstant(message.updatedAt().toInstant(), ZoneId.systemDefault());</span>
 <span class="fc" id="L98">            String time = localDateTime.format(TIME_FORMAT);</span>
-<span class="fc" id="L99">            timestamp.setText(time);</span>
+<span class="fc" id="L99">            timestamp.setText(time  + &quot; &quot; + resources.getString(&quot;edited&quot;));</span>
         }
 
 <span class="fc" id="L102">        return parent;</span>
