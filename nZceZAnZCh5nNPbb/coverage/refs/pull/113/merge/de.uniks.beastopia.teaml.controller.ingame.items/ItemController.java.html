@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ItemController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.ingame.items</a> &gt; <span class="el_source">ItemController.java</span></div><h1>ItemController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.ingame.items;
+
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.ItemTypeDto;
+import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.service.PresetsService;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+
+public class ItemController extends Controller {
+    @FXML
+    public ImageView img;
+    @FXML
+    public Label name;
+    @FXML
+    public Label count;
+    @FXML
+    public GridPane _ItemRootElement;
+    public ItemTypeDto itemType;
+    public int score;
+    private Consumer&lt;ItemTypeDto&gt; onItemClicked;
+    @Inject
+    PresetsService presetsService;
+    @Inject
+    DataCache cache;
+
+    @Inject
+<span class="fc" id="L37">    public ItemController() {</span>
+
+<span class="fc" id="L39">    }</span>
+
+    public ItemController setItem(ItemTypeDto itemType) {
+<span class="fc" id="L42">        this.itemType = itemType;</span>
+<span class="fc" id="L43">        return this;</span>
+    }
+
+    public void setScore(int score) {
+<span class="fc" id="L47">        this.score = score;</span>
+<span class="fc" id="L48">    }</span>
+
+    public void setOnItemClicked(Consumer&lt;ItemTypeDto&gt; onItemClicked) {
+<span class="nc" id="L51">        this.onItemClicked = onItemClicked;</span>
+<span class="nc" id="L52">    }</span>
+
+    @Override
+    public Parent render() {
+<span class="fc" id="L56">        Parent parent = super.render();</span>
+
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if (score != 0) {</span>
+<span class="fc" id="L59">            count.setText(&quot;x&quot; + score);</span>
+        }
+
+<span class="fc" id="L62">        name.setText(formatStringIfTooLong(itemType.name()));</span>
+
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">        if (cache.getItemImages().containsKey(itemType.id())) {</span>
+<span class="nc" id="L65">            img.setImage(cache.getItemImages().get(itemType.id()));</span>
+        } else {
+<span class="fc" id="L67">            disposables.add(presetsService.getItemImage(itemType.id())</span>
+<span class="fc" id="L68">                    .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L69">                    .subscribe(itemImage -&gt; {</span>
+<span class="fc" id="L70">                        img.setImage(itemImage);</span>
+<span class="fc" id="L71">                        Map&lt;Integer, Image&gt; itemImages = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L72">                        itemImages.put(itemType.id(), itemImage);</span>
+<span class="fc" id="L73">                        cache.setItemImages(itemImages);</span>
+<span class="fc" id="L74">                    }));</span>
+        }
+
+<span class="fc" id="L77">        return parent;</span>
+    }
+
+    public String formatStringIfTooLong(String itemName) {
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (itemName.length() &gt; 12) {</span>
+<span class="fc" id="L82">            int lastSpace = itemName.lastIndexOf(' ', 12);</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">            if (lastSpace != -1) { // \n after last space</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">                if (itemName.length() &gt; 24) {</span>
+<span class="nc" id="L85">                    String lastPart = itemName.substring(lastSpace + 1);</span>
+<span class="nc" id="L86">                    return itemName.substring(0, lastSpace) + &quot;\n&quot; + formatStringIfTooLong(lastPart);</span>
+                }
+<span class="fc" id="L88">                return itemName.substring(0, lastSpace) + &quot;\n&quot; + formatStringIfTooLong(itemName.substring(lastSpace + 1));</span>
+            } else { // if too long and no space
+<span class="fc bfc" id="L90" title="All 2 branches covered.">                if (itemName.length() &gt; 24) {</span>
+<span class="fc" id="L91">                    String lastPart = itemName.substring(12);</span>
+<span class="fc" id="L92">                    return itemName.substring(0, 12) + &quot;-\n&quot; + formatStringIfTooLong(lastPart);</span>
+                }
+<span class="fc" id="L94">                return itemName.substring(0, 12) + &quot;-\n&quot; + itemName.substring(12);</span>
+            }
+        }
+<span class="fc" id="L97">        return itemName;</span>
+    }
+
+    @FXML
+    public void toggleDetails() {
+<span class="nc" id="L102">        onItemClicked.accept(itemType);</span>
+<span class="nc" id="L103">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

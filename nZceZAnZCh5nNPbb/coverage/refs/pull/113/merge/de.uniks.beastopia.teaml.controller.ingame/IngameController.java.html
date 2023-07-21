@@ -1,0 +1,1272 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IngameController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.ingame</a> &gt; <span class="el_source">IngameController.java</span></div><h1>IngameController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.ingame;
+
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import de.uniks.beastopia.teaml.App;
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.controller.ingame.beast.EditBeastTeamController;
+import de.uniks.beastopia.teaml.controller.ingame.encounter.FightWildBeastController;
+import de.uniks.beastopia.teaml.controller.ingame.encounter.StartFightNPCController;
+import de.uniks.beastopia.teaml.controller.ingame.items.InventoryController;
+import de.uniks.beastopia.teaml.controller.ingame.items.ItemDetailController;
+import de.uniks.beastopia.teaml.controller.ingame.items.ShopController;
+import de.uniks.beastopia.teaml.controller.menu.PauseController;
+import de.uniks.beastopia.teaml.rest.Map;
+import de.uniks.beastopia.teaml.rest.*;
+import de.uniks.beastopia.teaml.service.*;
+import de.uniks.beastopia.teaml.sockets.EventListener;
+import de.uniks.beastopia.teaml.sockets.UDPEventListener;
+import de.uniks.beastopia.teaml.utils.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.util.Pair;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.*;
+import java.util.function.Consumer;
+
+public class IngameController extends Controller {
+    static final double TILE_SIZE = 32;
+    static final int MENU_NONE = 0;
+    static final int MENU_SCOREBOARD = 1;
+    static final int MENU_BEASTLIST = 2;
+    static final int MENU_PAUSE = 3;
+    static final int MENU_SHOP = 4;
+    static final int MENU_INVENTORY = 5;
+    static final int MENU_DIALOGWINDOW = 3;
+
+    @FXML
+    public Pane tilePane;
+    @FXML
+    private HBox scoreBoardLayout;
+    @FXML
+    private StackPane pauseMenuLayout;
+    @FXML
+    private Button pauseHint;
+    @FXML
+    private Button beastlistHint;
+    @FXML
+    private Button scoreboardHint;
+    @FXML
+    private Button mapHint;
+    @FXML
+    private Button invHint;
+    @FXML
+    private HBox shopLayout;
+    @Inject
+    App app;
+    @Inject
+    AreaService areaService;
+    @Inject
+    PresetsService presetsService;
+    @Inject
+    TrainerService trainerService;
+    @Inject
+    AchievementsService achievementsService;
+    @Inject
+    PauseController pauseController;
+    @Inject
+    Provider&lt;StartFightNPCController&gt; startFightNPCControllerProvider;
+    @Inject
+    BeastListController beastListController;
+    @Inject
+    ShopController shopController;
+    @Inject
+    InventoryController inventoryController;
+    @Inject
+    Provider&lt;BeastDetailController&gt; beastDetailControllerProvider;
+    @Inject
+    Provider&lt;DialogWindowController&gt; dialogWindowControllerProvider;
+    @Inject
+    Provider&lt;EditBeastTeamController&gt; editBeastTeamControllerProvider;
+    @Inject
+    Provider&lt;EntityController&gt; entityControllerProvider;
+    @Inject
+    Provider&lt;MapController&gt; mapControllerProvider;
+    @Inject
+    Provider&lt;ItemDetailController&gt; itemDetailControllerProvider;
+    @Inject
+    Prefs prefs;
+    @Inject
+    DataCache cache;
+    @Inject
+    TokenStorage tokenStorage;
+    @Inject
+    UDPEventListener udpEventListener;
+    @Inject
+    EventListener eventListener;
+    @Inject
+    ScoreboardController scoreBoardController;
+    @Inject
+    Provider&lt;IngameController&gt; ingameControllerProvider;
+    @Inject
+    Provider&lt;SoundController&gt; soundControllerProvider;
+    @Inject
+    Provider&lt;FightWildBeastController&gt; fightWildBeastControllerProvider;
+    @Inject
+    RegionEncountersService regionEncountersService;
+    @Inject
+    EncounterOpponentsService encounterOpponentsService;
+    private Region region;
+    private Map map;
+<span class="fc" id="L129">    private final List&lt;Pair&lt;TileSetDescription, Pair&lt;TileSet, Image&gt;&gt;&gt; tileSets = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L130">    private int posx = 0;</span>
+<span class="fc" id="L131">    private int posy = 0;</span>
+<span class="fc" id="L132">    private int lastposx = 0;</span>
+<span class="fc" id="L133">    private int lastposy = 0;</span>
+<span class="fc" id="L134">    private boolean spawned = false;</span>
+    private int width;
+    private int height;
+    private LoadingPage loadingPage;
+<span class="fc" id="L138">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
+    private Monster lastMonster;
+    private ItemTypeDto lastItemTypeDto;
+<span class="fc" id="L141">    private int currentMenu = MENU_NONE;</span>
+
+    Direction direction;
+<span class="fc" id="L144">    final ObjectProperty&lt;PlayerState&gt; state = new SimpleObjectProperty&lt;&gt;();</span>
+    Parent player;
+    Parent beastListParent;
+    Parent beastDetailParent;
+    Parent itemDetailParent;
+    EntityController playerController;
+    SoundController soundController;
+    Parent scoreBoardParent;
+    Parent pauseMenuParent;
+    Parent dialogWindowParent;
+    Parent shopParent;
+    Parent inventoryParent;
+<span class="fc" id="L156">    final java.util.Map&lt;EntityController, Parent&gt; otherPlayers = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L157">    private final List&lt;KeyCode&gt; pressedKeys = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L158">    private final String[] locationStrings = {&quot;Moncenter&quot;, &quot;House&quot;, &quot;Store&quot;};</span>
+<span class="fc" id="L159">    private long lastValueChangeTime = 0;</span>
+    private DialogWindowController dialogWindowController;
+
+    @Inject
+<span class="fc" id="L163">    public IngameController() {</span>
+<span class="fc" id="L164">        Timer timer = new Timer();</span>
+<span class="fc" id="L165">        timer.scheduleAtFixedRate(new TimerTask() {</span>
+            @Override
+            public void run() {
+<span class="fc" id="L168">                moveLoop();</span>
+<span class="fc" id="L169">            }</span>
+        }, 0, 100);
+<span class="fc" id="L171">    }</span>
+
+    /**
+     * Initializes the controller by Creating the main player and assigning its callback functions
+     */
+    @Override
+    public void init() {
+<span class="fc" id="L178">        super.init();</span>
+
+<span class="fc" id="L180">        scoreBoardController.setOnCloseRequested(() -&gt; {</span>
+<span class="nc" id="L181">            scoreBoardLayout.getChildren().remove(scoreBoardParent);</span>
+<span class="nc" id="L182">            currentMenu = MENU_NONE;</span>
+<span class="nc" id="L183">        });</span>
+<span class="fc" id="L184">        scoreBoardController.init();</span>
+
+<span class="fc" id="L186">        beastListController.setOnCloseRequest(() -&gt; {</span>
+<span class="nc" id="L187">            scoreBoardLayout.getChildren().remove(beastListParent);</span>
+<span class="nc" id="L188">            scoreBoardLayout.getChildren().remove(beastDetailParent);</span>
+<span class="nc" id="L189">            lastMonster = null;</span>
+<span class="nc" id="L190">            currentMenu = MENU_NONE;</span>
+<span class="nc" id="L191">        });</span>
+<span class="fc" id="L192">        beastListController.setOnBeastClicked(this::toggleBeastDetails);</span>
+<span class="fc" id="L193">        beastListController.init();</span>
+
+<span class="fc" id="L195">        pauseController.setOnCloseRequest(() -&gt; {</span>
+<span class="nc" id="L196">            pauseMenuLayout.getChildren().remove(pauseMenuParent);</span>
+<span class="nc" id="L197">            currentMenu = MENU_NONE;</span>
+<span class="nc" id="L198">        });</span>
+<span class="fc" id="L199">        pauseController.init();</span>
+
+<span class="fc" id="L201">        state.setValue(PlayerState.IDLE);</span>
+<span class="fc" id="L202">        playerController = entityControllerProvider.get();</span>
+<span class="fc" id="L203">        playerController.playerState().bind(state);</span>
+<span class="fc" id="L204">        playerController.setOnTrainerUpdate(trainer -&gt; {</span>
+<span class="nc" id="L205">            Trainer myTrainer = cache.getTrainer();</span>
+<span class="nc" id="L206">            List&lt;String&gt; visited = new ArrayList&lt;&gt;(myTrainer.visitedAreas());</span>
+
+<span class="nc bnc" id="L208" title="All 2 branches missed.">            if (!visited.contains(trainer.area())) {</span>
+<span class="nc" id="L209">                visited.add(trainer.area());</span>
+            }
+
+<span class="nc" id="L212">            Trainer updatedTrainer = new Trainer(</span>
+<span class="nc" id="L213">                    myTrainer.createdAt(),</span>
+<span class="nc" id="L214">                    myTrainer.updatedAt(),</span>
+<span class="nc" id="L215">                    myTrainer._id(),</span>
+<span class="nc" id="L216">                    myTrainer.region(),</span>
+<span class="nc" id="L217">                    myTrainer.user(),</span>
+<span class="nc" id="L218">                    myTrainer.name(),</span>
+<span class="nc" id="L219">                    myTrainer.image(),</span>
+<span class="nc" id="L220">                    myTrainer.team(),</span>
+                    visited,
+<span class="nc" id="L222">                    myTrainer.coins(),</span>
+<span class="nc" id="L223">                    trainer.area(),</span>
+<span class="nc" id="L224">                    trainer.x(),</span>
+<span class="nc" id="L225">                    trainer.y(),</span>
+<span class="nc" id="L226">                    trainer.direction(),</span>
+<span class="nc" id="L227">                    myTrainer.npc()</span>
+            );
+
+<span class="nc" id="L230">            cache.setTrainer(updatedTrainer);</span>
+
+<span class="nc bnc" id="L232" title="All 2 branches missed.">            if (!trainer.area().equals(prefs.getArea()._id())) {</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">                if (Arrays.stream(locationStrings).anyMatch(cache.getArea(trainer.area()).name()::contains)) {</span>
+<span class="nc" id="L234">                    soundController.play(&quot;sfx:opendoor&quot;);</span>
+                }
+
+<span class="nc" id="L237">                IngameController controller = ingameControllerProvider.get();</span>
+<span class="nc" id="L238">                controller.setRegion(region);</span>
+<span class="nc" id="L239">                controller.checkAreaAchievement(cache.getArea(trainer.area())._id());</span>
+<span class="nc" id="L240">                app.show(controller);</span>
+<span class="nc" id="L241">                return;</span>
+            }
+<span class="nc" id="L243">            posx = trainer.x();</span>
+<span class="nc" id="L244">            posy = trainer.y();</span>
+<span class="nc" id="L245">            updateOrigin();</span>
+
+<span class="nc" id="L247">            spawned = true;</span>
+<span class="nc" id="L248">        });</span>
+
+<span class="fc" id="L250">        soundController = soundControllerProvider.get();</span>
+<span class="fc" id="L251">    }</span>
+
+    /**
+     * Sets the region this controller should load into
+     *
+     * @param region The region of the current trainer
+     */
+    public void setRegion(Region region) {
+<span class="fc" id="L259">        prefs.setCurrentRegion(region);</span>
+<span class="fc" id="L260">        this.region = region;</span>
+<span class="fc" id="L261">    }</span>
+
+    @Override
+    public Parent render() {
+<span class="fc" id="L265">        loadingPage = LoadingPage.makeLoadingPage(super.render());</span>
+
+<span class="fc" id="L267">        currentMenu = MENU_NONE;</span>
+
+<span class="fc" id="L269">        disposables.add(trainerService.getAllTrainer(this.region._id())</span>
+<span class="fc" id="L270">                .subscribe(this::loadTrainers));</span>
+
+<span class="fc" id="L272">        return loadingPage.parent();</span>
+    }
+
+    private void loadTrainers(List&lt;Trainer&gt; trainers) {
+<span class="fc" id="L276">        Trainer myTrainer = loadMyTrainer(trainers);</span>
+<span class="fc" id="L277">        cache.setTrainer(myTrainer);</span>
+<span class="fc" id="L278">        cache.setTrainers(trainers);</span>
+
+<span class="fc" id="L280">        disposables.add(areaService.getAreas(this.region._id()).observeOn(FX_SCHEDULER).subscribe(areas -&gt; {</span>
+<span class="fc" id="L281">            cache.setAreas(areas);</span>
+<span class="fc" id="L282">            loadMap(cache.getAreas(), myTrainer, trainers);</span>
+<span class="fc" id="L283">        }));</span>
+
+<span class="fc" id="L285">        disposables.add(eventListener.listen(&quot;encounters.*.trainers.&quot; + cache.getTrainer()._id()</span>
+                        + &quot;.opponents.*.created&quot;, Opponent.class)
+<span class="fc" id="L287">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L288">                .concatMap(opponentEvent -&gt; {</span>
+<span class="nc" id="L289">                    Opponent opponent = opponentEvent.data();</span>
+<span class="nc" id="L290">                    return regionEncountersService.getRegionEncounter(cache.getJoinedRegion()._id(), opponent.encounter())</span>
+<span class="nc" id="L291">                            .observeOn(FX_SCHEDULER);</span>
+                })
+<span class="fc" id="L293">                .subscribe(</span>
+                        encounter -&gt; {
+<span class="nc" id="L295">                            cache.setCurrentEncounter(encounter);</span>
+
+<span class="nc bnc" id="L297" title="All 2 branches missed.">                            if (encounter.isWild()) {</span>
+<span class="nc" id="L298">                                openFightBeastScreen(encounter);</span>
+                            } else {
+<span class="nc" id="L300">                                openFightNPCScreen(encounter);</span>
+                            }
+<span class="nc" id="L302">                        },</span>
+<span class="nc" id="L303">                        error -&gt; System.err.println(&quot;Fehler: &quot; + error.getMessage())</span>
+                )
+        );
+<span class="fc" id="L306">    }</span>
+
+    private void openFightNPCScreen(Encounter encounter) {
+<span class="nc" id="L309">        StartFightNPCController controller = startFightNPCControllerProvider.get();</span>
+<span class="nc" id="L310">        controller.setControllerInfo(encounter);</span>
+<span class="nc" id="L311">        app.show(controller);</span>
+<span class="nc" id="L312">    }</span>
+
+    private void openFightBeastScreen(Encounter encounter) {
+<span class="nc" id="L315">        FightWildBeastController controller = fightWildBeastControllerProvider.get();</span>
+<span class="nc" id="L316">        disposables.add(encounterOpponentsService</span>
+<span class="nc" id="L317">                .getEncounterOpponents(cache.getJoinedRegion()._id(), encounter._id())</span>
+<span class="nc" id="L318">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L319">                .subscribe(o -&gt; {</span>
+<span class="nc bnc" id="L320" title="All 2 branches missed.">                    for (Opponent op : o) {</span>
+<span class="nc bnc" id="L321" title="All 2 branches missed.">                        if (op.trainer().equals(&quot;000000000000000000000000&quot;)) {</span>
+<span class="nc" id="L322">                            controller.setControllerInfo(op.monster(), op.trainer());</span>
+<span class="nc" id="L323">                            app.show(controller);</span>
+                        }
+<span class="nc" id="L325">                    }</span>
+<span class="nc" id="L326">                }));</span>
+<span class="nc" id="L327">    }</span>
+
+    private void listenToTrainerEvents() {
+<span class="fc" id="L330">        disposables.add(eventListener.listen(</span>
+<span class="fc" id="L331">                        &quot;regions.&quot; + this.region._id() + &quot;.trainers.*.created&quot;,</span>
+                        Trainer.class)
+<span class="fc" id="L333">                .observeOn(FX_SCHEDULER)</span>
+<span class="pc" id="L334">                .subscribe(event -&gt; this.createRemotePlayer(event.data()),</span>
+<span class="nc" id="L335">                        error -&gt; Dialog.error(error, resources.getString(&quot;getAllTrainerError&quot;))));</span>
+<span class="fc" id="L336">        disposables.add(eventListener.listen(</span>
+<span class="fc" id="L337">                        &quot;regions.&quot; + this.region._id() + &quot;.trainers.*.deleted&quot;,</span>
+                        Trainer.class)
+<span class="fc" id="L339">                .observeOn(FX_SCHEDULER)</span>
+<span class="pc" id="L340">                .subscribe(event -&gt; this.removeRemotePlayer(event.data()),</span>
+<span class="nc" id="L341">                        error -&gt; Dialog.error(error, resources.getString(&quot;getAllTrainerError&quot;))));</span>
+<span class="fc" id="L342">    }</span>
+
+    private void loadRemoteTrainer(List&lt;Trainer&gt; trainers) {
+<span class="fc bfc" id="L345" title="All 2 branches covered.">        for (Trainer trainer : trainers) {</span>
+<span class="pc bpc" id="L346" title="1 of 2 branches missed.">            if (trainer._id().equals(cache.getTrainer()._id())) {</span>
+<span class="fc" id="L347">                continue;</span>
+            }
+<span class="nc" id="L349">            createRemotePlayer(trainer);</span>
+<span class="nc" id="L350">        }</span>
+
+
+<span class="fc" id="L353">        disposables.add(udpEventListener.listen(&quot;areas.*.trainers.*.moved&quot;, MoveTrainerDto.class).observeOn(FX_SCHEDULER).subscribe(event -&gt; {</span>
+<span class="nc" id="L354">            MoveTrainerDto dto = event.data();</span>
+<span class="nc bnc" id="L355" title="All 2 branches missed.">            if (dto == null) {</span>
+<span class="nc" id="L356">                return;</span>
+            }
+
+<span class="nc bnc" id="L359" title="All 2 branches missed.">            if (cache.getTrainer()._id().equals(dto._id())) {</span>
+<span class="nc" id="L360">                playerController.updateTrainer(dto);</span>
+<span class="nc" id="L361">                return;</span>
+            }
+
+<span class="nc bnc" id="L364" title="All 2 branches missed.">            for (EntityController entityController : otherPlayers.keySet()) {</span>
+<span class="nc bnc" id="L365" title="All 2 branches missed.">                if (entityController.getTrainer()._id().equals(dto._id())) {</span>
+<span class="nc" id="L366">                    entityController.updateTrainer(dto);</span>
+<span class="nc" id="L367">                    return;</span>
+                }
+<span class="nc" id="L369">            }</span>
+<span class="nc" id="L370">        }));</span>
+<span class="fc" id="L371">    }</span>
+
+    private void loadMap(List&lt;Area&gt; areas, Trainer myTrainer, List&lt;Trainer&gt; trainers) {
+<span class="fc" id="L374">        Area area = areas.stream().filter(a -&gt; a._id().equals(myTrainer.area())).findFirst().orElseThrow();</span>
+<span class="fc" id="L375">        prefs.setArea(area);</span>
+
+<span class="fc" id="L377">        disposables.add(areaService.getArea(this.region._id(), area._id())</span>
+<span class="fc" id="L378">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L379">                .subscribe(a -&gt; {</span>
+<span class="fc" id="L380">                            this.map = a.map();</span>
+<span class="fc bfc" id="L381" title="All 2 branches covered.">                            for (TileSetDescription tileSetDesc : map.tilesets()) {</span>
+<span class="fc" id="L382">                                TileSet tileSet = presetsService.getTileset(tileSetDesc).blockingFirst();</span>
+<span class="fc" id="L383">                                Image image = presetsService.getImage(tileSet).blockingFirst();</span>
+<span class="fc" id="L384">                                tileSets.add(new Pair&lt;&gt;(tileSetDesc, new Pair&lt;&gt;(tileSet, image)));</span>
+<span class="fc" id="L385">                            }</span>
+<span class="fc" id="L386">                            drawMap();</span>
+
+<span class="pc bpc" id="L388" title="1 of 2 branches missed.">                            if (a.name().contains(&quot;Route&quot;)) {</span>
+<span class="nc" id="L389">                                soundController.play(&quot;bgm:route&quot;);</span>
+<span class="pc bpc" id="L390" title="1 of 2 branches missed.">                            } else if (a.name().contains(&quot;House&quot;)) {</span>
+<span class="nc" id="L391">                                soundController.play(&quot;bgm:house&quot;);</span>
+                            } else {
+<span class="fc" id="L393">                                soundController.play(&quot;bgm:city&quot;);</span>
+                            }
+
+<span class="fc" id="L396">                            beastListParent = beastListController.render();</span>
+<span class="fc" id="L397">                            scoreBoardParent = scoreBoardController.render();</span>
+<span class="fc" id="L398">                            pauseMenuParent = pauseController.render();</span>
+<span class="fc" id="L399">                            loadRemoteTrainer(trainers);</span>
+<span class="fc" id="L400">                            listenToTrainerEvents();</span>
+<span class="fc" id="L401">                            loadingPage.setDone();</span>
+<span class="fc" id="L402">                        }</span>
+                ));
+<span class="fc" id="L404">    }</span>
+
+    /**
+     * Looks for the current trainer in the list and initializes the player controller
+     *
+     * @param trainers The list of all trainers of the current region
+     * @return Our current trainer
+     */
+    private Trainer loadMyTrainer(List&lt;Trainer&gt; trainers) {
+<span class="fc" id="L413">        Trainer myTrainer = trainers.stream().filter(t -&gt; t.user().equals(tokenStorage.getCurrentUser()._id())).findFirst().orElseThrow();</span>
+
+<span class="fc" id="L415">        playerController.setTrainer(myTrainer);</span>
+<span class="fc" id="L416">        playerController.init();</span>
+
+<span class="fc" id="L418">        cache.setTrainer(myTrainer);</span>
+<span class="fc" id="L419">        posx = myTrainer.x();</span>
+<span class="fc" id="L420">        posy = myTrainer.y();</span>
+
+<span class="fc" id="L422">        return myTrainer;</span>
+    }
+
+    private void createRemotePlayer(Trainer trainer) {
+<span class="nc" id="L426">        EntityController controller = entityControllerProvider.get();</span>
+<span class="nc" id="L427">        ObjectProperty&lt;PlayerState&gt; ps = new SimpleObjectProperty&lt;&gt;();</span>
+<span class="nc" id="L428">        controller.playerState().bind(ps);</span>
+<span class="nc" id="L429">        ps.setValue(PlayerState.IDLE);</span>
+<span class="nc" id="L430">        controller.setTrainer(trainer);</span>
+<span class="nc" id="L431">        controller.setOnTrainerUpdate(moveDto -&gt; {</span>
+<span class="nc bnc" id="L432" title="All 4 branches missed.">            if (!isBeingRendered(moveDto._id()) &amp;&amp; moveDto.area().equals(prefs.getArea()._id())) {</span>
+<span class="nc" id="L433">                revealRemotePlayer(cache.getTrainer(moveDto._id()));</span>
+<span class="nc bnc" id="L434" title="All 4 branches missed.">            } else if (isBeingRendered(moveDto._id()) &amp;&amp; !moveDto.area().equals(prefs.getArea()._id())) {</span>
+<span class="nc" id="L435">                hideRemotePlayer(cache.getTrainer(moveDto._id()));</span>
+            } else {
+<span class="nc" id="L437">                moveRemotePlayer(controller, moveDto.x(), moveDto.y());</span>
+            }
+<span class="nc" id="L439">        });</span>
+<span class="nc" id="L440">        controller.init();</span>
+<span class="nc" id="L441">        controller.setDirection(trainer.direction());</span>
+<span class="nc" id="L442">        Parent parent = drawRemotePlayer(controller, trainer.x(), trainer.y());</span>
+<span class="nc" id="L443">        otherPlayers.put(controller, parent);</span>
+<span class="nc bnc" id="L444" title="All 4 branches missed.">        if (prefs.getArea() != null &amp;&amp; !prefs.getArea()._id().equals(trainer.area())) {</span>
+<span class="nc" id="L445">            hideRemotePlayer(trainer);</span>
+        }
+<span class="nc" id="L447">    }</span>
+
+    private EntityController getEntityController(Trainer trainer) {
+<span class="nc" id="L450">        EntityController trainerController = null;</span>
+<span class="nc bnc" id="L451" title="All 2 branches missed.">        for (EntityController controller : otherPlayers.keySet()) {</span>
+<span class="nc bnc" id="L452" title="All 2 branches missed.">            if (controller.getTrainer()._id().equals(trainer._id())) {</span>
+<span class="nc" id="L453">                trainerController = controller;</span>
+<span class="nc" id="L454">                break;</span>
+            }
+<span class="nc" id="L456">        }</span>
+<span class="nc" id="L457">        return trainerController;</span>
+    }
+
+    private void removeRemotePlayer(Trainer trainer) {
+<span class="nc" id="L461">        EntityController trainerController = getEntityController(trainer);</span>
+<span class="nc bnc" id="L462" title="All 2 branches missed.">        if (trainerController == null) {</span>
+<span class="nc" id="L463">            return;</span>
+        }
+<span class="nc" id="L465">        tilePane.getChildren().remove(otherPlayers.get(trainerController));</span>
+<span class="nc" id="L466">        trainerController.destroy();</span>
+<span class="nc" id="L467">        otherPlayers.remove(trainerController);</span>
+<span class="nc" id="L468">    }</span>
+
+    private void hideRemotePlayer(Trainer trainer) {
+<span class="nc bnc" id="L471" title="All 2 branches missed.">        if (trainer == null) {</span>
+<span class="nc" id="L472">            return;</span>
+        }
+<span class="nc" id="L474">        EntityController trainerController = getEntityController(trainer);</span>
+<span class="nc bnc" id="L475" title="All 2 branches missed.">        if (trainerController == null) {</span>
+<span class="nc" id="L476">            return;</span>
+        }
+<span class="nc" id="L478">        tilePane.getChildren().remove(otherPlayers.get(trainerController));</span>
+<span class="nc" id="L479">    }</span>
+
+    private void revealRemotePlayer(Trainer trainer) {
+<span class="nc bnc" id="L482" title="All 2 branches missed.">        if (trainer == null) {</span>
+<span class="nc" id="L483">            return;</span>
+        }
+<span class="nc" id="L485">        EntityController trainerController = getEntityController(trainer);</span>
+<span class="nc bnc" id="L486" title="All 2 branches missed.">        if (trainerController == null) {</span>
+<span class="nc" id="L487">            return;</span>
+        }
+<span class="nc" id="L489">        tilePane.getChildren().add(otherPlayers.get(trainerController));</span>
+<span class="nc" id="L490">    }</span>
+
+    private boolean isBeingRendered(String trainer) {
+<span class="nc bnc" id="L493" title="All 2 branches missed.">        for (EntityController controller : otherPlayers.keySet()) {</span>
+<span class="nc bnc" id="L494" title="All 2 branches missed.">            if (controller.getTrainer()._id().equals(trainer)) {</span>
+<span class="nc" id="L495">                return tilePane.getChildren().contains(otherPlayers.get(controller));</span>
+            }
+<span class="nc" id="L497">        }</span>
+<span class="nc" id="L498">        return false;</span>
+    }
+
+    private void drawMap() {
+<span class="fc" id="L502">        drawPlayer(posx, posy);</span>
+<span class="fc bfc" id="L503" title="All 2 branches covered.">        for (Layer layer : map.layers()) {</span>
+<span class="pc bpc" id="L504" title="1 of 2 branches missed.">            if (layer.chunks() != null) {</span>
+<span class="fc bfc" id="L505" title="All 2 branches covered.">                for (Chunk chunk : layer.chunks()) {</span>
+<span class="fc" id="L506">                    int chunkX = chunk.x();</span>
+<span class="fc" id="L507">                    int chunkY = chunk.y();</span>
+<span class="fc" id="L508">                    int index = 0;</span>
+<span class="fc bfc" id="L509" title="All 2 branches covered.">                    for (int id : chunk.data()) {</span>
+<span class="fc" id="L510">                        int x = index % chunk.width() + chunkX;</span>
+<span class="fc" id="L511">                        int y = index / chunk.width() + chunkY;</span>
+<span class="fc" id="L512">                        index++;</span>
+<span class="fc" id="L513">                        Pair&lt;Pair&lt;TileSet, Image&gt;, Integer&gt; tileSet = findTileSet(id);</span>
+<span class="pc bpc" id="L514" title="1 of 2 branches missed.">                        if (tileSet == null) {</span>
+<span class="nc" id="L515">                            continue;</span>
+                        }
+
+                        // Some maps have &quot;invalid&quot; (or blank tiles) with ID 0 which we don't want to draw
+                        // This is to prevent the camera from showing the &quot;extended&quot; tile pane with those tiles
+<span class="fc bfc" id="L520" title="All 2 branches covered.">                        if (id != 0) {</span>
+<span class="fc" id="L521">                            drawTile(x, y, tileSet.getKey().getValue(), presetsService.getTileViewPort(tileSet.getValue(), tileSet.getKey().getKey()));</span>
+                        }
+<span class="fc" id="L523">                    }</span>
+<span class="fc" id="L524">                }</span>
+<span class="nc bnc" id="L525" title="All 2 branches missed.">            } else if (layer.data() != null) {</span>
+<span class="nc" id="L526">                int chunkX = layer.x();</span>
+<span class="nc" id="L527">                int chunkY = layer.y();</span>
+<span class="nc" id="L528">                int index = 0;</span>
+<span class="nc bnc" id="L529" title="All 2 branches missed.">                for (int id : layer.data()) {</span>
+<span class="nc" id="L530">                    int x = index % layer.width() + chunkX;</span>
+<span class="nc" id="L531">                    int y = index / layer.width() + chunkY;</span>
+<span class="nc" id="L532">                    index++;</span>
+<span class="nc" id="L533">                    Pair&lt;Pair&lt;TileSet, Image&gt;, Integer&gt; tileSet = findTileSet(id);</span>
+<span class="nc bnc" id="L534" title="All 2 branches missed.">                    if (tileSet == null) {</span>
+<span class="nc" id="L535">                        continue;</span>
+                    }
+
+                    // Some maps have &quot;invalid&quot; (or blank tiles) with ID 0 which we don't want to draw
+                    // This is to prevent the camera from showing the &quot;extended&quot; tile pane with those tiles
+<span class="nc bnc" id="L540" title="All 2 branches missed.">                    if (id != 0) {</span>
+<span class="nc" id="L541">                        drawTile(x, y, tileSet.getKey().getValue(), presetsService.getTileViewPort(tileSet.getValue(), tileSet.getKey().getKey()));</span>
+                    }
+<span class="nc" id="L543">                }</span>
+            }
+<span class="fc" id="L545">        }</span>
+
+<span class="fc" id="L547">        updateOrigin();</span>
+<span class="fc" id="L548">    }</span>
+
+    private Pair&lt;Pair&lt;TileSet, Image&gt;, Integer&gt; findTileSet(int id) {
+<span class="fc" id="L551">        id++;</span>
+<span class="pc bpc" id="L552" title="1 of 2 branches missed.">        for (int i = tileSets.size() - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L553">            Pair&lt;TileSetDescription, Pair&lt;TileSet, Image&gt;&gt; tileSet = tileSets.get(i);</span>
+<span class="pc bpc" id="L554" title="1 of 2 branches missed.">            if (tileSet.getKey().firstgid() &lt;= id) {</span>
+<span class="fc" id="L555">                return new Pair&lt;&gt;(tileSet.getValue(), id - tileSet.getKey().firstgid());</span>
+            }
+        }
+<span class="nc" id="L558">        return null;</span>
+    }
+
+    private void drawTile(int x, int y, Image image, Rectangle2D viewPort) {
+<span class="fc" id="L562">        ImageView view = new ImageView();</span>
+<span class="fc" id="L563">        view.setSmooth(true);</span>
+<span class="fc" id="L564">        view.setImage(image);</span>
+<span class="fc" id="L565">        view.setFitWidth(TILE_SIZE + 1);</span>
+<span class="fc" id="L566">        view.setFitHeight(TILE_SIZE + 1);</span>
+<span class="fc" id="L567">        view.setViewport(viewPort);</span>
+<span class="fc" id="L568">        view.setTranslateX(x * TILE_SIZE);</span>
+<span class="fc" id="L569">        view.setTranslateY(y * TILE_SIZE);</span>
+<span class="fc" id="L570">        tilePane.getChildren().add(view);</span>
+<span class="fc" id="L571">    }</span>
+
+    public void setOrigin(int tilex, int tiley) {
+<span class="fc" id="L574">        double originX = (double) width / 2 - TILE_SIZE / 2;</span>
+<span class="fc" id="L575">        double originY = (double) height / 2 - TILE_SIZE / 2;</span>
+<span class="fc" id="L576">        double tilePaneTranslationX = originX - tilex * TILE_SIZE;</span>
+<span class="fc" id="L577">        double tilePaneTranslationY = originY - tiley * TILE_SIZE;</span>
+
+        // Calculate the maximum translation values based on the map dimensions and visible area
+<span class="fc" id="L580">        double maxTranslationX = Math.max(0, tilePane.getBoundsInLocal().getWidth() - width + (TILE_SIZE / 2));</span>
+<span class="fc" id="L581">        double maxTranslationY = Math.max(0, tilePane.getBoundsInLocal().getHeight() - height + TILE_SIZE);</span>
+
+        // Clamp the translation values within the maximum range
+<span class="fc" id="L584">        tilePaneTranslationX = Math.max(-maxTranslationX, Math.min(0, tilePaneTranslationX));</span>
+<span class="fc" id="L585">        tilePaneTranslationY = Math.max(-maxTranslationY, Math.min(0, tilePaneTranslationY));</span>
+
+<span class="fc" id="L587">        tilePane.setTranslateX(tilePaneTranslationX);</span>
+<span class="fc" id="L588">        tilePane.setTranslateY(tilePaneTranslationY);</span>
+<span class="fc" id="L589">        movePlayer(tilex, tiley);</span>
+<span class="fc" id="L590">        prefs.setPosition(new Point2D(tilex, tiley));</span>
+
+<span class="pc bpc" id="L592" title="1 of 2 branches missed.">        if (spawned) {</span>
+<span class="nc" id="L593">            long currentTime = System.currentTimeMillis();</span>
+            // Delay in milliseconds
+<span class="nc" id="L595">            double debounceDelay = 250;</span>
+<span class="nc bnc" id="L596" title="All 2 branches missed.">            if (currentTime - lastValueChangeTime &gt; debounceDelay) {</span>
+<span class="nc bnc" id="L597" title="All 4 branches missed.">                if (lastposx == posx &amp;&amp; lastposy == posy) {</span>
+<span class="nc" id="L598">                    soundController.play(&quot;sfx:bump&quot;);</span>
+<span class="nc" id="L599">                    lastValueChangeTime = currentTime;</span>
+                }
+            }
+        }
+<span class="fc" id="L603">    }</span>
+
+    public void updateOrigin() {
+<span class="fc" id="L606">        setOrigin(posx, posy);</span>
+<span class="fc" id="L607">    }</span>
+
+    private void drawPlayer(int posx, int posy) {
+<span class="fc" id="L610">        tilePane.getChildren().remove(player);</span>
+<span class="fc" id="L611">        player = playerController.render();</span>
+<span class="fc" id="L612">        player.setTranslateX(posx * TILE_SIZE);</span>
+<span class="fc" id="L613">        player.setTranslateY((posy - 1) * TILE_SIZE);</span>
+<span class="fc" id="L614">        tilePane.getChildren().add(player);</span>
+<span class="fc" id="L615">        player.toFront();</span>
+<span class="fc" id="L616">    }</span>
+
+    private Parent drawRemotePlayer(EntityController controller, int posx, int posy) {
+<span class="nc" id="L619">        Parent parent = controller.render();</span>
+<span class="nc" id="L620">        parent.setTranslateX(posx * TILE_SIZE);</span>
+<span class="nc" id="L621">        parent.setTranslateY((posy - 1) * TILE_SIZE);</span>
+<span class="nc" id="L622">        tilePane.getChildren().add(parent);</span>
+<span class="nc" id="L623">        parent.toFront();</span>
+<span class="nc" id="L624">        return parent;</span>
+    }
+
+    private void movePlayer(int x, int y) {
+<span class="fc" id="L628">        playerController.updateViewPort();</span>
+<span class="fc" id="L629">        player.toFront();</span>
+<span class="fc" id="L630">        player.setTranslateX(x * TILE_SIZE);</span>
+<span class="fc" id="L631">        player.setTranslateY((y - 1) * TILE_SIZE);</span>
+<span class="fc" id="L632">    }</span>
+
+    private void moveRemotePlayer(EntityController controller, int x, int y) {
+<span class="nc" id="L635">        Parent remotePlayer = otherPlayers.get(controller);</span>
+<span class="nc" id="L636">        controller.updateViewPort();</span>
+<span class="nc" id="L637">        remotePlayer.toFront();</span>
+<span class="nc" id="L638">        remotePlayer.setTranslateX(x * TILE_SIZE);</span>
+<span class="nc" id="L639">        remotePlayer.setTranslateY((y - 1) * TILE_SIZE);</span>
+<span class="nc" id="L640">    }</span>
+
+    @Override
+    public void onResize(int width, int height) {
+<span class="fc" id="L644">        this.width = width;</span>
+<span class="fc" id="L645">        this.height = height;</span>
+<span class="pc bpc" id="L646" title="1 of 2 branches missed.">        if (loadingPage.isDone()) {</span>
+<span class="nc" id="L647">            updateOrigin();</span>
+        }
+<span class="fc" id="L649">    }</span>
+
+    private void toggleBeastDetails(Monster monster) {
+<span class="nc bnc" id="L652" title="All 2 branches missed.">        if (Objects.equals(lastMonster, monster)) {</span>
+<span class="nc" id="L653">            scoreBoardLayout.getChildren().remove(beastDetailParent);</span>
+<span class="nc" id="L654">            lastMonster = null;</span>
+<span class="nc" id="L655">            return;</span>
+        }
+
+<span class="nc" id="L658">        lastMonster = monster;</span>
+
+<span class="nc" id="L660">        BeastDetailController controller = beastDetailControllerProvider.get();</span>
+<span class="nc" id="L661">        subControllers.add(controller);</span>
+<span class="nc" id="L662">        controller.setBeast(monster);</span>
+<span class="nc" id="L663">        controller.init();</span>
+
+<span class="nc" id="L665">        scoreBoardLayout.getChildren().remove(beastDetailParent);</span>
+<span class="nc" id="L666">        beastDetailParent = controller.render();</span>
+<span class="nc" id="L667">        scoreBoardLayout.getChildren().add(0, beastDetailParent);</span>
+<span class="nc" id="L668">    }</span>
+
+    private void updateTrainerPos(Direction direction) {
+<span class="fc" id="L671">        Trainer trainer = cache.getTrainer();</span>
+<span class="fc" id="L672">        JsonObject data = new JsonObject();</span>
+<span class="fc" id="L673">        data.add(&quot;_id&quot;, new JsonPrimitive(trainer._id()));</span>
+<span class="fc" id="L674">        data.add(&quot;area&quot;, new JsonPrimitive(trainer.area()));</span>
+<span class="fc" id="L675">        data.add(&quot;x&quot;, new JsonPrimitive(posx));</span>
+<span class="fc" id="L676">        data.add(&quot;y&quot;, new JsonPrimitive(posy));</span>
+<span class="fc" id="L677">        data.add(&quot;direction&quot;, new JsonPrimitive(direction.ordinal()));</span>
+
+<span class="fc" id="L679">        JsonObject message = new JsonObject();</span>
+<span class="fc" id="L680">        message.add(&quot;event&quot;, new JsonPrimitive(&quot;areas.&quot; + trainer.area() + &quot;.trainers.&quot; + trainer._id() + &quot;.moved&quot;));</span>
+<span class="fc" id="L681">        message.add(&quot;data&quot;, data);</span>
+
+<span class="fc" id="L683">        udpEventListener.send(message.toString());</span>
+<span class="fc" id="L684">    }</span>
+
+    @FXML
+    public void keyDown(KeyEvent keyEvent) {
+<span class="fc" id="L688">        handlePlayerMovement(keyEvent);</span>
+<span class="fc" id="L689">        handleMap(keyEvent);</span>
+<span class="fc" id="L690">        handlePauseMenu(keyEvent);</span>
+<span class="fc" id="L691">        handleScoreboard(keyEvent);</span>
+<span class="fc" id="L692">        handleBeastList(keyEvent);</span>
+<span class="fc" id="L693">        handleInventory(keyEvent);</span>
+<span class="fc" id="L694">        handleBeastTeam(keyEvent);</span>
+<span class="fc" id="L695">        handleTalkToTrainer(keyEvent);</span>
+<span class="fc" id="L696">    }</span>
+
+    public void handleTalkToTrainer(KeyEvent keyEvent) {
+<span class="pc bpc" id="L699" title="1 of 2 branches missed.">        if (keyEvent.getCode().equals(KeyCode.T)) {</span>
+<span class="nc" id="L700">            Trainer trainer = canTalkToNPC();</span>
+<span class="nc bnc" id="L701" title="All 2 branches missed.">            if (trainer != null) {</span>
+<span class="nc bnc" id="L702" title="All 4 branches missed.">                if (trainer.npc() == null || trainer.npc().encounterOnTalk()) {</span>
+<span class="nc bnc" id="L703" title="All 2 branches missed.">                    if (trainer.npc() != null) {</span>
+<span class="nc" id="L704">                        List&lt;Opponent&gt; trainerOpponents = encounterOpponentsService.getTrainerOpponents(cache.getJoinedRegion()._id(), trainer._id()).blockingFirst();</span>
+<span class="nc bnc" id="L705" title="All 2 branches missed.">                        if (!(trainerOpponents.equals(List.of()))) {</span>
+<span class="nc" id="L706">                            talkToFightingNPC(trainer);</span>
+                        } else {
+<span class="nc" id="L708">                            startEncounterOnTalk(trainer);</span>
+                        }
+<span class="nc" id="L710">                    } else {</span>
+<span class="nc" id="L711">                        startEncounterOnTalk(trainer);</span>
+                    }
+<span class="nc bnc" id="L713" title="All 2 branches missed.">                } else if (trainer.npc().starters() != null) {</span>
+<span class="nc" id="L714">                    talkToStartersNPC(trainer);</span>
+<span class="nc bnc" id="L715" title="All 2 branches missed.">                } else if (trainer.npc().canHeal()) {</span>
+<span class="nc" id="L716">                    talkToNurse(trainer);</span>
+<span class="nc bnc" id="L717" title="All 2 branches missed.">                } else if (trainer.npc().sells() != null) {</span>
+<span class="nc" id="L718">                    openShop(trainer);</span>
+                }
+            } else {
+<span class="nc" id="L721">                closeTalk();</span>
+            }
+        }
+<span class="fc" id="L724">    }</span>
+
+    private Trainer canTalkToNPC() {
+<span class="nc bnc" id="L727" title="All 2 branches missed.">        for (Trainer trainer : cache.getTrainers()) {</span>
+<span class="nc bnc" id="L728" title="All 2 branches missed.">            if (direction == Direction.RIGHT) { // right</span>
+<span class="nc bnc" id="L729" title="All 4 branches missed.">                if (trainer.x() == posx + 1 &amp;&amp; trainer.y() == posy) {</span>
+<span class="nc" id="L730">                    return trainer;</span>
+                }
+<span class="nc bnc" id="L732" title="All 2 branches missed.">            } else if (direction == Direction.UP) { //up</span>
+<span class="nc bnc" id="L733" title="All 4 branches missed.">                if (trainer.x() == posx &amp;&amp; trainer.y() == posy - 1) {</span>
+<span class="nc" id="L734">                    return trainer;</span>
+                }
+<span class="nc bnc" id="L736" title="All 2 branches missed.">            } else if (direction == Direction.LEFT) { //left</span>
+<span class="nc bnc" id="L737" title="All 4 branches missed.">                if (trainer.x() == posx - 1 &amp;&amp; trainer.y() == posy) {</span>
+<span class="nc" id="L738">                    return trainer;</span>
+                }
+<span class="nc bnc" id="L740" title="All 2 branches missed.">            } else if (direction == Direction.DOWN) { //down</span>
+<span class="nc bnc" id="L741" title="All 4 branches missed.">                if (trainer.x() == posx &amp;&amp; trainer.y() == posy + 1) {</span>
+<span class="nc" id="L742">                    return trainer;</span>
+                }
+            }
+<span class="nc" id="L745">        }</span>
+<span class="nc" id="L746">        return null;</span>
+    }
+
+    private String createTalkMessage(String _id, String target, @SuppressWarnings(&quot;OptionalUsedAsFieldOrParameterType&quot;) Optional&lt;Integer&gt; selection) {
+<span class="nc" id="L750">        JsonObject data = new JsonObject();</span>
+<span class="nc" id="L751">        data.add(&quot;_id&quot;, new JsonPrimitive(_id));</span>
+<span class="nc" id="L752">        data.add(&quot;target&quot;, new JsonPrimitive(target));</span>
+
+<span class="nc bnc" id="L754" title="All 2 branches missed.">        if (selection.isPresent()) {</span>
+<span class="nc" id="L755">            data.add(&quot;selection&quot;, new JsonPrimitive(selection.get()));</span>
+        } else {
+<span class="nc" id="L757">            data.add(&quot;selection&quot;, JsonNull.INSTANCE);</span>
+        }
+
+<span class="nc" id="L760">        JsonObject eventMessage = new JsonObject();</span>
+<span class="nc" id="L761">        eventMessage.add(&quot;event&quot;, new JsonPrimitive(&quot;areas.&quot; + cache.getTrainer().area() + &quot;.trainers.&quot; + cache.getTrainer()._id() + &quot;.talked&quot;));</span>
+<span class="nc" id="L762">        eventMessage.add(&quot;data&quot;, data);</span>
+
+<span class="nc" id="L764">        return eventMessage.toString();</span>
+    }
+
+    private void startEncounterOnTalk(Trainer trainer) {
+<span class="nc" id="L768">        disposables.add(presetsService.getCharacterSprites(trainer.image(), false)</span>
+<span class="nc" id="L769">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L770">                .subscribe(image -&gt; {</span>
+<span class="nc" id="L771">                    Rectangle2D viewPort = new Rectangle2D(3 * 96, 32, 16, 32);</span>
+<span class="nc" id="L772">                    PixelReader reader = image.getPixelReader();</span>
+<span class="nc" id="L773">                    WritableImage newImage = new WritableImage(reader, (int) viewPort.getMinX(), (int) viewPort.getMinY(), (int) viewPort.getWidth(), (int) viewPort.getHeight());</span>
+<span class="nc" id="L774">                    String askFight = resources.getString(&quot;ask&quot;) + &quot; &quot; + trainer.name() + &quot; &quot; + resources.getString(&quot;vs&quot;);</span>
+<span class="nc" id="L775">                    talk(newImage, resources.getString(&quot;hello&quot;) + &quot; \n&quot; + resources.getString(&quot;nurse&quot;), List.of(askFight), null,</span>
+<span class="nc" id="L776">                            i -&gt; udpEventListener.send(createTalkMessage(cache.getTrainer()._id(), trainer._id(), Optional.empty())));</span>
+<span class="nc" id="L777">                }));</span>
+<span class="nc" id="L778">    }</span>
+
+    private void talkToFightingNPC(Trainer trainer) {
+<span class="nc" id="L781">        disposables.add(presetsService.getCharacterSprites(trainer.image(), false)</span>
+<span class="nc" id="L782">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L783">                .subscribe(image -&gt; {</span>
+<span class="nc" id="L784">                    Rectangle2D viewPort = new Rectangle2D(3 * 96, 32, 16, 32);</span>
+<span class="nc" id="L785">                    PixelReader reader = image.getPixelReader();</span>
+<span class="nc" id="L786">                    WritableImage newImage = new WritableImage(reader, (int) viewPort.getMinX(), (int) viewPort.getMinY(), (int) viewPort.getWidth(), (int) viewPort.getHeight());</span>
+<span class="nc" id="L787">                    talk(newImage, &quot;I am currently fighting, come back later!&quot;</span>
+                            , null, null, null);
+<span class="nc" id="L789">                }));</span>
+<span class="nc" id="L790">    }</span>
+
+    private void talkToStartersNPC(Trainer trainer) {
+<span class="nc" id="L793">        disposables.add(presetsService.getCharacterSprites(trainer.image(), false)</span>
+<span class="nc" id="L794">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L795">                .subscribe(image -&gt; {</span>
+<span class="nc" id="L796">                    Rectangle2D viewPort = new Rectangle2D(3 * 96, 32, 16, 32);</span>
+<span class="nc" id="L797">                    PixelReader reader = image.getPixelReader();</span>
+<span class="nc" id="L798">                    WritableImage newImage = new WritableImage(reader, (int) viewPort.getMinX(), (int) viewPort.getMinY(), (int) viewPort.getWidth(), (int) viewPort.getHeight());</span>
+<span class="nc bnc" id="L799" title="All 2 branches missed.">                    if (trainer.npc().encountered().contains(cache.getTrainer()._id())) {</span>
+<span class="nc" id="L800">                        talk(newImage, &quot; Welcome back! \n You already received one starter Beast, have a nice day! &quot;</span>
+                                , null, null, null);
+                    } else {
+<span class="nc" id="L803">                        List&lt;String&gt; beastNames = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L804">                        List&lt;Image&gt; beastImages = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L805">                        List&lt;MonsterTypeDto&gt; monsterTypeDtoList = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L806" title="All 2 branches missed.">                        for (int id : trainer.npc().starters()) {</span>
+<span class="nc" id="L807">                            MonsterTypeDto monsterTypeDto = presetsService.getMonsterType(id).blockingFirst();</span>
+<span class="nc" id="L808">                            beastNames.add(monsterTypeDto.name());</span>
+<span class="nc" id="L809">                            monsterTypeDtoList.add(monsterTypeDto);</span>
+<span class="nc" id="L810">                            Image beastImage = presetsService.getMonsterImage(id).blockingFirst();</span>
+<span class="nc" id="L811">                            beastImages.add(beastImage);</span>
+<span class="nc" id="L812">                        }</span>
+<span class="nc" id="L813">                        talk(newImage, &quot; Welcome! \n Please select a starter Beast. &quot;, beastNames, beastImages, (i -&gt; {</span>
+<span class="nc" id="L814">                            String message = &quot;Details: &quot; + monsterTypeDtoList.get(i).name() + &quot;\n&quot; + monsterTypeDtoList.get(i).description();</span>
+<span class="nc" id="L815">                            talk(newImage, message, List.of(&quot;Take it!&quot;, &quot;I don't want this one&quot;), null, (j -&gt; {</span>
+<span class="nc bnc" id="L816" title="All 2 branches missed.">                                if (j == 0) {</span>
+<span class="nc" id="L817">                                    udpEventListener.send(createTalkMessage(cache.getTrainer()._id(), trainer._id(), Optional.of(i)));</span>
+<span class="nc" id="L818">                                    closeTalk();</span>
+                                } else {
+<span class="nc" id="L820">                                    talkToStartersNPC(trainer);</span>
+                                }
+<span class="nc" id="L822">                            }));</span>
+<span class="nc" id="L823">                        }));</span>
+                    }
+<span class="nc" id="L825">                }));</span>
+<span class="nc" id="L826">    }</span>
+
+    private void talkToNurse(Trainer trainer) {
+<span class="nc" id="L829">        disposables.add(presetsService.getCharacterSprites(trainer.image(), true)</span>
+<span class="nc" id="L830">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L831">                .subscribe(image -&gt; {</span>
+<span class="nc" id="L832">                    Rectangle2D viewPort = new Rectangle2D(3 * 96, 32, 16, 32);</span>
+<span class="nc" id="L833">                    PixelReader reader = image.getPixelReader();</span>
+<span class="nc" id="L834">                    WritableImage newImage = new WritableImage(reader, (int) viewPort.getMinX(), (int) viewPort.getMinY(), (int) viewPort.getWidth(), (int) viewPort.getHeight());</span>
+<span class="nc" id="L835">                    talk(newImage, &quot; Hello! \n what can I do for you? &quot;, List.of(&quot;Heal all Beasts&quot;), null, (i -&gt; {</span>
+<span class="nc" id="L836">                        udpEventListener.send(createTalkMessage(cache.getTrainer()._id(), trainer._id(), Optional.empty()));</span>
+<span class="nc" id="L837">                        closeTalk();</span>
+<span class="nc" id="L838">                    }));</span>
+<span class="nc" id="L839">                }));</span>
+<span class="nc" id="L840">    }</span>
+
+    private void talk(Image image, String message, List&lt;String&gt; choices, List&lt;Image&gt; buttonImages, Consumer&lt;Integer&gt; onButtonPressed) {
+<span class="nc" id="L843">        closeTalk();</span>
+
+<span class="nc" id="L845">        dialogWindowController = dialogWindowControllerProvider.get();</span>
+<span class="nc" id="L846">        dialogWindowController</span>
+<span class="nc" id="L847">                .setTrainerImage(image)</span>
+<span class="nc" id="L848">                .setChoices(choices)</span>
+<span class="nc" id="L849">                .setButtonImages(buttonImages)</span>
+<span class="nc" id="L850">                .setText(message)</span>
+<span class="nc" id="L851">                .setOnButtonClicked(onButtonPressed);</span>
+<span class="nc" id="L852">        dialogWindowParent = dialogWindowController.render();</span>
+<span class="nc" id="L853">        pauseMenuLayout.getChildren().add(dialogWindowParent);</span>
+<span class="nc" id="L854">        pauseMenuLayout.setPrefWidth(600);</span>
+<span class="nc" id="L855">        currentMenu = MENU_DIALOGWINDOW;</span>
+
+<span class="nc" id="L857">        dialogWindowController.setOnCloseRequested(this::closeTalk);</span>
+<span class="nc" id="L858">    }</span>
+
+    private void closeTalk() {
+<span class="nc bnc" id="L861" title="All 2 branches missed.">        if (pauseMenuLayout.getChildren().contains(dialogWindowParent)) {</span>
+<span class="nc" id="L862">            pauseMenuLayout.getChildren().remove(dialogWindowParent);</span>
+<span class="nc" id="L863">            currentMenu = MENU_NONE;</span>
+<span class="nc bnc" id="L864" title="All 2 branches missed.">            if (dialogWindowController != null) {</span>
+<span class="nc" id="L865">                dialogWindowController.destroy();</span>
+            }
+        }
+<span class="nc" id="L868">    }</span>
+
+    public void handleBeastList(KeyEvent keyEvent) {
+<span class="pc bpc" id="L871" title="5 of 6 branches missed.">        if (keyEvent.getCode().equals(KeyCode.B) &amp;&amp; (currentMenu == MENU_NONE || currentMenu == MENU_BEASTLIST)) {</span>
+<span class="nc" id="L872">            openBeastlist();</span>
+        }
+<span class="fc" id="L874">    }</span>
+
+    public void handleInventory(KeyEvent keyEvent) {
+<span class="pc bpc" id="L877" title="5 of 6 branches missed.">        if (keyEvent.getCode().equals(KeyCode.I) &amp;&amp; (currentMenu == MENU_NONE || currentMenu == MENU_INVENTORY)) {</span>
+<span class="nc" id="L878">            openInv(false);</span>
+        }
+<span class="fc" id="L880">    }</span>
+
+    private void handleScoreboard(KeyEvent keyEvent) {
+<span class="pc bpc" id="L883" title="5 of 6 branches missed.">        if (keyEvent.getCode().equals(KeyCode.N) &amp;&amp; (currentMenu == MENU_NONE || currentMenu == MENU_SCOREBOARD)) {</span>
+<span class="nc" id="L884">            openScoreboard();</span>
+        }
+<span class="fc" id="L886">    }</span>
+
+    private void handlePauseMenu(KeyEvent keyEvent) {
+<span class="pc bpc" id="L889" title="5 of 6 branches missed.">        if (keyEvent.getCode().equals(KeyCode.ESCAPE) &amp;&amp; (currentMenu == MENU_NONE || currentMenu == MENU_PAUSE)) {</span>
+<span class="nc" id="L890">            openPauseMenu();</span>
+        }
+<span class="fc" id="L892">    }</span>
+
+    private void handleMap(KeyEvent keyEvent) {
+<span class="fc bfc" id="L895" title="All 2 branches covered.">        if (keyEvent.getCode().equals(KeyCode.M)) {</span>
+<span class="fc" id="L896">            MapController map = mapControllerProvider.get();</span>
+<span class="fc" id="L897">            app.show(map);</span>
+        }
+<span class="fc" id="L899">    }</span>
+
+    private void handleBeastTeam(KeyEvent keyEvent) {
+<span class="pc bpc" id="L902" title="1 of 2 branches missed.">        if (keyEvent.getCode().equals(KeyCode.X)) {</span>
+<span class="nc" id="L903">            app.show(editBeastTeamControllerProvider.get());</span>
+        }
+<span class="fc" id="L905">    }</span>
+
+
+    private void handlePlayerMovement(KeyEvent keyEvent) {
+<span class="pc bpc" id="L909" title="1 of 2 branches missed.">        if (!pressedKeys.contains(keyEvent.getCode())) {</span>
+<span class="pc bpc" id="L910" title="1 of 4 branches missed.">            if (keyEvent.getCode().equals(KeyCode.UP) || keyEvent.getCode().equals(KeyCode.W)) {</span>
+<span class="fc" id="L911">                pressedKeys.add(keyEvent.getCode());</span>
+<span class="pc bpc" id="L912" title="1 of 4 branches missed.">            } else if (keyEvent.getCode().equals(KeyCode.DOWN) || keyEvent.getCode().equals(KeyCode.S)) {</span>
+<span class="fc" id="L913">                pressedKeys.add(keyEvent.getCode());</span>
+<span class="pc bpc" id="L914" title="1 of 4 branches missed.">            } else if (keyEvent.getCode().equals(KeyCode.LEFT) || keyEvent.getCode().equals(KeyCode.A)) {</span>
+<span class="fc" id="L915">                pressedKeys.add(keyEvent.getCode());</span>
+<span class="pc bpc" id="L916" title="1 of 4 branches missed.">            } else if (keyEvent.getCode().equals(KeyCode.RIGHT) || keyEvent.getCode().equals(KeyCode.D)) {</span>
+<span class="fc" id="L917">                pressedKeys.add(keyEvent.getCode());</span>
+            }
+        }
+<span class="fc" id="L920">    }</span>
+
+    public void keyUp(KeyEvent keyEvent) {
+<span class="fc" id="L923">        pressedKeys.removeIf(keyCode -&gt; keyCode.equals(keyEvent.getCode()));</span>
+<span class="fc" id="L924">        setIdleState();</span>
+<span class="fc" id="L925">    }</span>
+
+    public void moveLoop() {
+<span class="pc bpc" id="L928" title="1 of 2 branches missed.">        if (currentMenu == MENU_NONE) {</span>
+<span class="fc" id="L929">            boolean moved = false;</span>
+
+<span class="fc" id="L931">            lastposx = posx;</span>
+<span class="fc" id="L932">            lastposy = posy;</span>
+
+<span class="pc bpc" id="L934" title="1 of 4 branches missed.">            if (pressedKeys.contains(KeyCode.UP) || pressedKeys.contains(KeyCode.W)) {</span>
+<span class="fc" id="L935">                posy--;</span>
+<span class="fc" id="L936">                direction = Direction.UP;</span>
+<span class="fc" id="L937">                moved = true;</span>
+<span class="pc bpc" id="L938" title="1 of 4 branches missed.">            } else if (pressedKeys.contains(KeyCode.DOWN) || pressedKeys.contains(KeyCode.S)) {</span>
+<span class="fc" id="L939">                posy++;</span>
+<span class="fc" id="L940">                direction = Direction.DOWN;</span>
+<span class="fc" id="L941">                moved = true;</span>
+<span class="pc bpc" id="L942" title="1 of 4 branches missed.">            } else if (pressedKeys.contains(KeyCode.LEFT) || pressedKeys.contains(KeyCode.A)) {</span>
+<span class="fc" id="L943">                posx--;</span>
+<span class="fc" id="L944">                direction = Direction.LEFT;</span>
+<span class="fc" id="L945">                moved = true;</span>
+<span class="pc bpc" id="L946" title="1 of 4 branches missed.">            } else if (pressedKeys.contains(KeyCode.RIGHT) || pressedKeys.contains(KeyCode.D)) {</span>
+<span class="fc" id="L947">                posx++;</span>
+<span class="fc" id="L948">                direction = Direction.RIGHT;</span>
+<span class="fc" id="L949">                moved = true;</span>
+            }
+
+<span class="fc bfc" id="L952" title="All 2 branches covered.">            if (moved) {</span>
+<span class="fc" id="L953">                checkMovementAchievement();</span>
+
+<span class="fc" id="L955">                onUI(() -&gt; {</span>
+<span class="fc" id="L956">                    state.setValue(PlayerState.WALKING);</span>
+<span class="fc" id="L957">                    updateTrainerPos(direction);</span>
+<span class="fc" id="L958">                    updateOrigin();</span>
+<span class="fc" id="L959">                });</span>
+            }
+        }
+<span class="fc" id="L962">    }</span>
+
+    @FXML
+    public void setIdleState() {
+<span class="fc" id="L966">        state.setValue(PlayerState.IDLE);</span>
+<span class="fc" id="L967">        drawPlayer(posx, posy);</span>
+
+<span class="pc bpc" id="L969" title="2 of 4 branches missed.">        if (currentMenu == MENU_PAUSE || currentMenu == MENU_SHOP) {</span>
+<span class="nc" id="L970">            player.setOpacity(0.5);</span>
+        }
+<span class="fc" id="L972">    }</span>
+
+    private void checkMovementAchievement() {
+<span class="fc" id="L975">        Achievement firstMovementAchievement = cache.getMyAchievements().stream()</span>
+<span class="fc" id="L976">                .filter(achievement -&gt; achievement.id().equals(&quot;MoveCharacter&quot;))</span>
+<span class="fc" id="L977">                .findFirst()</span>
+<span class="fc" id="L978">                .orElse(null);</span>
+
+<span class="pc bpc" id="L980" title="1 of 2 branches missed.">        if (firstMovementAchievement == null) {</span>
+<span class="nc" id="L981">            firstMovementAchievement = new Achievement(null, null, &quot;MoveCharacter&quot;, tokenStorage.getCurrentUser()._id(), new Date(), 100);</span>
+<span class="nc" id="L982">            cache.addMyAchievement(firstMovementAchievement);</span>
+
+<span class="nc" id="L984">            disposables.add(achievementsService.updateUserAchievement(tokenStorage.getCurrentUser()._id(), &quot;MoveCharacter&quot;, firstMovementAchievement).observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L985">                    .subscribe(a -&gt; Dialog.info(resources.getString(&quot;achievementUnlockHeader&quot;), resources.getString(&quot;achievementUnlockedPre&quot;) + &quot;\n&quot; + resources.getString(&quot;achievementMoveCharacter&quot;))));</span>
+        }
+<span class="fc" id="L987">    }</span>
+
+    private void checkAreaAchievement(String areaId) {
+        String areasString;
+<span class="nc" id="L991">        String foundArea = &quot;&quot;;</span>
+<span class="nc" id="L992">        String areaIdSub = areaId.substring(areaId.length() - 6);</span>
+
+<span class="nc bnc" id="L994" title="All 2 branches missed.">        for (String visitedArea : cache.getVisitedAreas()) {</span>
+<span class="nc bnc" id="L995" title="All 2 branches missed.">            if (areaIdSub.equals(visitedArea)) {</span>
+<span class="nc" id="L996">                foundArea = visitedArea;</span>
+<span class="nc" id="L997">                break;</span>
+            }
+<span class="nc" id="L999">        }</span>
+
+<span class="nc bnc" id="L1001" title="All 2 branches missed.">        if (foundArea.isEmpty()) {</span>
+<span class="nc" id="L1002">            cache.addVisitedArea(areaIdSub);</span>
+<span class="nc" id="L1003">            areasString = String.join(&quot;;&quot;, cache.getVisitedAreas());</span>
+<span class="nc" id="L1004">            prefs.addVisitedArea(areasString);</span>
+<span class="nc" id="L1005">            double percentage = (double) cache.getVisitedAreas().size() / cache.getAreas().size() * 100;</span>
+
+<span class="nc" id="L1007">            Achievement allAreasAchievement = cache.getMyAchievements().stream()</span>
+<span class="nc" id="L1008">                    .filter(achievement -&gt; achievement.id().equals(&quot;VisitAllRegions&quot;))</span>
+<span class="nc" id="L1009">                    .findFirst()</span>
+<span class="nc" id="L1010">                    .orElse(null);</span>
+
+<span class="nc" id="L1012">            Date date = new Date();</span>
+
+<span class="nc bnc" id="L1014" title="All 2 branches missed.">            if (allAreasAchievement == null) {</span>
+<span class="nc" id="L1015">                allAreasAchievement = new Achievement(date, null, &quot;VisitAllRegions&quot;, tokenStorage.getCurrentUser()._id(), null, (int) Math.round(percentage));</span>
+<span class="nc" id="L1016">                cache.addMyAchievement(allAreasAchievement);</span>
+
+<span class="nc" id="L1018">                disposables.add(achievementsService.updateUserAchievement(tokenStorage.getCurrentUser()._id(), &quot;VisitAllRegions&quot;, allAreasAchievement).subscribe());</span>
+            } else {
+<span class="nc bnc" id="L1020" title="All 2 branches missed.">                if (allAreasAchievement.unlockedAt() == null) {</span>
+<span class="nc bnc" id="L1021" title="All 2 branches missed.">                    Achievement updatedAchievement = new Achievement(null, date, &quot;VisitAllRegions&quot;, tokenStorage.getCurrentUser()._id(), allAreasAchievement.progress() == 100.0 ? date : null, (int) Math.round(percentage));</span>
+<span class="nc" id="L1022">                    cache.getMyAchievements().remove(allAreasAchievement);</span>
+<span class="nc" id="L1023">                    cache.addMyAchievement(updatedAchievement);</span>
+
+<span class="nc" id="L1025">                    disposables.add(achievementsService.updateUserAchievement(tokenStorage.getCurrentUser()._id(), &quot;VisitAllRegions&quot;, updatedAchievement).subscribe());</span>
+
+<span class="nc bnc" id="L1027" title="All 2 branches missed.">                    if (percentage == 100.0) {</span>
+<span class="nc" id="L1028">                        Dialog.info(resources.getString(&quot;achievementUnlockHeader&quot;), resources.getString(&quot;achievementUnlockedPre&quot;) + &quot;\n&quot; + resources.getString(&quot;achievementVisitAllRegions&quot;));</span>
+                    }
+                }
+            }
+        }
+<span class="nc" id="L1033">    }</span>
+
+    @FXML
+    public void clickOnMapButton() {
+<span class="nc" id="L1037">        MapController map = mapControllerProvider.get();</span>
+<span class="nc" id="L1038">        app.show(map);</span>
+<span class="nc" id="L1039">    }</span>
+
+    @FXML
+    public void clickOnBeastListButton() {
+<span class="nc" id="L1043">        openBeastlist();</span>
+<span class="nc" id="L1044">    }</span>
+
+    @FXML
+    public void clickOnScoreboardButton() {
+<span class="nc" id="L1048">        openScoreboard();</span>
+<span class="nc" id="L1049">    }</span>
+
+    @FXML
+    public void clickOnPauseMenuButton() {
+<span class="nc" id="L1053">        openPauseMenu();</span>
+<span class="nc" id="L1054">    }</span>
+
+    @FXML
+    void clickOnInvButton() {
+<span class="nc" id="L1058">        openInv(false);</span>
+<span class="nc" id="L1059">    }</span>
+
+    public void openBeastlist() {
+<span class="nc bnc" id="L1062" title="All 2 branches missed.">        if (scoreBoardLayout.getChildren().contains(beastListParent)) {</span>
+<span class="nc" id="L1063">            scoreBoardLayout.getChildren().remove(beastListParent);</span>
+<span class="nc" id="L1064">            scoreBoardLayout.getChildren().remove(beastDetailParent);</span>
+<span class="nc" id="L1065">            lastMonster = null;</span>
+<span class="nc" id="L1066">            currentMenu = MENU_NONE;</span>
+        } else {
+<span class="nc" id="L1068">            scoreBoardLayout.getChildren().add(beastListParent);</span>
+<span class="nc" id="L1069">            currentMenu = MENU_BEASTLIST;</span>
+        }
+<span class="nc" id="L1071">    }</span>
+
+    public void openScoreboard() {
+<span class="nc bnc" id="L1074" title="All 2 branches missed.">        if (scoreBoardLayout.getChildren().contains(scoreBoardParent)) {</span>
+<span class="nc" id="L1075">            scoreBoardLayout.getChildren().remove(scoreBoardParent);</span>
+<span class="nc" id="L1076">            currentMenu = MENU_NONE;</span>
+        } else {
+<span class="nc" id="L1078">            scoreBoardLayout.getChildren().add(scoreBoardParent);</span>
+<span class="nc" id="L1079">            currentMenu = MENU_SCOREBOARD;</span>
+        }
+<span class="nc" id="L1081">    }</span>
+
+    public void openInv(boolean isShop) {
+<span class="nc bnc" id="L1084" title="All 2 branches missed.">        if (!isShop) {</span>
+<span class="nc bnc" id="L1085" title="All 2 branches missed.">            if (scoreBoardLayout.getChildren().contains(inventoryParent)) {</span>
+<span class="nc" id="L1086">                scoreBoardLayout.getChildren().remove(inventoryParent);</span>
+<span class="nc" id="L1087">                currentMenu = MENU_NONE;</span>
+            } else {
+<span class="nc" id="L1089">                currentMenu = MENU_INVENTORY;</span>
+<span class="nc bnc" id="L1090" title="All 2 branches missed.">                if (scoreBoardLayout.getChildren().contains(scoreBoardLayout)) {</span>
+<span class="nc" id="L1091">                    scoreBoardLayout.getChildren().remove(scoreBoardParent);</span>
+<span class="nc" id="L1092">                    currentMenu = MENU_NONE;</span>
+<span class="nc bnc" id="L1093" title="All 2 branches missed.">                } else if (scoreBoardLayout.getChildren().contains(beastListParent)) {</span>
+<span class="nc" id="L1094">                    scoreBoardLayout.getChildren().remove(beastListParent);</span>
+<span class="nc" id="L1095">                    currentMenu = MENU_NONE;</span>
+                } else {
+<span class="nc" id="L1097">                    inventoryController.init();</span>
+<span class="nc" id="L1098">                    inventoryController.setIfShop(false);</span>
+<span class="nc" id="L1099">                    inventoryController.setOnCloseRequest(() -&gt; {</span>
+<span class="nc" id="L1100">                        setCloseRequests(scoreBoardLayout, inventoryParent);</span>
+<span class="nc" id="L1101">                        lastMonster = null;</span>
+<span class="nc" id="L1102">                        setCloseRequests(scoreBoardLayout, itemDetailParent);</span>
+<span class="nc" id="L1103">                    });</span>
+<span class="nc" id="L1104">                    inventoryParent = inventoryController.render();</span>
+<span class="nc" id="L1105">                    scoreBoardLayout.getChildren().add(inventoryParent);</span>
+                }
+            }
+        } else {
+<span class="nc" id="L1109">            pauseHint.setOpacity(0);</span>
+<span class="nc" id="L1110">            beastlistHint.setOpacity(0);</span>
+<span class="nc" id="L1111">            scoreboardHint.setOpacity(0);</span>
+<span class="nc" id="L1112">            mapHint.setOpacity(0);</span>
+<span class="nc" id="L1113">            invHint.setOpacity(0);</span>
+<span class="nc bnc" id="L1114" title="All 2 branches missed.">            for (Node tile : tilePane.getChildren()) {</span>
+<span class="nc bnc" id="L1115" title="All 2 branches missed.">                if (tile instanceof ImageView imageView) {</span>
+<span class="nc" id="L1116">                    imageView.setFitWidth(TILE_SIZE);</span>
+<span class="nc" id="L1117">                    imageView.setFitHeight(TILE_SIZE);</span>
+                }
+<span class="nc" id="L1119">                tile.setOpacity(0.5);</span>
+<span class="nc" id="L1120">            }</span>
+<span class="nc bnc" id="L1121" title="All 2 branches missed.">            if (scoreBoardLayout.getChildren().contains(scoreBoardLayout)) {</span>
+<span class="nc" id="L1122">                scoreBoardLayout.getChildren().remove(scoreBoardParent);</span>
+<span class="nc" id="L1123">                currentMenu = MENU_NONE;</span>
+<span class="nc bnc" id="L1124" title="All 2 branches missed.">            } else if (scoreBoardLayout.getChildren().contains(beastListParent)) {</span>
+<span class="nc" id="L1125">                scoreBoardLayout.getChildren().remove(beastListParent);</span>
+<span class="nc" id="L1126">                currentMenu = MENU_NONE;</span>
+<span class="nc bnc" id="L1127" title="All 2 branches missed.">            } else if (scoreBoardLayout.getChildren().contains(inventoryParent)) {</span>
+<span class="nc" id="L1128">                scoreBoardLayout.getChildren().remove(inventoryParent);</span>
+<span class="nc" id="L1129">                currentMenu = MENU_NONE;</span>
+            } else {
+<span class="nc" id="L1131">                inventoryController.init();</span>
+<span class="nc" id="L1132">                inventoryController.setIfShop(true);</span>
+<span class="nc" id="L1133">                inventoryController.setOnItemClicked(this::toggleInventoryItemDetails);</span>
+<span class="nc" id="L1134">                inventoryController.setOnCloseRequest(() -&gt; {</span>
+<span class="nc" id="L1135">                    setCloseRequests(scoreBoardLayout, inventoryParent);</span>
+<span class="nc" id="L1136">                    lastMonster = null;</span>
+<span class="nc" id="L1137">                    setCloseRequests(scoreBoardLayout, itemDetailParent);</span>
+<span class="nc" id="L1138">                });</span>
+<span class="nc" id="L1139">                inventoryParent = inventoryController.render();</span>
+<span class="nc" id="L1140">                scoreBoardLayout.getChildren().add(inventoryParent);</span>
+            }
+        }
+<span class="nc" id="L1143">    }</span>
+
+    public void setCloseRequests(HBox hBox, Parent parent) {
+<span class="nc" id="L1146">        removePause();</span>
+<span class="nc" id="L1147">        hBox.getChildren().remove(parent);</span>
+<span class="nc" id="L1148">        currentMenu = MENU_NONE;</span>
+<span class="nc" id="L1149">        pauseHint.setOpacity(1);</span>
+<span class="nc" id="L1150">        beastlistHint.setOpacity(1);</span>
+<span class="nc" id="L1151">        scoreboardHint.setOpacity(1);</span>
+<span class="nc" id="L1152">        mapHint.setOpacity(1);</span>
+<span class="nc" id="L1153">        invHint.setOpacity(1);</span>
+<span class="nc" id="L1154">    }</span>
+
+    public void openShop(Trainer trainer) {
+<span class="nc" id="L1157">        shopController.init();</span>
+<span class="nc" id="L1158">        shopController.setTrainer(trainer);</span>
+<span class="nc bnc" id="L1159" title="All 2 branches missed.">        for (Node tile : tilePane.getChildren()) {</span>
+<span class="nc bnc" id="L1160" title="All 2 branches missed.">            if (tile instanceof ImageView imageView) {</span>
+<span class="nc" id="L1161">                imageView.setFitWidth(TILE_SIZE);</span>
+<span class="nc" id="L1162">                imageView.setFitHeight(TILE_SIZE);</span>
+            }
+<span class="nc" id="L1164">            tile.setOpacity(0.5);</span>
+<span class="nc" id="L1165">        }</span>
+<span class="nc" id="L1166">        pauseHint.setOpacity(0);</span>
+<span class="nc" id="L1167">        beastlistHint.setOpacity(0);</span>
+<span class="nc" id="L1168">        scoreboardHint.setOpacity(0);</span>
+<span class="nc" id="L1169">        mapHint.setOpacity(0);</span>
+<span class="nc" id="L1170">        invHint.setOpacity(0);</span>
+<span class="nc" id="L1171">        shopController.setOnItemClicked(this::toggleShopItemDetails);</span>
+<span class="nc" id="L1172">        shopController.setOnCloseRequest(() -&gt; {</span>
+<span class="nc" id="L1173">            setCloseRequests(shopLayout, shopParent);</span>
+<span class="nc" id="L1174">            inventoryController.close();</span>
+<span class="nc" id="L1175">            setCloseRequests(shopLayout, itemDetailParent);</span>
+<span class="nc" id="L1176">        });</span>
+<span class="nc" id="L1177">        shopParent = shopController.render();</span>
+<span class="nc" id="L1178">        shopLayout.getChildren().add(shopParent);</span>
+<span class="nc" id="L1179">        currentMenu = MENU_SHOP;</span>
+<span class="nc" id="L1180">        openInv(true);</span>
+<span class="nc" id="L1181">    }</span>
+
+    private void toggleInventoryItemDetails(ItemTypeDto itemTypeDto) {
+<span class="nc bnc" id="L1184" title="All 2 branches missed.">        if (Objects.equals(lastItemTypeDto, itemTypeDto)) {</span>
+<span class="nc" id="L1185">            scoreBoardLayout.getChildren().remove(itemDetailParent);</span>
+<span class="nc" id="L1186">            lastItemTypeDto = null;</span>
+<span class="nc" id="L1187">            return;</span>
+        }
+<span class="nc" id="L1189">        setItemDetailController(itemTypeDto, false);</span>
+<span class="nc" id="L1190">    }</span>
+
+    private void toggleShopItemDetails(ItemTypeDto itemTypeDto) {
+<span class="nc bnc" id="L1193" title="All 2 branches missed.">        if (Objects.equals(lastItemTypeDto, itemTypeDto)) {</span>
+<span class="nc" id="L1194">            shopLayout.getChildren().remove(itemDetailParent);</span>
+<span class="nc" id="L1195">            lastItemTypeDto = null;</span>
+<span class="nc" id="L1196">            return;</span>
+        }
+<span class="nc" id="L1198">        setItemDetailController(itemTypeDto, true);</span>
+
+<span class="nc" id="L1200">    }</span>
+
+    private void setItemDetailController(ItemTypeDto itemTypeDto, boolean booleanShop) {
+<span class="nc" id="L1203">        lastItemTypeDto = itemTypeDto;</span>
+<span class="nc" id="L1204">        ItemDetailController controller = itemDetailControllerProvider.get();</span>
+<span class="nc" id="L1205">        subControllers.add(controller);</span>
+<span class="nc" id="L1206">        controller.setItem(itemTypeDto);</span>
+<span class="nc" id="L1207">        controller.setBooleanShop(booleanShop);</span>
+<span class="nc" id="L1208">        controller.init();</span>
+<span class="nc" id="L1209">        scoreBoardLayout.getChildren().remove(itemDetailParent);</span>
+<span class="nc" id="L1210">        shopLayout.getChildren().remove(itemDetailParent);</span>
+<span class="nc" id="L1211">        itemDetailParent = controller.render();</span>
+<span class="nc bnc" id="L1212" title="All 2 branches missed.">        if (booleanShop) {</span>
+<span class="nc" id="L1213">            shopLayout.getChildren().add(1, itemDetailParent);</span>
+        } else {
+<span class="nc" id="L1215">            scoreBoardLayout.getChildren().add(0, itemDetailParent);</span>
+        }
+<span class="nc" id="L1217">    }</span>
+
+    public void openPauseMenu() {
+<span class="nc bnc" id="L1220" title="All 2 branches missed.">        if (pauseMenuLayout.getChildren().contains(pauseMenuParent)) {</span>
+<span class="nc" id="L1221">            removePause();</span>
+<span class="nc" id="L1222">            pauseMenuLayout.getChildren().remove(pauseMenuParent);</span>
+<span class="nc" id="L1223">            currentMenu = MENU_NONE;</span>
+        } else {
+<span class="nc bnc" id="L1225" title="All 2 branches missed.">            for (Node tile : tilePane.getChildren()) {</span>
+<span class="nc bnc" id="L1226" title="All 2 branches missed.">                if (tile instanceof ImageView imageView) {</span>
+<span class="nc" id="L1227">                    imageView.setFitWidth(TILE_SIZE);</span>
+<span class="nc" id="L1228">                    imageView.setFitHeight(TILE_SIZE);</span>
+                }
+<span class="nc" id="L1230">                tile.setOpacity(0.5);</span>
+<span class="nc" id="L1231">            }</span>
+<span class="nc" id="L1232">            pauseHint.setOpacity(0);</span>
+<span class="nc" id="L1233">            pauseMenuLayout.getChildren().add(pauseMenuParent);</span>
+<span class="nc" id="L1234">            currentMenu = MENU_PAUSE;</span>
+        }
+<span class="nc" id="L1236">    }</span>
+
+    public void removePause() {
+<span class="nc bnc" id="L1239" title="All 2 branches missed.">        for (Node tile : tilePane.getChildren()) {</span>
+<span class="nc bnc" id="L1240" title="All 2 branches missed.">            if (tile instanceof ImageView imageView) {</span>
+<span class="nc" id="L1241">                imageView.setFitWidth(TILE_SIZE + 1);</span>
+<span class="nc" id="L1242">                imageView.setFitHeight(TILE_SIZE + 1);</span>
+            }
+<span class="nc" id="L1244">            tile.setOpacity(1);</span>
+<span class="nc" id="L1245">        }</span>
+<span class="nc" id="L1246">        pauseHint.setOpacity(1);</span>
+<span class="nc" id="L1247">    }</span>
+
+    @Override
+    public String getTitle() {
+<span class="fc" id="L1251">        return resources.getString(&quot;titleIngame&quot;);</span>
+    }
+
+    @Override
+    public void destroy() {
+<span class="fc" id="L1256">        super.destroy();</span>
+<span class="fc" id="L1257">        playerController.destroy();</span>
+<span class="fc" id="L1258">        scoreBoardController.destroy();</span>
+<span class="fc" id="L1259">        beastListController.destroy();</span>
+<span class="fc" id="L1260">        shopController.destroy();</span>
+<span class="pc bpc" id="L1261" title="1 of 2 branches missed.">        if (dialogWindowController != null) {</span>
+<span class="fc" id="L1262">            dialogWindowController.destroy();</span>
+        }
+<span class="pc bpc" id="L1264" title="1 of 2 branches missed.">        for (Controller controller : subControllers) {</span>
+<span class="nc" id="L1265">            controller.destroy();</span>
+<span class="nc" id="L1266">        }</span>
+<span class="pc bpc" id="L1267" title="1 of 2 branches missed.">        for (EntityController controller : otherPlayers.keySet()) {</span>
+<span class="nc" id="L1268">            controller.destroy();</span>
+<span class="nc" id="L1269">        }</span>
+<span class="fc" id="L1270">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
