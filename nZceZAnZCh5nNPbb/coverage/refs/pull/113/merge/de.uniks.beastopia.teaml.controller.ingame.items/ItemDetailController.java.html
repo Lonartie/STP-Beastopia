@@ -4,7 +4,7 @@ import de.uniks.beastopia.teaml.Main;
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.rest.ItemTypeDto;
 import de.uniks.beastopia.teaml.service.DataCache;
-import de.uniks.beastopia.teaml.service.PresetsService;
+import de.uniks.beastopia.teaml.utils.FormatString;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -15,8 +15,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class ItemDetailController extends Controller {
@@ -36,84 +34,51 @@ public class ItemDetailController extends Controller {
     @FXML
     public ImageView coinImg;
     @Inject
-    PresetsService presetsService;
-    @Inject
     DataCache cache;
     private ItemTypeDto itemType;
     private boolean isShop;
 
     public void setItem(ItemTypeDto itemType) {
-<span class="fc" id="L46">        this.itemType = itemType;</span>
-<span class="fc" id="L47">    }</span>
+<span class="fc" id="L42">        this.itemType = itemType;</span>
+<span class="fc" id="L43">    }</span>
 
     public void setBooleanShop(boolean isShop) {
-<span class="fc" id="L50">        this.isShop = isShop;</span>
-<span class="fc" id="L51">    }</span>
+<span class="fc" id="L46">        this.isShop = isShop;</span>
+<span class="fc" id="L47">    }</span>
 
     @Inject
-<span class="fc" id="L54">    public ItemDetailController() {</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L50">    public ItemDetailController() {</span>
+<span class="fc" id="L51">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L59">        Parent parent = super.render();</span>
+<span class="fc" id="L55">        Parent parent = super.render();</span>
 
-<span class="fc" id="L61">        coinImg.setImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/coin.png&quot;))));</span>
-<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        if (isShop) {</span>
-<span class="nc" id="L63">            shopBtn.setText(resources.getString(&quot;buy&quot;));</span>
-<span class="nc" id="L64">            cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + itemType.price());</span>
+<span class="fc" id="L57">        coinImg.setImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/coin.png&quot;))));</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if (isShop) {</span>
+<span class="nc" id="L59">            shopBtn.setText(resources.getString(&quot;buy&quot;));</span>
+<span class="nc" id="L60">            cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + itemType.price());</span>
         } else {
-<span class="fc" id="L66">            shopBtn.setText(resources.getString(&quot;sell&quot;));</span>
-<span class="pc bpc" id="L67" title="1 of 2 branches missed.">            if (itemType.price() == 0) {</span>
-<span class="nc" id="L68">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + itemType.price());</span>
-<span class="nc" id="L69">                shopBtn.setOpacity(0);</span>
-<span class="nc" id="L70">                shopBtn.setDisable(true);</span>
+<span class="fc" id="L62">            shopBtn.setText(resources.getString(&quot;sell&quot;));</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">            if (itemType.price() == 0) {</span>
+<span class="nc" id="L64">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + itemType.price());</span>
+<span class="nc" id="L65">                shopBtn.setOpacity(0);</span>
+<span class="nc" id="L66">                shopBtn.setDisable(true);</span>
             } else {
-<span class="fc" id="L72">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + (int) (itemType.price() * 0.5));</span>
+<span class="fc" id="L68">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + (int) (itemType.price() * 0.5));</span>
             }
         }
-<span class="fc" id="L75">        Map&lt;Integer, Image&gt; itemImages = new HashMap&lt;&gt;();</span>
-<span class="pc bpc" id="L76" title="1 of 2 branches missed.">        if (cache.getItemImages().containsKey(itemType.id())) {</span>
-<span class="nc" id="L77">            name.setText(itemType.name());</span>
-<span class="nc" id="L78">            desc.setText(formatStringIfTooLong(itemType.description()));</span>
-<span class="nc" id="L79">            itemImage.setImage(cache.getItemImages().get(itemType.id()));</span>
-        } else {
-<span class="fc" id="L81">            name.setText(itemType.name());</span>
-<span class="fc" id="L82">            desc.setText(formatStringIfTooLong(itemType.description()));</span>
-<span class="fc" id="L83">            disposables.add(presetsService.getItemImage(itemType.id())</span>
-<span class="fc" id="L84">                    .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L85">                    .subscribe(img -&gt; {</span>
-<span class="fc" id="L86">                        itemImage.setImage(img);</span>
-<span class="fc" id="L87">                        itemImages.put(itemType.id(), img);</span>
-<span class="fc" id="L88">                        cache.setItemImages(itemImages);</span>
-<span class="fc" id="L89">                    }));</span>
-        }
+<span class="fc" id="L71">        name.setText(itemType.name());</span>
+<span class="fc" id="L72">        desc.setText(FormatString.formatString(itemType.description(), 25));</span>
+<span class="fc" id="L73">        itemImage.setImage(cache.getItemImages().get(itemType.id()));</span>
 
-<span class="fc" id="L92">        return parent;</span>
+<span class="fc" id="L75">        return parent;</span>
     }
 
-    public String formatStringIfTooLong(String itemName) {
-<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (itemName.length() &gt; 25) {</span>
-<span class="fc" id="L97">            int lastSpace = itemName.lastIndexOf(' ', 25);</span>
-<span class="fc bfc" id="L98" title="All 2 branches covered.">            if (lastSpace != -1) { // \n after last space</span>
-<span class="pc bpc" id="L99" title="1 of 2 branches missed.">                if (itemName.length() &gt; 50) {</span>
-<span class="nc" id="L100">                    String lastPart = itemName.substring(lastSpace + 1);</span>
-<span class="nc" id="L101">                    return itemName.substring(0, lastSpace) + &quot;\n&quot; + formatStringIfTooLong(lastPart);</span>
-                }
-<span class="fc" id="L103">                return itemName.substring(0, lastSpace) + &quot;\n&quot; + formatStringIfTooLong(itemName.substring(lastSpace + 1));</span>
-            } else { // if too long and no space
-<span class="fc bfc" id="L105" title="All 2 branches covered.">                if (itemName.length() &gt; 50) {</span>
-<span class="fc" id="L106">                    String lastPart = itemName.substring(25);</span>
-<span class="fc" id="L107">                    return itemName.substring(0, 25) + &quot;-\n&quot; + formatStringIfTooLong(lastPart);</span>
-                }
-<span class="fc" id="L109">                return itemName.substring(0, 25) + &quot;-\n&quot; + itemName.substring(25);</span>
-            }
-        }
-<span class="fc" id="L112">        return itemName;</span>
-    }
     @SuppressWarnings(&quot;unused&quot;)
     @FXML
     public void shopFunction(ActionEvent actionEvent) {
-<span class="nc" id="L117">    }</span>
+        //TODO: Implement shop function
+<span class="nc" id="L82">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
