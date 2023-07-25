@@ -201,9 +201,9 @@ public class DataCache {
     public Observable&lt;Image&gt; getOrLoadTrainerImage(String trainer, boolean useConstantValues) {
 <span class="nc" id="L202">        synchronized (characters) {</span>
 <span class="nc bnc" id="L203" title="All 6 branches missed.">            if (characters.stream().anyMatch(pair -&gt; pair.getKey().equals(trainer) &amp;&amp; pair.getValue() != null)) {</span>
-<span class="nc" id="L204">                return downloadImage(trainer, useConstantValues);</span>
+<span class="nc" id="L204">                return getDownloadedImage(trainer, useConstantValues);</span>
 <span class="nc bnc" id="L205" title="All 2 branches missed.">            } else if (charactersAiring.stream().noneMatch(pair -&gt; pair.getKey().equals(trainer))) {</span>
-<span class="nc" id="L206">                return getDownloadedImage(trainer, useConstantValues);</span>
+<span class="nc" id="L206">                return downloadImage(trainer, useConstantValues);</span>
             } else {
 <span class="nc" id="L208">                return observableToAiringDownload(trainer, useConstantValues);</span>
             }
@@ -396,7 +396,7 @@ public class DataCache {
         }
 <span class="nc" id="L397">    }</span>
 
-    private Observable&lt;Image&gt; getDownloadedImage(String trainer, boolean useConstantValues) {
+    private Observable&lt;Image&gt; downloadImage(String trainer, boolean useConstantValues) {
 <span class="nc" id="L400">        Observable&lt;Image&gt; obs = presetsService.getCharacterSprites(trainer, false);</span>
 <span class="nc" id="L401">        charactersAiring.add(new Pair&lt;&gt;(trainer, obs));</span>
 <span class="nc" id="L402">        return obs</span>
@@ -409,7 +409,7 @@ public class DataCache {
                 });
     }
 
-    private Observable&lt;Image&gt; downloadImage(String trainer, boolean useConstantValues) {
+    private Observable&lt;Image&gt; getDownloadedImage(String trainer, boolean useConstantValues) {
 <span class="nc bnc" id="L413" title="All 2 branches missed.">        if (useConstantValues) {</span>
 <span class="nc" id="L414">            return Observable.just(charactersResized.stream()</span>
 <span class="nc" id="L415">                    .filter(pair -&gt; pair.getKey().equals(trainer))</span>
