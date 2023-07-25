@@ -25,6 +25,7 @@ import javafx.scene.shape.Shape;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.HashMap;
+import java.util.List;
 
 public class MapController extends Controller {
     @FXML
@@ -45,8 +46,6 @@ public class MapController extends Controller {
     Provider&lt;RegionInfoController&gt; regionInfoControllerProvider;
     @Inject
     TrainerService trainerService;
-    @SuppressWarnings(&quot;unused&quot;)
-    private Region region;
     private LoadingPage loadingPage;
     private TileSet tileSet;
     private Image image;
@@ -55,211 +54,192 @@ public class MapController extends Controller {
     private String fastTravelAreaName;
 
     @Inject
-<span class="fc" id="L58">    public MapController() {</span>
-<span class="fc" id="L59">    }</span>
+<span class="fc" id="L57">    public MapController() {</span>
+<span class="fc" id="L58">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L63">        return resources.getString(&quot;TitleMap&quot;);</span>
+<span class="fc" id="L62">        return resources.getString(&quot;TitleMap&quot;);</span>
     }
 
     @Override
     public void init() {
-<span class="fc" id="L68">        super.init();</span>
-<span class="fc" id="L69">        Trainer trainerData = cache.getTrainer();</span>
-<span class="fc" id="L70">        currentArea = cache.getArea(trainerData.area());</span>
-<span class="fc" id="L71">    }</span>
+<span class="fc" id="L67">        super.init();</span>
+<span class="fc" id="L68">        Trainer trainerData = cache.getTrainer();</span>
+<span class="fc" id="L69">        currentArea = cache.getArea(trainerData.area());</span>
+<span class="fc" id="L70">        this.map = cache.getJoinedRegion().map();</span>
+<span class="fc" id="L71">        this.tileSet = cache.getMapTileset();</span>
+<span class="fc" id="L72">        this.image = cache.getMapImage();</span>
+<span class="fc" id="L73">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L75">        loadingPage = LoadingPage.makeLoadingPage(super.render());</span>
-<span class="fc" id="L76">        fastTravelButton.setVisible(false);</span>
-<span class="fc" id="L77">        disposables.add(regionService.getRegion(cache.getJoinedRegion()._id())</span>
-<span class="fc" id="L78">                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L79">                .subscribe(region -&gt; {</span>
-<span class="fc" id="L80">                            this.region = region;</span>
-<span class="fc" id="L81">                            this.map = region.map();</span>
-<span class="fc" id="L82">                            this.tileSet = presetsService.getTileset(map.tilesets().get(0)).blockingFirst();</span>
-<span class="fc" id="L83">                            this.image = presetsService.getImage(tileSet).blockingFirst();</span>
-<span class="fc" id="L84">                            loadingPage.setDone();</span>
-<span class="fc" id="L85">                            drawMap();</span>
-<span class="fc" id="L86">                        },</span>
-                        error -&gt; {
-<span class="nc" id="L88">                            throw new RuntimeException(error);</span>
-                        }
-                ));
-<span class="fc" id="L91">        return loadingPage.parent();</span>
+<span class="fc" id="L77">        loadingPage = LoadingPage.makeLoadingPage(super.render());</span>
+<span class="fc" id="L78">        fastTravelButton.setVisible(false);</span>
+<span class="fc" id="L79">        drawMap();</span>
+
+<span class="fc" id="L81">        return loadingPage.parent();</span>
     }
 
     private void drawMap() {
-<span class="fc bfc" id="L95" title="All 2 branches covered.">        for (Layer layer : this.map.layers()) {</span>
-<span class="fc bfc" id="L96" title="All 2 branches covered.">            if (layer.type().equals(&quot;tilelayer&quot;)) {</span>
-<span class="fc" id="L97">                drawTileLayer(layer);</span>
-<span class="pc bpc" id="L98" title="1 of 2 branches missed.">            } else if (layer.type().equals(&quot;objectgroup&quot;)) {</span>
-<span class="fc" id="L99">                drawObjectGroup(layer);</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        for (Layer layer : this.map.layers()) {</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">            if (layer.type().equals(&quot;tilelayer&quot;)) {</span>
+<span class="fc" id="L87">                drawTileLayer(layer);</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">            } else if (layer.type().equals(&quot;objectgroup&quot;)) {</span>
+<span class="fc" id="L89">                drawObjectGroup(layer);</span>
             }
-<span class="fc" id="L101">        }</span>
-<span class="fc" id="L102">    }</span>
+<span class="fc" id="L91">        }</span>
+<span class="fc" id="L92">        loadingPage.setDone();</span>
+<span class="fc" id="L93">    }</span>
 
     private void drawObjectGroup(Layer layer) {
-<span class="fc bfc" id="L105" title="All 2 branches covered.">        for (MapObject object : layer.objects()) {</span>
-<span class="fc" id="L106">            RegionInfoController regionInfo = regionInfoControllerProvider.get();</span>
-<span class="fc" id="L107">            regionInfo.init();</span>
-<span class="fc bfc" id="L108" title="All 2 branches covered.">            if (object.polygon() == null) {</span>
-<span class="fc" id="L109">                drawRectangle(object, regionInfo);</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        for (MapObject object : layer.objects()) {</span>
+<span class="fc" id="L97">            RegionInfoController regionInfo = regionInfoControllerProvider.get();</span>
+<span class="fc" id="L98">            regionInfo.init();</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">            if (object.polygon() == null) {</span>
+<span class="fc" id="L100">                drawRectangle(object, regionInfo);</span>
             } else {
-<span class="fc" id="L111">                drawPolygon(object, regionInfo);</span>
+<span class="fc" id="L102">                drawPolygon(object, regionInfo);</span>
             }
-<span class="fc" id="L113">        }</span>
-<span class="fc" id="L114">    }</span>
+<span class="fc" id="L104">        }</span>
+<span class="fc" id="L105">    }</span>
 
     private void drawRectangle(MapObject object, RegionInfoController regionInfo) {
-<span class="fc" id="L117">        Rectangle r = new Rectangle();</span>
-<span class="fc" id="L118">        r.setX(object.x());</span>
-<span class="fc" id="L119">        r.setY(object.y());</span>
-<span class="fc" id="L120">        r.setWidth(object.width());</span>
-<span class="fc" id="L121">        r.setHeight(object.height());</span>
+<span class="fc" id="L108">        Rectangle r = new Rectangle();</span>
+<span class="fc" id="L109">        r.setX(object.x());</span>
+<span class="fc" id="L110">        r.setY(object.y());</span>
+<span class="fc" id="L111">        r.setWidth(object.width());</span>
+<span class="fc" id="L112">        r.setHeight(object.height());</span>
         //noinspection DuplicatedCode
-<span class="pc bpc" id="L123" title="1 of 2 branches missed.">        if (object.name().equals(currentArea.name())) {</span>
-<span class="fc" id="L124">            r.setStroke(Color.BLUEVIOLET);</span>
-<span class="fc" id="L125">            r.setStrokeWidth(3);</span>
-<span class="nc bnc" id="L126" title="All 2 branches missed.">        } else if (cache.areaVisited(object.name())) {</span>
-<span class="nc" id="L127">            r.setStroke(Color.DARKGREEN);</span>
-<span class="nc" id="L128">            r.setStrokeWidth(3);</span>
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">        if (object.name().equals(currentArea.name())) {</span>
+<span class="fc" id="L115">            r.setStroke(Color.BLUEVIOLET);</span>
+<span class="fc" id="L116">            r.setStrokeWidth(3);</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        } else if (cache.areaVisited(object.name())) {</span>
+<span class="nc" id="L118">            r.setStroke(Color.DARKGREEN);</span>
+<span class="nc" id="L119">            r.setStrokeWidth(3);</span>
         }
-<span class="fc" id="L130">        r.setFill(Color.TRANSPARENT);</span>
-<span class="fc" id="L131">        r.setOnMouseEntered(event -&gt; setRegionInfo(r, object, regionInfo, event));</span>
-<span class="fc" id="L132">        r.setOnMouseExited(event -&gt; anchorPane.getChildren().remove(anchorPane.getChildren().size() - 1));</span>
-<span class="fc" id="L133">        anchorPane.getChildren().add(r);</span>
-<span class="fc" id="L134">    }</span>
+<span class="fc" id="L121">        r.setFill(Color.TRANSPARENT);</span>
+<span class="fc" id="L122">        r.setOnMouseEntered(event -&gt; setRegionInfo(r, object, regionInfo, event));</span>
+<span class="fc" id="L123">        r.setOnMouseExited(event -&gt; anchorPane.getChildren().remove(anchorPane.getChildren().size() - 1));</span>
+<span class="fc" id="L124">        anchorPane.getChildren().add(r);</span>
+<span class="fc" id="L125">    }</span>
 
     private void drawPolygon(MapObject object, RegionInfoController regionInfo) {
-<span class="fc" id="L137">        Polygon p = new Polygon();</span>
-<span class="fc bfc" id="L138" title="All 2 branches covered.">        for (HashMap&lt;String, Double&gt; point : object.polygon()) {</span>
-<span class="fc" id="L139">            double x = point.get(&quot;x&quot;) + object.x();</span>
-<span class="fc" id="L140">            double y = point.get(&quot;y&quot;) + object.y();</span>
-<span class="fc" id="L141">            p.getPoints().addAll(x, y);</span>
-<span class="fc" id="L142">        }</span>
+<span class="fc" id="L128">        Polygon p = new Polygon();</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        for (HashMap&lt;String, Double&gt; point : object.polygon()) {</span>
+<span class="fc" id="L130">            double x = point.get(&quot;x&quot;) + object.x();</span>
+<span class="fc" id="L131">            double y = point.get(&quot;y&quot;) + object.y();</span>
+<span class="fc" id="L132">            p.getPoints().addAll(x, y);</span>
+<span class="fc" id="L133">        }</span>
         //noinspection DuplicatedCode
-<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if (object.name().equals(currentArea.name())) {</span>
-<span class="nc" id="L145">            p.setStroke(Color.BLUEVIOLET);</span>
-<span class="nc" id="L146">            p.setStrokeWidth(3);</span>
-<span class="pc bpc" id="L147" title="1 of 2 branches missed.">        } else if (cache.areaVisited(object.name())) {</span>
-<span class="nc" id="L148">            p.setStroke(Color.DARKGREEN);</span>
-<span class="nc" id="L149">            p.setStrokeWidth(3);</span>
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">        if (object.name().equals(currentArea.name())) {</span>
+<span class="nc" id="L136">            p.setStroke(Color.BLUEVIOLET);</span>
+<span class="nc" id="L137">            p.setStrokeWidth(3);</span>
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">        } else if (cache.areaVisited(object.name())) {</span>
+<span class="nc" id="L139">            p.setStroke(Color.DARKGREEN);</span>
+<span class="nc" id="L140">            p.setStrokeWidth(3);</span>
         }
-<span class="fc" id="L151">        p.setFill(Color.TRANSPARENT);</span>
-<span class="pc" id="L152">        p.setOnMouseEntered(event -&gt; setRegionInfo(p, object, regionInfo, event));</span>
-<span class="pc" id="L153">        p.setOnMouseExited(event -&gt; anchorPane.getChildren().remove(anchorPane.getChildren().size() - 1));</span>
-<span class="fc" id="L154">        anchorPane.getChildren().add(p);</span>
-<span class="fc" id="L155">    }</span>
+<span class="fc" id="L142">        p.setFill(Color.TRANSPARENT);</span>
+<span class="pc" id="L143">        p.setOnMouseEntered(event -&gt; setRegionInfo(p, object, regionInfo, event));</span>
+<span class="pc" id="L144">        p.setOnMouseExited(event -&gt; anchorPane.getChildren().remove(anchorPane.getChildren().size() - 1));</span>
+<span class="fc" id="L145">        anchorPane.getChildren().add(p);</span>
+<span class="fc" id="L146">    }</span>
 
     private void setRegionInfo(Shape shape, MapObject object, RegionInfoController regionInfo, MouseEvent event) {
-<span class="fc" id="L158">        String name = object.name();</span>
-<span class="fc" id="L159">        String description = object.properties().get(0).get(&quot;value&quot;);</span>
-<span class="pc bpc" id="L160" title="1 of 2 branches missed.">        if (!cache.areaVisited(name)) {</span>
-<span class="fc" id="L161">            name = &quot;Unknown area&quot;;</span>
-<span class="fc" id="L162">            description = &quot;This area is unknown. New mysteries, adventures and dangers are awaiting you!&quot;;</span>
+<span class="fc" id="L149">        String name = object.name();</span>
+<span class="fc" id="L150">        String description = object.properties().get(0).get(&quot;value&quot;);</span>
+<span class="pc bpc" id="L151" title="1 of 2 branches missed.">        if (!cache.areaVisited(name)) {</span>
+<span class="fc" id="L152">            name = &quot;Unknown area&quot;;</span>
+<span class="fc" id="L153">            description = &quot;This area is unknown. New mysteries, adventures and dangers are awaiting you!&quot;;</span>
         }
-<span class="pc bnc" id="L164" title="All 2 branches missed.">        shape.setOnMouseClicked(clickEvent -&gt; setFastTravelTarget(cache.isFastTravelable(object.name()) ? object.name() : null));</span>
-<span class="fc" id="L165">        regionInfo.setText(name, description);</span>
-<span class="fc" id="L166">        double maxX = anchorPane.widthProperty().getValue();</span>
-<span class="fc" id="L167">        double maxY = anchorPane.heightProperty().getValue();</span>
-<span class="fc" id="L168">        anchorPane.getChildren().add(regionInfo.render());</span>
-<span class="fc" id="L169">        int lastChild = anchorPane.getChildren().size() - 1;</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">        shape.setOnMouseClicked(clickEvent -&gt; setFastTravelTarget(cache.isFastTravelable(object.name()) ? object.name() : null));</span>
+<span class="fc" id="L156">        regionInfo.setText(name, description);</span>
+<span class="fc" id="L157">        double maxX = anchorPane.widthProperty().getValue();</span>
+<span class="fc" id="L158">        double maxY = anchorPane.heightProperty().getValue();</span>
+<span class="fc" id="L159">        anchorPane.getChildren().add(regionInfo.render());</span>
+<span class="fc" id="L160">        int lastChild = anchorPane.getChildren().size() - 1;</span>
 
-<span class="pc bpc" id="L171" title="1 of 2 branches missed.">        if (event.getX() + 10 + 231 &gt; maxX) {</span>
-<span class="nc" id="L172">            anchorPane.getChildren().get(lastChild).setLayoutX(event.getX() - 231 - 10);</span>
+<span class="pc bpc" id="L162" title="1 of 2 branches missed.">        if (event.getX() + 10 + 231 &gt; maxX) {</span>
+<span class="fc" id="L163">            anchorPane.getChildren().get(lastChild).setLayoutX(event.getX() - 231 - 10);</span>
         } else {
-<span class="fc" id="L174">            anchorPane.getChildren().get(lastChild).setLayoutX(event.getX() + 10);</span>
+<span class="nc" id="L165">            anchorPane.getChildren().get(lastChild).setLayoutX(event.getX() + 10);</span>
         }
 
-<span class="pc bpc" id="L177" title="1 of 2 branches missed.">        if (event.getY() + 10 + 131 &gt; maxY) {</span>
-<span class="nc" id="L178">            anchorPane.getChildren().get(lastChild).setLayoutY(event.getY() - 131 - 10);</span>
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">        if (event.getY() + 10 + 131 &gt; maxY) {</span>
+<span class="fc" id="L169">            anchorPane.getChildren().get(lastChild).setLayoutY(event.getY() - 131 - 10);</span>
         } else {
-<span class="fc" id="L180">            anchorPane.getChildren().get(lastChild).setLayoutY(event.getY() + 10);</span>
+<span class="nc" id="L171">            anchorPane.getChildren().get(lastChild).setLayoutY(event.getY() + 10);</span>
         }
-<span class="fc" id="L182">    }</span>
+<span class="fc" id="L173">    }</span>
 
     private void drawTileLayer(Layer layer) {
-<span class="fc" id="L185">        int TILE_SIZE = 16;</span>
-<span class="pc bpc" id="L186" title="1 of 2 branches missed.">        if (layer.chunks() != null) {</span>
-<span class="fc bfc" id="L187" title="All 2 branches covered.">            for (Chunk chunk : layer.chunks()) {</span>
-<span class="fc" id="L188">                int chunkX = chunk.x();</span>
-<span class="fc" id="L189">                int chunkY = chunk.y();</span>
-<span class="fc" id="L190">                int index = 0;</span>
-<span class="fc bfc" id="L191" title="All 2 branches covered.">                for (int id : chunk.data()) {</span>
-<span class="fc" id="L192">                    int x = index % chunk.width() + chunkX;</span>
-<span class="fc" id="L193">                    int y = index / chunk.height() + chunkY;</span>
-<span class="fc" id="L194">                    index++;</span>
-<span class="fc" id="L195">                    ImageView view = new ImageView();</span>
-<span class="fc" id="L196">                    view.setPreserveRatio(true);</span>
-<span class="fc" id="L197">                    view.setSmooth(true);</span>
-<span class="fc" id="L198">                    view.setImage(image);</span>
-<span class="fc" id="L199">                    view.setFitWidth(TILE_SIZE + 1);</span>
-<span class="fc" id="L200">                    view.setFitHeight(TILE_SIZE + 1);</span>
-<span class="fc" id="L201">                    view.setViewport(presetsService.getTileViewPort(id, tileSet));</span>
-<span class="fc" id="L202">                    view.setTranslateX(x * TILE_SIZE);</span>
-<span class="fc" id="L203">                    view.setTranslateY(y * TILE_SIZE);</span>
-<span class="fc" id="L204">                    anchorPane.getChildren().add(view);</span>
-<span class="fc" id="L205">                }</span>
-<span class="fc" id="L206">            }</span>
-<span class="nc bnc" id="L207" title="All 2 branches missed.">        } else if (layer.data() != null) {</span>
-<span class="nc" id="L208">            int chunkX = layer.x();</span>
-<span class="nc" id="L209">            int chunkY = layer.y();</span>
-<span class="nc" id="L210">            int index = 0;</span>
-<span class="nc bnc" id="L211" title="All 2 branches missed.">            for (int id : layer.data()) {</span>
-<span class="nc" id="L212">                int x = index % layer.width() + chunkX;</span>
-<span class="nc" id="L213">                int y = index / layer.height() + chunkY;</span>
-<span class="nc" id="L214">                index++;</span>
-<span class="nc" id="L215">                ImageView view = new ImageView();</span>
-<span class="nc" id="L216">                view.setPreserveRatio(true);</span>
-<span class="nc" id="L217">                view.setSmooth(true);</span>
-<span class="nc" id="L218">                view.setImage(image);</span>
-<span class="nc" id="L219">                view.setFitWidth(TILE_SIZE + 1);</span>
-<span class="nc" id="L220">                view.setFitHeight(TILE_SIZE + 1);</span>
-<span class="nc" id="L221">                view.setViewport(presetsService.getTileViewPort(id, tileSet));</span>
-<span class="nc" id="L222">                view.setTranslateX(x * TILE_SIZE);</span>
-<span class="nc" id="L223">                view.setTranslateY(y * TILE_SIZE);</span>
-<span class="nc" id="L224">                anchorPane.getChildren().add(view);</span>
-<span class="nc" id="L225">            }</span>
+<span class="fc" id="L176">        int TILE_SIZE = 16;</span>
+<span class="pc bpc" id="L177" title="1 of 2 branches missed.">        if (layer.chunks() != null) {</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">            for (Chunk chunk : layer.chunks()) {</span>
+<span class="fc" id="L179">                int chunkX = chunk.x();</span>
+<span class="fc" id="L180">                int chunkY = chunk.y();</span>
+<span class="fc" id="L181">                setTile(TILE_SIZE, chunk.data(), chunkX, chunkY, chunk.width(), chunk.height());</span>
+<span class="fc" id="L182">            }</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">        } else if (layer.data() != null) {</span>
+<span class="nc" id="L184">            int chunkX = layer.x();</span>
+<span class="nc" id="L185">            int chunkY = layer.y();</span>
+<span class="nc" id="L186">            setTile(TILE_SIZE, layer.data(), chunkX, chunkY, layer.width(), layer.height());</span>
         }
-<span class="fc" id="L227">    }</span>
+<span class="fc" id="L188">    }</span>
+
+    private void setTile(int TILE_SIZE, List&lt;Long&gt; data, int xPos, int yPos, int width, int height) {
+<span class="fc" id="L191">        int index = 0;</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        for (long id : data) {</span>
+<span class="fc" id="L193">            int x = index % width + xPos;</span>
+<span class="fc" id="L194">            int y = index / height + yPos;</span>
+<span class="fc" id="L195">            index++;</span>
+<span class="fc" id="L196">            ImageView view = new ImageView();</span>
+<span class="fc" id="L197">            view.setPreserveRatio(true);</span>
+<span class="fc" id="L198">            view.setSmooth(true);</span>
+<span class="fc" id="L199">            view.setImage(image);</span>
+<span class="fc" id="L200">            view.setFitWidth(TILE_SIZE + 1);</span>
+<span class="fc" id="L201">            view.setFitHeight(TILE_SIZE + 1);</span>
+<span class="fc" id="L202">            view.setViewport(presetsService.getTileViewPort(id, tileSet));</span>
+<span class="fc" id="L203">            view.setTranslateX(x * TILE_SIZE);</span>
+<span class="fc" id="L204">            view.setTranslateY(y * TILE_SIZE);</span>
+<span class="fc" id="L205">            anchorPane.getChildren().add(view);</span>
+<span class="fc" id="L206">        }</span>
+<span class="fc" id="L207">    }</span>
 
     private void setFastTravelTarget(String areaName) {
-<span class="nc bnc" id="L230" title="All 4 branches missed.">        if (!cache.areaVisited(areaName) || areaName.equals(currentArea.name())) {</span>
-<span class="nc" id="L231">            areaName = null;</span>
+<span class="pc bpc" id="L210" title="3 of 4 branches missed.">        if (!cache.areaVisited(areaName) || areaName.equals(currentArea.name())) {</span>
+<span class="fc" id="L211">            areaName = null;</span>
         }
 
-<span class="nc" id="L234">        fastTravelAreaName = areaName;</span>
-<span class="nc bnc" id="L235" title="All 2 branches missed.">        fastTravelButton.setVisible(areaName != null);</span>
+<span class="fc" id="L214">        fastTravelAreaName = areaName;</span>
+<span class="pc bpc" id="L215" title="1 of 2 branches missed.">        fastTravelButton.setVisible(areaName != null);</span>
 
-<span class="nc bnc" id="L237" title="All 2 branches missed.">        if (areaName != null) {</span>
-<span class="nc" id="L238">            fastTravelButton.setText(resources.getString(&quot;FastTravel&quot;) + &quot; &quot; + areaName);</span>
+<span class="pc bpc" id="L217" title="1 of 2 branches missed.">        if (areaName != null) {</span>
+<span class="nc" id="L218">            fastTravelButton.setText(resources.getString(&quot;FastTravel&quot;) + &quot; &quot; + areaName);</span>
         } else {
-<span class="nc" id="L240">            fastTravelButton.setText(resources.getString(&quot;FastTravel&quot;));</span>
+<span class="fc" id="L220">            fastTravelButton.setText(resources.getString(&quot;FastTravel&quot;));</span>
         }
-<span class="nc" id="L242">    }</span>
+<span class="fc" id="L222">    }</span>
 
     @FXML
     private void fastTravel() {
-<span class="nc bnc" id="L246" title="All 2 branches missed.">        if (fastTravelAreaName == null) {</span>
-<span class="nc" id="L247">            return;</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">        if (fastTravelAreaName == null) {</span>
+<span class="nc" id="L227">            return;</span>
         }
 
-<span class="nc" id="L250">        Trainer trainer = cache.getTrainer();</span>
-<span class="nc" id="L251">        Area newArea = cache.getAreaByName(fastTravelAreaName);</span>
-<span class="nc" id="L252">        disposables.add(trainerService.fastTravelTrainer(trainer.region(), trainer._id(), trainer.name(), trainer.image(), trainer.team(), newArea._id())</span>
-<span class="nc" id="L253">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L254">                .subscribe(newTrainer -&gt; {</span>
-<span class="nc" id="L255">                    cache.setTrainer(newTrainer);</span>
-<span class="nc" id="L256">                    app.showPrevious();</span>
-<span class="nc" id="L257">                }, error -&gt; Dialog.error(error, &quot;Fast travel failed&quot;)));</span>
-<span class="nc" id="L258">    }</span>
+<span class="nc" id="L230">        Trainer trainer = cache.getTrainer();</span>
+<span class="nc" id="L231">        Area newArea = cache.getAreaByName(fastTravelAreaName);</span>
+<span class="nc" id="L232">        disposables.add(trainerService.fastTravelTrainer(trainer.region(), trainer._id(), trainer.name(), trainer.image(), trainer.team(), newArea._id())</span>
+<span class="nc" id="L233">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L234">                .subscribe(newTrainer -&gt; {</span>
+<span class="nc" id="L235">                    cache.setTrainer(newTrainer);</span>
+<span class="nc" id="L236">                    app.showPrevious();</span>
+<span class="nc" id="L237">                }, error -&gt; Dialog.error(error, &quot;Fast travel failed&quot;)));</span>
+<span class="nc" id="L238">    }</span>
 
     @FXML
     private void closeMap() {
-<span class="fc" id="L262">        app.showPrevious();</span>
-<span class="fc" id="L263">    }</span>
+<span class="nc" id="L242">        app.showPrevious();</span>
+<span class="nc" id="L243">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

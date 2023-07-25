@@ -41,11 +41,11 @@ public class PresetsService {
 <span class="nc" id="L41">                .map((ResponseBody body) -&gt; new Gson().fromJson(body.string(), TileSet.class));</span>
     }
 
-    public Rectangle2D getTileViewPort(int id, TileSet tileSet) {
+    public Rectangle2D getTileViewPort(long id, TileSet tileSet) {
 <span class="fc" id="L45">        int columns = tileSet.columns();</span>
 <span class="fc" id="L46">        int tileSize = tileSet.tileheight();</span>
-<span class="fc" id="L47">        int x = (id - 1) % columns;</span>
-<span class="fc" id="L48">        int y = (id - 1) / columns;</span>
+<span class="fc" id="L47">        long x = (id - 1) % columns;</span>
+<span class="fc" id="L48">        long y = (id - 1) / columns;</span>
 <span class="fc" id="L49">        return new Rectangle2D(x * tileSize, y * tileSize, tileSize, tileSize);</span>
     }
 
