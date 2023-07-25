@@ -46,26 +46,25 @@ public class MondexElementController extends Controller {
     public Parent render() {
 <span class="nc" id="L47">        Parent parent = super.render();</span>
 <span class="nc" id="L48">        label_id.setText(&quot;#&quot; + (monster.id()));</span>
-        //ToDo Change if to known
-<span class="nc bnc" id="L50" title="All 2 branches missed.">        if (monster.id() % 2 == 0) {</span>
-<span class="nc" id="L51">            label_name.setText(monster.name());</span>
-<span class="nc" id="L52">            disposables.add(presetsService.getMonsterImage(monster.id())</span>
-<span class="nc" id="L53">                    .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L54">                    .subscribe(monsterImage -&gt; imageView_avatar.setImage(monsterImage)));</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        if (known) {</span>
+<span class="nc" id="L50">            label_name.setText(monster.name());</span>
+<span class="nc" id="L51">            disposables.add(presetsService.getMonsterImage(monster.id())</span>
+<span class="nc" id="L52">                    .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L53">                    .subscribe(monsterImage -&gt; imageView_avatar.setImage(monsterImage)));</span>
         } else {
-<span class="nc" id="L56">            label_name.setText(resources.getString(&quot;Unknown&quot;));</span>
-<span class="nc" id="L57">            disposables.add(presetsService.getMonsterImage(monster.id())</span>
-<span class="nc" id="L58">                    .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L59">                    .subscribe(monsterImage -&gt; imageView_avatar.setImage(imageService.makeImageBlack(monsterImage))));</span>
+<span class="nc" id="L55">            label_name.setText(resources.getString(&quot;Unknown&quot;));</span>
+<span class="nc" id="L56">            disposables.add(presetsService.getMonsterImage(monster.id())</span>
+<span class="nc" id="L57">                    .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L58">                    .subscribe(monsterImage -&gt; imageView_avatar.setImage(imageService.makeImageBlack(monsterImage))));</span>
         }
 
-<span class="nc" id="L62">        return parent;</span>
+<span class="nc" id="L61">        return parent;</span>
     }
 
     @FXML
     public void toggleDetails() {
-<span class="nc" id="L67">        onBeastClicked.accept(monster);</span>
-<span class="nc" id="L68">    }</span>
+<span class="nc" id="L66">        onBeastClicked.accept(monster);</span>
+<span class="nc" id="L67">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

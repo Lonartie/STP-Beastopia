@@ -18,37 +18,28 @@ public class MondexService {
 <span class="nc" id="L18">    MondexService() {</span>
 <span class="nc" id="L19">    }</span>
 
-    public void addKnownMonster(int id) {
-<span class="nc" id="L22">        Trainer trainer = dataCache.getTrainer();</span>
-<span class="nc bnc" id="L23" title="All 2 branches missed.">        if (!trainer.encounteredMonsterTypes().contains(id)) {</span>
-<span class="nc" id="L24">            trainer.encounteredMonsterTypes().add(id);</span>
-<span class="nc" id="L25">            dataCache.setTrainer(trainer);</span>
-            //ToDo Refresh Server Trainer
-        }
-<span class="nc" id="L28">    }</span>
-
     public boolean checkKnown(int id) {
-<span class="nc" id="L31">        return dataCache.getTrainer().encounteredMonsterTypes().contains(id);</span>
+<span class="nc" id="L22">        return dataCache.getTrainer().encounteredMonsterTypes().contains(id);</span>
     }
 
 
     public void listMonsterTypes(List&lt;MonsterTypeDto&gt; monsterTypeDtos) {
-<span class="nc" id="L36">        List &lt;String&gt; monsterTypes = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L37" title="All 2 branches missed.">        for (MonsterTypeDto monsterTypeDto : monsterTypeDtos) {</span>
-<span class="nc bnc" id="L38" title="All 2 branches missed.">                if (monsterTypeDto.type().size() == 1) {</span>
-<span class="nc bnc" id="L39" title="All 2 branches missed.">                    if (!monsterTypes.contains(monsterTypeDto.type().get(0))) {</span>
-<span class="nc" id="L40">                        monsterTypes.add(monsterTypeDto.type().get(0));</span>
+<span class="nc" id="L27">        List &lt;String&gt; monsterTypes = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">        for (MonsterTypeDto monsterTypeDto : monsterTypeDtos) {</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">                if (monsterTypeDto.type().size() == 1) {</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">                    if (!monsterTypes.contains(monsterTypeDto.type().get(0))) {</span>
+<span class="nc" id="L31">                        monsterTypes.add(monsterTypeDto.type().get(0));</span>
                     }
             } else {
-<span class="nc bnc" id="L43" title="All 2 branches missed.">                if (!monsterTypes.contains(monsterTypeDto.type().get(0))) {</span>
-<span class="nc" id="L44">                    monsterTypes.add(monsterTypeDto.type().get(0));</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">                if (!monsterTypes.contains(monsterTypeDto.type().get(0))) {</span>
+<span class="nc" id="L35">                    monsterTypes.add(monsterTypeDto.type().get(0));</span>
                 }
-<span class="nc bnc" id="L46" title="All 2 branches missed.">                if (!monsterTypes.contains(monsterTypeDto.type().get(1))) {</span>
-<span class="nc" id="L47">                    monsterTypes.add(monsterTypeDto.type().get(1));</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">                if (!monsterTypes.contains(monsterTypeDto.type().get(1))) {</span>
+<span class="nc" id="L38">                    monsterTypes.add(monsterTypeDto.type().get(1));</span>
                 }
             }
-<span class="nc" id="L50">        }</span>
-<span class="nc" id="L51">        System.out.println(&quot;All Monster Types: &quot; + monsterTypes);</span>
-<span class="nc" id="L52">    }</span>
+<span class="nc" id="L41">        }</span>
+<span class="nc" id="L42">        System.out.println(&quot;All Monster Types: &quot; + monsterTypes);</span>
+<span class="nc" id="L43">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

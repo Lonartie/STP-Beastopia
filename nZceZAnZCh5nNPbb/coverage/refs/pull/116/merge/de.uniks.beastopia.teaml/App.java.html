@@ -137,35 +137,36 @@ public class App extends Application {
 <span class="fc" id="L137">            return;</span>
         }
 
-<span class="fc" id="L140">        controller.init();</span>
-<span class="fc" id="L141">        update();</span>
-<span class="fc" id="L142">    }</span>
+<span class="fc" id="L140">        System.out.println(&quot;Showing &quot; + controller.getClass().getSimpleName() + &quot;...&quot;);</span>
+<span class="fc" id="L141">        controller.init();</span>
+<span class="fc" id="L142">        update();</span>
+<span class="fc" id="L143">    }</span>
 
     public void update() {
-<span class="fc bfc" id="L145" title="All 2 branches covered.">        if (controller.getTitle() != null) {</span>
-<span class="fc" id="L146">            stage.setTitle(controller.getTitle());</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        if (controller.getTitle() != null) {</span>
+<span class="fc" id="L147">            stage.setTitle(controller.getTitle());</span>
         }
-<span class="fc" id="L148">        stage.getScene().setRoot(controller.render());</span>
-<span class="fc" id="L149">        controller.onResize(windowSizeX, windowSizeY);</span>
-<span class="fc" id="L150">    }</span>
+<span class="fc" id="L149">        stage.getScene().setRoot(controller.render());</span>
+<span class="fc" id="L150">        controller.onResize(windowSizeX, windowSizeY);</span>
+<span class="fc" id="L151">    }</span>
 
     private void setAppIcon() {
-<span class="fc" id="L153">        final Image icon = new Image(Objects.requireNonNull(App.class.getResource(&quot;assets/bt_icon.png&quot;)).toString());</span>
-<span class="fc" id="L154">        stage.getIcons().add(icon);</span>
-<span class="fc" id="L155">    }</span>
+<span class="fc" id="L154">        final Image icon = new Image(Objects.requireNonNull(App.class.getResource(&quot;assets/bt_icon.png&quot;)).toString());</span>
+<span class="fc" id="L155">        stage.getIcons().add(icon);</span>
+<span class="fc" id="L156">    }</span>
 
     private void checkJavaVersion() {
-<span class="fc" id="L158">        String versionString = System.getProperty(&quot;java.version&quot;);</span>
-<span class="fc" id="L159">        String regex = &quot;17\\..*&quot;;</span>
-<span class="pc bpc" id="L160" title="1 of 2 branches missed.">        if (!versionString.matches(regex)) {</span>
-<span class="nc" id="L161">            Alert alert = new Alert(Alert.AlertType.WARNING);</span>
-<span class="nc" id="L162">            alert.setTitle(&quot;Java Version Warning&quot;);</span>
-<span class="nc" id="L163">            alert.setHeaderText(&quot;Java Version Warning&quot;);</span>
-<span class="nc" id="L164">            alert.setContentText(&quot;You are using Java &quot; + versionString + &quot;.\n&quot; +</span>
+<span class="fc" id="L159">        String versionString = System.getProperty(&quot;java.version&quot;);</span>
+<span class="fc" id="L160">        String regex = &quot;17\\..*&quot;;</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">        if (!versionString.matches(regex)) {</span>
+<span class="nc" id="L162">            Alert alert = new Alert(Alert.AlertType.WARNING);</span>
+<span class="nc" id="L163">            alert.setTitle(&quot;Java Version Warning&quot;);</span>
+<span class="nc" id="L164">            alert.setHeaderText(&quot;Java Version Warning&quot;);</span>
+<span class="nc" id="L165">            alert.setContentText(&quot;You are using Java &quot; + versionString + &quot;.\n&quot; +</span>
                     &quot;This application was tested with Java 17.\n&quot; +
                     &quot;Please use Java 17 to avoid any problems.&quot;);
-<span class="nc" id="L167">            alert.showAndWait();</span>
+<span class="nc" id="L168">            alert.showAndWait();</span>
         }
-<span class="fc" id="L169">    }</span>
+<span class="fc" id="L170">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
