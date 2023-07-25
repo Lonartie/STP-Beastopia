@@ -59,62 +59,66 @@ public class EntityController extends Controller {
 <span class="fc" id="L59">    }</span>
 
     public void updateTrainer(MoveTrainerDto data) {
-<span class="nc bnc" id="L62" title="All 5 branches missed.">        switch (data.direction()) {</span>
-<span class="nc" id="L63">            case 0 -&gt; direction = Direction.RIGHT;</span>
-<span class="nc" id="L64">            case 1 -&gt; direction = Direction.UP;</span>
-<span class="nc" id="L65">            case 2 -&gt; direction = Direction.LEFT;</span>
-<span class="nc" id="L66">            case 3 -&gt; direction = Direction.DOWN;</span>
+<span class="nc" id="L62">        setDirection(data.direction());</span>
+<span class="nc" id="L63">        index = (index + 1) % 6;</span>
+<span class="nc" id="L64">        updateViewPort();</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (!data.area().equals(trainer.area())) {</span>
+<span class="nc" id="L66">            trainer = new Trainer(trainer.createdAt(), trainer.updatedAt(), trainer._id(), trainer.region(),</span>
+<span class="nc" id="L67">                    trainer.user(), trainer.name(), trainer.image(), trainer.team(), trainer.visitedAreas(), trainer.coins(), data.area(), trainer.x(),</span>
+<span class="nc" id="L68">                    trainer.y(), trainer.direction(), trainer.npc());</span>
         }
-<span class="nc" id="L68">        index = (index + 1) % 6;</span>
-<span class="nc" id="L69">        updateViewPort();</span>
-<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (!data.area().equals(trainer.area())) {</span>
-<span class="nc" id="L71">            trainer = new Trainer(trainer.createdAt(), trainer.updatedAt(), trainer._id(), trainer.region(),</span>
-<span class="nc" id="L72">                    trainer.user(), trainer.name(), trainer.image(), trainer.team(), trainer.visitedAreas(), trainer.coins(), data.area(), trainer.x(),</span>
-<span class="nc" id="L73">                    trainer.y(), trainer.direction(), trainer.npc());</span>
-        }
-<span class="nc" id="L75">        onTrainerUpdate.accept(data);</span>
-<span class="nc" id="L76">    }</span>
+<span class="nc" id="L70">        onTrainerUpdate.accept(data);</span>
+<span class="nc" id="L71">    }</span>
 
     public void setTrainer(Trainer trainer) {
-<span class="fc" id="L79">        this.trainer = trainer;</span>
-<span class="fc" id="L80">    }</span>
+<span class="fc" id="L74">        this.trainer = trainer;</span>
+<span class="fc" id="L75">    }</span>
 
     public Trainer getTrainer() {
-<span class="nc" id="L83">        return this.trainer;</span>
+<span class="nc" id="L78">        return this.trainer;</span>
     }
 
     public void updateViewPort() {
-<span class="fc" id="L87">        entityView.setViewport(getViewport());</span>
-<span class="fc" id="L88">    }</span>
+<span class="fc" id="L82">        entityView.setViewport(getViewport());</span>
+<span class="fc" id="L83">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L92">        int VIEW_SIZE = 60;</span>
-<span class="fc" id="L93">        parent = super.render();</span>
-<span class="fc" id="L94">        entityView.toFront();</span>
-<span class="fc" id="L95">        entityView.setPreserveRatio(true);</span>
-<span class="fc" id="L96">        entityView.setSmooth(true);</span>
-<span class="fc" id="L97">        entityView.setFitWidth(VIEW_SIZE);</span>
-<span class="fc" id="L98">        entityView.setFitHeight(VIEW_SIZE);</span>
-<span class="fc" id="L99">        updateViewPort();</span>
+<span class="fc" id="L87">        int VIEW_SIZE = 60;</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        if (state.get().equals(PlayerState.JUMP)) {</span>
+<span class="nc" id="L89">            VIEW_SIZE *= 1.2;</span>
+        }
+<span class="fc" id="L91">        parent = super.render();</span>
+<span class="fc" id="L92">        entityView.toFront();</span>
+<span class="fc" id="L93">        entityView.setPreserveRatio(true);</span>
+<span class="fc" id="L94">        entityView.setSmooth(true);</span>
+<span class="fc" id="L95">        entityView.setFitWidth(VIEW_SIZE);</span>
+<span class="fc" id="L96">        entityView.setFitHeight(VIEW_SIZE);</span>
+<span class="fc" id="L97">        updateViewPort();</span>
 
-<span class="fc" id="L101">        disposables.add(cache.getOrLoadTrainerImage(trainer.image(), true).observeOn(FX_SCHEDULER).subscribe(image -&gt; entityView.setImage(image)));</span>
+<span class="fc" id="L99">        disposables.add(cache.getOrLoadTrainerImage(trainer.image(), true).observeOn(FX_SCHEDULER).subscribe(image -&gt; entityView.setImage(image)));</span>
 
-<span class="fc" id="L103">        return parent;</span>
+<span class="fc" id="L101">        return parent;</span>
     }
 
     private Rectangle2D getViewport() {
-<span class="fc" id="L107">        int SPRITE_SCALING = 3;</span>
-<span class="fc" id="L108">        return new Rectangle2D((direction.ordinal() * DIRECTION_STEP + index * SPRITE_STEP) * SPRITE_SCALING, (state.get().ordinal() * STATE_STEP + STATE_STEP) * SPRITE_SCALING, PORT_WIDTH * SPRITE_SCALING, PORT_HEIGHT * SPRITE_SCALING);</span>
+<span class="fc" id="L105">        int SPRITE_SCALING = 3;</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        int sheetY = state.get().equals(PlayerState.JUMP) ? 1 : state.get().ordinal();</span>
+
+<span class="fc" id="L108">        return new Rectangle2D(</span>
+<span class="fc" id="L109">                (direction.ordinal() * DIRECTION_STEP + index * SPRITE_STEP) * SPRITE_SCALING,</span>
+                (sheetY * STATE_STEP + STATE_STEP) * SPRITE_SCALING,
+                PORT_WIDTH * SPRITE_SCALING,
+                PORT_HEIGHT * SPRITE_SCALING);
     }
 
     public void setDirection(int direction) {
-<span class="nc bnc" id="L112" title="All 5 branches missed.">        switch (direction) {</span>
-<span class="nc" id="L113">            case 0 -&gt; this.direction = Direction.RIGHT;</span>
-<span class="nc" id="L114">            case 1 -&gt; this.direction = Direction.UP;</span>
-<span class="nc" id="L115">            case 2 -&gt; this.direction = Direction.LEFT;</span>
-<span class="nc" id="L116">            case 3 -&gt; this.direction = Direction.DOWN;</span>
+<span class="nc bnc" id="L116" title="All 5 branches missed.">        switch (direction) {</span>
+<span class="nc" id="L117">            case 0 -&gt; this.direction = Direction.RIGHT;</span>
+<span class="nc" id="L118">            case 1 -&gt; this.direction = Direction.UP;</span>
+<span class="nc" id="L119">            case 2 -&gt; this.direction = Direction.LEFT;</span>
+<span class="nc" id="L120">            case 3 -&gt; this.direction = Direction.DOWN;</span>
         }
-<span class="nc" id="L118">    }</span>
+<span class="nc" id="L122">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
