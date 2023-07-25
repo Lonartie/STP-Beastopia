@@ -139,7 +139,7 @@ public class IngameController extends Controller {
     private Monster lastMonster;
     private ItemTypeDto lastItemTypeDto;
 <span class="fc" id="L141">    private int currentMenu = MENU_NONE;</span>
-<span class="fc" id="L142">    private final java.util.Map&lt;Pair&lt;Integer, Integer&gt;, Tile&gt; mapInfo = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L142">    private final java.util.Map&lt;Pair&lt;Integer, Integer&gt;, Tile&gt; MAP_INFO = new HashMap&lt;&gt;();</span>
     Direction direction;
 <span class="fc" id="L144">    final ObjectProperty&lt;PlayerState&gt; state = new SimpleObjectProperty&lt;&gt;();</span>
     Parent player;
@@ -539,7 +539,7 @@ public class IngameController extends Controller {
             // This is to prevent the camera from showing the &quot;extended&quot; tile pane with those tiles
 <span class="fc bfc" id="L540" title="All 2 branches covered.">            if (id != 0) {</span>
 <span class="fc" id="L541">                List&lt;Tile&gt; tileInformation = tileSet.getKey().getKey().tiles();</span>
-<span class="fc bfc" id="L542" title="All 2 branches covered.">                tileInformation.stream().filter(t -&gt; t.id() == tileSet.getValue()).findFirst().ifPresent(tile -&gt; mapInfo.put(new Pair&lt;&gt;(x, y), tile));</span>
+<span class="fc bfc" id="L542" title="All 2 branches covered.">                tileInformation.stream().filter(t -&gt; t.id() == tileSet.getValue()).findFirst().ifPresent(tile -&gt; MAP_INFO.put(new Pair&lt;&gt;(x, y), tile));</span>
 <span class="fc" id="L543">                drawTile(x, y, tileSet.getKey().getValue(), presetsService.getTileViewPort(tileSet.getValue(), tileSet.getKey().getKey()));</span>
             }
 <span class="fc" id="L545">        }</span>
@@ -675,8 +675,8 @@ public class IngameController extends Controller {
 <span class="fc" id="L675">        data.add(&quot;direction&quot;, new JsonPrimitive(direction.ordinal()));</span>
 
 <span class="fc" id="L677">        Pair&lt;Integer, Integer&gt; posXY = new Pair&lt;&gt;(posx, posy);</span>
-<span class="pc bpc" id="L678" title="1 of 2 branches missed.">        if (mapInfo.containsKey(posXY)) {</span>
-<span class="nc" id="L679">            Tile tile = mapInfo.get(posXY);</span>
+<span class="pc bpc" id="L678" title="1 of 2 branches missed.">        if (MAP_INFO.containsKey(posXY)) {</span>
+<span class="nc" id="L679">            Tile tile = MAP_INFO.get(posXY);</span>
 <span class="nc" id="L680">            Optional&lt;TileProperty&gt; jumpableTileProp = tile.properties().stream().filter(tileProperty -&gt; tileProperty.name().equals(&quot;Jumpable&quot;)).findFirst();</span>
 <span class="nc bnc" id="L681" title="All 2 branches missed.">            if (jumpableTileProp.isPresent()) {</span>
 <span class="nc" id="L682">                int jumpDirection = Integer.parseInt(jumpableTileProp.get().value());</span>
