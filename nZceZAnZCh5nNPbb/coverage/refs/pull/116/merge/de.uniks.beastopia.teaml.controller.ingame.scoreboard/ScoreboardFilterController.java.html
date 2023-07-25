@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ScoreboardFilterController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.ingame.scoreboard</a> &gt; <span class="el_source">ScoreboardFilterController.java</span></div><h1>ScoreboardFilterController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.ingame.scoreboard;
+
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.Achievement;
+import de.uniks.beastopia.teaml.rest.AchievementsSummary;
+import de.uniks.beastopia.teaml.service.DataCache;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.VBox;
+import javafx.util.Pair;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class ScoreboardFilterController extends Controller {
+    @FXML
+    private ScrollPane achievementList;
+    @FXML
+    private VBox achievementPane;
+
+    private List&lt;AchievementsSummary&gt; currentAchievements;
+<span class="fc" id="L30">    private final List&lt;Pair&lt;CheckBox, AchievementsSummary&gt;&gt; checkBoxes = new ArrayList&lt;&gt;();</span>
+    private FilteredList&lt;ScoreboardUserItemController&gt; filteredControllers;
+<span class="fc" id="L32">    private final List&lt;String&gt; selectedAchievements = new ArrayList&lt;&gt;();</span>
+    private Set&lt;String&gt; selectedAchievementSet;
+<span class="fc" id="L34">    boolean filterApplied = false;</span>
+    VBox scoreBoard;
+
+    @Inject
+    DataCache cache;
+
+    @Inject
+<span class="fc" id="L41">    public ScoreboardFilterController() {</span>
+<span class="fc" id="L42">    }</span>
+
+    public ScoreboardFilterController setCurrentAchievements(List&lt;AchievementsSummary&gt; currentAchievements) {
+<span class="fc" id="L45">        this.currentAchievements = new ArrayList&lt;&gt;(currentAchievements);</span>
+<span class="fc" id="L46">        return this;</span>
+    }
+
+    public ScoreboardFilterController setSubControllers(ObservableList&lt;ScoreboardUserItemController&gt; subControllers) {
+<span class="fc" id="L50">        filteredControllers = new FilteredList&lt;&gt;(subControllers, controller -&gt; true);</span>
+<span class="fc" id="L51">        return this;</span>
+    }
+
+    public ScoreboardFilterController setParentPane(VBox parent) {
+<span class="fc" id="L55">        this.scoreBoard = parent;</span>
+<span class="fc" id="L56">        return this;</span>
+    }
+
+    @Override
+    public Parent render() {
+<span class="fc" id="L61">        Parent parent = super.render();</span>
+
+<span class="fc" id="L63">        achievementPane.setSpacing(5);</span>
+
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        for (AchievementsSummary achievement : currentAchievements) {</span>
+<span class="fc" id="L66">            CheckBox checkBox = new CheckBox(cache.getAchievementDescriptions().get(achievement.id()));</span>
+<span class="fc" id="L67">            checkBox.setStyle(&quot;-fx-font-size: 14px;&quot;);</span>
+<span class="fc" id="L68">            checkBox.setOnAction(event -&gt; {</span>
+<span class="nc" id="L69">                checkBoxes.add(new Pair&lt;&gt;(checkBox, achievement));</span>
+<span class="nc" id="L70">                applyFilter();</span>
+<span class="nc" id="L71">            });</span>
+
+<span class="fc" id="L73">            achievementPane.getChildren().add(checkBox);</span>
+<span class="fc" id="L74">        }</span>
+
+<span class="fc" id="L76">        achievementList.setContent(achievementPane);</span>
+<span class="fc" id="L77">        return parent;</span>
+    }
+
+    public void applyFilter() {
+<span class="fc" id="L81">        selectedAchievements.clear();</span>
+
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        for (Pair&lt;CheckBox, AchievementsSummary&gt; checkbox : checkBoxes) {</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">            if (checkbox.getKey().isSelected()) {</span>
+<span class="nc" id="L85">                selectedAchievements.add(checkbox.getValue().id());</span>
+            }
+<span class="nc" id="L87">        }</span>
+
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">        filterApplied = selectedAchievements.size() != 0;</span>
+<span class="fc" id="L90">        selectedAchievementSet = new HashSet&lt;&gt;(selectedAchievements);</span>
+
+<span class="fc" id="L92">        filteredControllers.setPredicate(controller -&gt; {</span>
+<span class="fc" id="L93">            List&lt;Achievement&gt; achievements = controller.getUserAchievements();</span>
+<span class="fc" id="L94">            List&lt;String&gt; achievementIds = achievements.stream()</span>
+<span class="fc" id="L95">                    .map(Achievement::id)</span>
+<span class="fc" id="L96">                    .toList();</span>
+<span class="fc" id="L97">            return new HashSet&lt;&gt;(achievementIds).containsAll(selectedAchievementSet);</span>
+        });
+
+<span class="fc" id="L100">        scoreBoard.getChildren().removeIf((Node node) -&gt; {</span>
+<span class="nc" id="L101">            int index = scoreBoard.getChildren().indexOf(node);</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">            return index &gt; 0;</span>
+        });
+
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        for (ScoreboardUserItemController controller : filteredControllers) {</span>
+<span class="fc" id="L106">            scoreBoard.getChildren().add(controller.getParent());</span>
+<span class="fc" id="L107">        }</span>
+<span class="fc" id="L108">    }</span>
+
+    public void removeFilter() {
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">        for (Pair&lt;CheckBox, AchievementsSummary&gt; checkbox : checkBoxes) {</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            if (checkbox.getKey().isSelected()) {</span>
+<span class="nc" id="L113">                checkbox.getKey().setSelected(false);</span>
+            }
+<span class="nc" id="L115">        }</span>
+
+<span class="fc" id="L117">        filterApplied = false;</span>
+<span class="fc" id="L118">        filteredControllers.setPredicate(null);</span>
+
+<span class="fc" id="L120">        scoreBoard.getChildren().removeIf((Node node) -&gt; {</span>
+<span class="fc" id="L121">            int index = scoreBoard.getChildren().indexOf(node);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">            return index &gt; 0;</span>
+        });
+
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        for (ScoreboardUserItemController controller : filteredControllers) {</span>
+<span class="fc" id="L126">            scoreBoard.getChildren().add(controller.getParent());</span>
+<span class="fc" id="L127">        }</span>
+<span class="fc" id="L128">    }</span>
+
+    public boolean isFilterApplied() {
+<span class="nc" id="L131">        return this.filterApplied;</span>
+    }
+
+    public void checkCurrentController(ScoreboardUserItemController controller) {
+<span class="fc" id="L135">        selectedAchievementSet = new HashSet&lt;&gt;(selectedAchievements);</span>
+
+<span class="fc" id="L137">        boolean hasControllerRequirements = filteredControllers.filtered(c -&gt;</span>
+<span class="fc" id="L138">                new HashSet&lt;&gt;(c.getUserAchievements().stream()</span>
+<span class="fc" id="L139">                        .map(Achievement::id)</span>
+<span class="fc" id="L140">                        .toList())</span>
+<span class="fc" id="L141">                        .containsAll(selectedAchievementSet)</span>
+<span class="fc" id="L142">        ).contains(controller);</span>
+
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if (hasControllerRequirements) {</span>
+<span class="nc" id="L145">            scoreBoard.getChildren().add(controller.getParent());</span>
+        }
+<span class="fc" id="L147">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
