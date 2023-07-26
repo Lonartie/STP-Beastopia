@@ -21,25 +21,5 @@ public class MondexService {
     public boolean checkKnown(int id) {
 <span class="nc" id="L22">        return dataCache.getTrainer().encounteredMonsterTypes().contains(id);</span>
     }
-
-
-    public void listMonsterTypes(List&lt;MonsterTypeDto&gt; monsterTypeDtos) {
-<span class="nc" id="L27">        List &lt;String&gt; monsterTypes = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L28" title="All 2 branches missed.">        for (MonsterTypeDto monsterTypeDto : monsterTypeDtos) {</span>
-<span class="nc bnc" id="L29" title="All 2 branches missed.">                if (monsterTypeDto.type().size() == 1) {</span>
-<span class="nc bnc" id="L30" title="All 2 branches missed.">                    if (!monsterTypes.contains(monsterTypeDto.type().get(0))) {</span>
-<span class="nc" id="L31">                        monsterTypes.add(monsterTypeDto.type().get(0));</span>
-                    }
-            } else {
-<span class="nc bnc" id="L34" title="All 2 branches missed.">                if (!monsterTypes.contains(monsterTypeDto.type().get(0))) {</span>
-<span class="nc" id="L35">                    monsterTypes.add(monsterTypeDto.type().get(0));</span>
-                }
-<span class="nc bnc" id="L37" title="All 2 branches missed.">                if (!monsterTypes.contains(monsterTypeDto.type().get(1))) {</span>
-<span class="nc" id="L38">                    monsterTypes.add(monsterTypeDto.type().get(1));</span>
-                }
-            }
-<span class="nc" id="L41">        }</span>
-<span class="nc" id="L42">        System.out.println(&quot;All Monster Types: &quot; + monsterTypes);</span>
-<span class="nc" id="L43">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
