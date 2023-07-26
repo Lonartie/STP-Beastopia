@@ -51,106 +51,99 @@ public class DialogWindowController extends Controller {
 <span class="fc" id="L51">    public DialogWindowController() {</span>
 <span class="fc" id="L52">    }</span>
 
-    public DialogWindowController setOnCloseRequested(Runnable onCloseRequested) {
+    public void setOnCloseRequested(Runnable onCloseRequested) {
 <span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if (onCloseRequested == null) {</span>
-<span class="nc" id="L56">            return this;</span>
+<span class="nc" id="L56">            return;</span>
         }
 <span class="fc" id="L58">        this.onCloseRequested = onCloseRequested;</span>
-<span class="fc" id="L59">        return this;</span>
-    }
+<span class="fc" id="L59">    }</span>
 
-    public DialogWindowController setOnButtonClicked(Consumer&lt;Integer&gt; onButtonClicked) {
-<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        if (onButtonClicked == null) {</span>
-<span class="nc" id="L64">            return this;</span>
+    public void setOnButtonClicked(Consumer&lt;Integer&gt; onButtonClicked) {
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        if (onButtonClicked == null) {</span>
+<span class="nc" id="L63">            return;</span>
         }
-<span class="fc" id="L66">        this.onButtonClicked = onButtonClicked;</span>
-<span class="fc" id="L67">        return this;</span>
-    }
+<span class="fc" id="L65">        this.onButtonClicked = onButtonClicked;</span>
+<span class="fc" id="L66">    }</span>
 
     public DialogWindowController setChoices(List&lt;String&gt; choices) {
-<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if (choices == null) {</span>
-<span class="nc" id="L72">            return this;</span>
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">        if (choices == null) {</span>
+<span class="nc" id="L70">            return this;</span>
         }
-<span class="fc" id="L74">        this.choices = choices;</span>
-<span class="fc" id="L75">        return this;</span>
+<span class="fc" id="L72">        this.choices = choices;</span>
+<span class="fc" id="L73">        return this;</span>
     }
 
     public DialogWindowController setTrainerImage(Image trainerImage) {
-<span class="pc bpc" id="L79" title="1 of 2 branches missed.">        if (trainerImage == null) {</span>
-<span class="nc" id="L80">            return this;</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        if (trainerImage == null) {</span>
+<span class="nc" id="L78">            return this;</span>
         }
-<span class="fc" id="L82">        this.trainerImage = trainerImage;</span>
-<span class="fc" id="L83">        return this;</span>
+<span class="fc" id="L80">        this.trainerImage = trainerImage;</span>
+<span class="fc" id="L81">        return this;</span>
     }
 
     public DialogWindowController setButtonImages(List&lt;Image&gt; images) {
-<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        if (images == null) {</span>
-<span class="nc" id="L88">            return this;</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        if (images == null) {</span>
+<span class="nc" id="L86">            return this;</span>
         }
-<span class="fc" id="L90">        this.buttonImages = images;</span>
-<span class="fc" id="L91">        return this;</span>
+<span class="fc" id="L88">        this.buttonImages = images;</span>
+<span class="fc" id="L89">        return this;</span>
     }
 
     public DialogWindowController setText(String text) {
-<span class="fc" id="L95">        this.text = text;</span>
-<span class="fc" id="L96">        return this;</span>
+<span class="fc" id="L93">        this.text = text;</span>
+<span class="fc" id="L94">        return this;</span>
     }
 
     @Override
-    public void init() {
-<span class="fc" id="L101">        super.init();</span>
-<span class="fc" id="L102">    }</span>
-
-    @Override
     public Parent render() {
-<span class="fc" id="L106">        Parent parent = super.render();</span>
+<span class="fc" id="L99">        Parent parent = super.render();</span>
 
-<span class="fc bfc" id="L108" title="All 2 branches covered.">        for (int i = 0; i &lt; choices.size(); i++) {</span>
-<span class="fc" id="L109">            AtomicInteger index = new AtomicInteger(i);</span>
-<span class="pc bpc" id="L110" title="1 of 2 branches missed.">            if (buttonImages.isEmpty()) {</span>
-<span class="nc" id="L111">                Button choiceButton = new Button(choices.get(i));</span>
-<span class="nc" id="L112">                choiceButton.setOnAction(ev -&gt; {</span>
-<span class="nc bnc" id="L113" title="All 2 branches missed.">                    if (onButtonClicked != null) {</span>
-<span class="nc" id="L114">                        onButtonClicked.accept(index.get());</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        for (int i = 0; i &lt; choices.size(); i++) {</span>
+<span class="fc" id="L102">            AtomicInteger index = new AtomicInteger(i);</span>
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">            if (buttonImages.isEmpty()) {</span>
+<span class="nc" id="L104">                Button choiceButton = new Button(choices.get(i));</span>
+<span class="nc" id="L105">                choiceButton.setOnAction(ev -&gt; {</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">                    if (onButtonClicked != null) {</span>
+<span class="nc" id="L107">                        onButtonClicked.accept(index.get());</span>
                     }
-<span class="nc" id="L116">                });</span>
-<span class="nc" id="L117">                choiceBox.getChildren().add(choiceButton);</span>
-<span class="nc" id="L118">            } else {</span>
-<span class="fc" id="L119">                ImageView buttonImageView = new ImageView(buttonImages.get(i));</span>
-<span class="fc" id="L120">                buttonImageView.setFitWidth(64);</span>
-<span class="fc" id="L121">                buttonImageView.setFitHeight(64);</span>
-<span class="fc" id="L122">                Text choiceButton = new Text(choices.get(i));</span>
-<span class="fc" id="L123">                choiceButton.setTextAlignment(TextAlignment.CENTER);</span>
-<span class="fc" id="L124">                VBox buttonBox = new VBox();</span>
-<span class="fc" id="L125">                buttonBox.setOnMouseClicked(ev -&gt; {</span>
-<span class="pc bpc" id="L126" title="1 of 2 branches missed.">                    if (onButtonClicked != null) {</span>
-<span class="fc" id="L127">                        onButtonClicked.accept(index.get());</span>
+<span class="nc" id="L109">                });</span>
+<span class="nc" id="L110">                choiceBox.getChildren().add(choiceButton);</span>
+<span class="nc" id="L111">            } else {</span>
+<span class="fc" id="L112">                ImageView buttonImageView = new ImageView(buttonImages.get(i));</span>
+<span class="fc" id="L113">                buttonImageView.setFitWidth(64);</span>
+<span class="fc" id="L114">                buttonImageView.setFitHeight(64);</span>
+<span class="fc" id="L115">                Text choiceButton = new Text(choices.get(i));</span>
+<span class="fc" id="L116">                choiceButton.setTextAlignment(TextAlignment.CENTER);</span>
+<span class="fc" id="L117">                VBox buttonBox = new VBox();</span>
+<span class="fc" id="L118">                buttonBox.setOnMouseClicked(ev -&gt; {</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">                    if (onButtonClicked != null) {</span>
+<span class="fc" id="L120">                        onButtonClicked.accept(index.get());</span>
                     }
-<span class="fc" id="L129">                });</span>
-<span class="fc" id="L130">                buttonBox.getChildren().add(choiceButton);</span>
-<span class="fc" id="L131">                buttonBox.getChildren().add(buttonImageView);</span>
-<span class="fc" id="L132">                choiceBox.getChildren().add(buttonBox);</span>
+<span class="fc" id="L122">                });</span>
+<span class="fc" id="L123">                buttonBox.getChildren().add(choiceButton);</span>
+<span class="fc" id="L124">                buttonBox.getChildren().add(buttonImageView);</span>
+<span class="fc" id="L125">                choiceBox.getChildren().add(buttonBox);</span>
             }
         }
 
-<span class="fc" id="L136">        trainerImageView.setImage(trainerImage);</span>
-<span class="fc" id="L137">        dialogText.setText(text);</span>
+<span class="fc" id="L129">        trainerImageView.setImage(trainerImage);</span>
+<span class="fc" id="L130">        dialogText.setText(text);</span>
 
-<span class="fc" id="L139">        return parent;</span>
+<span class="fc" id="L132">        return parent;</span>
     }
 
     @FXML
     public void close() {
-<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if (onCloseRequested != null) {</span>
-<span class="fc" id="L145">            onCloseRequested.run();</span>
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">        if (onCloseRequested != null) {</span>
+<span class="fc" id="L138">            onCloseRequested.run();</span>
         }
-<span class="fc" id="L147">    }</span>
+<span class="fc" id="L140">    }</span>
 
     @FXML
     public void handleKeyEvent(KeyEvent event) {
-<span class="pc bpc" id="L151" title="1 of 2 branches missed.">        if (event.getCode().equals(KeyCode.T)) {</span>
-<span class="fc" id="L152">            onCloseRequested.run();</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if (event.getCode().equals(KeyCode.T)) {</span>
+<span class="fc" id="L145">            onCloseRequested.run();</span>
         }
-<span class="fc" id="L154">    }</span>
+<span class="fc" id="L147">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

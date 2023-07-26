@@ -47,8 +47,8 @@ public class EditBeastTeamController extends Controller {
     PresetsService presetsService;
     @Inject
     Provider&lt;BeastListElementController&gt; beastListElementControllerProvider;
-<span class="fc" id="L50">    ObservableList&lt;Monster&gt; beastList = FXCollections.observableArrayList();</span>
-<span class="fc" id="L51">    ObservableList&lt;Monster&gt; teamList = FXCollections.observableArrayList();</span>
+<span class="fc" id="L50">    final ObservableList&lt;Monster&gt; beastList = FXCollections.observableArrayList();</span>
+<span class="fc" id="L51">    final ObservableList&lt;Monster&gt; teamList = FXCollections.observableArrayList();</span>
     List&lt;MonsterTypeDto&gt; allBeasts;
 
     @Inject
