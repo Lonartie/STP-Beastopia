@@ -80,14 +80,18 @@ public class MondexListController extends Controller {
 <span class="nc" id="L80">        subControllers.forEach(Controller::destroy);</span>
 <span class="nc" id="L81">    }</span>
 
+    public void reload() {
+<span class="nc" id="L84">        render();</span>
+<span class="nc" id="L85">    }</span>
+
     public void handleKeyEvent(KeyEvent event) {
-<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (event.getCode().equals(KeyCode.L)) {</span>
-<span class="nc" id="L85">            close();</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (event.getCode().equals(KeyCode.L)) {</span>
+<span class="nc" id="L89">            close();</span>
         }
-<span class="nc" id="L87">    }</span>
+<span class="nc" id="L91">    }</span>
 
     public void close() {
-<span class="nc" id="L90">        onCloseRequest.run();</span>
-<span class="nc" id="L91">    }</span>
+<span class="nc" id="L94">        onCloseRequest.run();</span>
+<span class="nc" id="L95">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

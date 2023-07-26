@@ -1349,60 +1349,61 @@ public class IngameController extends Controller {
 <span class="nc" id="L1349">            currentMenu = MENU_NONE;</span>
         } else {
 <span class="nc" id="L1351">            scoreBoardLayout.getChildren().add(mondexListParent);</span>
-<span class="nc" id="L1352">            currentMenu = MENU_MONDEXLIST;</span>
+<span class="nc" id="L1352">            mondexListController.reload();</span>
+<span class="nc" id="L1353">            currentMenu = MENU_MONDEXLIST;</span>
         }
-<span class="nc" id="L1354">    }</span>
+<span class="nc" id="L1355">    }</span>
 
     public void closePause() {
-<span class="nc bnc" id="L1357" title="All 2 branches missed.">        for (Node tile : tilePane.getChildren()) {</span>
-<span class="nc bnc" id="L1358" title="All 2 branches missed.">            if (tile instanceof ImageView imageView) {</span>
-<span class="nc" id="L1359">                imageView.setFitWidth(TILE_SIZE + 1);</span>
-<span class="nc" id="L1360">                imageView.setFitHeight(TILE_SIZE + 1);</span>
+<span class="nc bnc" id="L1358" title="All 2 branches missed.">        for (Node tile : tilePane.getChildren()) {</span>
+<span class="nc bnc" id="L1359" title="All 2 branches missed.">            if (tile instanceof ImageView imageView) {</span>
+<span class="nc" id="L1360">                imageView.setFitWidth(TILE_SIZE + 1);</span>
+<span class="nc" id="L1361">                imageView.setFitHeight(TILE_SIZE + 1);</span>
             }
-<span class="nc" id="L1362">            tile.setOpacity(1);</span>
-<span class="nc" id="L1363">        }</span>
-<span class="nc" id="L1364">        pauseHint.setOpacity(1);</span>
-<span class="nc" id="L1365">    }</span>
+<span class="nc" id="L1363">            tile.setOpacity(1);</span>
+<span class="nc" id="L1364">        }</span>
+<span class="nc" id="L1365">        pauseHint.setOpacity(1);</span>
+<span class="nc" id="L1366">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L1369">        return resources.getString(&quot;titleIngame&quot;);</span>
+<span class="fc" id="L1370">        return resources.getString(&quot;titleIngame&quot;);</span>
     }
 
     @Override
     public void destroy() {
-<span class="fc" id="L1374">        timer.cancel();</span>
-<span class="fc" id="L1375">        playerController.destroy();</span>
-<span class="fc" id="L1376">        scoreBoardController.destroy();</span>
-<span class="fc" id="L1377">        beastListController.destroy();</span>
-<span class="fc" id="L1378">        shopController.destroy();</span>
+<span class="fc" id="L1375">        timer.cancel();</span>
+<span class="fc" id="L1376">        playerController.destroy();</span>
+<span class="fc" id="L1377">        scoreBoardController.destroy();</span>
+<span class="fc" id="L1378">        beastListController.destroy();</span>
+<span class="fc" id="L1379">        shopController.destroy();</span>
 
-<span class="pc bpc" id="L1380" title="1 of 2 branches missed.">        if (dialogWindowController != null) {</span>
-<span class="fc" id="L1381">            dialogWindowController.destroy();</span>
+<span class="pc bpc" id="L1381" title="1 of 2 branches missed.">        if (dialogWindowController != null) {</span>
+<span class="fc" id="L1382">            dialogWindowController.destroy();</span>
         }
 
-<span class="pc bpc" id="L1384" title="1 of 2 branches missed.">        for (Controller controller : subControllers) {</span>
-<span class="nc" id="L1385">            controller.destroy();</span>
-<span class="nc" id="L1386">        }</span>
-<span class="fc" id="L1387">        subControllers.clear();</span>
+<span class="pc bpc" id="L1385" title="1 of 2 branches missed.">        for (Controller controller : subControllers) {</span>
+<span class="nc" id="L1386">            controller.destroy();</span>
+<span class="nc" id="L1387">        }</span>
+<span class="fc" id="L1388">        subControllers.clear();</span>
 
-<span class="pc bpc" id="L1389" title="1 of 2 branches missed.">        for (EntityController controller : otherPlayers.keySet()) {</span>
-<span class="nc" id="L1390">            controller.destroy();</span>
-<span class="nc" id="L1391">        }</span>
-<span class="fc" id="L1392">        otherPlayers.clear();</span>
+<span class="pc bpc" id="L1390" title="1 of 2 branches missed.">        for (EntityController controller : otherPlayers.keySet()) {</span>
+<span class="nc" id="L1391">            controller.destroy();</span>
+<span class="nc" id="L1392">        }</span>
+<span class="fc" id="L1393">        otherPlayers.clear();</span>
 
-<span class="fc" id="L1394">        tilePane.getChildren().clear();</span>
-<span class="fc" id="L1395">        loadingPage = null;</span>
-<span class="fc" id="L1396">        player = null;</span>
-<span class="fc" id="L1397">        beastListParent = null;</span>
-<span class="fc" id="L1398">        beastDetailParent = null;</span>
-<span class="fc" id="L1399">        playerController = null;</span>
-<span class="fc" id="L1400">        soundController = null;</span>
-<span class="fc" id="L1401">        scoreBoardParent = null;</span>
-<span class="fc" id="L1402">        pauseMenuParent = null;</span>
-<span class="fc" id="L1403">        dialogWindowParent = null;</span>
-<span class="fc" id="L1404">        tilePane = null;</span>
-<span class="fc" id="L1405">        super.destroy();</span>
-<span class="fc" id="L1406">    }</span>
+<span class="fc" id="L1395">        tilePane.getChildren().clear();</span>
+<span class="fc" id="L1396">        loadingPage = null;</span>
+<span class="fc" id="L1397">        player = null;</span>
+<span class="fc" id="L1398">        beastListParent = null;</span>
+<span class="fc" id="L1399">        beastDetailParent = null;</span>
+<span class="fc" id="L1400">        playerController = null;</span>
+<span class="fc" id="L1401">        soundController = null;</span>
+<span class="fc" id="L1402">        scoreBoardParent = null;</span>
+<span class="fc" id="L1403">        pauseMenuParent = null;</span>
+<span class="fc" id="L1404">        dialogWindowParent = null;</span>
+<span class="fc" id="L1405">        tilePane = null;</span>
+<span class="fc" id="L1406">        super.destroy();</span>
+<span class="fc" id="L1407">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
