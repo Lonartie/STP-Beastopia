@@ -77,94 +77,96 @@ public class InventoryController extends Controller {
     }
 
     public void showTrainerCoins() {
-<span class="fc" id="L80">        inv.setText(resources.getString(&quot;inv&quot;) + &quot;\t&quot; + cache.getTrainer().coins());</span>
-<span class="fc" id="L81">    }</span>
+<span class="fc" id="L80">        float coins = cache.getTrainer().coins();</span>
+<span class="fc" id="L81">        String coinsFormatted = String.format(&quot;%.1f&quot;, coins);</span>
+<span class="fc" id="L82">        inv.setText(resources.getString(&quot;inv&quot;) + &quot; &quot; + coinsFormatted);</span>
+<span class="fc" id="L83">    }</span>
 
     public void updateInventory() {
-<span class="nc" id="L84">        subControllers.forEach(Controller::destroy);</span>
-<span class="nc" id="L85">        subControllers.clear();</span>
-<span class="nc" id="L86">        VBoxItems.getChildren().clear();</span>
-<span class="nc" id="L87">        showTrainerCoins();</span>
-<span class="nc" id="L88">        reload();</span>
-<span class="nc" id="L89">    }</span>
+<span class="nc" id="L86">        subControllers.forEach(Controller::destroy);</span>
+<span class="nc" id="L87">        subControllers.clear();</span>
+<span class="nc" id="L88">        VBoxItems.getChildren().clear();</span>
+<span class="nc" id="L89">        showTrainerCoins();</span>
+<span class="nc" id="L90">        reload();</span>
+<span class="nc" id="L91">    }</span>
 
     private void reload() {
-<span class="fc" id="L92">        disposables.add(trainerItemsService.getItems(cache.getJoinedRegion()._id(), cache.getTrainer()._id())</span>
-<span class="fc" id="L93">                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L94">                .subscribe(itemList -&gt; {</span>
-<span class="fc" id="L95">                    trainerItems = itemList;</span>
-<span class="fc" id="L96">                    itemTrainerTypes.clear();</span>
-<span class="fc bfc" id="L97" title="All 2 branches covered.">                    for (ItemTypeDto itemType : presetItemTypes) { //filter items</span>
-<span class="fc bfc" id="L98" title="All 2 branches covered.">                        for (Item item : trainerItems) {</span>
-<span class="pc bpc" id="L99" title="2 of 4 branches missed.">                            if (itemType.id() == item.type() &amp;&amp; item.amount() &gt; 0) {</span>
-<span class="fc" id="L100">                                itemTrainerTypes.add(itemType);</span>
+<span class="fc" id="L94">        disposables.add(trainerItemsService.getItems(cache.getJoinedRegion()._id(), cache.getTrainer()._id())</span>
+<span class="fc" id="L95">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L96">                .subscribe(itemList -&gt; {</span>
+<span class="fc" id="L97">                    trainerItems = itemList;</span>
+<span class="fc" id="L98">                    itemTrainerTypes.clear();</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">                    for (ItemTypeDto itemType : presetItemTypes) { //filter items</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">                        for (Item item : trainerItems) {</span>
+<span class="pc bpc" id="L101" title="2 of 4 branches missed.">                            if (itemType.id() == item.type() &amp;&amp; item.amount() &gt; 0) {</span>
+<span class="fc" id="L102">                                itemTrainerTypes.add(itemType);</span>
                             }
-<span class="fc" id="L102">                        }</span>
-<span class="fc" id="L103">                    }</span>
-<span class="fc bfc" id="L104" title="All 2 branches covered.">                    for (ItemTypeDto itemTypeDto : itemTrainerTypes) { //create subController</span>
-<span class="fc" id="L105">                        ItemController itemController = itemControllerProvider.get().setItem(itemTypeDto);</span>
-<span class="fc" id="L106">                        itemController.setScore(Objects.requireNonNull(findItem(itemTypeDto)).amount());</span>
-<span class="fc" id="L107">                        itemController.setOnItemClicked(onItemClicked);</span>
-<span class="fc" id="L108">                        itemController.init();</span>
-<span class="fc" id="L109">                        subControllers.add(itemController);</span>
-<span class="fc" id="L110">                        Parent parent = itemController.render();</span>
-<span class="fc bfc" id="L111" title="All 2 branches covered.">                        if (!VBoxItems.getChildren().contains(parent)) {</span>
-<span class="fc" id="L112">                            VBoxItems.getChildren().add(parent);</span>
+<span class="fc" id="L104">                        }</span>
+<span class="fc" id="L105">                    }</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">                    for (ItemTypeDto itemTypeDto : itemTrainerTypes) { //create subController</span>
+<span class="fc" id="L107">                        ItemController itemController = itemControllerProvider.get().setItem(itemTypeDto);</span>
+<span class="fc" id="L108">                        itemController.setScore(Objects.requireNonNull(findItem(itemTypeDto)).amount());</span>
+<span class="fc" id="L109">                        itemController.setOnItemClicked(onItemClicked);</span>
+<span class="fc" id="L110">                        itemController.init();</span>
+<span class="fc" id="L111">                        subControllers.add(itemController);</span>
+<span class="fc" id="L112">                        Parent parent = itemController.render();</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">                        if (!VBoxItems.getChildren().contains(parent)) {</span>
+<span class="fc" id="L114">                            VBoxItems.getChildren().add(parent);</span>
                         }
-<span class="fc" id="L114">                    }</span>
-<span class="fc" id="L115">                }));</span>
-<span class="fc" id="L116">    }</span>
+<span class="fc" id="L116">                    }</span>
+<span class="fc" id="L117">                }));</span>
+<span class="fc" id="L118">    }</span>
 
     private Item findItem(ItemTypeDto itemTypeDto) {
-<span class="pc bpc" id="L119" title="1 of 2 branches missed.">        for (Item item : trainerItems) {</span>
-<span class="pc bpc" id="L120" title="1 of 2 branches missed.">            if (item.type() == itemTypeDto.id()) {</span>
-<span class="fc" id="L121">                return item;</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">        for (Item item : trainerItems) {</span>
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">            if (item.type() == itemTypeDto.id()) {</span>
+<span class="fc" id="L123">                return item;</span>
             }
-<span class="nc" id="L123">        }</span>
-<span class="nc" id="L124">        return null;</span>
+<span class="nc" id="L125">        }</span>
+<span class="nc" id="L126">        return null;</span>
     }
 
     @Override
     public String getTitle() {
-<span class="fc bfc" id="L129" title="All 2 branches covered.">        if (this.isShop) {</span>
-<span class="fc" id="L130">            return resources.getString(&quot;titleShop&quot;);</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (this.isShop) {</span>
+<span class="fc" id="L132">            return resources.getString(&quot;titleShop&quot;);</span>
         } else {
-<span class="fc" id="L132">            return resources.getString(&quot;titleInventory&quot;);</span>
+<span class="fc" id="L134">            return resources.getString(&quot;titleInventory&quot;);</span>
         }
     }
 
     @FXML
     public void handleKeyEvent(KeyEvent keyEvent) {
-<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (!isShop) {</span>
-<span class="nc bnc" id="L139" title="All 2 branches missed.">            if (keyEvent.getCode().equals(KeyCode.B)) {</span>
-<span class="nc" id="L140">                onCloseRequest.run();</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (!isShop) {</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">            if (keyEvent.getCode().equals(KeyCode.B)) {</span>
+<span class="nc" id="L142">                onCloseRequest.run();</span>
             }
         }
-<span class="nc" id="L143">    }</span>
+<span class="nc" id="L145">    }</span>
 
     @FXML
     public void close() {
-<span class="fc" id="L147">        onCloseRequest.run();</span>
-<span class="fc" id="L148">    }</span>
+<span class="fc" id="L149">        onCloseRequest.run();</span>
+<span class="fc" id="L150">    }</span>
 
     public void setOnCloseRequest(Runnable onCloseRequest) {
-<span class="fc" id="L151">        this.onCloseRequest = onCloseRequest;</span>
-<span class="fc" id="L152">    }</span>
+<span class="fc" id="L153">        this.onCloseRequest = onCloseRequest;</span>
+<span class="fc" id="L154">    }</span>
 
     public void setOnItemClicked(Consumer&lt;ItemTypeDto&gt; onItemClicked) {
-<span class="fc" id="L155">        this.onItemClicked = onItemClicked;</span>
-<span class="fc" id="L156">    }</span>
+<span class="fc" id="L157">        this.onItemClicked = onItemClicked;</span>
+<span class="fc" id="L158">    }</span>
 
     public void setIfShop(boolean b) {
-<span class="fc" id="L159">        this.isShop = b;</span>
-<span class="fc" id="L160">    }</span>
+<span class="fc" id="L161">        this.isShop = b;</span>
+<span class="fc" id="L162">    }</span>
 
     @Override
     public void destroy() {
-<span class="nc" id="L164">        super.destroy();</span>
-<span class="nc bnc" id="L165" title="All 2 branches missed.">        for (ItemController subController : subControllers) {</span>
-<span class="nc" id="L166">            subController.destroy();</span>
-<span class="nc" id="L167">        }</span>
-<span class="nc" id="L168">    }</span>
+<span class="nc" id="L166">        super.destroy();</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">        for (ItemController subController : subControllers) {</span>
+<span class="nc" id="L168">            subController.destroy();</span>
+<span class="nc" id="L169">        }</span>
+<span class="nc" id="L170">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
