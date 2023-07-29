@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PresetsService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.service</a> &gt; <span class="el_source">PresetsService.java</span></div><h1>PresetsService.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.service;
 
 import com.google.gson.Gson;
-import de.uniks.beastopia.teaml.rest.*;
+import de.uniks.beastopia.teaml.rest.AbilityDto;
+import de.uniks.beastopia.teaml.rest.ItemTypeDto;
+import de.uniks.beastopia.teaml.rest.MonsterTypeDto;
+import de.uniks.beastopia.teaml.rest.PresetsApiService;
+import de.uniks.beastopia.teaml.rest.TileSet;
+import de.uniks.beastopia.teaml.rest.TileSetDescription;
 import io.reactivex.rxjava3.core.Observable;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
@@ -12,75 +17,75 @@ import java.io.File;
 import java.util.List;
 
 public class PresetsService {
-    public static final int PREVIEW_SCALING = 3;
+    public static final int PREVIEW_SCALING = 5;
     @Inject
     PresetsApiService presetsApiService;
 
     @Inject
-<span class="fc" id="L20">    public PresetsService() {</span>
-<span class="fc" id="L21">    }</span>
+<span class="fc" id="L25">    public PresetsService() {</span>
+<span class="fc" id="L26">    }</span>
 
     public Observable&lt;List&lt;String&gt;&gt; getCharacters() {
-<span class="fc" id="L24">        return presetsApiService.getCharacters();</span>
+<span class="fc" id="L29">        return presetsApiService.getCharacters();</span>
     }
 
     public Observable&lt;Image&gt; getCharacterSprites(String fileName, boolean useConstantValues) {
-<span class="fc" id="L28">        return presetsApiService.getCharacterSprites(fileName)</span>
-<span class="fc" id="L29">                .map((ResponseBody body) -&gt;</span>
-<span class="pc bpc" id="L30" title="1 of 2 branches missed.">                        (useConstantValues ? new Image(body.byteStream(), 384 * PREVIEW_SCALING, 96 * PREVIEW_SCALING, true, false)</span>
-<span class="fc" id="L31">                                : new Image(body.byteStream())));</span>
+<span class="fc" id="L33">        return presetsApiService.getCharacterSprites(fileName)</span>
+<span class="fc" id="L34">                .map((ResponseBody body) -&gt;</span>
+<span class="pc bpc" id="L35" title="1 of 2 branches missed.">                        (useConstantValues ? new Image(body.byteStream(), 384 * PREVIEW_SCALING, 96 * PREVIEW_SCALING, true, false)</span>
+<span class="fc" id="L36">                                : new Image(body.byteStream())));</span>
     }
 
     public Observable&lt;Image&gt; getImage(TileSet tileSet) {
-<span class="fc" id="L35">        return presetsApiService.getTileset(tileSet.image())</span>
-<span class="fc" id="L36">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
+<span class="fc" id="L40">        return presetsApiService.getTileset(tileSet.image())</span>
+<span class="fc" id="L41">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
     }
 
     public Observable&lt;TileSet&gt; getTileset(TileSetDescription description) {
-<span class="nc" id="L40">        return presetsApiService.getTileset(new File(description.source()).getName())</span>
-<span class="nc" id="L41">                .map((ResponseBody body) -&gt; new Gson().fromJson(body.string(), TileSet.class));</span>
+<span class="nc" id="L45">        return presetsApiService.getTileset(new File(description.source()).getName())</span>
+<span class="nc" id="L46">                .map((ResponseBody body) -&gt; new Gson().fromJson(body.string(), TileSet.class));</span>
     }
 
     public Rectangle2D getTileViewPort(long id, TileSet tileSet) {
-<span class="fc" id="L45">        int columns = tileSet.columns();</span>
-<span class="fc" id="L46">        int tileSize = tileSet.tileheight();</span>
-<span class="fc" id="L47">        long x = (id - 1) % columns;</span>
-<span class="fc" id="L48">        long y = (id - 1) / columns;</span>
-<span class="fc" id="L49">        return new Rectangle2D(x * tileSize, y * tileSize, tileSize, tileSize);</span>
+<span class="fc" id="L50">        int columns = tileSet.columns();</span>
+<span class="fc" id="L51">        int tileSize = tileSet.tileheight();</span>
+<span class="fc" id="L52">        long x = (id - 1) % columns;</span>
+<span class="fc" id="L53">        long y = (id - 1) / columns;</span>
+<span class="fc" id="L54">        return new Rectangle2D(x * tileSize, y * tileSize, tileSize, tileSize);</span>
     }
 
     public Observable&lt;MonsterTypeDto&gt; getMonsterType(int type) {
-<span class="fc" id="L53">        return presetsApiService.getMonsterType(type);</span>
+<span class="fc" id="L58">        return presetsApiService.getMonsterType(type);</span>
     }
 
     public Observable&lt;Image&gt; getMonsterImage(int type) {
-<span class="fc" id="L57">        return presetsApiService.getMonsterImage(type)</span>
-<span class="fc" id="L58">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
+<span class="fc" id="L62">        return presetsApiService.getMonsterImage(type)</span>
+<span class="fc" id="L63">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
     }
 
     public Observable&lt;List&lt;MonsterTypeDto&gt;&gt; getAllBeasts() {
-<span class="fc" id="L62">        return presetsApiService.getMonsters();</span>
+<span class="fc" id="L67">        return presetsApiService.getMonsters();</span>
     }
 
     public Observable&lt;AbilityDto&gt; getAbility(int id) {
-<span class="fc" id="L66">        return presetsApiService.getAbility(id);</span>
+<span class="fc" id="L71">        return presetsApiService.getAbility(id);</span>
     }
 
     public Observable&lt;List&lt;AbilityDto&gt;&gt; getAbilities() {
-<span class="fc" id="L70">        return presetsApiService.getAbilities();</span>
+<span class="fc" id="L75">        return presetsApiService.getAbilities();</span>
     }
 
     public Observable&lt;List&lt;ItemTypeDto&gt;&gt; getItems() {
-<span class="fc" id="L74">        return presetsApiService.getItems();</span>
+<span class="fc" id="L79">        return presetsApiService.getItems();</span>
     }
 
     public Observable&lt;ItemTypeDto&gt; getItem(int itemId) {
-<span class="fc" id="L78">        return presetsApiService.getItem(itemId);</span>
+<span class="fc" id="L83">        return presetsApiService.getItem(itemId);</span>
     }
 
     public Observable&lt;Image&gt; getItemImage(int itemId) {
-<span class="fc" id="L82">        return presetsApiService.getItemImage(itemId)</span>
-<span class="fc" id="L83">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
+<span class="fc" id="L87">        return presetsApiService.getItemImage(itemId)</span>
+<span class="fc" id="L88">                .map((ResponseBody body) -&gt; new Image(body.byteStream()));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

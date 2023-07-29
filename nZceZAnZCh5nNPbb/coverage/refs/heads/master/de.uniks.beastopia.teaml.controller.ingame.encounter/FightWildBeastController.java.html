@@ -98,11 +98,11 @@ public class FightWildBeastController extends Controller {
 <span class="nc" id="L98">                    String enemyAllyTrainer = null;</span>
 <span class="nc" id="L99">                    String allyTrainer = null;</span>
 
-<span class="nc" id="L101">                    String enemyTrainer = o.get(0).trainer();</span>
-<span class="nc" id="L102">                    List&lt;Monster&gt; myMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(1).trainer()).blockingFirst();</span>
-<span class="nc" id="L103">                    List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(0).trainer()).blockingFirst();</span>
-<span class="nc" id="L104">                    Monster ownMonster = myMonsters.stream().filter(m -&gt; m._id().equals(o.get(1).monster())).findFirst().orElseThrow();</span>
-<span class="nc" id="L105">                    Monster enemyMonster = enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(0).monster())).findFirst().orElseThrow();</span>
+<span class="nc" id="L101">                    String enemyTrainer = o.get(1).trainer();</span>
+<span class="nc" id="L102">                    List&lt;Monster&gt; myMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(0).trainer()).blockingFirst();</span>
+<span class="nc" id="L103">                    List&lt;Monster&gt; enemyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(1).trainer()).blockingFirst();</span>
+<span class="nc" id="L104">                    Monster ownMonster = myMonsters.stream().filter(m -&gt; m._id().equals(o.get(0).monster())).findFirst().orElseThrow();</span>
+<span class="nc" id="L105">                    Monster enemyMonster = enemyMonsters.stream().filter(m -&gt; m._id().equals(o.get(1).monster())).findFirst().orElseThrow();</span>
 
 <span class="nc bnc" id="L107" title="All 2 branches missed.">                    if (o.size() == 3) {</span>
 <span class="nc" id="L108">                        List&lt;Monster&gt; enemyAllyMonsters = trainerService.getTrainerMonsters(cache.getJoinedRegion()._id(), o.get(2).trainer()).blockingFirst();</span>
