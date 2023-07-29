@@ -73,7 +73,7 @@ public class BeastDetailController extends Controller {
 <span class="nc" id="L73">                }));</span>
 
 <span class="fc bfc" id="L75" title="All 2 branches covered.">        for (Map.Entry&lt;String, Integer&gt; entry : monster.abilities().entrySet()) {</span>
-<span class="fc" id="L76">            int ability = entry.getValue();</span>
+<span class="fc" id="L76">            int ability = Integer.parseInt(entry.getKey());</span>
 <span class="fc" id="L77">            disposables.add(presetsService.getAbility(ability)</span>
 <span class="fc" id="L78">                    .observeOn(FX_SCHEDULER)</span>
 <span class="pc" id="L79">                    .subscribe(ad -&gt; description.setText(description.getText() + ad.name() + &quot; [&quot; + ad.type() +</span>

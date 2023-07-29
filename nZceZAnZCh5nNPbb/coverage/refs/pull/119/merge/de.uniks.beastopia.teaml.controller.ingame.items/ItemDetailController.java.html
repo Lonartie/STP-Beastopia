@@ -85,53 +85,51 @@ public class ItemDetailController extends Controller {
 <span class="nc" id="L85">                shopBtn.setOpacity(0);</span>
 <span class="nc" id="L86">                shopBtn.setDisable(true);</span>
             } else {
-<span class="fc" id="L88">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + (int) (itemType.price() * 0.5));</span>
-            }
+<span class="fc" id="L88">                float price = (float) (itemType.price() * 0.5);</span>
+<span class="fc" id="L89">                String formattedPrice = String.format(&quot;%.1f&quot;, price);</span>
+<span class="fc" id="L90">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + formattedPrice);</span>
+<span class="fc" id="L91">            }</span>
         } else {
-<span class="nc" id="L91">            shopBtn.setDisable(true);</span>
-<span class="nc" id="L92">            shopBtn.setOpacity(0);</span>
-<span class="nc bnc" id="L93" title="All 2 branches missed.">            if (itemType.price() == 0) {</span>
-<span class="nc" id="L94">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + itemType.price());</span>
+<span class="nc" id="L93">            shopBtn.setDisable(true);</span>
+<span class="nc" id="L94">            shopBtn.setOpacity(0);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">            if (itemType.price() == 0) {</span>
+<span class="nc" id="L96">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + itemType.price());</span>
             } else {
-<span class="nc" id="L96">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + (int) (itemType.price() * 0.5));</span>
+<span class="nc" id="L98">                float price = (float) (itemType.price() * 0.5);</span>
+<span class="nc" id="L99">                String formattedPrice = String.format(&quot;%.1f&quot;, price);</span>
+<span class="nc" id="L100">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + formattedPrice);</span>
             }
         }
-<span class="fc" id="L99">        name.setText(itemType.name());</span>
-<span class="fc" id="L100">        desc.setText(FormatString.formatString(itemType.description(), 25));</span>
-<span class="fc" id="L101">        itemImage.setImage(cache.getItemImages().get(itemType.id()));</span>
+<span class="fc" id="L103">        name.setText(itemType.name());</span>
+<span class="fc" id="L104">        desc.setText(FormatString.formatString(itemType.description(), 25));</span>
+<span class="fc" id="L105">        itemImage.setImage(cache.getItemImages().get(itemType.id()));</span>
 
-<span class="fc" id="L103">        return parent;</span>
+<span class="fc" id="L107">        return parent;</span>
     }
 
     @FXML
     public void shopFunction() {
-<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (!buy) { //sell</span>
-<span class="nc" id="L109">            System.out.println(&quot;sell:&quot; + itemType.id());</span>
-<span class="nc" id="L110">            disposables.add(trainerItemsService.updateItem(cache.getJoinedRegion()._id(), cache.getTrainer()._id(),</span>
-<span class="nc" id="L111">                    new UpdateItemDto(-1, itemType.id(), null)).observeOn(FX_SCHEDULER).subscribe(</span>
-                    itemUpdated -&gt; {
-<span class="nc" id="L113">                    }, error -&gt; System.out.println(&quot;Error:&quot; + error)));</span>
-        } else { //buy
-<span class="nc" id="L115">            System.out.println(&quot;buy: &quot; + itemType.id());</span>
-<span class="nc" id="L116">            disposables.add(trainerItemsService.updateItem(cache.getJoinedRegion()._id(), cache.getTrainer()._id(),</span>
-<span class="nc" id="L117">                    new UpdateItemDto(1, itemType.id(), null)).observeOn(FX_SCHEDULER).subscribe(</span>
-                    itemUpdated -&gt; {
-<span class="nc" id="L119">                    }, error -&gt; System.out.println(&quot;Error:&quot; + error)));</span>
+<span class="nc" id="L112">        int amount = 1; //buy</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (!buy) { //sell</span>
+<span class="nc" id="L114">            amount = -1;</span>
         }
-<span class="nc" id="L121">        disposables.add(trainerService.getTrainer(cache.getJoinedRegion()._id(), cache.getTrainer()._id())</span>
-<span class="nc" id="L122">                .observeOn(FX_SCHEDULER).subscribe(trainer -&gt; {</span>
-<span class="nc" id="L123">                    cache.setTrainer(trainer);</span>
-<span class="nc" id="L124">                    inventoryController.updateInventory();</span>
-<span class="nc" id="L125">                }, error -&gt; System.out.println(&quot;Error:&quot; + error)));</span>
-<span class="nc" id="L126">        ingameController.toggleInventoryItemDetails(itemType);</span>
-<span class="nc" id="L127">    }</span>
+<span class="nc" id="L116">        disposables.add(trainerItemsService.updateItem(cache.getJoinedRegion()._id(), cache.getTrainer()._id(),</span>
+<span class="nc" id="L117">                new UpdateItemDto(amount, itemType.id(), null)).observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="nc" id="L118">                itemUpdated -&gt; {}, error -&gt; System.out.println(&quot;Error:&quot; + error)));</span>
+<span class="nc" id="L119">        disposables.add(trainerService.getTrainer(cache.getJoinedRegion()._id(), cache.getTrainer()._id())</span>
+<span class="nc" id="L120">                .observeOn(FX_SCHEDULER).subscribe(trainer -&gt; {</span>
+<span class="nc" id="L121">                    cache.setTrainer(trainer);</span>
+<span class="nc" id="L122">                    inventoryController.updateInventory();</span>
+<span class="nc" id="L123">                }, error -&gt; System.out.println(&quot;Error:&quot; + error)));</span>
+<span class="nc" id="L124">        ingameController.toggleInventoryItemDetails(itemType);</span>
+<span class="nc" id="L125">    }</span>
 
     public void setInventoryController(InventoryController inventoryController) {
-<span class="nc" id="L130">        this.inventoryController = inventoryController;</span>
-<span class="nc" id="L131">    }</span>
+<span class="nc" id="L128">        this.inventoryController = inventoryController;</span>
+<span class="nc" id="L129">    }</span>
 
     public void setIngameController(IngameController ingameController) {
-<span class="nc" id="L134">        this.ingameController = ingameController;</span>
-<span class="nc" id="L135">    }</span>
+<span class="nc" id="L132">        this.ingameController = ingameController;</span>
+<span class="nc" id="L133">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
