@@ -23,59 +23,85 @@ public class RenderBeastController extends Controller {
     HBox monsterContainer;
     @FXML
     ImageView firstMonster;
+    @FXML
+    HBox selectBox;
     @Inject
     PresetsService presetsService;
 
     private Monster monster1;
     private Monster monster2;
+    private String opponentIdMonsterOne;
+    private String opponentIdMonsterTwo;
 
     @Inject
-<span class="nc" id="L33">    public RenderBeastController() {</span>
-<span class="nc" id="L34">    }</span>
+<span class="nc" id="L37">    public RenderBeastController() {</span>
+<span class="nc" id="L38">    }</span>
 
     @SuppressWarnings(&quot;IntegerDivisionInFloatingPointContext&quot;)
     @Override
     public void onResize(int width, int height) {
-<span class="nc" id="L39">        ellipse.setRadiusX(width / 5);</span>
-<span class="nc" id="L40">        ellipse.setRadiusY(height / 6);</span>
-<span class="nc" id="L41">    }</span>
+<span class="nc" id="L43">        ellipse.setRadiusX(width / 5);</span>
+<span class="nc" id="L44">        ellipse.setRadiusY(height / 6);</span>
+<span class="nc" id="L45">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L45">        Parent parent = super.render();</span>
+<span class="nc" id="L49">        Parent parent = super.render();</span>
 
-<span class="nc" id="L47">        disposables.add(presetsService.getMonsterImage(monster1.type())</span>
-<span class="nc" id="L48">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L49">                .subscribe(monsterImage -&gt; firstMonster.setImage(monsterImage)));</span>
+<span class="nc" id="L51">        disposables.add(presetsService.getMonsterImage(monster1.type())</span>
+<span class="nc" id="L52">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L53">                .subscribe(monsterImage -&gt; {</span>
+<span class="nc" id="L54">                    firstMonster.setImage(monsterImage);</span>
+<span class="nc" id="L55">                    firstMonster.setOnMouseClicked(event -&gt; System.out.println(&quot;Opponent ID: &quot; + opponentIdMonsterOne));</span>
+<span class="nc" id="L56">                }));</span>
 
-<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (monster2 != null) {</span>
-<span class="nc" id="L52">            ImageView secondMonster = new ImageView();</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (monster2 != null) {</span>
+<span class="nc" id="L59">            ImageView secondMonster = new ImageView();</span>
 
-<span class="nc" id="L54">            disposables.add(presetsService.getMonsterImage(monster2.type())</span>
-<span class="nc" id="L55">                    .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L56">                    .subscribe(secondMonster::setImage));</span>
-<span class="nc" id="L57">            monsterContainer.getChildren().add(secondMonster);</span>
+<span class="nc" id="L61">            disposables.add(presetsService.getMonsterImage(monster2.type())</span>
+<span class="nc" id="L62">                    .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L63">                    .subscribe(monsterImage -&gt; {</span>
+<span class="nc" id="L64">                        secondMonster.setImage(monsterImage);</span>
+<span class="nc" id="L65">                        secondMonster.setOnMouseClicked(event -&gt; System.out.println(&quot;Opponent ID: &quot; + opponentIdMonsterTwo));</span>
+<span class="nc" id="L66">                    }));</span>
+<span class="nc" id="L67">            monsterContainer.getChildren().add(secondMonster);</span>
         }
 
-<span class="nc" id="L60">        return parent;</span>
+<span class="nc" id="L70">        return parent;</span>
     }
 
     public RenderBeastController setMonster1(Monster monster1) {
-<span class="nc" id="L64">        this.monster1 = monster1;</span>
-<span class="nc" id="L65">        return this;</span>
+<span class="nc" id="L74">        this.monster1 = monster1;</span>
+<span class="nc" id="L75">        return this;</span>
     }
 
     @SuppressWarnings(&quot;UnusedReturnValue&quot;)
     public RenderBeastController setMonster2(Monster monster2) {
-<span class="nc" id="L70">        this.monster2 = monster2;</span>
-<span class="nc" id="L71">        return this;</span>
+<span class="nc" id="L80">        this.monster2 = monster2;</span>
+<span class="nc" id="L81">        return this;</span>
+    }
+
+    public void setMonsterOneOpponentId(String id) {
+<span class="nc" id="L85">        this.opponentIdMonsterOne = id;</span>
+<span class="nc" id="L86">    }</span>
+
+    public void setMonsterTwoOpponentId(String id) {
+<span class="nc" id="L89">        this.opponentIdMonsterTwo = id;</span>
+<span class="nc" id="L90">    }</span>
+
+    public String getOpponentIdMonsterOne() {
+<span class="nc" id="L93">        return opponentIdMonsterOne;</span>
+    }
+
+    public String getOpponentIdMonsterTwo() {
+<span class="nc" id="L97">        return opponentIdMonsterTwo;</span>
     }
 
     @Override
     public void destroy() {
-<span class="nc" id="L76">        super.destroy();</span>
+<span class="nc" id="L102">        super.destroy();</span>
 
-<span class="nc" id="L78">    }</span>
+<span class="nc" id="L104">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

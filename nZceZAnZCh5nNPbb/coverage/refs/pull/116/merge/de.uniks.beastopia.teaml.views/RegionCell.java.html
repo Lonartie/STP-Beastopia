@@ -36,15 +36,18 @@ public class RegionCell extends ListCell&lt;Region&gt; {
         } else {
 <span class="nc" id="L37">            final Button join = new Button(item.name() + &quot; &quot; + resources.getString(&quot;join&quot;));</span>
 <span class="nc" id="L38">            join.setOnAction(event -&gt; {</span>
-<span class="nc" id="L39">                TrainerController controller = trainerControllerProvider.get();</span>
-<span class="nc" id="L40">                cache.setRegion(item);</span>
-<span class="nc" id="L41">                controller.backController(&quot;menu&quot;);</span>
-<span class="nc" id="L42">                app.show(controller);</span>
-<span class="nc" id="L43">            });</span>
-<span class="nc" id="L44">            setGraphic(join);</span>
-<span class="nc" id="L45">            setAlignment(Pos.CENTER);</span>
-<span class="nc" id="L46">            getStyleClass().add(&quot;region-cell&quot;);</span>
+<span class="nc bnc" id="L39" title="All 4 branches missed.">                if (cache.getJoinedRegion() != null &amp;&amp; !cache.getJoinedRegion().name().equals(item.name())) {</span>
+<span class="nc" id="L40">                    cache.setMapImage(null);</span>
+                }
+<span class="nc" id="L42">                TrainerController controller = trainerControllerProvider.get();</span>
+<span class="nc" id="L43">                cache.setRegion(item);</span>
+<span class="nc" id="L44">                controller.backController(&quot;menu&quot;);</span>
+<span class="nc" id="L45">                app.show(controller);</span>
+<span class="nc" id="L46">            });</span>
+<span class="nc" id="L47">            setGraphic(join);</span>
+<span class="nc" id="L48">            setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L49">            getStyleClass().add(&quot;region-cell&quot;);</span>
         }
-<span class="nc" id="L48">    }</span>
+<span class="nc" id="L51">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
