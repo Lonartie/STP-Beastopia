@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ItemController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.ingame.items</a> &gt; <span class="el_source">ItemController.java</span></div><h1>ItemController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.ingame.items;
+
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.ItemTypeDto;
+import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.service.PresetsService;
+import de.uniks.beastopia.teaml.utils.FormatString;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+
+public class ItemController extends Controller {
+    @FXML
+    public ImageView img;
+    @FXML
+    public Label name;
+    @FXML
+    public Label count;
+    @FXML
+    public GridPane _ItemRootElement;
+    public ItemTypeDto itemType;
+    public int score;
+    private Consumer&lt;ItemTypeDto&gt; onItemClicked;
+    @Inject
+    PresetsService presetsService;
+    @Inject
+    DataCache cache;
+
+    @Inject
+<span class="fc" id="L38">    public ItemController() {</span>
+
+<span class="fc" id="L40">    }</span>
+
+    public ItemController setItem(ItemTypeDto itemType) {
+<span class="fc" id="L43">        this.itemType = itemType;</span>
+<span class="fc" id="L44">        return this;</span>
+    }
+
+    public void setScore(int score) {
+<span class="fc" id="L48">        this.score = score;</span>
+<span class="fc" id="L49">    }</span>
+
+    public void setOnItemClicked(Consumer&lt;ItemTypeDto&gt; onItemClicked) {
+<span class="nc" id="L52">        this.onItemClicked = onItemClicked;</span>
+<span class="nc" id="L53">    }</span>
+
+    @Override
+    public Parent render() {
+<span class="fc" id="L57">        Parent parent = super.render();</span>
+
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (score != 0) {</span>
+<span class="fc" id="L60">            count.setText(&quot;x&quot; + score);</span>
+        }
+
+<span class="fc" id="L63">        name.setText(FormatString.formatString(itemType.name(), 12));</span>
+
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (cache.getItemImages().containsKey(itemType.id())) {</span>
+<span class="nc" id="L66">            img.setImage(cache.getItemImages().get(itemType.id()));</span>
+        } else {
+<span class="fc" id="L68">            disposables.add(presetsService.getItemImage(itemType.id())</span>
+<span class="fc" id="L69">                    .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L70">                    .subscribe(itemImage -&gt; {</span>
+<span class="fc" id="L71">                        img.setImage(itemImage);</span>
+<span class="fc" id="L72">                        Map&lt;Integer, Image&gt; itemImages = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L73">                        itemImages.put(itemType.id(), itemImage);</span>
+<span class="fc" id="L74">                        cache.setItemImages(itemImages);</span>
+<span class="fc" id="L75">                    }));</span>
+        }
+
+<span class="fc" id="L78">        return parent;</span>
+    }
+
+    @FXML
+    public void toggleDetails() {
+<span class="nc" id="L83">        onItemClicked.accept(itemType);</span>
+<span class="nc" id="L84">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

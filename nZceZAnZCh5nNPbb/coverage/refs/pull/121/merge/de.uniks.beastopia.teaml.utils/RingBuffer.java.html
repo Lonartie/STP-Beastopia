@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RingBuffer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.utils</a> &gt; <span class="el_source">RingBuffer.java</span></div><h1>RingBuffer.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.utils;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class RingBuffer&lt;T&gt; implements Iterable&lt;T&gt; {
+<span class="fc" id="L7">    private final ArrayList&lt;T&gt; buffer = new ArrayList&lt;&gt;();</span>
+    private final int size;
+
+<span class="fc" id="L10">    public RingBuffer(int size) {</span>
+<span class="fc" id="L11">        this.size = size;</span>
+<span class="fc" id="L12">    }</span>
+
+    public void push(T t) {
+<span class="pc bpc" id="L15" title="1 of 2 branches missed.">        if (buffer.size() &gt;= size) {</span>
+<span class="nc" id="L16">            buffer.remove(0);</span>
+        }
+<span class="fc" id="L18">        buffer.add(t);</span>
+<span class="fc" id="L19">    }</span>
+
+    public boolean isEmpty() {
+<span class="fc" id="L22">        return buffer.isEmpty();</span>
+    }
+
+    public void clear() {
+<span class="fc" id="L26">        buffer.clear();</span>
+<span class="fc" id="L27">    }</span>
+
+    public void pop() {
+<span class="fc" id="L30">        buffer.remove(buffer.size() - 1);</span>
+<span class="fc" id="L31">    }</span>
+
+    public T peek() {
+<span class="fc" id="L34">        return buffer.get(buffer.size() - 1);</span>
+    }
+
+    @Override
+    public Iterator&lt;T&gt; iterator() {
+<span class="nc" id="L39">        return buffer.iterator();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
