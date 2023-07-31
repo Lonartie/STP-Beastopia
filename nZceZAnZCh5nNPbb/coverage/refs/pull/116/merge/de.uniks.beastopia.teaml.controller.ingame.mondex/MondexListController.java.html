@@ -20,10 +20,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class MondexListController extends Controller {
-
-<span class="nc" id="L24">    private final List&lt;MonsterTypeDto&gt; monsters = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L25">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L26">    private final Map&lt;Integer, Parent&gt; monsterMap = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L23">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L24">    private final Map&lt;Integer, Parent&gt; monsterMap = new HashMap&lt;&gt;();</span>
     public VBox VBoxMondexList;
     public VBox VBoxBeasts;
     @Inject
@@ -41,92 +39,91 @@ public class MondexListController extends Controller {
     private Consumer&lt;MonsterTypeDto&gt; onBeastClicked;
 
     @Inject
-<span class="nc" id="L44">    public MondexListController() {</span>
+<span class="nc" id="L42">    public MondexListController() {</span>
 
-<span class="nc" id="L46">    }</span>
+<span class="nc" id="L44">    }</span>
 
     @Override
     public void init() {
-<span class="nc" id="L50">        super.init();</span>
-<span class="nc" id="L51">        mondexService.init();</span>
-<span class="nc" id="L52">    }</span>
+<span class="nc" id="L48">        super.init();</span>
+<span class="nc" id="L49">        mondexService.init();</span>
+<span class="nc" id="L50">    }</span>
 
     public void setOnBeastClicked(Consumer&lt;MonsterTypeDto&gt; onBeastClicked) {
-<span class="nc" id="L55">        this.onBeastClicked = onBeastClicked;</span>
-<span class="nc" id="L56">    }</span>
+<span class="nc" id="L53">        this.onBeastClicked = onBeastClicked;</span>
+<span class="nc" id="L54">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L60">        Parent parent = super.render();</span>
+<span class="nc" id="L58">        Parent parent = super.render();</span>
 
-<span class="nc" id="L62">        VBoxBeasts.getChildren().clear();</span>
+<span class="nc" id="L60">        VBoxBeasts.getChildren().clear();</span>
 
-<span class="nc" id="L64">        disposables.add(trainerService.getTrainer(dataCache.getTrainer().region(), dataCache.getTrainer()._id())</span>
-<span class="nc" id="L65">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L66">                .subscribe(newTrainer -&gt; {</span>
-<span class="nc" id="L67">                    dataCache.setTrainer(newTrainer);</span>
-<span class="nc" id="L68">                    mondexService.setTrainer(newTrainer);</span>
-<span class="nc" id="L69">                    disposables.add(presetsService.getAllBeasts()</span>
-<span class="nc" id="L70">                            .subscribe(monsters -&gt; { //No UI Stuff here!!!</span>
-<span class="nc" id="L71">                                this.monsters.addAll(monsters);</span>
-<span class="nc bnc" id="L72" title="All 2 branches missed.">                                for (MonsterTypeDto monster : monsters) {</span>
-<span class="nc" id="L73">                                    Thread.sleep(288);</span>
-<span class="nc bnc" id="L74" title="All 2 branches missed.">                                    if (dataCache.imageIsDownloaded(monster.id())) {</span>
-<span class="nc" id="L75">                                        disposables.add(delay().observeOn(FX_SCHEDULER).subscribe(t -&gt; {</span>
-<span class="nc" id="L76">                                            MondexElementController mondexElementController = mondexElementControllerProvider.get()</span>
-<span class="nc" id="L77">                                                    .setMonster(monster, mondexService.checkKnown(monster.id()));</span>
-<span class="nc" id="L78">                                            mondexElementController.setOnBeastClicked(onBeastClicked);</span>
-<span class="nc" id="L79">                                            mondexElementController.init();</span>
-<span class="nc" id="L80">                                            subControllers.add(mondexElementController);</span>
-<span class="nc" id="L81">                                            Parent render = mondexElementController.render();</span>
-<span class="nc" id="L82">                                            monsterMap.put(monster.id(), render);</span>
-<span class="nc" id="L83">                                            reloadMap();</span>
-<span class="nc" id="L84">                                        }));</span>
-<span class="nc" id="L85">                                        continue;</span>
+<span class="nc" id="L62">        disposables.add(trainerService.getTrainer(dataCache.getTrainer().region(), dataCache.getTrainer()._id())</span>
+<span class="nc" id="L63">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L64">                .subscribe(newTrainer -&gt; {</span>
+<span class="nc" id="L65">                    dataCache.setTrainer(newTrainer);</span>
+<span class="nc" id="L66">                    mondexService.setTrainer(newTrainer);</span>
+<span class="nc" id="L67">                    disposables.add(presetsService.getAllBeasts()</span>
+<span class="nc" id="L68">                            .subscribe(monsters -&gt; { //No UI Stuff here!!!</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">                                for (MonsterTypeDto monster : monsters) {</span>
+<span class="nc" id="L70">                                    Thread.sleep(288);</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">                                    if (dataCache.imageIsDownloaded(monster.id())) {</span>
+<span class="nc" id="L72">                                        disposables.add(delay().observeOn(FX_SCHEDULER).subscribe(t -&gt; {</span>
+<span class="nc" id="L73">                                            MondexElementController mondexElementController = mondexElementControllerProvider.get()</span>
+<span class="nc" id="L74">                                                    .setMonster(monster, mondexService.checkKnown(monster.id()));</span>
+<span class="nc" id="L75">                                            mondexElementController.setOnBeastClicked(onBeastClicked);</span>
+<span class="nc" id="L76">                                            mondexElementController.init();</span>
+<span class="nc" id="L77">                                            subControllers.add(mondexElementController);</span>
+<span class="nc" id="L78">                                            Parent render = mondexElementController.render();</span>
+<span class="nc" id="L79">                                            monsterMap.put(monster.id(), render);</span>
+<span class="nc" id="L80">                                            reloadMap();</span>
+<span class="nc" id="L81">                                        }));</span>
+<span class="nc" id="L82">                                        continue;</span>
                                     }
-<span class="nc" id="L87">                                    disposables.add(presetsService.getMonsterImage(monster.id())</span>
-<span class="nc" id="L88">                                            .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L89">                                            .subscribe(image -&gt; { //UI Stuff allowed again!!!</span>
-<span class="nc" id="L90">                                                dataCache.addMonsterImages(monster.id(), image);</span>
-<span class="nc" id="L91">                                                MondexElementController mondexElementController = mondexElementControllerProvider.get()</span>
-<span class="nc" id="L92">                                                        .setMonster(monster, mondexService.checkKnown(monster.id()));</span>
-<span class="nc" id="L93">                                                mondexElementController.setOnBeastClicked(onBeastClicked);</span>
-<span class="nc" id="L94">                                                mondexElementController.init();</span>
-<span class="nc" id="L95">                                                subControllers.add(mondexElementController);</span>
-<span class="nc" id="L96">                                                Parent render = mondexElementController.render();</span>
-<span class="nc" id="L97">                                                monsterMap.put(monster.id(), render);</span>
-<span class="nc" id="L98">                                                reloadMap();</span>
-<span class="nc" id="L99">                                            }));</span>
-<span class="nc" id="L100">                                }</span>
-<span class="nc" id="L101">                            }));</span>
-<span class="nc" id="L102">                }));</span>
+<span class="nc" id="L84">                                    disposables.add(presetsService.getMonsterImage(monster.id())</span>
+<span class="nc" id="L85">                                            .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L86">                                            .subscribe(image -&gt; { //UI Stuff allowed again!!!</span>
+<span class="nc" id="L87">                                                dataCache.addMonsterImages(monster.id(), image);</span>
+<span class="nc" id="L88">                                                MondexElementController mondexElementController = mondexElementControllerProvider.get()</span>
+<span class="nc" id="L89">                                                        .setMonster(monster, mondexService.checkKnown(monster.id()));</span>
+<span class="nc" id="L90">                                                mondexElementController.setOnBeastClicked(onBeastClicked);</span>
+<span class="nc" id="L91">                                                mondexElementController.init();</span>
+<span class="nc" id="L92">                                                subControllers.add(mondexElementController);</span>
+<span class="nc" id="L93">                                                Parent render = mondexElementController.render();</span>
+<span class="nc" id="L94">                                                monsterMap.put(monster.id(), render);</span>
+<span class="nc" id="L95">                                                reloadMap();</span>
+<span class="nc" id="L96">                                            }));</span>
+<span class="nc" id="L97">                                }</span>
+<span class="nc" id="L98">                            }));</span>
+<span class="nc" id="L99">                }));</span>
 
-<span class="nc" id="L104">        return parent;</span>
+<span class="nc" id="L101">        return parent;</span>
     }
 
     private void reloadMap() {
-<span class="nc" id="L108">        VBoxBeasts.getChildren().clear();</span>
-<span class="nc" id="L109">        monsterMap.keySet().stream().sorted().forEachOrdered(key -&gt; VBoxBeasts.getChildren().add(monsterMap.get(key)));</span>
-<span class="nc" id="L110">    }</span>
+<span class="nc" id="L105">        VBoxBeasts.getChildren().clear();</span>
+<span class="nc" id="L106">        monsterMap.keySet().stream().sorted().forEachOrdered(key -&gt; VBoxBeasts.getChildren().add(monsterMap.get(key)));</span>
+<span class="nc" id="L107">    }</span>
 
     public void setOnCloseRequest(Runnable onCloseRequest) {
-<span class="nc" id="L113">        this.onCloseRequest = onCloseRequest;</span>
-<span class="nc" id="L114">    }</span>
+<span class="nc" id="L110">        this.onCloseRequest = onCloseRequest;</span>
+<span class="nc" id="L111">    }</span>
 
     @Override
     public void destroy() {
-<span class="nc" id="L118">        subControllers.forEach(Controller::destroy);</span>
-<span class="nc" id="L119">        super.destroy();</span>
-<span class="nc" id="L120">    }</span>
+<span class="nc" id="L115">        subControllers.forEach(Controller::destroy);</span>
+<span class="nc" id="L116">        super.destroy();</span>
+<span class="nc" id="L117">    }</span>
 
     public void handleKeyEvent(KeyEvent event) {
-<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (event.getCode().equals(KeyCode.L)) {</span>
-<span class="nc" id="L124">            close();</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (event.getCode().equals(KeyCode.L)) {</span>
+<span class="nc" id="L121">            close();</span>
         }
-<span class="nc" id="L126">    }</span>
+<span class="nc" id="L123">    }</span>
 
     public void close() {
-<span class="nc" id="L129">        onCloseRequest.run();</span>
-<span class="nc" id="L130">    }</span>
+<span class="nc" id="L126">        onCloseRequest.run();</span>
+<span class="nc" id="L127">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
