@@ -2,6 +2,7 @@
 
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.rest.MonsterTypeDto;
+import de.uniks.beastopia.teaml.service.DataCache;
 import de.uniks.beastopia.teaml.service.ImageService;
 import de.uniks.beastopia.teaml.service.MondexService;
 import de.uniks.beastopia.teaml.service.PresetsService;
@@ -31,62 +32,59 @@ public class MondexDetailController extends Controller {
     public ImageView imageView_TypeIcon1;
     @FXML
     public ImageView imageView_TypeIcon2;
-
-    private MonsterTypeDto monster;
-    private boolean known;
     @Inject
     MondexService mondexService;
     @Inject
     PresetsService presetsService;
     @Inject
     ImageService imageService;
+    @Inject
+    DataCache dataCache;
+    private MonsterTypeDto monster;
+    private boolean known;
 
 
     @Inject
-<span class="nc" id="L46">    public MondexDetailController() {</span>
+<span class="nc" id="L48">    public MondexDetailController() {</span>
 
-<span class="nc" id="L48">    }</span>
+<span class="nc" id="L50">    }</span>
 
     public MondexDetailController setMonster(MonsterTypeDto monster) {
-<span class="nc" id="L51">        this.monster = monster;</span>
-<span class="nc" id="L52">        return this;</span>
+<span class="nc" id="L53">        this.monster = monster;</span>
+<span class="nc" id="L54">        return this;</span>
     }
 
     @Override
     public void init() {
-<span class="nc" id="L57">        super.init();</span>
-<span class="nc" id="L58">        mondexService.init();</span>
-<span class="nc" id="L59">        known = mondexService.checkKnown(monster.id());</span>
-<span class="nc" id="L60">    }</span>
+<span class="nc" id="L59">        super.init();</span>
+<span class="nc" id="L60">        mondexService.init();</span>
+<span class="nc" id="L61">        known = mondexService.checkKnown(monster.id());</span>
+<span class="nc" id="L62">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L64">        Parent parent = super.render();</span>
-<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (known) {</span>
-<span class="nc" id="L66">            label_name.setText(monster.name());</span>
-<span class="nc" id="L67">            label_type.setText(&quot;Type: &quot; + monster.type().get(0));</span>
-<span class="nc" id="L68">            Image typeIcon1 = new Image(&quot;file:src/main/resources/de/uniks/beastopia/teaml/assets/monsterTypeIcons/&quot; + monster.type().get(0) + &quot;.png&quot;);</span>
-<span class="nc" id="L69">            imageView_TypeIcon1.setImage(typeIcon1);</span>
-<span class="nc bnc" id="L70" title="All 2 branches missed.">            if (monster.type().size() == 2) {</span>
-<span class="nc" id="L71">                label_type.setText(label_type.getText() + &quot;, &quot; + monster.type().get(1));</span>
-<span class="nc" id="L72">                Image typeIcon2 = new Image(&quot;file:src/main/resources/de/uniks/beastopia/teaml/assets/monsterTypeIcons/&quot; + monster.type().get(1) + &quot;.png&quot;);</span>
-<span class="nc" id="L73">                imageView_TypeIcon2.setImage(typeIcon2);</span>
+<span class="nc" id="L66">        Parent parent = super.render();</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (known) {</span>
+<span class="nc" id="L68">            label_name.setText(monster.name());</span>
+<span class="nc" id="L69">            label_type.setText(&quot;Type: &quot; + monster.type().get(0));</span>
+<span class="nc" id="L70">            Image typeIcon1 = new Image(&quot;file:src/main/resources/de/uniks/beastopia/teaml/assets/monsterTypeIcons/&quot; + monster.type().get(0) + &quot;.png&quot;);</span>
+<span class="nc" id="L71">            imageView_TypeIcon1.setImage(typeIcon1);</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">            if (monster.type().size() == 2) {</span>
+<span class="nc" id="L73">                label_type.setText(label_type.getText() + &quot;, &quot; + monster.type().get(1));</span>
+<span class="nc" id="L74">                Image typeIcon2 = new Image(&quot;file:src/main/resources/de/uniks/beastopia/teaml/assets/monsterTypeIcons/&quot; + monster.type().get(1) + &quot;.png&quot;);</span>
+<span class="nc" id="L75">                imageView_TypeIcon2.setImage(typeIcon2);</span>
             }
-<span class="nc" id="L75">            textArea_description.setText(monster.description());</span>
-<span class="nc" id="L76">            disposables.add(presetsService.getMonsterImage(monster.id())</span>
-<span class="nc" id="L77">                    .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L78">                    .subscribe(monsterImage -&gt; imageView_Avatar.setImage(monsterImage)));</span>
+<span class="nc" id="L77">            textArea_description.setText(monster.description());</span>
+<span class="nc" id="L78">            imageView_Avatar.setImage(dataCache.getMonsterImage(monster.id()));</span>
 <span class="nc" id="L79">        } else {</span>
 <span class="nc" id="L80">            label_name.setText(&quot;???&quot;);</span>
 <span class="nc" id="L81">            label_type.setText(&quot;Type: ???&quot;);</span>
 <span class="nc" id="L82">            textArea_description.setText(&quot;Unknown monster&quot;);</span>
-<span class="nc" id="L83">            disposables.add(presetsService.getMonsterImage(monster.id())</span>
-<span class="nc" id="L84">                    .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L85">                    .subscribe(monsterImage -&gt; imageView_Avatar.setImage(imageService.makeImageBlack(monsterImage))));</span>
+<span class="nc" id="L83">            imageView_Avatar.setImage(imageService.makeImageBlack(dataCache.getMonsterImage(monster.id())));</span>
         }
 
 
-<span class="nc" id="L89">        return parent;</span>
+<span class="nc" id="L87">        return parent;</span>
     }
 
 
