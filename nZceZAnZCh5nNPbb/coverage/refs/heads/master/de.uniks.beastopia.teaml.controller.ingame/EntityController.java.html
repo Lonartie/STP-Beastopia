@@ -64,7 +64,7 @@ public class EntityController extends Controller {
 <span class="nc" id="L64">        updateViewPort();</span>
 <span class="nc bnc" id="L65" title="All 2 branches missed.">        if (!data.area().equals(trainer.area())) {</span>
 <span class="nc" id="L66">            trainer = new Trainer(trainer.createdAt(), trainer.updatedAt(), trainer._id(), trainer.region(),</span>
-<span class="nc" id="L67">                    trainer.user(), trainer.name(), trainer.image(), trainer.team(), trainer.visitedAreas(), trainer.coins(), data.area(), trainer.x(),</span>
+<span class="nc" id="L67">                    trainer.user(), trainer.name(), trainer.image(), trainer.team(), trainer.encounteredMonsterTypes(), trainer.visitedAreas(), trainer.coins(), data.area(), trainer.x(),</span>
 <span class="nc" id="L68">                    trainer.y(), trainer.direction(), trainer.npc());</span>
         }
 <span class="nc" id="L70">        onTrainerUpdate.accept(data);</span>
