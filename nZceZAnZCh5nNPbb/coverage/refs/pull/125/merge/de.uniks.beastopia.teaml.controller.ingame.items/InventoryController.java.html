@@ -65,7 +65,7 @@ public class InventoryController extends Controller {
 <span class="nc" id="L65">            CloseButton.setDisable(true);</span>
 <span class="nc" id="L66">            CloseButton.setOpacity(0);</span>
         }
-<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        if (cache.getPresetItems().equals(List.of())) {</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        if (cache.getPresetItems().isEmpty()) {</span>
 <span class="fc" id="L69">            disposables.add(presetsService.getItems()</span>
 <span class="fc" id="L70">                    .observeOn(FX_SCHEDULER)</span>
 <span class="fc" id="L71">                    .subscribe(items -&gt; {</span>
