@@ -142,8 +142,8 @@ public class ItemDetailController extends Controller {
                 }
             }
         }
-<span class="nc bnc" id="L145" title="All 4 branches missed.">        if (!itemType.use().contains(&quot;effect&quot;) || !onlyInventory) {</span>
-<span class="nc bnc" id="L146" title="All 4 branches missed.">            if (!buy &amp;&amp; !onlyInventory) { //sell</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (!onlyInventory) {</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">            if (!buy) { //sell</span>
 <span class="nc" id="L147">                amount = -1;</span>
             }
 <span class="nc" id="L149">            useDetailButton(amount, usage, null);</span>
