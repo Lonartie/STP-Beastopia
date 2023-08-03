@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImageService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.service</a> &gt; <span class="el_source">ImageService.java</span></div><h1>ImageService.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.service;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+
+import javax.inject.Inject;
+
+public class ImageService {
+
+    @Inject
+<span class="nc" id="L14">    ImageService() {</span>
+<span class="nc" id="L15">    }</span>
+
+    public Image makeImageBlack (Image image) {
+<span class="nc" id="L18">        PixelReader pixelReader = image.getPixelReader();</span>
+<span class="nc" id="L19">        int width = (int) image.getWidth();</span>
+<span class="nc" id="L20">        int height = (int) image.getHeight();</span>
+
+<span class="nc" id="L22">        WritableImage blackImage = new WritableImage(width, height);</span>
+<span class="nc" id="L23">        PixelWriter pixelWriter = blackImage.getPixelWriter();</span>
+
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        for (int y = 0; y &lt; height; y++) {</span>
+<span class="nc bnc" id="L26" title="All 2 branches missed.">            for (int x = 0; x &lt; width; x++) {</span>
+
+<span class="nc" id="L28">                Color color = pixelReader.getColor(x, y);</span>
+
+<span class="nc bnc" id="L30" title="All 2 branches missed.">                if (!color.equals(Color.TRANSPARENT)) {</span>
+<span class="nc" id="L31">                    pixelWriter.setColor(x, y, Color.BLACK);</span>
+                }
+            }
+        }
+
+<span class="nc" id="L36">        return blackImage;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
