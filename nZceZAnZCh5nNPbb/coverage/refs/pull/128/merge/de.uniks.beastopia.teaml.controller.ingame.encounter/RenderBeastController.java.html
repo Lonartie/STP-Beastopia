@@ -65,88 +65,86 @@ public class RenderBeastController extends Controller {
 <span class="nc" id="L65">                                selectBox2.setStyle(&quot;-fx-border-radius: 0px; -fx-alignment: CENTER; -fx-max-height: 125px; -fx-pref-height: 125px; -fx-pref-width: 125px;&quot;);</span>
                             }
 <span class="nc" id="L67">                            selectBox.setStyle(&quot;-fx-border-radius: 10px; -fx-border-color: #000000;&quot;);</span>
-                            //System.out.println(&quot;Chosen Opponent ID: &quot; + opponentIdMonsterOne);
-<span class="nc" id="L69">                            encounterController.setChosenTarget(opponentIdMonsterOne);</span>
-<span class="nc" id="L70">                        });</span>
-<span class="nc" id="L71">                    }));</span>
+<span class="nc" id="L68">                            encounterController.setChosenTarget(opponentIdMonsterOne);</span>
+<span class="nc" id="L69">                        });</span>
+<span class="nc" id="L70">                    }));</span>
         }
 
-<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (monster2 != null) {</span>
-<span class="nc" id="L75">            secondMonster = new ImageView();</span>
-<span class="nc" id="L76">            selectBox2 = new HBox();</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (monster2 != null) {</span>
+<span class="nc" id="L74">            secondMonster = new ImageView();</span>
+<span class="nc" id="L75">            selectBox2 = new HBox();</span>
 
-<span class="nc" id="L78">            disposables.add(presetsService.getMonsterImage(monster2.type())</span>
-<span class="nc" id="L79">                    .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L80">                    .subscribe(monsterImage -&gt; {</span>
-<span class="nc" id="L81">                        secondMonster.setImage(monsterImage);</span>
-<span class="nc" id="L82">                        selectBox2.setStyle(&quot;-fx-alignment: CENTER; -fx-max-height: 125px; -fx-pref-height: 125px; -fx-pref-width: 125px;&quot;);</span>
-<span class="nc" id="L83">                        selectBox2.getChildren().add(secondMonster);</span>
-<span class="nc" id="L84">                        monsterContainer.getChildren().addAll(selectBox2);</span>
+<span class="nc" id="L77">            disposables.add(presetsService.getMonsterImage(monster2.type())</span>
+<span class="nc" id="L78">                    .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L79">                    .subscribe(monsterImage -&gt; {</span>
+<span class="nc" id="L80">                        secondMonster.setImage(monsterImage);</span>
+<span class="nc" id="L81">                        selectBox2.setStyle(&quot;-fx-alignment: CENTER; -fx-max-height: 125px; -fx-pref-height: 125px; -fx-pref-width: 125px;&quot;);</span>
+<span class="nc" id="L82">                        selectBox2.getChildren().add(secondMonster);</span>
+<span class="nc" id="L83">                        monsterContainer.getChildren().addAll(selectBox2);</span>
 
-<span class="nc" id="L86">                        selectBox2.setOnMouseClicked(event -&gt; {</span>
-<span class="nc bnc" id="L87" title="All 2 branches missed.">                            if (selectBox.getStyle().contains(&quot;-fx-border-radius: 10px;&quot;)) {</span>
-<span class="nc" id="L88">                                selectBox.setStyle(&quot;&quot;);</span>
+<span class="nc" id="L85">                        selectBox2.setOnMouseClicked(event -&gt; {</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">                            if (selectBox.getStyle().contains(&quot;-fx-border-radius: 10px;&quot;)) {</span>
+<span class="nc" id="L87">                                selectBox.setStyle(&quot;&quot;);</span>
                             }
-<span class="nc" id="L90">                            selectBox2.setStyle(&quot;-fx-border-radius: 10px; -fx-border-color: #000000; -fx-alignment: CENTER; -fx-max-height: 125px; -fx-pref-height: 125px; -fx-pref-width: 125px;&quot;);</span>
-                            //System.out.println(&quot;Chosen Opponent ID: &quot; + opponentIdMonsterTwo);
-<span class="nc" id="L92">                            encounterController.setChosenTarget(opponentIdMonsterTwo);</span>
-<span class="nc" id="L93">                        });</span>
-<span class="nc" id="L94">                    }));</span>
+<span class="nc" id="L89">                            selectBox2.setStyle(&quot;-fx-border-radius: 10px; -fx-border-color: #000000; -fx-alignment: CENTER; -fx-max-height: 125px; -fx-pref-height: 125px; -fx-pref-width: 125px;&quot;);</span>
+<span class="nc" id="L90">                            encounterController.setChosenTarget(opponentIdMonsterTwo);</span>
+<span class="nc" id="L91">                        });</span>
+<span class="nc" id="L92">                    }));</span>
         }
 
-<span class="nc" id="L97">        return parent;</span>
+<span class="nc" id="L95">        return parent;</span>
     }
 
     public RenderBeastController setMonster1(Monster monster1) {
-<span class="nc" id="L101">        this.monster1 = monster1;</span>
-<span class="nc" id="L102">        return this;</span>
+<span class="nc" id="L99">        this.monster1 = monster1;</span>
+<span class="nc" id="L100">        return this;</span>
     }
 
     @SuppressWarnings(&quot;UnusedReturnValue&quot;)
     public RenderBeastController setMonster2(Monster monster2) {
-<span class="nc" id="L107">        this.monster2 = monster2;</span>
-<span class="nc" id="L108">        return this;</span>
+<span class="nc" id="L105">        this.monster2 = monster2;</span>
+<span class="nc" id="L106">        return this;</span>
     }
 
     public void setMonsterOneOpponentId(String id) {
-<span class="nc" id="L112">        this.opponentIdMonsterOne = id;</span>
-<span class="nc" id="L113">    }</span>
+<span class="nc" id="L110">        this.opponentIdMonsterOne = id;</span>
+<span class="nc" id="L111">    }</span>
 
     public void setMonsterTwoOpponentId(String id) {
-<span class="nc" id="L116">        this.opponentIdMonsterTwo = id;</span>
-<span class="nc" id="L117">    }</span>
+<span class="nc" id="L114">        this.opponentIdMonsterTwo = id;</span>
+<span class="nc" id="L115">    }</span>
 
     public String getOpponentIdMonsterOne() {
-<span class="nc" id="L120">        return opponentIdMonsterOne;</span>
+<span class="nc" id="L118">        return opponentIdMonsterOne;</span>
     }
 
     public String getOpponentIdMonsterTwo() {
-<span class="nc" id="L124">        return opponentIdMonsterTwo;</span>
+<span class="nc" id="L122">        return opponentIdMonsterTwo;</span>
     }
 
     public void setImageMonsterOne(Image image) {
-<span class="nc" id="L128">        this.firstMonster.setImage(image);</span>
-<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (image == null) {</span>
-<span class="nc" id="L130">            monsterContainer.getChildren().remove(selectBox);</span>
+<span class="nc" id="L126">        this.firstMonster.setImage(image);</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">        if (image == null) {</span>
+<span class="nc" id="L128">            monsterContainer.getChildren().remove(selectBox);</span>
         }
-<span class="nc" id="L132">    }</span>
+<span class="nc" id="L130">    }</span>
 
     public void setImageMonsterTwo(Image image) {
-<span class="nc" id="L135">        this.secondMonster.setImage(image);</span>
-<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (image == null) {</span>
-<span class="nc" id="L137">            monsterContainer.getChildren().remove(selectBox2);</span>
+<span class="nc" id="L133">        this.secondMonster.setImage(image);</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">        if (image == null) {</span>
+<span class="nc" id="L135">            monsterContainer.getChildren().remove(selectBox2);</span>
         }
-<span class="nc" id="L139">    }</span>
+<span class="nc" id="L137">    }</span>
 
     public void setEncounterController(EncounterController controller) {
-<span class="nc" id="L142">        this.encounterController = controller;</span>
-<span class="nc" id="L143">    }</span>
+<span class="nc" id="L140">        this.encounterController = controller;</span>
+<span class="nc" id="L141">    }</span>
 
     @Override
     public void destroy() {
-<span class="nc" id="L147">        super.destroy();</span>
+<span class="nc" id="L145">        super.destroy();</span>
 
-<span class="nc" id="L149">    }</span>
+<span class="nc" id="L147">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
