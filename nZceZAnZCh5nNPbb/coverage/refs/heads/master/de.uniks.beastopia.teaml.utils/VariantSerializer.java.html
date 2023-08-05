@@ -6,19 +6,21 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 
-public class VariantSerializer &lt;T,U&gt; extends StdSerializer&lt;Variant&lt;T,U&gt;&gt; {
+public class VariantSerializer&lt;T, U, V&gt; extends StdSerializer&lt;Variant&lt;T, U, V&gt;&gt; {
 
     public VariantSerializer() {
 <span class="nc" id="L12">        super(Variant.class, true);</span>
 <span class="nc" id="L13">    }</span>
 
     @Override
-    public void serialize(Variant&lt;T,U&gt; variant, JsonGenerator generator, SerializerProvider provider) throws IOException {
+    public void serialize(Variant&lt;T, U, V&gt; variant, JsonGenerator generator, SerializerProvider provider) throws IOException {
 <span class="nc bnc" id="L17" title="All 2 branches missed.">        if (variant.isT()) {</span>
 <span class="nc" id="L18">            generator.writeObject(variant.getT());</span>
 <span class="nc bnc" id="L19" title="All 2 branches missed.">        } else if (variant.isU()) {</span>
 <span class="nc" id="L20">            generator.writeObject(variant.getU());</span>
+<span class="nc bnc" id="L21" title="All 2 branches missed.">        } else if (variant.isV()) {</span>
+<span class="nc" id="L22">            generator.writeObject(variant.getV());</span>
         }
-<span class="nc" id="L22">    }</span>
+<span class="nc" id="L24">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

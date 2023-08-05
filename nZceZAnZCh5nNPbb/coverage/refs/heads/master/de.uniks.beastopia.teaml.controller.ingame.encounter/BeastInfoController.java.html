@@ -61,7 +61,7 @@ public class BeastInfoController extends Controller {
 <span class="nc" id="L61">                    type.setText(&quot;(&quot; + monsterType.type().get(0) + &quot;)&quot;);</span>
 <span class="nc" id="L62">                }));</span>
 <span class="nc" id="L63">        level.setText(String.valueOf(monster.level()));</span>
-<span class="nc" id="L64">        hpLabel.setText(monster.currentAttributes().health() + &quot; / &quot; + monster.attributes().health() + &quot; (HP)&quot;);</span>
+<span class="nc" id="L64">        hpLabel.setText((int) monster.currentAttributes().health() + &quot; / &quot; + (int) monster.attributes().health() + &quot; (HP)&quot;);</span>
 <span class="nc" id="L65">        xpLabel.setText(monster.experience() + &quot; / &quot; + calcMaxXp() + &quot; (Exp)&quot;);</span>
 
 <span class="nc" id="L67">        timer = new Timer();</span>
@@ -69,7 +69,7 @@ public class BeastInfoController extends Controller {
             @Override
             public void run() {
 <span class="nc" id="L71">                Platform.runLater(() -&gt; {</span>
-<span class="nc" id="L72">                    setLifeBarValue(monster.currentAttributes().health() / (double) monster.attributes().health(), false);</span>
+<span class="nc" id="L72">                    setLifeBarValue(monster.currentAttributes().health() / monster.attributes().health(), false);</span>
 <span class="nc" id="L73">                    setXpBarValue(monster.experience() / (double) calcMaxXp(), false);</span>
 <span class="nc" id="L74">                });</span>
 <span class="nc" id="L75">            }</span>
@@ -86,31 +86,39 @@ public class BeastInfoController extends Controller {
 <span class="nc" id="L86">        type.setText(value);</span>
 <span class="nc" id="L87">    }</span>
 
+    public void setLevel(int level) {
+<span class="nc" id="L90">        this.level.setText(String.valueOf(level));</span>
+<span class="nc" id="L91">    }</span>
+
+    public void setName(String name) {
+<span class="nc" id="L94">        this.name.setText(name);</span>
+<span class="nc" id="L95">    }</span>
+
     public void setLifeBarValue(double value, boolean killTimer) {
-<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (killTimer) {</span>
-<span class="nc" id="L91">            timer.cancel();</span>
-<span class="nc" id="L92">            setXpBarValue(monster.experience() / (double) calcMaxXp(), false);</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        if (killTimer) {</span>
+<span class="nc" id="L99">            timer.cancel();</span>
+<span class="nc" id="L100">            setXpBarValue(monster.experience() / (double) calcMaxXp(), false);</span>
         }
-<span class="nc" id="L94">        lifeBarValue.setMinWidth(lifeBar.getWidth() * value);</span>
-<span class="nc" id="L95">        lifeBarValue.setMaxWidth(lifeBar.getWidth() * value);</span>
-<span class="nc" id="L96">        lifeBarValue.setPrefWidth(lifeBar.getWidth() * value);</span>
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L102">        lifeBarValue.setMinWidth(lifeBar.getWidth() * value);</span>
+<span class="nc" id="L103">        lifeBarValue.setMaxWidth(lifeBar.getWidth() * value);</span>
+<span class="nc" id="L104">        lifeBarValue.setPrefWidth(lifeBar.getWidth() * value);</span>
+<span class="nc" id="L105">    }</span>
 
     public void setXpBarValue(double value, boolean killTimer) {
-<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (killTimer) {</span>
-<span class="nc" id="L101">            timer.cancel();</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (killTimer) {</span>
+<span class="nc" id="L109">            timer.cancel();</span>
         }
-<span class="nc" id="L103">        xpBarValue.setMinWidth(xpBar.getWidth() * value);</span>
-<span class="nc" id="L104">        xpBarValue.setMaxWidth(xpBar.getWidth() * value);</span>
-<span class="nc" id="L105">        xpBarValue.setPrefWidth(xpBar.getWidth() * value);</span>
-<span class="nc" id="L106">    }</span>
+<span class="nc" id="L111">        xpBarValue.setMinWidth(xpBar.getWidth() * value);</span>
+<span class="nc" id="L112">        xpBarValue.setMaxWidth(xpBar.getWidth() * value);</span>
+<span class="nc" id="L113">        xpBarValue.setPrefWidth(xpBar.getWidth() * value);</span>
+<span class="nc" id="L114">    }</span>
 
     public Monster getMonster() {
-<span class="nc" id="L109">        return monster;</span>
+<span class="nc" id="L117">        return monster;</span>
     }
 
     public String getName() {
-<span class="nc" id="L113">        return name.getText();</span>
+<span class="nc" id="L121">        return name.getText();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

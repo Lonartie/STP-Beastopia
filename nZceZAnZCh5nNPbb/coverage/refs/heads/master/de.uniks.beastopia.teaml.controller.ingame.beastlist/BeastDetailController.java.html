@@ -63,7 +63,7 @@ public class BeastDetailController extends Controller {
 <span class="fc" id="L63">        speed.setText(&quot;Speed: &quot; + monster.currentAttributes().speed());</span>
 <span class="fc" id="L64">        attack.setText(&quot;Attack: &quot; + monster.currentAttributes().attack());</span>
 <span class="fc" id="L65">        defense.setText(&quot;Defense: &quot; + monster.currentAttributes().defense());</span>
-<span class="fc" id="L66">        hp.setText(&quot;HP: &quot; + monster.currentAttributes().health() + &quot; / &quot; + monster.attributes().health());</span>
+<span class="fc" id="L66">        hp.setText(&quot;HP: &quot; + (int) monster.currentAttributes().health() + &quot; / &quot; + (int) monster.attributes().health());</span>
 
 <span class="fc" id="L68">        description.setEditable(false);</span>
 <span class="fc" id="L69">        description.setFocusTraversable(false);</span>

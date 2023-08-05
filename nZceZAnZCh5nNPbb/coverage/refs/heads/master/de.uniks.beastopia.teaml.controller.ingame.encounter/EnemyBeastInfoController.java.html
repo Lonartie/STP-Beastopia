@@ -52,7 +52,7 @@ public class EnemyBeastInfoController extends Controller {
 <span class="nc" id="L52">        timer.schedule(new TimerTask() {</span>
             @Override
             public void run() {
-<span class="nc" id="L55">                Platform.runLater(() -&gt; setLifeBarValue(monster.currentAttributes().health() / (double) monster.attributes().health(), false));</span>
+<span class="nc" id="L55">                Platform.runLater(() -&gt; setLifeBarValue(monster.currentAttributes().health() / monster.attributes().health(), false));</span>
 <span class="nc" id="L56">            }</span>
         }, 500);
 

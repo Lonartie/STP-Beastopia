@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public class VariantDeserializer&lt;T, U&gt; extends StdDeserializer&lt;Variant&lt;T, U&gt;&gt; {
+public class VariantDeserializer&lt;T, U, V&gt; extends StdDeserializer&lt;Variant&lt;T, U, V&gt;&gt; {
 
     public VariantDeserializer() {
 <span class="nc" id="L16">        super(Variant.class);</span>
@@ -18,7 +18,7 @@ public class VariantDeserializer&lt;T, U&gt; extends StdDeserializer&lt;Variant&
 
     @SuppressWarnings(&quot;unchecked&quot;)
     @Override
-    public Variant&lt;T, U&gt; deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
+    public Variant&lt;T, U, V&gt; deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
 <span class="nc" id="L22">        String json = context.readTree(jsonParser).toString();</span>
 
 <span class="nc" id="L24">        Type superClass = getClass().getGenericSuperclass();</span>
@@ -26,31 +26,40 @@ public class VariantDeserializer&lt;T, U&gt; extends StdDeserializer&lt;Variant&
 <span class="nc bnc" id="L26" title="All 2 branches missed.">        if (superClass instanceof ParameterizedType parameterizedType) {</span>
 <span class="nc" id="L27">            Type[] typeArguments = parameterizedType.getActualTypeArguments();</span>
 
-<span class="nc bnc" id="L29" title="All 2 branches missed.">            if (typeArguments.length == 2) {</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">            if (typeArguments.length == 3) {</span>
 <span class="nc" id="L30">                Type tType = typeArguments[0];</span>
 <span class="nc" id="L31">                Type uType = typeArguments[1];</span>
+<span class="nc" id="L32">                Type vType = typeArguments[2];</span>
 
-<span class="nc" id="L33">                Variant&lt;T, U&gt; variant = new Variant&lt;&gt;();</span>
+<span class="nc" id="L34">                Variant&lt;T, U, V&gt; variant = new Variant&lt;&gt;();</span>
 
                 try {
-<span class="nc bnc" id="L36" title="All 2 branches missed.">                    if (tType instanceof Class) {</span>
-<span class="nc" id="L37">                        Class&lt;T&gt; tClass = (Class&lt;T&gt;) tType;</span>
-<span class="nc" id="L38">                        T t = new Gson().fromJson(json, tClass);</span>
-<span class="nc" id="L39">                        variant.setT(t);</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">                    if (tType instanceof Class) {</span>
+<span class="nc" id="L38">                        Class&lt;T&gt; tClass = (Class&lt;T&gt;) tType;</span>
+<span class="nc" id="L39">                        T t = new Gson().fromJson(json, tClass);</span>
+<span class="nc" id="L40">                        variant.setT(t);</span>
                     }
-<span class="nc" id="L41">                } catch (JsonSyntaxException e) {</span>
-<span class="nc bnc" id="L42" title="All 2 branches missed.">                    if (uType instanceof Class) {</span>
-<span class="nc" id="L43">                        Class&lt;U&gt; uClass = (Class&lt;U&gt;) uType;</span>
-<span class="nc" id="L44">                        U u = new Gson().fromJson(json, uClass);</span>
-<span class="nc" id="L45">                        variant.setU(u);</span>
-                    }
-<span class="nc" id="L47">                }</span>
+<span class="nc" id="L42">                } catch (JsonSyntaxException e1) {</span>
+                    try {
+<span class="nc bnc" id="L44" title="All 2 branches missed.">                        if (uType instanceof Class) {</span>
+<span class="nc" id="L45">                            Class&lt;U&gt; uClass = (Class&lt;U&gt;) uType;</span>
+<span class="nc" id="L46">                            U u = new Gson().fromJson(json, uClass);</span>
+<span class="nc" id="L47">                            variant.setU(u);</span>
+                        }
+<span class="nc" id="L49">                    } catch (JsonSyntaxException e2) {</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">                        if (vType instanceof Class) {</span>
+<span class="nc" id="L51">                            Class&lt;V&gt; vClass = (Class&lt;V&gt;) vType;</span>
+<span class="nc" id="L52">                            V v = new Gson().fromJson(json, vClass);</span>
+<span class="nc" id="L53">                            variant.setV(v);</span>
+                        }
+<span class="nc" id="L55">                    }</span>
+<span class="nc" id="L56">                }</span>
 
-<span class="nc" id="L49">                return variant;</span>
+<span class="nc" id="L58">                return variant;</span>
             }
         }
 
-<span class="nc" id="L53">        return null;</span>
+<span class="nc" id="L62">        return null;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
