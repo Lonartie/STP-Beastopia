@@ -80,21 +80,21 @@ public class EntityController extends Controller {
     }
 
     public void updateViewPort() {
-<span class="fc" id="L83">        entityView.setViewport(getViewport());</span>
-<span class="fc" id="L84">    }</span>
+<span class="fc" id="L83">        int VIEW_SIZE = 96;</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        if (state.get().equals(PlayerState.JUMP)) {</span>
+<span class="nc" id="L85">            VIEW_SIZE = (int) (VIEW_SIZE * 1.2);</span>
+        }
+<span class="fc" id="L87">        entityView.setFitWidth(VIEW_SIZE);</span>
+<span class="fc" id="L88">        entityView.setFitHeight(VIEW_SIZE);</span>
+<span class="fc" id="L89">        entityView.setViewport(getViewport());</span>
+<span class="fc" id="L90">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L88">        int VIEW_SIZE = 96;</span>
-<span class="pc bpc" id="L89" title="1 of 2 branches missed.">        if (state.get().equals(PlayerState.JUMP)) {</span>
-<span class="nc" id="L90">            VIEW_SIZE = (int) (VIEW_SIZE * 1.2);</span>
-        }
-<span class="fc" id="L92">        parent = super.render();</span>
-<span class="fc" id="L93">        entityView.toFront();</span>
-<span class="fc" id="L94">        entityView.setPreserveRatio(true);</span>
-<span class="fc" id="L95">        entityView.setSmooth(true);</span>
-<span class="fc" id="L96">        entityView.setFitWidth(VIEW_SIZE);</span>
-<span class="fc" id="L97">        entityView.setFitHeight(VIEW_SIZE);</span>
+<span class="fc" id="L94">        parent = super.render();</span>
+<span class="fc" id="L95">        entityView.toFront();</span>
+<span class="fc" id="L96">        entityView.setPreserveRatio(true);</span>
+<span class="fc" id="L97">        entityView.setSmooth(true);</span>
 <span class="fc" id="L98">        updateViewPort();</span>
 
 <span class="fc" id="L100">        disposables.add(cache.getOrLoadTrainerImage(trainer.image(), true).observeOn(FX_SCHEDULER).subscribe(image -&gt; entityView.setImage(image)));</span>
