@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AStarService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.service</a> &gt; <span class="el_source">AStarService.java</span></div><h1>AStarService.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.service;
+
+import de.uniks.beastopia.teaml.rest.Position;
+import de.uniks.beastopia.teaml.rest.Tile;
+import de.uniks.beastopia.teaml.rest.TileProperty;
+import de.uniks.beastopia.teaml.utils.Direction;
+import javafx.scene.Node;
+import javafx.util.Pair;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class AStarService {
+    private boolean[][] map;
+    private Position[][] mapOverride;
+    private int[][] gscore;
+    private int[][] fscore;
+    private Position[][] parents;
+
+    @Inject
+<span class="nc" id="L24">    AStarService() {</span>
+
+<span class="nc" id="L26">    }</span>
+
+    public void buildMap(java.util.Map&lt;Pair&lt;Integer, Integer&gt;, List&lt;Pair&lt;Tile, Node&gt;&gt;&gt; mapInfo) {
+<span class="nc" id="L29">        int maxX = mapInfo.keySet().stream().mapToInt(Pair::getKey).max().orElseThrow();</span>
+<span class="nc" id="L30">        int maxY = mapInfo.keySet().stream().mapToInt(Pair::getValue).max().orElseThrow();</span>
+
+<span class="nc" id="L32">        map = new boolean[maxX + 1][maxY + 1];</span>
+<span class="nc" id="L33">        mapOverride = new Position[maxX + 1][maxY + 1];</span>
+
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        for (var pos : mapInfo.keySet()) {</span>
+<span class="nc" id="L36">            int posx = pos.getKey();</span>
+<span class="nc" id="L37">            int posy = pos.getValue();</span>
+
+<span class="nc" id="L39">            List&lt;List&lt;TileProperty&gt;&gt; properties = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L40">            mapInfo.getOrDefault(new Pair&lt;&gt;(posx, posy), new ArrayList&lt;&gt;()).forEach(pair -&gt; properties.add(pair.getKey().properties()));</span>
+<span class="nc bnc" id="L41" title="All 8 branches missed.">            boolean walkable = properties.stream().allMatch(propertyList -&gt; propertyList.stream().anyMatch(property -&gt; property.name().equals(&quot;Walkable&quot;) &amp;&amp; property.value().equals(&quot;true&quot;))) &amp;&amp; properties.stream().noneMatch(propertyList -&gt; propertyList.stream().anyMatch(property -&gt; property.name().equals(&quot;Jumpable&quot;)));</span>
+
+<span class="nc bnc" id="L43" title="All 2 branches missed.">            for (var tileProperties : properties) {</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">                for (var prop : tileProperties) {</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">                    if (prop.name().equals(&quot;Jumpable&quot;)) {</span>
+<span class="nc" id="L46">                        int jumpDirection = Integer.parseInt(prop.value());</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">                        if (jumpDirection == Direction.UP.ordinal())</span>
+<span class="nc" id="L48">                            mapOverride[posx][posy] = new Position(posx, posy + 1);</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">                        else if (jumpDirection == Direction.DOWN.ordinal())</span>
+<span class="nc" id="L50">                            mapOverride[posx][posy] = new Position(posx, posy - 1);</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">                        else if (jumpDirection == Direction.LEFT.ordinal())</span>
+<span class="nc" id="L52">                            mapOverride[posx][posy] = new Position(posx + 1, posy);</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">                        else if (jumpDirection == Direction.RIGHT.ordinal())</span>
+<span class="nc" id="L54">                            mapOverride[posx][posy] = new Position(posx - 1, posy);</span>
+                    }
+<span class="nc" id="L56">                }</span>
+<span class="nc" id="L57">            }</span>
+
+<span class="nc" id="L59">            map[posx][posy] = walkable;</span>
+<span class="nc" id="L60">        }</span>
+<span class="nc" id="L61">    }</span>
+
+    public void updateMap(Position pos, boolean walkable) {
+<span class="nc bnc" id="L64" title="All 8 branches missed.">        if (pos.x() &lt; map.length &amp;&amp; pos.y() &lt; map[0].length &amp;&amp; pos.x() &gt;= 0 &amp;&amp; pos.y() &gt;= 0) {</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">            if (mapOverride[pos.x()][pos.y()] != null) {</span>
+<span class="nc" id="L66">                return;</span>
+            }
+<span class="nc" id="L68">            map[pos.x()][pos.y()] = walkable;</span>
+        }
+<span class="nc" id="L70">    }</span>
+
+    public boolean isWalkable(Position pos) {
+<span class="nc bnc" id="L73" title="All 8 branches missed.">        if (pos.x() &lt; map.length &amp;&amp; pos.y() &lt; map[0].length &amp;&amp; pos.x() &gt;= 0 &amp;&amp; pos.y() &gt;= 0) {</span>
+<span class="nc" id="L74">            return map[pos.x()][pos.y()];</span>
+        }
+<span class="nc" id="L76">        return false;</span>
+    }
+
+    public boolean isJumpable(Position pos) {
+<span class="nc bnc" id="L80" title="All 8 branches missed.">        if (pos.x() &lt; map.length &amp;&amp; pos.y() &lt; map[0].length &amp;&amp; pos.x() &gt;= 0 &amp;&amp; pos.y() &gt;= 0) {</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">            return mapOverride[pos.x()][pos.y()] != null;</span>
+        }
+<span class="nc" id="L83">        return false;</span>
+    }
+
+    public boolean isJumpableFrom(Position here, Position pos) {
+<span class="nc bnc" id="L87" title="All 8 branches missed.">        if (pos.x() &lt; map.length &amp;&amp; pos.y() &lt; map[0].length &amp;&amp; pos.x() &gt;= 0 &amp;&amp; pos.y() &gt;= 0) {</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">            if (mapOverride[pos.x()][pos.y()] == null) {</span>
+<span class="nc" id="L89">                return false;</span>
+            }
+<span class="nc" id="L91">            return mapOverride[pos.x()][pos.y()].equals(here);</span>
+        }
+<span class="nc" id="L93">        return false;</span>
+    }
+
+    public List&lt;Position&gt; findPath(Position start, Position end) {
+<span class="nc" id="L97">        resetScores();</span>
+
+<span class="nc" id="L99">        Set&lt;Position&gt; open = new HashSet&lt;&gt;();</span>
+
+<span class="nc" id="L101">        gscore[start.x()][start.y()] = 0;</span>
+<span class="nc" id="L102">        fscore[start.x()][start.y()] = manhattanDistance(start, end);</span>
+
+<span class="nc" id="L104">        open.add(start);</span>
+
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        while (!open.isEmpty()) {</span>
+<span class="nc" id="L107">            Position current = open.stream().min((p1, p2) -&gt; fscore[p1.x()][p1.y()] - fscore[p2.x()][p2.y()]).get();</span>
+<span class="nc" id="L108">            open.remove(current);</span>
+
+<span class="nc bnc" id="L110" title="All 2 branches missed.">            if (current.equals(end)) {</span>
+<span class="nc" id="L111">                return createPath(current);</span>
+            }
+
+<span class="nc" id="L114">            List&lt;Position&gt; neighbours = List.of(</span>
+<span class="nc" id="L115">                    new Position(current.x() + 1, current.y()),</span>
+<span class="nc" id="L116">                    new Position(current.x() - 1, current.y()),</span>
+<span class="nc" id="L117">                    new Position(current.x(), current.y() + 1),</span>
+<span class="nc" id="L118">                    new Position(current.x(), current.y() - 1)</span>
+            );
+
+<span class="nc bnc" id="L121" title="All 2 branches missed.">            for (Position neighbour : neighbours) {</span>
+<span class="nc bnc" id="L122" title="All 4 branches missed.">                if (neighbour.x() &lt; 0 || neighbour.y() &lt; 0 ||</span>
+<span class="nc bnc" id="L123" title="All 4 branches missed.">                        neighbour.x() &gt;= map.length || neighbour.y() &gt;= map[0].length) {</span>
+<span class="nc" id="L124">                    continue;</span>
+                }
+
+<span class="nc bnc" id="L127" title="All 4 branches missed.">                if (!isWalkable(neighbour) &amp;&amp; !isJumpableFrom(current, neighbour)) {</span>
+<span class="nc" id="L128">                    continue;</span>
+                }
+
+<span class="nc" id="L131">                int newGScore = gscore[current.x()][current.y()] + 1; // neighbours have distance of 1</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">                if (newGScore &gt;= gscore[neighbour.x()][neighbour.y()]) {</span>
+<span class="nc" id="L133">                    continue;</span>
+                }
+
+<span class="nc" id="L136">                parents[neighbour.x()][neighbour.y()] = current;</span>
+<span class="nc" id="L137">                gscore[neighbour.x()][neighbour.y()] = newGScore;</span>
+<span class="nc" id="L138">                fscore[neighbour.x()][neighbour.y()] = newGScore + manhattanDistance(neighbour, end);</span>
+
+<span class="nc" id="L140">                open.removeIf(p -&gt; p.equals(neighbour));</span>
+<span class="nc" id="L141">                open.add(neighbour);</span>
+<span class="nc" id="L142">            }</span>
+<span class="nc" id="L143">        }</span>
+
+<span class="nc" id="L145">        return List.of();</span>
+    }
+
+    private void resetScores() {
+<span class="nc" id="L149">        gscore = new int[map.length][map[0].length];</span>
+<span class="nc" id="L150">        fscore = new int[map.length][map[0].length];</span>
+<span class="nc" id="L151">        parents = new Position[map.length][map[0].length];</span>
+
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        for (int x = 0; x &lt; map.length; x++) {</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">            for (int y = 0; y &lt; map[0].length; y++) {</span>
+<span class="nc" id="L155">                fscore[x][y] = Integer.MAX_VALUE;</span>
+<span class="nc" id="L156">                gscore[x][y] = Integer.MAX_VALUE;</span>
+<span class="nc" id="L157">                parents[x][y] = null;</span>
+            }
+        }
+<span class="nc" id="L160">    }</span>
+
+    private List&lt;Position&gt; createPath(Position end) {
+<span class="nc" id="L163">        List&lt;Position&gt; path = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L164">        Position current = end;</span>
+<span class="nc bnc" id="L165" title="All 4 branches missed.">        while (current != null &amp;&amp; parents[current.x()][current.y()] != null) {</span>
+<span class="nc" id="L166">            path.add(0, current);</span>
+<span class="nc" id="L167">            current = parents[current.x()][current.y()];</span>
+        }
+
+        // remove tiles after jumpable tiles
+<span class="nc bnc" id="L171" title="All 2 branches missed.">        for (int i = 0; i &lt; path.size(); i++) {</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">            if (mapOverride[path.get(i).x()][path.get(i).y()] != null &amp;&amp;</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">                    i + 1 &lt; path.size()) {</span>
+<span class="nc" id="L174">                path.remove(path.get(i + 1));</span>
+            }
+        }
+
+<span class="nc" id="L178">        return path;</span>
+    }
+
+    private static int manhattanDistance(Position a, Position b) {
+<span class="nc" id="L182">        return Math.abs(b.x() - a.x()) + Math.abs(b.y() - a.y());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
