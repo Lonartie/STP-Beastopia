@@ -80,7 +80,7 @@ public class EnemyBeastInfoController extends Controller {
 <span class="nc" id="L80">        killTimer(killTimer);</span>
 <span class="nc" id="L81">        statusPocket.getChildren().clear();</span>
 <span class="nc bnc" id="L82" title="All 2 branches missed.">        if (!monster.status().isEmpty()) {</span>
-<span class="nc" id="L83">            status.forEach(element -&gt; statusPocket.getChildren().add(assets.getIcon(&quot;status&quot;, element, 25, 25)));</span>
+<span class="nc" id="L83">            status.forEach(element -&gt; statusPocket.getChildren().add(assets.getIcon(&quot;status&quot;, element.trim(), 25, 25)));</span>
         }
 <span class="nc" id="L85">    }</span>
 
