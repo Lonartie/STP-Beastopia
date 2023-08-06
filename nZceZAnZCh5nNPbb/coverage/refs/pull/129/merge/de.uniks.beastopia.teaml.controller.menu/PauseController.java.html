@@ -7,6 +7,8 @@ import de.uniks.beastopia.teaml.controller.menu.social.FriendListController;
 import de.uniks.beastopia.teaml.utils.SoundController;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 
 import javax.inject.Inject;
@@ -16,7 +18,7 @@ import java.util.List;
 
 public class PauseController extends Controller {
 
-<span class="fc" id="L19">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L21">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
     @Inject
     Provider&lt;FriendListController&gt; friendListControllerProvider;
     @Inject
@@ -37,70 +39,72 @@ public class PauseController extends Controller {
     private Runnable onCloseRequest;
 
     @Inject
-<span class="fc" id="L40">    public PauseController() {</span>
+<span class="fc" id="L42">    public PauseController() {</span>
 
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L44">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L46">        Parent parent = super.render();</span>
-<span class="fc" id="L47">        Controller subController = friendListControllerProvider.get();</span>
-<span class="fc" id="L48">        subControllers.add(subController);</span>
-<span class="fc" id="L49">        friendListContainer.getChildren().add(subController.render());</span>
-<span class="fc" id="L50">        return parent;</span>
+<span class="fc" id="L48">        Parent parent = super.render();</span>
+<span class="fc" id="L49">        Controller subController = friendListControllerProvider.get();</span>
+<span class="fc" id="L50">        subControllers.add(subController);</span>
+<span class="fc" id="L51">        friendListContainer.getChildren().add(subController.render());</span>
+<span class="fc" id="L52">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="fc" id="L55">        subControllers.forEach(Controller::destroy);</span>
-<span class="fc" id="L56">    }</span>
+<span class="fc" id="L57">        subControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L58">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L60">        return resources.getString(&quot;titlePause&quot;);</span>
+<span class="fc" id="L62">        return resources.getString(&quot;titlePause&quot;);</span>
     }
 
     @FXML
     public void editProfileButtonPressed() {
-<span class="nc" id="L65">        app.show(editProfileControllerProvider.get());</span>
-<span class="nc" id="L66">    }</span>
+<span class="nc" id="L67">        app.show(editProfileControllerProvider.get());</span>
+<span class="nc" id="L68">    }</span>
 
     @FXML
     public void settingsButtonPressed() {
-<span class="nc" id="L70">        app.show(settingsControllerProvider.get());</span>
-<span class="nc" id="L71">    }</span>
+<span class="nc" id="L72">        app.show(settingsControllerProvider.get());</span>
+<span class="nc" id="L73">    }</span>
 
     @FXML
     public void mainMenuButtonPressed() {
-<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (soundControllerProvider.get().getBgmPlayer() != null) {</span>
-<span class="nc" id="L76">            soundControllerProvider.get().stopBGM();</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        if (soundControllerProvider.get().getBgmPlayer() != null) {</span>
+<span class="nc" id="L78">            soundControllerProvider.get().stopBGM();</span>
         }
-<span class="fc" id="L78">        app.show(menuControllerProvider.get());</span>
-<span class="fc" id="L79">    }</span>
+<span class="fc" id="L80">        app.show(menuControllerProvider.get());</span>
+<span class="fc" id="L81">    }</span>
 
     @FXML
     public void trainerMenuButtonPressed() {
-<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (soundControllerProvider.get().getBgmPlayer() != null) {</span>
-<span class="nc" id="L84">            soundControllerProvider.get().stopBGM();</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (soundControllerProvider.get().getBgmPlayer() != null) {</span>
+<span class="nc" id="L86">            soundControllerProvider.get().stopBGM();</span>
         }
 
-<span class="nc" id="L87">        TrainerController controller = trainerControllerProvider.get();</span>
-<span class="nc" id="L88">        controller.backController(&quot;pause&quot;);</span>
-<span class="nc" id="L89">        app.show(controller);</span>
-<span class="nc" id="L90">    }</span>
+<span class="nc" id="L89">        TrainerController controller = trainerControllerProvider.get();</span>
+<span class="nc" id="L90">        controller.backController(&quot;pause&quot;);</span>
+<span class="nc" id="L91">        app.show(controller);</span>
+<span class="nc" id="L92">    }</span>
 
     public void setOnCloseRequest(Runnable onCloseRequest) {
-<span class="fc" id="L93">        this.onCloseRequest = onCloseRequest;</span>
-<span class="fc" id="L94">    }</span>
+<span class="fc" id="L95">        this.onCloseRequest = onCloseRequest;</span>
+<span class="fc" id="L96">    }</span>
 
     @FXML
-    public void pauseMenu() {
-<span class="fc" id="L98">        onCloseRequest.run();</span>
-<span class="fc" id="L99">    }</span>
+    public void pauseMenu(KeyEvent event) {
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        if (event.getCode() == KeyCode.ESCAPE) {</span>
+<span class="fc" id="L101">            onCloseRequest.run();</span>
+        }
+<span class="fc" id="L103">    }</span>
 
     public void beastTeamButtonPressed() {
-<span class="nc" id="L102">        EditBeastTeamController beastTeam = editBeastTeamControllerProvider.get();</span>
-<span class="nc" id="L103">        app.show(beastTeam);</span>
-<span class="nc" id="L104">    }</span>
+<span class="nc" id="L106">        EditBeastTeamController beastTeam = editBeastTeamControllerProvider.get();</span>
+<span class="nc" id="L107">        app.show(beastTeam);</span>
+<span class="nc" id="L108">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
