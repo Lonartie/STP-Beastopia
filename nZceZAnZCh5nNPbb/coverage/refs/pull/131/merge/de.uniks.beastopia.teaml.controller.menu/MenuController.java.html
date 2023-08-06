@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MenuController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.menu</a> &gt; <span class="el_source">MenuController.java</span></div><h1>MenuController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.menu;
+
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.controller.auth.LoginController;
+import de.uniks.beastopia.teaml.controller.menu.social.FriendListController;
+import de.uniks.beastopia.teaml.service.*;
+import de.uniks.beastopia.teaml.utils.Dialog;
+import de.uniks.beastopia.teaml.utils.Prefs;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class MenuController extends Controller {
+<span class="fc" id="L23">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
+    @FXML
+    public VBox left;
+    @FXML
+    public Button settingsBtn;
+    @FXML
+    public Button logoutBtn;
+    @FXML
+    public Button editProfileBtn;
+    @Inject
+    Provider&lt;RegionController&gt; regionControllerProvider;
+    @Inject
+    Provider&lt;FriendListController&gt; friendListControllerProvider;
+    @Inject
+    Provider&lt;LoginController&gt; loginControllerProvider;
+    @Inject
+    Provider&lt;EditProfileController&gt; editProfileControllerProvider;
+    @Inject
+    Provider&lt;SettingsController&gt; settingsControllerProvider;
+    @Inject
+    AuthService authService;
+    @Inject
+    TokenStorage tokenStorage;
+    @Inject
+    ImageService imageService;
+    @Inject
+    AchievementsService achievementsService;
+    @Inject
+    DataCache cache;
+    @Inject
+    Prefs prefs;
+    @FXML
+    private VBox friendListContainer;
+    @FXML
+    private VBox regionContainer;
+    @FXML
+    private ImageView banner;
+    @FXML
+    private ImageView userAvatar;
+    @FXML
+    private Text userName;
+
+    @Inject
+<span class="fc" id="L66">    public MenuController() {</span>
+
+<span class="fc" id="L68">    }</span>
+
+    @Override
+    public void init() {
+<span class="fc" id="L72">        super.init();</span>
+<span class="pc" id="L73">        app.addCleanupTask(() -&gt; authService.goOffline().subscribe());</span>
+
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (cache.getTrainer() != null) {</span>
+<span class="nc" id="L76">            cache.setTrainer(null);</span>
+        }
+
+        // Reset current achievements and load achievements to user account
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        if (cache.getMyAchievements().isEmpty()) {</span>
+<span class="nc" id="L81">            disposables.add(achievementsService.getUserAchievements(tokenStorage.getCurrentUser()._id())</span>
+<span class="nc" id="L82">                    .subscribe(achievements -&gt; cache.setMyAchievements(achievements)));</span>
+        }
+
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        if (prefs.getVisitedAreas() != null) {</span>
+<span class="fc" id="L86">            String storedAreasString = prefs.getVisitedAreas();</span>
+<span class="fc" id="L87">            String[] storedAreas = storedAreasString.split(&quot;;&quot;);</span>
+
+<span class="fc bfc" id="L89" title="All 2 branches covered.">            for (String id : storedAreas) {</span>
+<span class="fc" id="L90">                cache.addVisitedArea(id);</span>
+            }
+        }
+<span class="fc" id="L93">    }</span>
+
+    @Override
+    public Parent render() {
+<span class="fc" id="L97">        Parent parent = super.render();</span>
+
+<span class="fc" id="L99">        banner.setImage(imageService.getBanner());</span>
+<span class="fc" id="L100">        userAvatar.setImage(cache.getImageAvatar(tokenStorage.getCurrentUser()));</span>
+<span class="fc" id="L101">        userName.setText(tokenStorage.getCurrentUser().name());</span>
+
+<span class="fc" id="L103">        Controller friendListController = friendListControllerProvider.get();</span>
+<span class="fc" id="L104">        subControllers.add(friendListController);</span>
+<span class="fc" id="L105">        Parent friendListParent = friendListController.render();</span>
+<span class="fc" id="L106">        friendListContainer.getChildren().add(friendListParent);</span>
+<span class="fc" id="L107">        VBox.setVgrow(friendListParent, javafx.scene.layout.Priority.ALWAYS);</span>
+
+<span class="fc" id="L109">        Controller regionController = regionControllerProvider.get();</span>
+<span class="fc" id="L110">        subControllers.add(regionController);</span>
+<span class="fc" id="L111">        Parent regionParent = regionController.render();</span>
+<span class="fc" id="L112">        regionContainer.getChildren().add(regionParent);</span>
+<span class="fc" id="L113">        VBox.setVgrow(regionParent, javafx.scene.layout.Priority.ALWAYS);</span>
+<span class="fc" id="L114">        return parent;</span>
+    }
+
+    @Override
+    public void destroy() {
+<span class="fc" id="L119">        subControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L120">        banner = null;</span>
+<span class="fc" id="L121">        userAvatar = null;</span>
+<span class="fc" id="L122">        super.destroy();</span>
+<span class="fc" id="L123">    }</span>
+
+    @Override
+    public String getTitle() {
+<span class="fc" id="L127">        return resources.getString(&quot;titleMenu&quot;);</span>
+    }
+
+    @FXML
+    public void logout() {
+<span class="fc" id="L132">        disposables.add(authService.logout().observeOn(FX_SCHEDULER).subscribe(</span>
+                lr -&gt; {
+<span class="fc" id="L134">                    app.show(loginControllerProvider.get());</span>
+<span class="fc" id="L135">                    cache.setMyAchievements(Collections.emptyList());</span>
+<span class="fc" id="L136">                },</span>
+<span class="nc" id="L137">                error -&gt; Dialog.error(error, &quot;Logout failed&quot;)</span>
+        ));
+<span class="fc" id="L139">    }</span>
+
+    @FXML
+    public void editProfileButtonPressed() {
+<span class="fc" id="L143">        app.show(editProfileControllerProvider.get());</span>
+<span class="fc" id="L144">    }</span>
+
+    public void settingsButtonPressed() {
+<span class="fc" id="L147">        app.show(settingsControllerProvider.get());</span>
+<span class="fc" id="L148">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

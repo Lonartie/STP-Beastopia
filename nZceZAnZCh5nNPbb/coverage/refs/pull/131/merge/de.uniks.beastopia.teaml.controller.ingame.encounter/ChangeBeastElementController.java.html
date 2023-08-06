@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ChangeBeastElementController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.ingame.encounter</a> &gt; <span class="el_source">ChangeBeastElementController.java</span></div><h1>ChangeBeastElementController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.ingame.encounter;
+
+import de.uniks.beastopia.teaml.Main;
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.Monster;
+import de.uniks.beastopia.teaml.service.PresetsService;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.Objects;
+
+public class ChangeBeastElementController extends Controller {
+    @FXML
+    public ImageView beastImg;
+    @FXML
+    public Label beastLabel;
+    @FXML
+    public ProgressBar expProgress;
+    @FXML
+    public GridPane changeBeastElement;
+    @FXML
+    public Button addOrRemoveButton;
+
+    @Inject
+    PresetsService presetsService;
+
+    @Inject
+    Provider&lt;ChangeBeastController&gt; changeBeastControllerProvider;
+    ChangeBeastController changeBeastController;
+
+    private Monster monster;
+    private VBox teamPane;
+    private VBox fightingPane;
+    private ImageView removeImage;
+    private ImageView addImage;
+
+    @Inject
+<span class="nc" id="L46">    public ChangeBeastElementController() {</span>
+<span class="nc" id="L47">    }</span>
+
+    public ChangeBeastElementController setMonster(Monster monster) {
+<span class="nc" id="L50">        this.monster = monster;</span>
+<span class="nc" id="L51">        return this;</span>
+    }
+
+    public ChangeBeastElementController setParentController(ChangeBeastController controller) {
+<span class="nc" id="L55">        this.changeBeastController = controller;</span>
+<span class="nc" id="L56">        return this;</span>
+    }
+
+    @Override
+    public Parent render() {
+<span class="nc" id="L61">        Parent parent = super.render();</span>
+
+<span class="nc" id="L63">        removeImage = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/minus.png&quot;)).toString());</span>
+<span class="nc" id="L64">        addImage = createImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/buttons/plus.png&quot;)).toString());</span>
+
+<span class="nc" id="L66">        disposables.add(presetsService.getMonsterType(monster.type())</span>
+<span class="nc" id="L67">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L68">                .subscribe(type -&gt; {</span>
+<span class="nc" id="L69">                    beastLabel.setText(type.name() + &quot; &quot; + type.type() + &quot; Lv. &quot; + monster.level());</span>
+<span class="nc" id="L70">                    beastLabel.setStyle(&quot;-fx-font-size: 16px&quot;);</span>
+<span class="nc" id="L71">                }, Throwable::printStackTrace));</span>
+<span class="nc" id="L72">        disposables.add(presetsService.getMonsterImage(monster.type())</span>
+<span class="nc" id="L73">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L74">                .subscribe(image -&gt; beastImg.setImage(image),</span>
+                        Throwable::printStackTrace));
+
+<span class="nc" id="L77">        int maxExp = (int) Math.round(Math.pow(monster.level(), 3) - Math.pow((monster.level() - 1), 3));</span>
+<span class="nc" id="L78">        expProgress.setProgress((double) monster.experience() / maxExp);</span>
+
+<span class="nc" id="L80">        teamPane = changeBeastController.beastTeam;</span>
+<span class="nc" id="L81">        fightingPane = changeBeastController.currentBeasts;</span>
+
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (changeBeastController.getBankMonsters().contains(monster)) {</span>
+<span class="nc" id="L84">            addOrRemoveButton.setGraphic(addImage);</span>
+        } else {
+<span class="nc" id="L86">            addOrRemoveButton.setGraphic(removeImage);</span>
+        }
+
+<span class="nc" id="L89">        return parent;</span>
+    }
+
+    @FXML
+    public void addOrRemoveBeast() {
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (changeBeastController.getBankMonsters().contains(monster)) {</span>
+<span class="nc" id="L95">            changeBeastController.getBankMonsters().remove(monster);</span>
+<span class="nc" id="L96">            changeBeastController.getFightingMonsters().add(monster);</span>
+
+<span class="nc" id="L98">            teamPane.getChildren().remove(changeBeastElement);</span>
+<span class="nc" id="L99">            fightingPane.getChildren().add(changeBeastElement);</span>
+<span class="nc" id="L100">            addOrRemoveButton.setGraphic(removeImage);</span>
+        } else {
+<span class="nc" id="L102">            changeBeastController.getBankMonsters().add(monster);</span>
+<span class="nc" id="L103">            changeBeastController.getFightingMonsters().remove(monster);</span>
+
+<span class="nc" id="L105">            fightingPane.getChildren().remove(changeBeastElement);</span>
+<span class="nc" id="L106">            teamPane.getChildren().add(changeBeastElement);</span>
+<span class="nc" id="L107">            addOrRemoveButton.setGraphic(addImage);</span>
+        }
+<span class="nc" id="L109">    }</span>
+
+    private ImageView createImage(String imageUrl) {
+<span class="nc" id="L112">        ImageView imageView = new ImageView(imageUrl);</span>
+<span class="nc" id="L113">        imageView.setCache(false);</span>
+<span class="nc" id="L114">        imageView.setFitHeight(25.0);</span>
+<span class="nc" id="L115">        imageView.setFitWidth(25.0);</span>
+<span class="nc" id="L116">        return imageView;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
