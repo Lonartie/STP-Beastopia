@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ItemDetailController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.ingame.items</a> &gt; <span class="el_source">ItemDetailController.java</span></div><h1>ItemDetailController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.ingame.items;
+
+import de.uniks.beastopia.teaml.Main;
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.controller.ingame.IngameController;
+import de.uniks.beastopia.teaml.controller.ingame.encounter.EncounterController;
+import de.uniks.beastopia.teaml.rest.Item;
+import de.uniks.beastopia.teaml.rest.ItemTypeDto;
+import de.uniks.beastopia.teaml.rest.Monster;
+import de.uniks.beastopia.teaml.rest.UpdateItemDto;
+import de.uniks.beastopia.teaml.rest.UseItemMove;
+import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.service.EncounterOpponentsService;
+import de.uniks.beastopia.teaml.service.PresetsService;
+import de.uniks.beastopia.teaml.service.TrainerItemsService;
+import de.uniks.beastopia.teaml.service.TrainerService;
+import de.uniks.beastopia.teaml.sockets.EventListener;
+import de.uniks.beastopia.teaml.utils.Dialog;
+import de.uniks.beastopia.teaml.utils.FormatString;
+import io.reactivex.rxjava3.disposables.Disposable;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+
+import javax.inject.Inject;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class ItemDetailController extends Controller {
+
+    @FXML
+    public VBox VBoxItemDetail;
+    @FXML
+    public Label cost;
+    @FXML
+    public Label name;
+    @FXML
+    public ImageView itemImage;
+    @FXML
+    public Button shopBtn;
+    @FXML
+    public Label desc;
+    @FXML
+    public ImageView coinImg;
+    @Inject
+    DataCache cache;
+    @Inject
+    TrainerService trainerService;
+    @Inject
+    TrainerItemsService trainerItemsService;
+    @Inject
+    EncounterOpponentsService encounterOpponentsService;
+    @Inject
+    EventListener eventListener;
+    @Inject
+    PresetsService presetsService;
+    private ItemTypeDto itemType;
+    private boolean isShop;
+    private boolean onlyInventory;
+    private InventoryController inventoryController;
+    private boolean buy;
+    private IngameController ingameController;
+    private EncounterController encounterController;
+<span class="fc" id="L71">    private Disposable itemEventListenerDisposable = null;</span>
+<span class="fc" id="L72">    private Disposable monsterEventListenerDisposable = null;</span>
+
+    public void setItem(ItemTypeDto itemType) {
+<span class="fc" id="L75">        this.itemType = itemType;</span>
+<span class="fc" id="L76">    }</span>
+
+    public void setBooleanShop(boolean isShop) {
+<span class="fc" id="L79">        this.isShop = isShop;</span>
+<span class="fc" id="L80">    }</span>
+
+    public void setOnlyInventory(boolean onlyInventory) {
+<span class="nc" id="L83">        this.onlyInventory = onlyInventory;</span>
+<span class="nc" id="L84">    }</span>
+
+    @Inject
+<span class="fc" id="L87">    public ItemDetailController() {</span>
+<span class="fc" id="L88">    }</span>
+
+    @Override
+    public Parent render() {
+<span class="fc" id="L92">        Parent parent = super.render();</span>
+
+<span class="fc" id="L94">        coinImg.setImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/coin.png&quot;))));</span>
+<span class="pc bpc" id="L95" title="3 of 4 branches missed.">        if (isShop &amp;&amp; !onlyInventory) {</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">            if (itemType.price() &gt; cache.getTrainer().coins()) {</span>
+<span class="nc" id="L97">                shopBtn.setDisable(true);</span>
+            }
+<span class="nc" id="L99">            shopBtn.setText(resources.getString(&quot;buy&quot;));</span>
+<span class="nc" id="L100">            cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + itemType.price());</span>
+<span class="nc" id="L101">            buy = true;</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">        } else if (!onlyInventory) {</span>
+<span class="fc" id="L103">            shopBtn.setText(resources.getString(&quot;sell&quot;));</span>
+<span class="fc" id="L104">            buy = false;</span>
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">            if (itemType.price() == 0) {</span>
+<span class="nc" id="L106">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + itemType.price());</span>
+<span class="nc" id="L107">                shopBtn.setOpacity(0);</span>
+<span class="nc" id="L108">                shopBtn.setDisable(true);</span>
+            } else {
+<span class="fc" id="L110">                float price = (float) (itemType.price() * 0.5);</span>
+<span class="fc" id="L111">                String formattedPrice = String.format(Locale.ENGLISH, &quot;%.1f&quot;, price);</span>
+<span class="fc" id="L112">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + formattedPrice);</span>
+<span class="fc" id="L113">            }</span>
+        } else {
+<span class="nc bnc" id="L115" title="All 4 branches missed.">            if (itemType.use() == null || itemType.use().equals(&quot;ball&quot;)) {</span>
+<span class="nc" id="L116">                shopBtn.setOpacity(0);</span>
+<span class="nc" id="L117">                shopBtn.setDisable(true);</span>
+            } else {
+<span class="nc" id="L119">                shopBtn.setText(resources.getString(&quot;use&quot;));</span>
+            }
+<span class="nc bnc" id="L121" title="All 2 branches missed.">            if (itemType.price() == 0) {</span>
+<span class="nc" id="L122">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + itemType.price());</span>
+            } else {
+<span class="nc" id="L124">                float price = (float) (itemType.price() * 0.5);</span>
+<span class="nc" id="L125">                String formattedPrice = String.format(Locale.ENGLISH, &quot;%.1f&quot;, price);</span>
+<span class="nc" id="L126">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + formattedPrice);</span>
+            }
+        }
+<span class="fc" id="L129">        name.setText(itemType.name());</span>
+<span class="fc" id="L130">        desc.setText(FormatString.formatString(itemType.description(), 25));</span>
+<span class="fc" id="L131">        itemImage.setImage(cache.getItemImages().get(itemType.id()));</span>
+
+<span class="fc" id="L133">        return parent;</span>
+    }
+
+    @FXML
+    public void shopFunction() {
+<span class="nc" id="L138">        String usage = &quot;trade&quot;;</span>
+<span class="nc" id="L139">        int amount = 1; // use and buy</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (onlyInventory) { //use</span>
+<span class="nc" id="L141">            usage = &quot;use&quot;;</span>
+<span class="nc bnc" id="L142" title="All 4 branches missed.">            switch (itemType.use()) {</span>
+                case &quot;itemBox&quot; -&gt; {
+<span class="nc bnc" id="L144" title="All 2 branches missed.">                    if (cache.getCurrentEncounter() == null) {</span>
+<span class="nc" id="L145">                        listenToNewItem();</span>
+                    }
+                }
+                case &quot;monsterBox&quot; -&gt; {
+<span class="nc bnc" id="L149" title="All 2 branches missed.">                    if (cache.getCurrentEncounter() == null) {</span>
+<span class="nc" id="L150">                        listenToNewMonster();</span>
+                    }
+                }
+                case &quot;effect&quot; -&gt; {
+<span class="nc bnc" id="L154" title="All 2 branches missed.">                    if (cache.getCurrentEncounter() != null) {</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">                        if (encounterController.getChosenMonster().currentAttributes().health() &lt;= 0) {</span>
+<span class="nc" id="L156">                            encounterController.actionInfoText.appendText(&quot;Beast is dead. Choose a new one!\n&quot;);</span>
+<span class="nc" id="L157">                            return;</span>
+                        }
+<span class="nc" id="L159">                        disposables.add(encounterOpponentsService.updateEncounterOpponent(</span>
+<span class="nc" id="L160">                                        cache.getJoinedRegion()._id(),</span>
+<span class="nc" id="L161">                                        cache.getCurrentEncounter()._id(),</span>
+<span class="nc" id="L162">                                        encounterController.getChosenTarget(),</span>
+                                        null,
+<span class="nc" id="L164">                                        new UseItemMove(&quot;use-item&quot;, itemType.id(), encounterController.getChosenMonster()._id())</span>
+                                )
+<span class="nc" id="L166">                                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L167">                                .subscribe(item -&gt; {</span>
+<span class="nc" id="L168">                                    encounterController.itemBox.getChildren().clear();</span>
+<span class="nc" id="L169">                                    encounterController.anchorPane.toBack();</span>
+<span class="nc" id="L170">                                    encounterController.anchorPane.setStyle(&quot;-fx-background-color: none;&quot;);</span>
+<span class="nc" id="L171">                                }));</span>
+
+
+                    } else {
+<span class="nc" id="L175">                        ingameController.openBeastlist(&quot;shop&quot;, this);</span>
+                    }
+<span class="nc" id="L177">                    return;</span>
+                }
+            }
+        }
+<span class="nc bnc" id="L181" title="All 6 branches missed.">        if (itemType.use() != null &amp;&amp; !itemType.use().contains(&quot;effect&quot;) || !onlyInventory) {</span>
+<span class="nc bnc" id="L182" title="All 4 branches missed.">            if (!buy &amp;&amp; !onlyInventory) { //sell</span>
+<span class="nc" id="L183">                amount = -1;</span>
+            }
+<span class="nc" id="L185">            useDetailButton(amount, usage, null);</span>
+        }
+<span class="nc" id="L187">        Timer timer = new Timer();</span>
+<span class="nc" id="L188">        timer.schedule(new TimerTask() {</span>
+            @Override
+            public void run() {
+<span class="nc" id="L191">                Platform.runLater(() -&gt; {</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">                    if (itemEventListenerDisposable != null) {</span>
+<span class="nc" id="L193">                        itemEventListenerDisposable.dispose(); // remove item eventListener</span>
+                    }
+<span class="nc bnc" id="L195" title="All 2 branches missed.">                    if (monsterEventListenerDisposable != null) {</span>
+<span class="nc" id="L196">                        monsterEventListenerDisposable.dispose(); // remove monster eventListener</span>
+                    }
+<span class="nc" id="L198">                });</span>
+<span class="nc" id="L199">            }</span>
+        }, 1000);
+<span class="nc" id="L201">    }</span>
+
+    public void useDetailButton(int amount, String usage, String monsterId) {
+<span class="nc" id="L204">        disposables.add(trainerItemsService.updateItem(cache.getJoinedRegion()._id(), cache.getTrainer()._id(), usage,</span>
+<span class="nc" id="L205">                new UpdateItemDto(amount, itemType.id(), monsterId)).observeOn(FX_SCHEDULER).subscribe(</span>
+                itemUpdated -&gt; {
+<span class="nc bnc" id="L207" title="All 2 branches missed.">                    if (monsterId != null) {</span>
+<span class="nc" id="L208">                        ingameController.showItemImage(itemType);</span>
+                    }
+<span class="nc" id="L210">                }, error -&gt; {</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">                    if (monsterId != null) {</span>
+<span class="nc" id="L212">                        Dialog.error(resources.getString(&quot;error&quot;), resources.getString(&quot;errorUseItem&quot;));</span>
+                    } else {
+<span class="nc" id="L214">                        System.out.println(&quot;Error:&quot; + error);</span>
+                    }
+<span class="nc" id="L216">                }));</span>
+<span class="nc" id="L217">        disposables.add(trainerService.getTrainer(cache.getJoinedRegion()._id(), cache.getTrainer()._id())</span>
+<span class="nc" id="L218">                .observeOn(FX_SCHEDULER).subscribe(trainer -&gt; {</span>
+<span class="nc" id="L219">                            cache.setTrainer(trainer);</span>
+<span class="nc" id="L220">                            inventoryController.updateInventory();</span>
+<span class="nc" id="L221">                        }, error -&gt; System.out.println(&quot;Error:&quot; + error)</span>
+                ));
+<span class="nc" id="L223">        ingameController.toggleInventoryItemDetails(itemType);</span>
+<span class="nc" id="L224">    }</span>
+
+    private void listenToNewMonster() {
+<span class="nc bnc" id="L227" title="All 2 branches missed.">        if (monsterEventListenerDisposable == null) {</span>
+<span class="nc" id="L228">            monsterEventListenerDisposable = eventListener.listen(&quot;trainers.&quot; + cache.getTrainer()._id() + &quot;.monsters.*.created&quot;, Monster.class)</span>
+<span class="nc" id="L229">                    .observeOn(FX_SCHEDULER).subscribe(monster -&gt; {</span>
+                        String beastName;
+<span class="nc bnc" id="L231" title="All 2 branches missed.">                        if (cache.getBeastDto(monster.data().type()) != null) {</span>
+<span class="nc" id="L232">                            beastName = cache.getBeastDto(monster.data().type()).name();</span>
+                        } else {
+<span class="nc" id="L234">                            beastName = presetsService.getMonsterType(monster.data().type()).blockingFirst().name();</span>
+                        }
+<span class="nc" id="L236">                        Dialog.info(resources.getString(&quot;unlockMonsterHeader&quot;), resources.getString(&quot;unlockMonster&quot;) + &quot; &quot; + beastName);</span>
+<span class="nc" id="L237">                    });</span>
+        }
+<span class="nc" id="L239">    }</span>
+
+    private void listenToNewItem() {
+<span class="nc bnc" id="L242" title="All 2 branches missed.">        if (itemEventListenerDisposable == null) {</span>
+<span class="nc" id="L243">            itemEventListenerDisposable = eventListener.listen(&quot;trainers.&quot; + cache.getTrainer()._id() + &quot;.items.*.*&quot;, Item.class)</span>
+<span class="nc" id="L244">                    .observeOn(FX_SCHEDULER).subscribe(item -&gt; {</span>
+<span class="nc bnc" id="L245" title="All 2 branches missed.">                        if (onlyInventory) {</span>
+<span class="nc" id="L246">                            boolean isUsedItem = false;</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">                            for (Item item1 : cache.getTrainerItems()) {</span>
+<span class="nc bnc" id="L248" title="All 4 branches missed.">                                if (item1._id().equals(item.data()._id()) &amp;&amp; itemType.id() == item.data().type()) {</span>
+<span class="nc" id="L249">                                    isUsedItem = true;</span>
+<span class="nc" id="L250">                                    break;</span>
+                                }
+<span class="nc" id="L252">                            }</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">                            if (!isUsedItem) {</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">                                for (ItemTypeDto itemTypeDto : cache.getPresetItems()) {</span>
+<span class="nc bnc" id="L255" title="All 2 branches missed.">                                    if (itemTypeDto.id() == item.data().type()) {</span>
+<span class="nc" id="L256">                                        Dialog.info(resources.getString(&quot;newItemHeader&quot;), resources.getString(&quot;newItem&quot;) + &quot; &quot; + itemTypeDto.name());</span>
+                                    }
+<span class="nc" id="L258">                                }</span>
+                            }
+                        }
+<span class="nc" id="L261">                    });</span>
+        }
+<span class="nc" id="L263">    }</span>
+
+    public void setInventoryController(InventoryController inventoryController) {
+<span class="nc" id="L266">        this.inventoryController = inventoryController;</span>
+<span class="nc" id="L267">    }</span>
+
+    public void setIngameController(IngameController ingameController) {
+<span class="nc" id="L270">        this.ingameController = ingameController;</span>
+<span class="nc" id="L271">    }</span>
+
+    public void setEncounterController(EncounterController encounterController) {
+<span class="nc" id="L274">        this.encounterController = encounterController;</span>
+<span class="nc" id="L275">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JoinFightInfoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.ingame.encounter</a> &gt; <span class="el_source">JoinFightInfoController.java</span></div><h1>JoinFightInfoController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.ingame.encounter;
+
+import de.uniks.beastopia.teaml.controller.Controller;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
+
+import javax.inject.Inject;
+
+public class JoinFightInfoController extends Controller {
+    @FXML
+    VBox infoSign;
+    @FXML
+    VBox infoTextBox;
+    @FXML
+    Text helpCaption;
+    @FXML
+    Text helpText;
+    @FXML
+    ImageView pointingArrow;
+
+    private double posX;
+    private double posY;
+    private Pane parent;
+
+    @Inject
+<span class="nc" id="L33">    public JoinFightInfoController() {</span>
+<span class="nc" id="L34">    }</span>
+
+    @Override
+    public void init() {
+<span class="nc" id="L38">        super.init();</span>
+
+<span class="nc" id="L40">        startTimer(20);</span>
+<span class="nc" id="L41">    }</span>
+
+    @Override
+    public Parent render() {
+<span class="nc" id="L45">        Parent parent = super.render();</span>
+
+<span class="nc" id="L47">        infoSign.setTranslateX(posX - 96);</span>
+<span class="nc" id="L48">        infoSign.setTranslateY(posY + 48);</span>
+<span class="nc" id="L49">        infoSign.toFront();</span>
+
+<span class="nc" id="L51">        infoTextBox.getChildren().clear();</span>
+<span class="nc" id="L52">        infoTextBox.getChildren().addAll(helpCaption, helpText);</span>
+
+<span class="nc" id="L54">        pointingArrow.setRotate(30);</span>
+
+<span class="nc" id="L56">        helpCaption.setText(resources.getString(&quot;helpTrainerCaption&quot;));</span>
+<span class="nc" id="L57">        helpCaption.setStyle(&quot;-fx-font-size: 16px;&quot;);</span>
+<span class="nc" id="L58">        helpText.setText(resources.getString(&quot;helpTrainerText&quot;));</span>
+<span class="nc" id="L59">        helpText.setStyle(&quot;-fx-font-size: 12px;&quot;);</span>
+
+<span class="nc" id="L61">        return parent;</span>
+    }
+
+    public void setX(double x) {
+<span class="nc" id="L65">        this.posX = x;</span>
+<span class="nc" id="L66">    }</span>
+
+    public void setY(double y) {
+<span class="nc" id="L69">        this.posY = y;</span>
+<span class="nc" id="L70">    }</span>
+
+    public void setParent(Pane parent) {
+<span class="nc" id="L73">        this.parent = parent;</span>
+<span class="nc" id="L74">    }</span>
+
+    public void startTimer(int seconds) {
+<span class="nc" id="L77">        Timeline timeline = new Timeline();</span>
+<span class="nc" id="L78">        timeline.setCycleCount(1);</span>
+<span class="nc" id="L79">        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(seconds), event -&gt; onTimerFinished()));</span>
+<span class="nc" id="L80">        timeline.play();</span>
+<span class="nc" id="L81">    }</span>
+
+    private void onTimerFinished() {
+<span class="nc" id="L84">        parent.getChildren().remove(infoSign);</span>
+<span class="nc" id="L85">        destroy();</span>
+<span class="nc" id="L86">    }</span>
+
+    @Override
+    public void destroy() {
+<span class="nc" id="L90">        super.destroy();</span>
+<span class="nc" id="L91">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

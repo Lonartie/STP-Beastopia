@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EntityController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.ingame</a> &gt; <span class="el_source">EntityController.java</span></div><h1>EntityController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.ingame;
+
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.MoveTrainerDto;
+import de.uniks.beastopia.teaml.rest.Position;
+import de.uniks.beastopia.teaml.rest.Trainer;
+import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.utils.Direction;
+import de.uniks.beastopia.teaml.utils.PlayerState;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.fxml.FXML;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Parent;
+import javafx.scene.image.ImageView;
+
+import javax.inject.Inject;
+import java.util.function.Consumer;
+
+public class EntityController extends Controller {
+<span class="fc" id="L21">    final int PORT_WIDTH = 16;</span>
+<span class="fc" id="L22">    final int PORT_HEIGHT = 32;</span>
+<span class="fc" id="L23">    final int SPRITE_STEP = 16;</span>
+<span class="fc" id="L24">    final int STATE_STEP = 32;</span>
+<span class="fc" id="L25">    final int DIRECTION_STEP = 96;</span>
+<span class="fc" id="L26">    int index = 0;</span>
+    Trainer trainer;
+    Parent parent;
+    Direction direction;
+<span class="fc" id="L30">    final ObjectProperty&lt;PlayerState&gt; state = new SimpleObjectProperty&lt;&gt;();</span>
+    Consumer&lt;MoveTrainerDto&gt; onTrainerUpdate;
+
+    @FXML
+    public ImageView entityView;
+    @Inject
+    DataCache cache;
+    private Position position;
+
+    @Inject
+<span class="fc" id="L40">    public EntityController() {</span>
+<span class="fc" id="L41">    }</span>
+
+    public void setOnTrainerUpdate(Consumer&lt;MoveTrainerDto&gt; onTrainerUpdate) {
+<span class="nc" id="L44">        this.onTrainerUpdate = onTrainerUpdate;</span>
+<span class="nc" id="L45">    }</span>
+
+    public ObjectProperty&lt;PlayerState&gt; playerState() {
+<span class="fc" id="L48">        return state;</span>
+    }
+
+    public Position getPosition() {
+<span class="nc" id="L52">        return position;</span>
+    }
+
+    @Override
+    public void init() {
+<span class="fc" id="L57">        super.init();</span>
+<span class="fc" id="L58">        direction = Direction.DOWN;</span>
+<span class="fc" id="L59">    }</span>
+
+    public void updateTrainer(MoveTrainerDto data) {
+<span class="nc" id="L62">        position = new Position(data.x(), data.y());</span>
+<span class="nc" id="L63">        setDirection(data.direction());</span>
+<span class="nc" id="L64">        index = (index + 1) % 6;</span>
+<span class="nc" id="L65">        updateViewPort();</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (!data.area().equals(trainer.area())) {</span>
+<span class="nc" id="L67">            trainer = new Trainer(trainer.createdAt(), trainer.updatedAt(), trainer._id(), trainer.region(),</span>
+<span class="nc" id="L68">                    trainer.user(), trainer.name(), trainer.image(), trainer.team(), trainer.encounteredMonsterTypes(), trainer.visitedAreas(), trainer.coins(), data.area(), trainer.x(),</span>
+<span class="nc" id="L69">                    trainer.y(), trainer.direction(), trainer.npc());</span>
+        }
+<span class="nc" id="L71">        onTrainerUpdate.accept(data);</span>
+<span class="nc" id="L72">    }</span>
+
+    public void setTrainer(Trainer trainer) {
+<span class="fc" id="L75">        this.trainer = trainer;</span>
+<span class="fc" id="L76">    }</span>
+
+    public Trainer getTrainer() {
+<span class="nc" id="L79">        return this.trainer;</span>
+    }
+
+    public void updateViewPort() {
+<span class="fc" id="L83">        int VIEW_SIZE = 96;</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        if (state.get().equals(PlayerState.JUMP)) {</span>
+<span class="nc" id="L85">            VIEW_SIZE = (int) (VIEW_SIZE * 1.2);</span>
+        }
+<span class="fc" id="L87">        entityView.setFitWidth(VIEW_SIZE);</span>
+<span class="fc" id="L88">        entityView.setFitHeight(VIEW_SIZE);</span>
+<span class="fc" id="L89">        entityView.setViewport(getViewport());</span>
+<span class="fc" id="L90">    }</span>
+
+    @Override
+    public Parent render() {
+<span class="fc" id="L94">        parent = super.render();</span>
+<span class="fc" id="L95">        entityView.toFront();</span>
+<span class="fc" id="L96">        entityView.setPreserveRatio(true);</span>
+<span class="fc" id="L97">        entityView.setSmooth(true);</span>
+<span class="fc" id="L98">        updateViewPort();</span>
+
+<span class="fc" id="L100">        disposables.add(cache.getOrLoadTrainerImage(trainer.image(), true).observeOn(FX_SCHEDULER).subscribe(image -&gt; entityView.setImage(image)));</span>
+
+<span class="fc" id="L102">        entityView.setPickOnBounds(false);</span>
+<span class="fc" id="L103">        parent.setPickOnBounds(false);</span>
+
+<span class="fc" id="L105">        return parent;</span>
+    }
+
+    private Rectangle2D getViewport() {
+<span class="fc" id="L109">        int SPRITE_SCALING = 5;</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">        int sheetY = state.get().equals(PlayerState.JUMP) ? 1 : state.get().ordinal();</span>
+
+<span class="fc" id="L112">        return new Rectangle2D(</span>
+<span class="fc" id="L113">                (direction.ordinal() * DIRECTION_STEP + index * SPRITE_STEP) * SPRITE_SCALING,</span>
+                (sheetY * STATE_STEP + STATE_STEP) * SPRITE_SCALING,
+                PORT_WIDTH * SPRITE_SCALING,
+                PORT_HEIGHT * SPRITE_SCALING);
+    }
+
+    public void setDirection(int direction) {
+<span class="nc bnc" id="L120" title="All 5 branches missed.">        switch (direction) {</span>
+<span class="nc" id="L121">            case 0 -&gt; this.direction = Direction.RIGHT;</span>
+<span class="nc" id="L122">            case 1 -&gt; this.direction = Direction.UP;</span>
+<span class="nc" id="L123">            case 2 -&gt; this.direction = Direction.LEFT;</span>
+<span class="nc" id="L124">            case 3 -&gt; this.direction = Direction.DOWN;</span>
+        }
+<span class="nc" id="L126">    }</span>
+
+    public Direction getDirection() {
+<span class="nc" id="L129">        return direction;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
