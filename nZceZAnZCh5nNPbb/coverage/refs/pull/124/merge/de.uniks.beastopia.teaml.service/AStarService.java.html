@@ -60,7 +60,7 @@ public class AStarService {
 <span class="nc" id="L60">    }</span>
 
     public void updateMap(Position pos, boolean walkable) {
-<span class="nc bnc" id="L63" title="All 8 branches missed.">        if (pos.x() &lt; map.length &amp;&amp; pos.y() &lt; map[0].length &amp;&amp; pos.x() &gt;= 0 &amp;&amp; pos.y() &gt;= 0) {</span>
+<span class="nc bnc" id="L63" title="All 10 branches missed.">        if (pos != null &amp;&amp; pos.x() &lt; map.length &amp;&amp; pos.y() &lt; map[0].length &amp;&amp; pos.x() &gt;= 0 &amp;&amp; pos.y() &gt;= 0) {</span>
 <span class="nc bnc" id="L64" title="All 2 branches missed.">            if (mapOverride[pos.x()][pos.y()] != null) {</span>
 <span class="nc" id="L65">                return;</span>
             }
