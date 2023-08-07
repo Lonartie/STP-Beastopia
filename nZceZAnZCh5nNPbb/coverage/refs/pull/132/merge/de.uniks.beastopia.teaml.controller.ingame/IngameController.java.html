@@ -78,7 +78,7 @@ public class IngameController extends Controller {
 <span class="fc" id="L78">    private List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L79">    private List&lt;Node&gt; renderedPlayers = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L80">    private List&lt;KeyCode&gt; pressedKeys = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L81">    private String[] locationStrings = {&quot;Moncenter&quot;, &quot;House&quot;, &quot;Store&quot;};</span>
+<span class="fc" id="L81">    private final String[] locationStrings = {&quot;Moncenter&quot;, &quot;House&quot;, &quot;Store&quot;};</span>
     @FXML
     public Pane tilePane;
     @FXML
@@ -521,8 +521,8 @@ public class IngameController extends Controller {
 <span class="nc" id="L521">                playerController.updateTrainer(dto);</span>
 <span class="nc" id="L522">                return;</span>
             } else {
-<span class="nc" id="L524">                Trainer oldTrainer = cache.getTrainers().get(dto._id());</span>
-<span class="nc bnc" id="L525" title="All 2 branches missed.">                if (cache.getTrainers().get(dto._id()) != null) {</span>
+<span class="nc bnc" id="L524" title="All 2 branches missed.">                if (cache.getTrainers().get(dto._id()) != null) {</span>
+<span class="nc" id="L525">                    Trainer oldTrainer = cache.getTrainers().get(dto._id());</span>
 <span class="nc" id="L526">                    Trainer updatedTrainer = new Trainer(oldTrainer.createdAt(), oldTrainer.updatedAt(), oldTrainer._id(),</span>
 <span class="nc" id="L527">                            oldTrainer.region(), oldTrainer.user(), oldTrainer.name(), oldTrainer.image(), oldTrainer.team()</span>
 <span class="nc" id="L528">                            , oldTrainer.encounteredMonsterTypes(), oldTrainer.visitedAreas(), oldTrainer.coins(),</span>
@@ -1131,11 +1131,11 @@ public class IngameController extends Controller {
 <span class="fc" id="L1131">        Pair&lt;Integer, Integer&gt; posXY = new Pair&lt;&gt;(posx, posy);</span>
 
 <span class="fc" id="L1133">        state.setValue(PlayerState.WALKING);</span>
-<span class="fc bfc" id="L1134" title="All 2 branches covered.">        if (MAP_INFO.containsKey(posXY)) {</span>
-<span class="fc bfc" id="L1135" title="All 2 branches covered.">            for (var pair : MAP_INFO.get(posXY)) {</span>
-<span class="fc" id="L1136">                Tile tile = pair.getKey();</span>
-<span class="pc" id="L1137">                Optional&lt;TileProperty&gt; jumpableTileProp = tile.properties().stream().filter(tileProperty -&gt; tileProperty.name().equals(&quot;Jumpable&quot;)).findFirst();</span>
-<span class="pc bpc" id="L1138" title="1 of 2 branches missed.">                if (jumpableTileProp.isPresent()) {</span>
+<span class="pc bpc" id="L1134" title="1 of 2 branches missed.">        if (MAP_INFO.containsKey(posXY)) {</span>
+<span class="nc bnc" id="L1135" title="All 2 branches missed.">            for (var pair : MAP_INFO.get(posXY)) {</span>
+<span class="nc" id="L1136">                Tile tile = pair.getKey();</span>
+<span class="nc" id="L1137">                Optional&lt;TileProperty&gt; jumpableTileProp = tile.properties().stream().filter(tileProperty -&gt; tileProperty.name().equals(&quot;Jumpable&quot;)).findFirst();</span>
+<span class="nc bnc" id="L1138" title="All 2 branches missed.">                if (jumpableTileProp.isPresent()) {</span>
 <span class="nc" id="L1139">                    int jumpDirection = Integer.parseInt(jumpableTileProp.get().value());</span>
 <span class="nc bnc" id="L1140" title="All 2 branches missed.">                    if (jumpDirection == direction.ordinal()) {</span>
 <span class="nc" id="L1141">                        state.setValue(PlayerState.JUMP);</span>
@@ -1144,7 +1144,7 @@ public class IngameController extends Controller {
 <span class="nc" id="L1144">                        updateOrigin();</span>
                     }
                 }
-<span class="fc" id="L1147">            }</span>
+<span class="nc" id="L1147">            }</span>
         }
 
 <span class="fc" id="L1150">        JsonObject message = new JsonObject();</span>
