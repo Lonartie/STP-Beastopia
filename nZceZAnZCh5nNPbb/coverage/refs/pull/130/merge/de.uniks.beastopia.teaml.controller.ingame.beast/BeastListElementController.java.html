@@ -70,44 +70,51 @@ public class BeastListElementController extends ListCell&lt;Monster&gt; {
 <span class="nc" id="L70">                throw new RuntimeException(e);</span>
 <span class="nc" id="L71">            }</span>
 
-<span class="nc" id="L73">            disposables.add(presetsService.getMonsterImage(item.type())</span>
-<span class="nc" id="L74">                    .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L75">                    .subscribe(image -&gt; beastImg.setImage(image),</span>
-                            Throwable::printStackTrace));
-
-<span class="nc" id="L78">            MonsterTypeDto type = cache.getBeastDto(item.type());</span>
-<span class="nc" id="L79">            beastLabel.setText(type.name() + &quot; (&quot; + type.type().get(0) + &quot;) Lv. &quot; + item.level());</span>
-<span class="nc" id="L80">            int maxExp = (int) Math.round(Math.pow(item.level(), 3) - Math.pow((item.level() - 1), 3));</span>
-<span class="nc" id="L81">            expProgress.setProgress((double) item.experience() / maxExp);</span>
-<span class="nc" id="L82">            hpBar.setProgress(item.currentAttributes().health() / item.attributes().health());</span>
-<span class="nc" id="L83">            upButton.setOnAction(event -&gt; {</span>
-<span class="nc" id="L84">                int index = getListView().getItems().indexOf(item);</span>
-<span class="nc" id="L85">                swap(index, index - 1);</span>
-<span class="nc" id="L86">            });</span>
-<span class="nc" id="L87">            downButton.setOnAction(event -&gt; {</span>
-<span class="nc" id="L88">                int index = getListView().getItems().indexOf(item);</span>
-<span class="nc" id="L89">                swap(index, index + 1);</span>
-<span class="nc" id="L90">            });</span>
-<span class="nc bnc" id="L91" title="All 2 branches missed.">            if (getListView().getId().equals(&quot;beastListView&quot;)) {</span>
-<span class="nc" id="L92">                buttonBox.getChildren().removeAll(upButton, downButton);</span>
-<span class="nc" id="L93">                expProgress.setPrefWidth(150);</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">            if (cache.imageIsDownloaded(item.type())) {</span>
+<span class="nc" id="L74">                beastImg.setImage(cache.getMonsterImage(item.type()));</span>
+            } else {
+<span class="nc" id="L76">                disposables.add(presetsService.getMonsterImage(item.type())</span>
+<span class="nc" id="L77">                        .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L78">                        .subscribe(image -&gt; {</span>
+<span class="nc" id="L79">                                    cache.addMonsterImages(item.type(), image);</span>
+<span class="nc" id="L80">                                    beastImg.setImage(image);</span>
+<span class="nc" id="L81">                                },</span>
+                                Throwable::printStackTrace));
             }
-<span class="nc" id="L95">            setGraphic(gridPane);</span>
+
+<span class="nc" id="L85">            MonsterTypeDto type = cache.getBeastDto(item.type());</span>
+<span class="nc" id="L86">            beastLabel.setText(type.name() + &quot; (&quot; + type.type().get(0) + &quot;) Lv. &quot; + item.level());</span>
+<span class="nc" id="L87">            int maxExp = (int) Math.round(Math.pow(item.level(), 3) - Math.pow((item.level() - 1), 3));</span>
+<span class="nc" id="L88">            expProgress.setProgress((double) item.experience() / maxExp);</span>
+<span class="nc" id="L89">            hpBar.setProgress(item.currentAttributes().health() / item.attributes().health());</span>
+<span class="nc" id="L90">            upButton.setOnAction(event -&gt; {</span>
+<span class="nc" id="L91">                int index = getListView().getItems().indexOf(item);</span>
+<span class="nc" id="L92">                swap(index, index - 1);</span>
+<span class="nc" id="L93">            });</span>
+<span class="nc" id="L94">            downButton.setOnAction(event -&gt; {</span>
+<span class="nc" id="L95">                int index = getListView().getItems().indexOf(item);</span>
+<span class="nc" id="L96">                swap(index, index + 1);</span>
+<span class="nc" id="L97">            });</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">            if (getListView().getId().equals(&quot;beastListView&quot;)) {</span>
+<span class="nc" id="L99">                buttonBox.getChildren().removeAll(upButton, downButton);</span>
+<span class="nc" id="L100">                expProgress.setPrefWidth(150);</span>
+            }
+<span class="nc" id="L102">            setGraphic(gridPane);</span>
         }
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L104">    }</span>
 
     private void swap(int index1, int index2) {
-<span class="nc bnc" id="L100" title="All 4 branches missed.">        if (index1 &lt; 0</span>
+<span class="nc bnc" id="L107" title="All 4 branches missed.">        if (index1 &lt; 0</span>
                 || index2 &lt; 0
-<span class="nc bnc" id="L102" title="All 2 branches missed.">                || index1 &gt;= getListView().getItems().size()</span>
-<span class="nc bnc" id="L103" title="All 2 branches missed.">                || index2 &gt;= getListView().getItems().size()) {</span>
-<span class="nc" id="L104">            return;</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">                || index1 &gt;= getListView().getItems().size()</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">                || index2 &gt;= getListView().getItems().size()) {</span>
+<span class="nc" id="L111">            return;</span>
         }
-<span class="nc" id="L106">        Monster monster1 = getListView().getItems().get(index1);</span>
-<span class="nc" id="L107">        Monster monster2 = getListView().getItems().get(index2);</span>
-<span class="nc" id="L108">        getListView().getItems().set(index1, monster2);</span>
-<span class="nc" id="L109">        getListView().getItems().set(index2, monster1);</span>
-<span class="nc" id="L110">        getListView().refresh();</span>
-<span class="nc" id="L111">    }</span>
+<span class="nc" id="L113">        Monster monster1 = getListView().getItems().get(index1);</span>
+<span class="nc" id="L114">        Monster monster2 = getListView().getItems().get(index2);</span>
+<span class="nc" id="L115">        getListView().getItems().set(index1, monster2);</span>
+<span class="nc" id="L116">        getListView().getItems().set(index2, monster1);</span>
+<span class="nc" id="L117">        getListView().refresh();</span>
+<span class="nc" id="L118">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
