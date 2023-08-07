@@ -122,7 +122,7 @@ public class BeastInfoController extends Controller {
     public void setStatus(List&lt;String&gt; status, boolean killTimer) {
 <span class="nc" id="L123">        killTimer(killTimer);</span>
 <span class="nc" id="L124">        statusPocket.getChildren().clear();</span>
-<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (!monster.status().isEmpty()) {</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (!status.isEmpty()) {</span>
 <span class="nc" id="L126">            status.forEach(element -&gt; statusPocket.getChildren().add(assets.getIcon(&quot;status&quot;, element.trim(), 25, 25)));</span>
         }
 <span class="nc" id="L128">    }</span>
