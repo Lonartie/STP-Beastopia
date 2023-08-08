@@ -108,7 +108,7 @@ public class ItemDetailController extends Controller {
 <span class="fc" id="L108">                cost.setText(resources.getString(&quot;val&quot;) + &quot;: &quot; + formattedPrice);</span>
 <span class="fc" id="L109">            }</span>
         } else {
-<span class="nc bnc" id="L111" title="All 6 branches missed.">            if ((itemType.use() == null || itemType.use().equals(&quot;ball&quot;) &amp;&amp; cache.getCurrentEncounter() == null)) {</span>
+<span class="nc bnc" id="L111" title="All 10 branches missed.">            if ((itemType.use() == null || itemType.use().equals(&quot;ball&quot;) &amp;&amp; cache.getCurrentEncounter() == null) || cache.getCurrentEncounter() != null &amp;&amp; !cache.getCurrentEncounter().isWild()) {</span>
 <span class="nc" id="L112">                shopBtn.setOpacity(0);</span>
 <span class="nc" id="L113">                shopBtn.setDisable(true);</span>
             } else {
@@ -192,21 +192,21 @@ public class ItemDetailController extends Controller {
 <span class="nc" id="L192">    }</span>
 
     public void useItemInFight(String monsterId) {
-<span class="nc" id="L195">        disposables.add(encounterOpponentsService.updateEncounterOpponent(</span>
-<span class="nc" id="L196">                        cache.getJoinedRegion()._id(),</span>
-<span class="nc" id="L197">                        cache.getCurrentEncounter()._id(),</span>
-<span class="nc" id="L198">                        encounterController.getChosenTarget(),</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        if (itemType.use().equals(&quot;ball&quot;)) {</span>
+<span class="nc" id="L196">            encounterController.setMonBallUsed(true);</span>
+        }
+<span class="nc" id="L198">        disposables.add(encounterOpponentsService.updateEncounterOpponent(</span>
+<span class="nc" id="L199">                        cache.getJoinedRegion()._id(),</span>
+<span class="nc" id="L200">                        cache.getCurrentEncounter()._id(),</span>
+<span class="nc" id="L201">                        encounterController.getChosenTarget(),</span>
                         null,
-<span class="nc" id="L200">                        new UseItemMove(&quot;use-item&quot;, itemType.id(), monsterId)</span>
+<span class="nc" id="L203">                        new UseItemMove(&quot;use-item&quot;, itemType.id(), monsterId)</span>
                 )
-<span class="nc" id="L202">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L203">                .subscribe(item -&gt; {</span>
-<span class="nc" id="L204">                    encounterController.itemBox.getChildren().clear();</span>
-<span class="nc" id="L205">                    encounterController.anchorPane.toBack();</span>
-<span class="nc" id="L206">                    encounterController.anchorPane.setStyle(&quot;-fx-background-color: none;&quot;);</span>
-<span class="nc bnc" id="L207" title="All 2 branches missed.">                    if (itemType.use().equals(&quot;ball&quot;)) {</span>
-<span class="nc" id="L208">                        encounterController.setMonBallUsed(true);</span>
-                    }
+<span class="nc" id="L205">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L206">                .subscribe(item -&gt; {</span>
+<span class="nc" id="L207">                    encounterController.itemBox.getChildren().clear();</span>
+<span class="nc" id="L208">                    encounterController.anchorPane.toBack();</span>
+<span class="nc" id="L209">                    encounterController.anchorPane.setStyle(&quot;-fx-background-color: none;&quot;);</span>
 <span class="nc" id="L210">                }));</span>
 <span class="nc" id="L211">    }</span>
 
