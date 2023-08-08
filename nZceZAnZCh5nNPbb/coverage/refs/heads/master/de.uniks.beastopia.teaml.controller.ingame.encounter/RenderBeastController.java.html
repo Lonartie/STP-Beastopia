@@ -3,6 +3,7 @@
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.rest.Monster;
 import de.uniks.beastopia.teaml.service.PresetsService;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
@@ -13,6 +14,8 @@ import javafx.scene.shape.Ellipse;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @SuppressWarnings(&quot;unused&quot;)
 public class RenderBeastController extends Controller {
@@ -26,7 +29,11 @@ public class RenderBeastController extends Controller {
     @FXML
     ImageView firstMonster;
     @FXML
-    HBox selectBox;
+    VBox selectBox;
+    @FXML
+    public ImageView itemImage;
+    @FXML
+    public VBox itemImageBox;
     @Inject
     PresetsService presetsService;
     @Inject
@@ -37,114 +44,150 @@ public class RenderBeastController extends Controller {
     private String opponentIdMonsterOne;
     private String opponentIdMonsterTwo;
     ImageView secondMonster;
-    HBox selectBox2;
+    VBox selectBox2;
     private EncounterController encounterController;
 
     @Inject
-<span class="nc" id="L44">    public RenderBeastController() {</span>
-<span class="nc" id="L45">    }</span>
+<span class="nc" id="L51">    public RenderBeastController() {</span>
+<span class="nc" id="L52">    }</span>
 
     @SuppressWarnings(&quot;IntegerDivisionInFloatingPointContext&quot;)
     @Override
     public void onResize(int width, int height) {
-<span class="nc" id="L50">        ellipse.setRadiusX(width / 5);</span>
-<span class="nc" id="L51">        ellipse.setRadiusY(height / 6);</span>
-<span class="nc" id="L52">    }</span>
+<span class="nc" id="L57">        ellipse.setRadiusX(width / 5);</span>
+<span class="nc" id="L58">        ellipse.setRadiusY(height / 6);</span>
+<span class="nc" id="L59">    }</span>
 
     @Override
     public Parent render() {
-<span class="nc" id="L56">        Parent parent = super.render();</span>
+<span class="nc" id="L63">        Parent parent = super.render();</span>
 
-<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (monster1 != null) {</span>
-<span class="nc" id="L59">            disposables.add(presetsService.getMonsterImage(monster1.type())</span>
-<span class="nc" id="L60">                    .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L61">                    .subscribe(monsterImage -&gt; {</span>
-<span class="nc" id="L62">                        firstMonster.setImage(monsterImage);</span>
-<span class="nc" id="L63">                        selectBox.setOnMouseClicked(event -&gt; {</span>
-<span class="nc bnc" id="L64" title="All 4 branches missed.">                            if (selectBox2 != null &amp;&amp; selectBox2.getStyle().contains(&quot;-fx-border-radius: 10px;&quot;)) {</span>
-<span class="nc" id="L65">                                selectBox2.setStyle(&quot;-fx-border-radius: 0px; -fx-alignment: CENTER; -fx-max-height: 125px; -fx-pref-height: 125px; -fx-pref-width: 125px;&quot;);</span>
+<span class="nc" id="L65">        itemImageBox.toBack();</span>
+
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (monster1 != null) {</span>
+<span class="nc" id="L68">            disposables.add(presetsService.getMonsterImage(monster1.type())</span>
+<span class="nc" id="L69">                    .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L70">                    .subscribe(monsterImage -&gt; {</span>
+<span class="nc" id="L71">                        firstMonster.setImage(monsterImage);</span>
+<span class="nc" id="L72">                        selectBox.setOnMouseClicked(event -&gt; {</span>
+<span class="nc bnc" id="L73" title="All 4 branches missed.">                            if (selectBox2 != null &amp;&amp; selectBox2.getStyle().contains(&quot;-fx-border-radius: 10px;&quot;)) {</span>
+<span class="nc" id="L74">                                selectBox2.setStyle(&quot;-fx-border-radius: 0px; -fx-alignment: BOTTOM_CENTER; -fx-max-height: 150px; -fx-pref-height: 150px; -fx-pref-width: 125px;&quot;);</span>
                             }
-<span class="nc" id="L67">                            selectBox.setStyle(&quot;-fx-border-radius: 10px; -fx-border-color: #000000;&quot;);</span>
-<span class="nc" id="L68">                            encounterController.setChosenTarget(opponentIdMonsterOne);</span>
-<span class="nc" id="L69">                        });</span>
-<span class="nc" id="L70">                    }));</span>
+<span class="nc" id="L76">                            selectBox.setStyle(&quot;-fx-border-radius: 10px; -fx-border-color: #000000;&quot;);</span>
+<span class="nc" id="L77">                            encounterController.setChosenTarget(opponentIdMonsterOne);</span>
+<span class="nc" id="L78">                        });</span>
+<span class="nc" id="L79">                    }));</span>
         }
 
-<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (monster2 != null) {</span>
-<span class="nc" id="L74">            secondMonster = new ImageView();</span>
-<span class="nc" id="L75">            selectBox2 = new HBox();</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (monster2 != null) {</span>
+<span class="nc" id="L83">            secondMonster = new ImageView();</span>
+<span class="nc" id="L84">            selectBox2 = new VBox();</span>
 
-<span class="nc" id="L77">            disposables.add(presetsService.getMonsterImage(monster2.type())</span>
-<span class="nc" id="L78">                    .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L79">                    .subscribe(monsterImage -&gt; {</span>
-<span class="nc" id="L80">                        secondMonster.setImage(monsterImage);</span>
-<span class="nc" id="L81">                        selectBox2.setStyle(&quot;-fx-alignment: CENTER; -fx-max-height: 125px; -fx-pref-height: 125px; -fx-pref-width: 125px;&quot;);</span>
-<span class="nc" id="L82">                        selectBox2.getChildren().add(secondMonster);</span>
-<span class="nc" id="L83">                        monsterContainer.getChildren().addAll(selectBox2);</span>
+<span class="nc" id="L86">            disposables.add(presetsService.getMonsterImage(monster2.type())</span>
+<span class="nc" id="L87">                    .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L88">                    .subscribe(monsterImage -&gt; {</span>
+<span class="nc" id="L89">                        secondMonster.setImage(monsterImage);</span>
+<span class="nc" id="L90">                        selectBox2.setStyle(&quot;-fx-alignment: BOTTOM_CENTER; -fx-max-height: 150px; -fx-pref-height: 150px; -fx-pref-width: 125px;&quot;);</span>
+<span class="nc" id="L91">                        selectBox2.getChildren().add(secondMonster);</span>
+<span class="nc" id="L92">                        monsterContainer.getChildren().addAll(selectBox2);</span>
 
-<span class="nc" id="L85">                        selectBox2.setOnMouseClicked(event -&gt; {</span>
-<span class="nc bnc" id="L86" title="All 2 branches missed.">                            if (selectBox.getStyle().contains(&quot;-fx-border-radius: 10px;&quot;)) {</span>
-<span class="nc" id="L87">                                selectBox.setStyle(&quot;&quot;);</span>
+<span class="nc" id="L94">                        selectBox2.setOnMouseClicked(event -&gt; {</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">                            if (selectBox.getStyle().contains(&quot;-fx-border-radius: 10px;&quot;)) {</span>
+<span class="nc" id="L96">                                selectBox.setStyle(&quot;&quot;);</span>
                             }
-<span class="nc" id="L89">                            selectBox2.setStyle(&quot;-fx-border-radius: 10px; -fx-border-color: #000000; -fx-alignment: CENTER; -fx-max-height: 125px; -fx-pref-height: 125px; -fx-pref-width: 125px;&quot;);</span>
-<span class="nc" id="L90">                            encounterController.setChosenTarget(opponentIdMonsterTwo);</span>
-<span class="nc" id="L91">                        });</span>
-<span class="nc" id="L92">                    }));</span>
+<span class="nc" id="L98">                            selectBox2.setStyle(&quot;-fx-border-radius: 10px; -fx-border-color: #000000; -fx-alignment: BOTTOM_CENTER; -fx-max-height: 150px; -fx-pref-height: 150px; -fx-pref-width: 125px;&quot;);</span>
+<span class="nc" id="L99">                            encounterController.setChosenTarget(opponentIdMonsterTwo);</span>
+<span class="nc" id="L100">                        });</span>
+<span class="nc" id="L101">                    }));</span>
         }
 
-<span class="nc" id="L95">        return parent;</span>
+<span class="nc" id="L104">        return parent;</span>
     }
 
     public RenderBeastController setMonster1(Monster monster1) {
-<span class="nc" id="L99">        this.monster1 = monster1;</span>
-<span class="nc" id="L100">        return this;</span>
+<span class="nc" id="L108">        this.monster1 = monster1;</span>
+<span class="nc" id="L109">        return this;</span>
     }
 
     @SuppressWarnings(&quot;UnusedReturnValue&quot;)
     public RenderBeastController setMonster2(Monster monster2) {
-<span class="nc" id="L105">        this.monster2 = monster2;</span>
-<span class="nc" id="L106">        return this;</span>
+<span class="nc" id="L114">        this.monster2 = monster2;</span>
+<span class="nc" id="L115">        return this;</span>
     }
 
     public void setMonsterOneOpponentId(String id) {
-<span class="nc" id="L110">        this.opponentIdMonsterOne = id;</span>
-<span class="nc" id="L111">    }</span>
+<span class="nc" id="L119">        this.opponentIdMonsterOne = id;</span>
+<span class="nc" id="L120">    }</span>
 
     public void setMonsterTwoOpponentId(String id) {
-<span class="nc" id="L114">        this.opponentIdMonsterTwo = id;</span>
-<span class="nc" id="L115">    }</span>
+<span class="nc" id="L123">        this.opponentIdMonsterTwo = id;</span>
+<span class="nc" id="L124">    }</span>
 
     public String getOpponentIdMonsterOne() {
-<span class="nc" id="L118">        return opponentIdMonsterOne;</span>
+<span class="nc" id="L127">        return opponentIdMonsterOne;</span>
     }
 
     public String getOpponentIdMonsterTwo() {
-<span class="nc" id="L122">        return opponentIdMonsterTwo;</span>
+<span class="nc" id="L131">        return opponentIdMonsterTwo;</span>
     }
 
     public void setImageMonsterOne(Image image) {
-<span class="nc" id="L126">        this.firstMonster.setImage(image);</span>
-<span class="nc bnc" id="L127" title="All 2 branches missed.">        if (image == null) {</span>
-<span class="nc" id="L128">            monsterContainer.getChildren().remove(selectBox);</span>
+<span class="nc" id="L135">        this.firstMonster.setImage(image);</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (image == null) {</span>
+<span class="nc" id="L137">            monsterContainer.getChildren().remove(selectBox);</span>
         }
-<span class="nc" id="L130">    }</span>
+<span class="nc" id="L139">    }</span>
 
     public void setImageMonsterTwo(Image image) {
-<span class="nc" id="L133">        this.secondMonster.setImage(image);</span>
-<span class="nc bnc" id="L134" title="All 2 branches missed.">        if (image == null) {</span>
-<span class="nc" id="L135">            monsterContainer.getChildren().remove(selectBox2);</span>
+<span class="nc" id="L142">        this.secondMonster.setImage(image);</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (image == null) {</span>
+<span class="nc" id="L144">            monsterContainer.getChildren().remove(selectBox2);</span>
         }
-<span class="nc" id="L137">    }</span>
+<span class="nc" id="L146">    }</span>
 
     public void setEncounterController(EncounterController controller) {
-<span class="nc" id="L140">        this.encounterController = controller;</span>
-<span class="nc" id="L141">    }</span>
+<span class="nc" id="L149">        this.encounterController = controller;</span>
+<span class="nc" id="L150">    }</span>
 
     @Override
     public void destroy() {
-<span class="nc" id="L145">        super.destroy();</span>
+<span class="nc" id="L154">        super.destroy();</span>
 
-<span class="nc" id="L147">    }</span>
+<span class="nc" id="L156">    }</span>
+
+    public void setItemAnimation(Image image, VBox selectBox) {
+<span class="nc" id="L159">        ImageView imageView = new ImageView();</span>
+<span class="nc" id="L160">        imageView.setFitHeight(25);</span>
+<span class="nc" id="L161">        imageView.setFitWidth(25);</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">        if (selectBox != null) {</span>
+<span class="nc" id="L163">            selectBox.getChildren().add(0, imageView);</span>
+<span class="nc" id="L164">            imageView.setImage(image);</span>
+        } else {
+<span class="nc" id="L166">            itemImage.setImage(image);</span>
+        }
+        // Timer to remove the shown image
+<span class="nc" id="L169">        Timer timer = new Timer();</span>
+<span class="nc" id="L170">        timer.schedule(new TimerTask() {</span>
+            @Override
+            public void run() {
+<span class="nc" id="L173">                Platform.runLater(() -&gt; {</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">                    if (selectBox != null) {</span>
+<span class="nc" id="L175">                        imageView.setImage(null);</span>
+<span class="nc" id="L176">                        selectBox.getChildren().remove(imageView);</span>
+                    } else {
+<span class="nc" id="L178">                        itemImage.setImage(null);</span>
+                    }
+<span class="nc" id="L180">                });</span>
+<span class="nc" id="L181">            }</span>
+        }, 2000);
+<span class="nc" id="L183">    }</span>
+
+    public void removeSelectBox() {
+<span class="nc" id="L186">        selectBox.setStyle(&quot;-fx-alignment: BOTTOM_CENTER; -fx-max-height: 150px; -fx-pref-height: 150px; -fx-pref-width: 125px;&quot;);</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        if (selectBox2 != null) {</span>
+<span class="nc" id="L188">            selectBox2.setStyle(&quot;-fx-alignment: BOTTOM_CENTER; -fx-max-height: 150px; -fx-pref-height: 150px; -fx-pref-width: 125px;&quot;);</span>
+        }
+<span class="nc" id="L190">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

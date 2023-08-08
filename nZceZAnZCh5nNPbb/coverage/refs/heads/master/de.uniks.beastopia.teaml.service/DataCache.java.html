@@ -73,31 +73,32 @@ public class DataCache {
 <span class="fc" id="L73">    private List&lt;Item&gt; items = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L74">    private List&lt;Opponent&gt; currentOpponents = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L75">    private List&lt;MonsterTypeDto&gt; allBeasts = new ArrayList&lt;&gt;();</span>
+    private boolean visibleHints;
 
     @Inject
-<span class="fc" id="L78">    public DataCache() {</span>
-<span class="fc" id="L79">    }</span>
+<span class="fc" id="L79">    public DataCache() {</span>
+<span class="fc" id="L80">    }</span>
 
     @SuppressWarnings(&quot;SameParameterValue&quot;)
     private static Image loadImage(String imageUrl, double width, double height, boolean preserveRatio, boolean smooth) {
-<span class="nc" id="L83">        return new Image(imageUrl, width, height, preserveRatio, smooth);</span>
+<span class="nc" id="L84">        return new Image(imageUrl, width, height, preserveRatio, smooth);</span>
     }
 
     private static Image scaleImage(Image input, @SuppressWarnings(&quot;SameParameterValue&quot;) int width, @SuppressWarnings(&quot;SameParameterValue&quot;) int height) {
-<span class="nc" id="L87">        IMAGE_VIEW.setImage(input);</span>
-<span class="nc" id="L88">        IMAGE_VIEW.setPreserveRatio(true);</span>
-<span class="nc" id="L89">        IMAGE_VIEW.setFitWidth(width);</span>
-<span class="nc" id="L90">        IMAGE_VIEW.setFitHeight(height);</span>
-<span class="nc" id="L91">        SnapshotParameters parameters = new SnapshotParameters();</span>
-<span class="nc" id="L92">        parameters.setFill(Paint.valueOf(&quot;transparent&quot;));</span>
-<span class="nc" id="L93">        IMAGE_VIEW.setCache(false);</span>
-<span class="nc" id="L94">        return IMAGE_VIEW.snapshot(parameters, null);</span>
+<span class="nc" id="L88">        IMAGE_VIEW.setImage(input);</span>
+<span class="nc" id="L89">        IMAGE_VIEW.setPreserveRatio(true);</span>
+<span class="nc" id="L90">        IMAGE_VIEW.setFitWidth(width);</span>
+<span class="nc" id="L91">        IMAGE_VIEW.setFitHeight(height);</span>
+<span class="nc" id="L92">        SnapshotParameters parameters = new SnapshotParameters();</span>
+<span class="nc" id="L93">        parameters.setFill(Paint.valueOf(&quot;transparent&quot;));</span>
+<span class="nc" id="L94">        IMAGE_VIEW.setCache(false);</span>
+<span class="nc" id="L95">        return IMAGE_VIEW.snapshot(parameters, null);</span>
     }
 
     @SuppressWarnings(&quot;unused&quot;)
     public void addUser(User user) {
-<span class="fc" id="L99">        users.add(user);</span>
-<span class="fc" id="L100">    }</span>
+<span class="fc" id="L100">        users.add(user);</span>
+<span class="fc" id="L101">    }</span>
 
     /**
      * Adds a range of user to the list of all users the server is aware of
@@ -106,8 +107,8 @@ public class DataCache {
      */
     @SuppressWarnings(&quot;unused&quot;)
     public void addUsers(List&lt;User&gt; users) {
-<span class="fc" id="L109">        this.users.addAll(users);</span>
-<span class="fc" id="L110">    }</span>
+<span class="fc" id="L110">        this.users.addAll(users);</span>
+<span class="fc" id="L111">    }</span>
 
     /**
      * Removes a user from the list of all users the server is aware of
@@ -116,40 +117,40 @@ public class DataCache {
      */
     @SuppressWarnings(&quot;unused&quot;)
     public void removeUser(User user) {
-<span class="fc" id="L119">        users.remove(user);</span>
-<span class="fc" id="L120">    }</span>
+<span class="fc" id="L120">        users.remove(user);</span>
+<span class="fc" id="L121">    }</span>
 
     @SuppressWarnings(&quot;BooleanMethodIsAlwaysInverted&quot;)
     public boolean areaVisited(String areaName) {
-<span class="fc" id="L124">        String areaID = areas.stream()</span>
-<span class="fc" id="L125">                .filter(area -&gt; area.name().equals(areaName))</span>
-<span class="fc" id="L126">                .findFirst()</span>
-<span class="fc" id="L127">                .map(Area::_id)</span>
-<span class="fc" id="L128">                .orElse(null);</span>
+<span class="fc" id="L125">        String areaID = areas.stream()</span>
+<span class="fc" id="L126">                .filter(area -&gt; area.name().equals(areaName))</span>
+<span class="fc" id="L127">                .findFirst()</span>
+<span class="fc" id="L128">                .map(Area::_id)</span>
+<span class="fc" id="L129">                .orElse(null);</span>
 
-<span class="fc bfc" id="L130" title="All 2 branches covered.">        if (areaID == null)</span>
-<span class="fc" id="L131">            return false;</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (areaID == null)</span>
+<span class="fc" id="L132">            return false;</span>
 
-<span class="fc" id="L133">        return trainer.visitedAreas().contains(areaID);</span>
+<span class="fc" id="L134">        return trainer.visitedAreas().contains(areaID);</span>
     }
 
     public boolean isFastTravelable(String areaName) {
-<span class="fc" id="L137">        return areas.stream()</span>
-<span class="fc" id="L138">                .filter(area -&gt; area.name().equals(areaName))</span>
-<span class="fc" id="L139">                .findFirst()</span>
-<span class="fc bfc" id="L140" title="All 2 branches covered.">                .map(area -&gt; area.spawn() != null)</span>
-<span class="fc" id="L141">                .orElse(false);</span>
+<span class="fc" id="L138">        return areas.stream()</span>
+<span class="fc" id="L139">                .filter(area -&gt; area.name().equals(areaName))</span>
+<span class="fc" id="L140">                .findFirst()</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">                .map(area -&gt; area.spawn() != null)</span>
+<span class="fc" id="L142">                .orElse(false);</span>
     }
 
     public Area getAreaByName(String areaName) {
-<span class="fc" id="L145">        return areas.stream()</span>
-<span class="fc" id="L146">                .filter(area -&gt; area.name().equals(areaName))</span>
-<span class="fc" id="L147">                .findFirst()</span>
-<span class="fc" id="L148">                .orElse(null);</span>
+<span class="fc" id="L146">        return areas.stream()</span>
+<span class="fc" id="L147">                .filter(area -&gt; area.name().equals(areaName))</span>
+<span class="fc" id="L148">                .findFirst()</span>
+<span class="fc" id="L149">                .orElse(null);</span>
     }
 
     public List&lt;User&gt; getAllUsers() {
-<span class="fc" id="L152">        return users;</span>
+<span class="fc" id="L153">        return users;</span>
     }
 
     /**
@@ -158,385 +159,393 @@ public class DataCache {
      * @param users The list of all users
      */
     public void setAllUsers(List&lt;User&gt; users) {
-<span class="fc" id="L161">        this.users = new ArrayList&lt;&gt;(users);</span>
-<span class="fc" id="L162">    }</span>
+<span class="fc" id="L162">        this.users = new ArrayList&lt;&gt;(users);</span>
+<span class="fc" id="L163">    }</span>
 
     public User getUser(String id) {
-<span class="fc" id="L165">        return users.stream()</span>
-<span class="fc" id="L166">                .filter(user -&gt; user._id().equals(id))</span>
-<span class="fc" id="L167">                .findFirst()</span>
-<span class="fc" id="L168">                .orElse(null);</span>
+<span class="fc" id="L166">        return users.stream()</span>
+<span class="fc" id="L167">                .filter(user -&gt; user._id().equals(id))</span>
+<span class="fc" id="L168">                .findFirst()</span>
+<span class="fc" id="L169">                .orElse(null);</span>
     }
 
     public void setRegion(Region region) {
-<span class="fc" id="L172">        this.joinedRegion = region;</span>
-<span class="fc" id="L173">    }</span>
+<span class="fc" id="L173">        this.joinedRegion = region;</span>
+<span class="fc" id="L174">    }</span>
 
     public Region getJoinedRegion() {
-<span class="fc" id="L176">        return joinedRegion;</span>
+<span class="fc" id="L177">        return joinedRegion;</span>
     }
 
     public List&lt;Area&gt; getAreas() {
-<span class="fc" id="L180">        return this.areas;</span>
+<span class="fc" id="L181">        return this.areas;</span>
     }
 
     public void setAreas(List&lt;Area&gt; areas) {
-<span class="fc" id="L184">        this.areas = new ArrayList&lt;&gt;(areas);</span>
-<span class="fc" id="L185">    }</span>
+<span class="fc" id="L185">        this.areas = new ArrayList&lt;&gt;(areas);</span>
+<span class="fc" id="L186">    }</span>
 
     public Area getArea(String id) {
-<span class="fc" id="L188">        return areas.stream()</span>
-<span class="fc" id="L189">                .filter(area -&gt; area._id().equals(id))</span>
-<span class="fc" id="L190">                .findFirst()</span>
-<span class="fc" id="L191">                .orElse(null);</span>
+<span class="fc" id="L189">        return areas.stream()</span>
+<span class="fc" id="L190">                .filter(area -&gt; area._id().equals(id))</span>
+<span class="fc" id="L191">                .findFirst()</span>
+<span class="fc" id="L192">                .orElse(null);</span>
     }
 
     public Trainer getTrainer() {
-<span class="fc" id="L195">        return trainer;</span>
+<span class="fc" id="L196">        return trainer;</span>
     }
 
     public void setTrainer(Trainer trainer) {
-<span class="fc" id="L199">        this.trainer = trainer;</span>
-<span class="fc" id="L200">    }</span>
+<span class="fc" id="L200">        this.trainer = trainer;</span>
+<span class="fc" id="L201">    }</span>
 
     public void setCharacterImage(String name, Image image) {
-<span class="fc" id="L203">        synchronized (characters) {</span>
-<span class="pc" id="L204">            charactersAiring.removeIf(pair -&gt; pair.getKey().equals(name));</span>
-<span class="fc" id="L205">            characters.removeIf(pair -&gt; pair.getKey().equals(name));</span>
-<span class="fc" id="L206">            characters.add(new Pair&lt;&gt;(name, image));</span>
-<span class="fc" id="L207">        }</span>
-<span class="fc" id="L208">    }</span>
+<span class="fc" id="L204">        synchronized (characters) {</span>
+<span class="pc" id="L205">            charactersAiring.removeIf(pair -&gt; pair.getKey().equals(name));</span>
+<span class="fc" id="L206">            characters.removeIf(pair -&gt; pair.getKey().equals(name));</span>
+<span class="fc" id="L207">            characters.add(new Pair&lt;&gt;(name, image));</span>
+<span class="fc" id="L208">        }</span>
+<span class="fc" id="L209">    }</span>
 
     public void setCharacterResizedImage(String name, Image image) {
-<span class="fc" id="L211">        synchronized (characters) {</span>
-<span class="pc" id="L212">            charactersAiring.removeIf(pair -&gt; pair.getKey().equals(name));</span>
-<span class="fc" id="L213">            charactersResized.removeIf(pair -&gt; pair.getKey().equals(name));</span>
-<span class="fc" id="L214">            charactersResized.add(new Pair&lt;&gt;(name, image));</span>
-<span class="fc" id="L215">        }</span>
-<span class="fc" id="L216">    }</span>
+<span class="fc" id="L212">        synchronized (characters) {</span>
+<span class="pc" id="L213">            charactersAiring.removeIf(pair -&gt; pair.getKey().equals(name));</span>
+<span class="fc" id="L214">            charactersResized.removeIf(pair -&gt; pair.getKey().equals(name));</span>
+<span class="fc" id="L215">            charactersResized.add(new Pair&lt;&gt;(name, image));</span>
+<span class="fc" id="L216">        }</span>
+<span class="fc" id="L217">    }</span>
 
     public Observable&lt;Image&gt; getOrLoadTrainerImage(String trainer, boolean useConstantValues) {
-<span class="fc" id="L219">        synchronized (characters) {</span>
-<span class="pc bpc" id="L220" title="2 of 6 branches missed.">            if (characters.stream().anyMatch(pair -&gt; pair.getKey().equals(trainer) &amp;&amp; pair.getValue() != null)) {</span>
-<span class="fc" id="L221">                return getDownloadedImage(trainer, useConstantValues);</span>
-<span class="nc bnc" id="L222" title="All 2 branches missed.">            } else if (charactersAiring.stream().noneMatch(pair -&gt; pair.getKey().equals(trainer))) {</span>
-<span class="nc" id="L223">                return downloadImage(trainer, useConstantValues);</span>
+<span class="fc" id="L220">        synchronized (characters) {</span>
+<span class="pc bpc" id="L221" title="2 of 6 branches missed.">            if (characters.stream().anyMatch(pair -&gt; pair.getKey().equals(trainer) &amp;&amp; pair.getValue() != null)) {</span>
+<span class="fc" id="L222">                return getDownloadedImage(trainer, useConstantValues);</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">            } else if (charactersAiring.stream().noneMatch(pair -&gt; pair.getKey().equals(trainer))) {</span>
+<span class="nc" id="L224">                return downloadImage(trainer, useConstantValues);</span>
             } else {
-<span class="nc" id="L225">                return observableToAiringDownload(trainer, useConstantValues);</span>
+<span class="nc" id="L226">                return observableToAiringDownload(trainer, useConstantValues);</span>
             }
         }
     }
 
     public Map&lt;String, Trainer&gt; getTrainers() {
-<span class="fc" id="L231">        return trainers;</span>
+<span class="fc" id="L232">        return trainers;</span>
     }
 
     public void updateTrainers(Trainer toUpdate) {
-<span class="nc" id="L235">        trainers.put(toUpdate._id(), toUpdate);</span>
-<span class="nc" id="L236">    }</span>
+<span class="nc" id="L236">        trainers.put(toUpdate._id(), toUpdate);</span>
+<span class="nc" id="L237">    }</span>
 
     public void setTrainers(Map&lt;String, Trainer&gt; trainers) {
-<span class="fc" id="L239">        this.trainers.clear();</span>
-<span class="fc" id="L240">        this.trainers = trainers;</span>
-<span class="fc" id="L241">    }</span>
+<span class="fc" id="L240">        this.trainers.clear();</span>
+<span class="fc" id="L241">        this.trainers = trainers;</span>
+<span class="fc" id="L242">    }</span>
 
     public void removeRemoteTrainer(String id) {
-<span class="nc" id="L244">        trainers.remove(id);</span>
-<span class="nc" id="L245">    }</span>
+<span class="nc" id="L245">        trainers.remove(id);</span>
+<span class="nc" id="L246">    }</span>
 
     public Trainer getTrainer(String id) {
-<span class="fc" id="L248">        return trainers.get(id);</span>
+<span class="fc" id="L249">        return trainers.get(id);</span>
     }
 
     public List&lt;Pair&lt;String, Image&gt;&gt; getCharacters() {
-<span class="fc" id="L252">        synchronized (characters) {</span>
-<span class="fc" id="L253">            return new ArrayList&lt;&gt;(characters);</span>
+<span class="fc" id="L253">        synchronized (characters) {</span>
+<span class="fc" id="L254">            return new ArrayList&lt;&gt;(characters);</span>
         }
     }
 
     public void setCharacters(List&lt;String&gt; characters) {
-<span class="fc" id="L258">        synchronized (this.characters) {</span>
-<span class="fc bfc" id="L259" title="All 2 branches covered.">            for (String character : characters) {</span>
-<span class="pc bpc" id="L260" title="1 of 2 branches missed.">                if (this.characters.stream().anyMatch(pair -&gt; pair.getKey().equals(character)))</span>
-<span class="nc" id="L261">                    continue;</span>
-<span class="fc" id="L262">                this.characters.add(new Pair&lt;&gt;(character, null));</span>
-<span class="fc" id="L263">            }</span>
+<span class="fc" id="L259">        synchronized (this.characters) {</span>
+<span class="fc bfc" id="L260" title="All 2 branches covered.">            for (String character : characters) {</span>
+<span class="pc bpc" id="L261" title="1 of 2 branches missed.">                if (this.characters.stream().anyMatch(pair -&gt; pair.getKey().equals(character)))</span>
+<span class="nc" id="L262">                    continue;</span>
+<span class="fc" id="L263">                this.characters.add(new Pair&lt;&gt;(character, null));</span>
+<span class="fc" id="L264">            }</span>
 
-<span class="fc" id="L265">            this.characters.removeIf(pair -&gt; characters.stream().noneMatch(character -&gt; character.equals(pair.getKey())));</span>
-<span class="fc" id="L266">        }</span>
-<span class="fc" id="L267">    }</span>
+<span class="fc" id="L266">            this.characters.removeIf(pair -&gt; characters.stream().noneMatch(character -&gt; character.equals(pair.getKey())));</span>
+<span class="fc" id="L267">        }</span>
+<span class="fc" id="L268">    }</span>
 
     public Pair&lt;String, Image&gt; getCharacterImage(String image) {
-<span class="fc" id="L270">        synchronized (characters) {</span>
-<span class="fc" id="L271">            return characters.stream()</span>
-<span class="fc" id="L272">                    .filter(pair -&gt; pair.getKey().equals(image))</span>
-<span class="fc" id="L273">                    .findFirst()</span>
-<span class="fc" id="L274">                    .orElse(null);</span>
+<span class="fc" id="L271">        synchronized (characters) {</span>
+<span class="fc" id="L272">            return characters.stream()</span>
+<span class="fc" id="L273">                    .filter(pair -&gt; pair.getKey().equals(image))</span>
+<span class="fc" id="L274">                    .findFirst()</span>
+<span class="fc" id="L275">                    .orElse(null);</span>
         }
     }
 
     public Image getImageAvatar(User user) {
         Image imageAvatar;
-<span class="nc bnc" id="L280" title="All 4 branches missed.">        if (user.avatar() != null &amp;&amp; user.avatar().contains(&quot;data:image/png;base64,&quot;)) {</span>
-<span class="nc" id="L281">            String avatar = user.avatar().replace(&quot;data:image/png;base64,&quot;, &quot;&quot;).trim();</span>
-<span class="nc" id="L282">            byte[] imageData = Base64.getDecoder().decode(avatar);</span>
-<span class="nc" id="L283">            imageAvatar = new Image(new ByteArrayInputStream(imageData));</span>
-<span class="nc bnc" id="L284" title="All 4 branches missed.">        } else if (user.avatar() != null &amp;&amp; user.avatar().contains(&quot;https://&quot;)) {</span>
-<span class="nc" id="L285">            imageAvatar = loadImage(user.avatar(), 40.0, 40.0, false, false);</span>
+<span class="nc bnc" id="L281" title="All 4 branches missed.">        if (user.avatar() != null &amp;&amp; user.avatar().contains(&quot;data:image/png;base64,&quot;)) {</span>
+<span class="nc" id="L282">            String avatar = user.avatar().replace(&quot;data:image/png;base64,&quot;, &quot;&quot;).trim();</span>
+<span class="nc" id="L283">            byte[] imageData = Base64.getDecoder().decode(avatar);</span>
+<span class="nc" id="L284">            imageAvatar = new Image(new ByteArrayInputStream(imageData));</span>
+<span class="nc bnc" id="L285" title="All 4 branches missed.">        } else if (user.avatar() != null &amp;&amp; user.avatar().contains(&quot;https://&quot;)) {</span>
+<span class="nc" id="L286">            imageAvatar = loadImage(user.avatar(), 40.0, 40.0, false, false);</span>
         } else {
-<span class="nc" id="L287">            imageAvatar = loadImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/user.png&quot;)).toString(),</span>
+<span class="nc" id="L288">            imageAvatar = loadImage(Objects.requireNonNull(Main.class.getResource(&quot;assets/user.png&quot;)).toString(),</span>
                     40.0, 40.0, false, false);
         }
-<span class="nc" id="L290">        return imageAvatar;</span>
+<span class="nc" id="L291">        return imageAvatar;</span>
     }
 
     public String getAvatarDataUrl(BufferedImage bufferedImage) {
-<span class="fc" id="L294">        ByteArrayOutputStream bytes = new ByteArrayOutputStream();</span>
+<span class="fc" id="L295">        ByteArrayOutputStream bytes = new ByteArrayOutputStream();</span>
         try {
-<span class="fc" id="L296">            ImageIO.write(bufferedImage, &quot;png&quot;, bytes);</span>
-<span class="nc" id="L297">        } catch (IOException e) {</span>
-<span class="nc" id="L298">            throw new RuntimeException(e);</span>
-<span class="fc" id="L299">        }</span>
+<span class="fc" id="L297">            ImageIO.write(bufferedImage, &quot;png&quot;, bytes);</span>
+<span class="nc" id="L298">        } catch (IOException e) {</span>
+<span class="nc" id="L299">            throw new RuntimeException(e);</span>
+<span class="fc" id="L300">        }</span>
 
-<span class="fc" id="L301">        return &quot;data:image/png;base64,&quot; + Base64.getEncoder().encodeToString(bytes.toByteArray());</span>
+<span class="fc" id="L302">        return &quot;data:image/png;base64,&quot; + Base64.getEncoder().encodeToString(bytes.toByteArray());</span>
     }
 
     public File provideImageFile(App app) {
-<span class="nc" id="L305">        FileChooser fileChooser = new FileChooser();</span>
-<span class="nc" id="L306">        fileChooser.setTitle(&quot;Choose Avatar&quot;);</span>
-<span class="nc" id="L307">        fileChooser.setInitialDirectory(new File(System.getProperty(&quot;user.home&quot;)));</span>
-<span class="nc" id="L308">        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(&quot;Image Files&quot;, &quot;*.png&quot;, &quot;*.jpg&quot;, &quot;*.jpeg&quot;));</span>
-<span class="nc" id="L309">        return fileChooser.showOpenDialog(app.getStage());</span>
+<span class="nc" id="L306">        FileChooser fileChooser = new FileChooser();</span>
+<span class="nc" id="L307">        fileChooser.setTitle(&quot;Choose Avatar&quot;);</span>
+<span class="nc" id="L308">        fileChooser.setInitialDirectory(new File(System.getProperty(&quot;user.home&quot;)));</span>
+<span class="nc" id="L309">        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(&quot;Image Files&quot;, &quot;*.png&quot;, &quot;*.jpg&quot;, &quot;*.jpeg&quot;));</span>
+<span class="nc" id="L310">        return fileChooser.showOpenDialog(app.getStage());</span>
     }
 
     public BufferedImage provideBufferedImage(File file) {
         BufferedImage bufferedImage;
         try {
-<span class="nc" id="L315">            bufferedImage = ImageIO.read(file);</span>
-<span class="fc" id="L316">        } catch (IOException e) {</span>
-<span class="fc" id="L317">            throw new RuntimeException(e);</span>
-<span class="nc" id="L318">        }</span>
+<span class="nc" id="L316">            bufferedImage = ImageIO.read(file);</span>
+<span class="fc" id="L317">        } catch (IOException e) {</span>
+<span class="fc" id="L318">            throw new RuntimeException(e);</span>
+<span class="nc" id="L319">        }</span>
 
-<span class="nc" id="L320">        return resizeImage(bufferedImage);</span>
+<span class="nc" id="L321">        return resizeImage(bufferedImage);</span>
     }
 
     private BufferedImage resizeImage(BufferedImage bufferedImage) {
-<span class="nc" id="L324">        BufferedImage resized = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);</span>
-<span class="nc" id="L325">        Graphics2D graphics = resized.createGraphics();</span>
-<span class="nc" id="L326">        graphics.drawImage(bufferedImage, 0, 0, 64, 64, null);</span>
-<span class="nc" id="L327">        graphics.dispose();</span>
-<span class="nc" id="L328">        return resized;</span>
+<span class="nc" id="L325">        BufferedImage resized = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);</span>
+<span class="nc" id="L326">        Graphics2D graphics = resized.createGraphics();</span>
+<span class="nc" id="L327">        graphics.drawImage(bufferedImage, 0, 0, 64, 64, null);</span>
+<span class="nc" id="L328">        graphics.dispose();</span>
+<span class="nc" id="L329">        return resized;</span>
     }
 
     public void setAllBeasts(List&lt;MonsterTypeDto&gt; beasts) {
-<span class="fc" id="L332">        this.allBeasts = beasts;</span>
-<span class="fc" id="L333">    }</span>
+<span class="fc" id="L333">        this.allBeasts = beasts;</span>
+<span class="fc" id="L334">    }</span>
 
     public MonsterTypeDto getBeastDto(int id) {
-<span class="fc" id="L336">        return allBeasts.stream()</span>
-<span class="fc bfc" id="L337" title="All 2 branches covered.">                .filter(monsterTypeDto -&gt; monsterTypeDto.id() == id)</span>
-<span class="fc" id="L338">                .findFirst()</span>
-<span class="fc" id="L339">                .orElse(null);</span>
+<span class="fc" id="L337">        return allBeasts.stream()</span>
+<span class="fc bfc" id="L338" title="All 2 branches covered.">                .filter(monsterTypeDto -&gt; monsterTypeDto.id() == id)</span>
+<span class="fc" id="L339">                .findFirst()</span>
+<span class="fc" id="L340">                .orElse(null);</span>
     }
 
     public void addMyAchievement(Achievement achievement) {
-<span class="fc" id="L343">        this.myAchievements.add(achievement);</span>
-<span class="fc" id="L344">    }</span>
+<span class="fc" id="L344">        this.myAchievements.add(achievement);</span>
+<span class="fc" id="L345">    }</span>
 
     public List&lt;Achievement&gt; getMyAchievements() {
-<span class="fc" id="L347">        return this.myAchievements;</span>
+<span class="fc" id="L348">        return this.myAchievements;</span>
     }
 
     public void setMyAchievements(List&lt;Achievement&gt; achievements) {
-<span class="fc" id="L351">        this.myAchievements = new ArrayList&lt;&gt;(achievements);</span>
-<span class="fc" id="L352">    }</span>
+<span class="fc" id="L352">        this.myAchievements = new ArrayList&lt;&gt;(achievements);</span>
+<span class="fc" id="L353">    }</span>
 
     public void addAchievementDescription(String achievementId, String achievementDescription) {
-<span class="fc" id="L355">        this.achievementDescriptions.put(achievementId, achievementDescription);</span>
-<span class="fc" id="L356">    }</span>
+<span class="fc" id="L356">        this.achievementDescriptions.put(achievementId, achievementDescription);</span>
+<span class="fc" id="L357">    }</span>
 
     public Map&lt;String, String&gt; getAchievementDescriptions() {
-<span class="fc" id="L359">        return this.achievementDescriptions;</span>
+<span class="fc" id="L360">        return this.achievementDescriptions;</span>
     }
 
     public void addVisitedArea(String id) {
-<span class="fc" id="L363">        this.visitedAreas.add(id);</span>
-<span class="fc" id="L364">    }</span>
+<span class="fc" id="L364">        this.visitedAreas.add(id);</span>
+<span class="fc" id="L365">    }</span>
 
     public List&lt;String&gt; getVisitedAreas() {
-<span class="fc" id="L367">        return this.visitedAreas;</span>
+<span class="fc" id="L368">        return this.visitedAreas;</span>
     }
 
     public List&lt;Opponent&gt; getCurrentOpponents() {
-<span class="fc" id="L371">        return this.currentOpponents;</span>
+<span class="fc" id="L372">        return this.currentOpponents;</span>
     }
 
     public void setCurrentOpponents(List&lt;Opponent&gt; opponents) {
-<span class="fc" id="L375">        this.currentOpponents = new ArrayList&lt;&gt;(opponents);</span>
-<span class="fc" id="L376">    }</span>
+<span class="fc" id="L376">        this.currentOpponents = new ArrayList&lt;&gt;(opponents);</span>
+<span class="fc" id="L377">    }</span>
 
     public void updateCurrentOpponents(Opponent opponentUpdate) {
-<span class="nc bnc" id="L379" title="All 2 branches missed.">        for (int i = 0; i &lt; currentOpponents.size(); i++) {</span>
-<span class="nc" id="L380">            Opponent o = currentOpponents.get(i);</span>
-<span class="nc bnc" id="L381" title="All 2 branches missed.">            if (o._id().equals(opponentUpdate._id())) {</span>
-<span class="nc" id="L382">                currentOpponents.set(i, opponentUpdate);</span>
-<span class="nc" id="L383">                break;</span>
+<span class="nc bnc" id="L380" title="All 2 branches missed.">        for (int i = 0; i &lt; currentOpponents.size(); i++) {</span>
+<span class="nc" id="L381">            Opponent o = currentOpponents.get(i);</span>
+<span class="nc bnc" id="L382" title="All 2 branches missed.">            if (o._id().equals(opponentUpdate._id())) {</span>
+<span class="nc" id="L383">                currentOpponents.set(i, opponentUpdate);</span>
+<span class="nc" id="L384">                break;</span>
             }
         }
-<span class="nc" id="L386">    }</span>
+<span class="nc" id="L387">    }</span>
 
     public void removeOpponent(String opponentId) {
-<span class="nc bnc" id="L389" title="All 2 branches missed.">        for (Opponent o : currentOpponents) {</span>
-<span class="nc bnc" id="L390" title="All 2 branches missed.">            if (o._id().equals(opponentId)) {</span>
-<span class="nc" id="L391">                currentOpponents.remove(o);</span>
-<span class="nc" id="L392">                break;</span>
+<span class="nc bnc" id="L390" title="All 2 branches missed.">        for (Opponent o : currentOpponents) {</span>
+<span class="nc bnc" id="L391" title="All 2 branches missed.">            if (o._id().equals(opponentId)) {</span>
+<span class="nc" id="L392">                currentOpponents.remove(o);</span>
+<span class="nc" id="L393">                break;</span>
             }
-<span class="nc" id="L394">        }</span>
-<span class="nc" id="L395">    }</span>
+<span class="nc" id="L395">        }</span>
+<span class="nc" id="L396">    }</span>
 
     public void addCurrentOpponent(Opponent o) {
-<span class="nc" id="L398">        this.currentOpponents.add(o);</span>
-<span class="nc" id="L399">    }</span>
+<span class="nc" id="L399">        this.currentOpponents.add(o);</span>
+<span class="nc" id="L400">    }</span>
 
     public Opponent getOpponentByTrainerID(String trainerId) {
-<span class="fc" id="L402">        return currentOpponents.stream()</span>
-<span class="fc" id="L403">                .filter(o -&gt; o.trainer().equals(trainerId))</span>
-<span class="fc" id="L404">                .findFirst()</span>
-<span class="fc" id="L405">                .orElse(null);</span>
+<span class="fc" id="L403">        return currentOpponents.stream()</span>
+<span class="fc" id="L404">                .filter(o -&gt; o.trainer().equals(trainerId))</span>
+<span class="fc" id="L405">                .findFirst()</span>
+<span class="fc" id="L406">                .orElse(null);</span>
     }
 
     public Encounter getCurrentEncounter() {
-<span class="fc" id="L409">        return this.currentEncounter;</span>
+<span class="fc" id="L410">        return this.currentEncounter;</span>
     }
 
     public void setCurrentEncounter(Encounter encounter) {
-<span class="fc" id="L413">        this.currentEncounter = encounter;</span>
-<span class="fc" id="L414">    }</span>
+<span class="fc" id="L414">        this.currentEncounter = encounter;</span>
+<span class="fc" id="L415">    }</span>
 
     public Map&lt;Integer, Image&gt; getItemImages() {
-<span class="fc" id="L417">        return itemImages;</span>
+<span class="fc" id="L418">        return itemImages;</span>
     }
 
     public void setItemImages(Map&lt;Integer, Image&gt; itemImage) {
-<span class="fc" id="L421">        this.itemImages.put(itemImage.keySet().iterator().next(), itemImage.values().iterator().next());</span>
-<span class="fc" id="L422">    }</span>
+<span class="fc" id="L422">        this.itemImages.put(itemImage.keySet().iterator().next(), itemImage.values().iterator().next());</span>
+<span class="fc" id="L423">    }</span>
 
     private Observable&lt;Image&gt; observableToAiringDownload(String trainer, boolean useConstantValues) {
-<span class="nc" id="L425">        return Observable.fromAction(() -&gt; {</span>
-<span class="nc" id="L426">        }).observeOn(Schedulers.io()).map((v) -&gt; {</span>
-<span class="nc" id="L427">            waitForDownload(trainer);</span>
+<span class="nc" id="L426">        return Observable.fromAction(() -&gt; {</span>
+<span class="nc" id="L427">        }).observeOn(Schedulers.io()).map((v) -&gt; {</span>
+<span class="nc" id="L428">            waitForDownload(trainer);</span>
 
-<span class="nc bnc" id="L429" title="All 2 branches missed.">            if (useConstantValues) {</span>
-<span class="nc" id="L430">                return charactersResized.stream()</span>
-<span class="nc" id="L431">                        .filter(pair -&gt; pair.getKey().equals(trainer))</span>
-<span class="nc" id="L432">                        .findFirst()</span>
-<span class="nc" id="L433">                        .map(Pair::getValue)</span>
-<span class="nc" id="L434">                        .orElseThrow();</span>
+<span class="nc bnc" id="L430" title="All 2 branches missed.">            if (useConstantValues) {</span>
+<span class="nc" id="L431">                return charactersResized.stream()</span>
+<span class="nc" id="L432">                        .filter(pair -&gt; pair.getKey().equals(trainer))</span>
+<span class="nc" id="L433">                        .findFirst()</span>
+<span class="nc" id="L434">                        .map(Pair::getValue)</span>
+<span class="nc" id="L435">                        .orElseThrow();</span>
             } else {
-<span class="nc" id="L436">                return characters.stream()</span>
-<span class="nc" id="L437">                        .filter(pair -&gt; pair.getKey().equals(trainer))</span>
-<span class="nc" id="L438">                        .findFirst()</span>
-<span class="nc" id="L439">                        .map(Pair::getValue)</span>
-<span class="nc" id="L440">                        .orElseThrow();</span>
+<span class="nc" id="L437">                return characters.stream()</span>
+<span class="nc" id="L438">                        .filter(pair -&gt; pair.getKey().equals(trainer))</span>
+<span class="nc" id="L439">                        .findFirst()</span>
+<span class="nc" id="L440">                        .map(Pair::getValue)</span>
+<span class="nc" id="L441">                        .orElseThrow();</span>
             }
         });
     }
 
     private void waitForDownload(String trainer) {
-<span class="nc bnc" id="L446" title="All 2 branches missed.">        while (charactersAiring.stream().anyMatch(pair -&gt; pair.getKey().equals(trainer))) {</span>
+<span class="nc bnc" id="L447" title="All 2 branches missed.">        while (charactersAiring.stream().anyMatch(pair -&gt; pair.getKey().equals(trainer))) {</span>
             try {
                 //noinspection BusyWait
-<span class="nc" id="L449">                Thread.sleep(100);</span>
-<span class="nc" id="L450">            } catch (InterruptedException e) {</span>
+<span class="nc" id="L450">                Thread.sleep(100);</span>
+<span class="nc" id="L451">            } catch (InterruptedException e) {</span>
                 //noinspection CallToPrintStackTrace
-<span class="nc" id="L452">                e.printStackTrace();</span>
-<span class="nc" id="L453">            }</span>
+<span class="nc" id="L453">                e.printStackTrace();</span>
+<span class="nc" id="L454">            }</span>
         }
-<span class="nc" id="L455">    }</span>
+<span class="nc" id="L456">    }</span>
 
     private Observable&lt;Image&gt; downloadImage(String trainer, boolean useConstantValues) {
-<span class="nc" id="L458">        Observable&lt;Image&gt; obs = presetsService.getCharacterSprites(trainer, useConstantValues);</span>
-<span class="nc" id="L459">        charactersAiring.add(new Pair&lt;&gt;(trainer, obs));</span>
-<span class="nc" id="L460">        return obs</span>
-<span class="nc" id="L461">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L462">                .map(image -&gt; {</span>
-<span class="nc" id="L463">                    setCharacterImage(trainer, image);</span>
-<span class="nc" id="L464">                    Image resized = scaleImage(image, 384 * PREVIEW_SCALING, 96 * PREVIEW_SCALING);</span>
-<span class="nc" id="L465">                    setCharacterResizedImage(trainer, resized);</span>
-<span class="nc bnc" id="L466" title="All 2 branches missed.">                    return useConstantValues ? resized : image;</span>
+<span class="nc" id="L459">        Observable&lt;Image&gt; obs = presetsService.getCharacterSprites(trainer, useConstantValues);</span>
+<span class="nc" id="L460">        charactersAiring.add(new Pair&lt;&gt;(trainer, obs));</span>
+<span class="nc" id="L461">        return obs</span>
+<span class="nc" id="L462">                .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L463">                .map(image -&gt; {</span>
+<span class="nc" id="L464">                    setCharacterImage(trainer, image);</span>
+<span class="nc" id="L465">                    Image resized = scaleImage(image, 384 * PREVIEW_SCALING, 96 * PREVIEW_SCALING);</span>
+<span class="nc" id="L466">                    setCharacterResizedImage(trainer, resized);</span>
+<span class="nc bnc" id="L467" title="All 2 branches missed.">                    return useConstantValues ? resized : image;</span>
                 });
     }
 
     private Observable&lt;Image&gt; getDownloadedImage(String trainer, boolean useConstantValues) {
-<span class="pc bpc" id="L471" title="1 of 2 branches missed.">        if (useConstantValues) {</span>
-<span class="nc" id="L472">            return Observable.just(charactersResized.stream()</span>
-<span class="nc" id="L473">                    .filter(pair -&gt; pair.getKey().equals(trainer))</span>
-<span class="nc" id="L474">                    .findFirst()</span>
-<span class="nc" id="L475">                    .map(Pair::getValue)</span>
-<span class="nc" id="L476">                    .orElseThrow());</span>
+<span class="pc bpc" id="L472" title="1 of 2 branches missed.">        if (useConstantValues) {</span>
+<span class="nc" id="L473">            return Observable.just(charactersResized.stream()</span>
+<span class="nc" id="L474">                    .filter(pair -&gt; pair.getKey().equals(trainer))</span>
+<span class="nc" id="L475">                    .findFirst()</span>
+<span class="nc" id="L476">                    .map(Pair::getValue)</span>
+<span class="nc" id="L477">                    .orElseThrow());</span>
         } else {
-<span class="fc" id="L478">            return Observable.just(characters.stream()</span>
-<span class="fc" id="L479">                    .filter(pair -&gt; pair.getKey().equals(trainer))</span>
-<span class="fc" id="L480">                    .findFirst()</span>
-<span class="fc" id="L481">                    .map(Pair::getValue)</span>
-<span class="fc" id="L482">                    .orElseThrow());</span>
+<span class="fc" id="L479">            return Observable.just(characters.stream()</span>
+<span class="fc" id="L480">                    .filter(pair -&gt; pair.getKey().equals(trainer))</span>
+<span class="fc" id="L481">                    .findFirst()</span>
+<span class="fc" id="L482">                    .map(Pair::getValue)</span>
+<span class="fc" id="L483">                    .orElseThrow());</span>
         }
     }
 
     public void setTileset(TileSet tileSet) {
-<span class="fc" id="L487">        this.mapTileset = tileSet;</span>
-<span class="fc" id="L488">    }</span>
+<span class="fc" id="L488">        this.mapTileset = tileSet;</span>
+<span class="fc" id="L489">    }</span>
 
     public TileSet getMapTileset() {
-<span class="fc" id="L491">        return this.mapTileset;</span>
+<span class="fc" id="L492">        return this.mapTileset;</span>
     }
 
     public Image getMapImage() {
-<span class="fc" id="L495">        return this.mapImage;</span>
+<span class="fc" id="L496">        return this.mapImage;</span>
     }
 
     public void setPresetItems(List&lt;ItemTypeDto&gt; presetItems) {
-<span class="nc" id="L499">        this.presetItems = presetItems;</span>
-<span class="nc" id="L500">    }</span>
+<span class="nc" id="L500">        this.presetItems = presetItems;</span>
+<span class="nc" id="L501">    }</span>
 
     public void setMapImage(Image image) {
-<span class="fc" id="L503">        this.mapImage = image;</span>
-<span class="fc" id="L504">    }</span>
+<span class="fc" id="L504">        this.mapImage = image;</span>
+<span class="fc" id="L505">    }</span>
 
     public List&lt;Item&gt; getItems() {
-<span class="nc" id="L507">        return this.items;</span>
+<span class="nc" id="L508">        return this.items;</span>
     }
 
     public void setItems(List&lt;Item&gt; i) {
-<span class="nc" id="L511">        this.items = i;</span>
-<span class="nc" id="L512">    }</span>
+<span class="nc" id="L512">        this.items = i;</span>
+<span class="nc" id="L513">    }</span>
 
     public List&lt;ItemTypeDto&gt; getPresetItems() {
-<span class="nc" id="L515">        return this.presetItems;</span>
+<span class="nc" id="L516">        return this.presetItems;</span>
     }
 
     public void addMonsterImages(int monsterId, Image image) {
-<span class="nc" id="L519">        monsterImages.put(monsterId, image);</span>
-<span class="nc" id="L520">    }</span>
+<span class="nc" id="L520">        monsterImages.put(monsterId, image);</span>
+<span class="nc" id="L521">    }</span>
 
     public Image getMonsterImage(int id) {
-<span class="nc" id="L523">        return monsterImages.get(id);</span>
+<span class="nc" id="L524">        return monsterImages.get(id);</span>
     }
 
     public boolean imageIsDownloaded(int id) {
-<span class="nc" id="L527">        return monsterImages.containsKey(id);</span>
+<span class="nc" id="L528">        return monsterImages.containsKey(id);</span>
     }
 
     public void setTrainerItems(List&lt;Item&gt; itemList) {
-<span class="nc" id="L531">        this.trainerItems = itemList;</span>
-<span class="nc" id="L532">    }</span>
+<span class="nc" id="L532">        this.trainerItems = itemList;</span>
+<span class="nc" id="L533">    }</span>
 
     public List&lt;Item&gt; getTrainerItems() {
-<span class="nc" id="L535">        return this.trainerItems;</span>
+<span class="nc" id="L536">        return this.trainerItems;</span>
     }
 
     public Map&lt;Integer, AbilityDto&gt; getAbilities() {
-<span class="nc" id="L539">        return abilities;</span>
+<span class="nc" id="L540">        return abilities;</span>
     }
+
+    public boolean getHintsNotVisible() {
+<span class="nc" id="L544">        return this.visibleHints;</span>
+    }
+    
+    public void setHintsNotVisible(boolean visibleHints) {
+<span class="nc" id="L548">        this.visibleHints = visibleHints;</span>
+<span class="nc" id="L549">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
