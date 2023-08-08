@@ -11,22 +11,13 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.RadioButton;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class LoginController extends Controller {
     @FXML
@@ -55,115 +46,115 @@ public class LoginController extends Controller {
     @Inject
     Provider&lt;ResourceBundle&gt; resourcesProvider;
 
-<span class="fc" id="L58">    private List&lt;String&gt; userHistory = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L49">    private List&lt;String&gt; userHistory = new ArrayList&lt;&gt;();</span>
     private BooleanBinding isInValid;
-<span class="fc" id="L60">    private final SimpleStringProperty username = new SimpleStringProperty();</span>
-<span class="fc" id="L61">    private final SimpleStringProperty password = new SimpleStringProperty();</span>
+<span class="fc" id="L51">    private final SimpleStringProperty username = new SimpleStringProperty();</span>
+<span class="fc" id="L52">    private final SimpleStringProperty password = new SimpleStringProperty();</span>
     private LoadingPage loadingPage;
 
     @Inject
-<span class="fc" id="L65">    public LoginController() {</span>
-<span class="fc" id="L66">    }</span>
+<span class="fc" id="L56">    public LoginController() {</span>
+<span class="fc" id="L57">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L70">        return resources.getString(&quot;titleLogin&quot;);</span>
+<span class="fc" id="L61">        return resources.getString(&quot;titleLogin&quot;);</span>
     }
 
     @Override
     public void init() {
-<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (prefs.isRememberMe()) {</span>
-<span class="nc" id="L76">            disposables.add(authService.refresh().observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        if (prefs.isRememberMe()) {</span>
+<span class="nc" id="L67">            disposables.add(authService.refresh().observeOn(FX_SCHEDULER).subscribe(</span>
                     lr -&gt; {
-<span class="nc" id="L78">                        app.show(menuControllerProvider.get());</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">                        if (loadingPage != null) {</span>
-<span class="nc" id="L80">                            loadingPage.setDone();</span>
+<span class="nc" id="L69">                        app.show(menuControllerProvider.get());</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">                        if (loadingPage != null) {</span>
+<span class="nc" id="L71">                            loadingPage.setDone();</span>
                         }
-<span class="nc" id="L82">                    },</span>
+<span class="nc" id="L73">                    },</span>
                     error -&gt; {
-<span class="nc bnc" id="L84" title="All 2 branches missed.">                        if (loadingPage != null) {</span>
-<span class="nc" id="L85">                            loadingPage.setDone();</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">                        if (loadingPage != null) {</span>
+<span class="nc" id="L76">                            loadingPage.setDone();</span>
                         }
-<span class="nc" id="L87">                        Dialog.error(error, &quot;Remember me failed!&quot;);</span>
-<span class="nc" id="L88">                    }));</span>
+<span class="nc" id="L78">                        Dialog.error(error, &quot;Remember me failed!&quot;);</span>
+<span class="nc" id="L79">                    }));</span>
         }
-<span class="fc" id="L90">        userHistory = prefs.getUserHistory();</span>
-<span class="fc" id="L91">        Collections.reverse(userHistory);</span>
-<span class="fc" id="L92">    }</span>
+<span class="fc" id="L81">        userHistory = prefs.getUserHistory();</span>
+<span class="fc" id="L82">        Collections.reverse(userHistory);</span>
+<span class="fc" id="L83">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L96">        loadingPage = LoadingPage.makeLoadingPage(super.render());</span>
+<span class="fc" id="L87">        loadingPage = LoadingPage.makeLoadingPage(super.render());</span>
 
-<span class="pc bpc" id="L98" title="1 of 2 branches missed.">        if (!prefs.isRememberMe()) {</span>
-<span class="fc" id="L99">            onUI(() -&gt; loadingPage.setDone());</span>
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">        if (!prefs.isRememberMe()) {</span>
+<span class="fc" id="L90">            onUI(() -&gt; loadingPage.setDone());</span>
         }
 
-<span class="fc" id="L102">        banner.setImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/beastopia_banner.png&quot;))));</span>
-<span class="fc" id="L103">        usernameInput.valueProperty().bindBidirectional(username);</span>
-<span class="fc" id="L104">        passwordInput.textProperty().bindBidirectional(password);</span>
-<span class="fc" id="L105">        usernameInput.getItems().addAll(userHistory);</span>
-<span class="fc" id="L106">        usernameInput.setOnAction(event -&gt; username.set(usernameInput.getSelectionModel().getSelectedItem()));</span>
-<span class="fc" id="L107">        usernameInput.valueProperty().addListener((observable, oldValue, newValue) -&gt; {</span>
-<span class="pc bpc" id="L108" title="1 of 2 branches missed.">            if (newValue != null) {</span>
-<span class="fc" id="L109">                username.set(newValue);</span>
+<span class="fc" id="L93">        banner.setImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/beastopia_banner.png&quot;))));</span>
+<span class="fc" id="L94">        usernameInput.valueProperty().bindBidirectional(username);</span>
+<span class="fc" id="L95">        passwordInput.textProperty().bindBidirectional(password);</span>
+<span class="fc" id="L96">        usernameInput.getItems().addAll(userHistory);</span>
+<span class="fc" id="L97">        usernameInput.setOnAction(event -&gt; username.set(usernameInput.getSelectionModel().getSelectedItem()));</span>
+<span class="fc" id="L98">        usernameInput.valueProperty().addListener((observable, oldValue, newValue) -&gt; {</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">            if (newValue != null) {</span>
+<span class="fc" id="L100">                username.set(newValue);</span>
             }
-<span class="fc" id="L111">        });</span>
-<span class="pc bpc" id="L112" title="1 of 2 branches missed.">        if (prefs.getLocale().contains(&quot;de&quot;)) {</span>
-<span class="nc" id="L113">            selectGermanLanguage.setSelected(true);</span>
+<span class="fc" id="L102">        });</span>
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">        if (prefs.getLocale().contains(&quot;de&quot;)) {</span>
+<span class="nc" id="L104">            selectGermanLanguage.setSelected(true);</span>
         } else {
-<span class="fc" id="L115">            selectEnglishLanguage.setSelected(true);</span>
+<span class="fc" id="L106">            selectEnglishLanguage.setSelected(true);</span>
         }
 
 
-<span class="fc" id="L119">        isInValid = username.isEmpty().or(password.length().lessThan(8));</span>
-<span class="fc" id="L120">        loginButton.disableProperty().bind(isInValid);</span>
+<span class="fc" id="L110">        isInValid = username.isEmpty().or(password.length().lessThan(8));</span>
+<span class="fc" id="L111">        loginButton.disableProperty().bind(isInValid);</span>
 
-<span class="fc" id="L122">        return loadingPage.parent();</span>
+<span class="fc" id="L113">        return loadingPage.parent();</span>
     }
 
     @FXML
     public void login() {
-<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (isInValid.get()) {</span>
-<span class="nc" id="L128">            return;</span>
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">        if (isInValid.get()) {</span>
+<span class="nc" id="L119">            return;</span>
         }
 
-<span class="fc" id="L131">        disposables.add(authService.login(usernameInput.getSelectionModel().getSelectedItem(), passwordInput.getText(), rememberMe.isSelected())</span>
-<span class="fc" id="L132">                .observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="fc" id="L122">        disposables.add(authService.login(usernameInput.getSelectionModel().getSelectedItem(), passwordInput.getText(), rememberMe.isSelected())</span>
+<span class="fc" id="L123">                .observeOn(FX_SCHEDULER).subscribe(</span>
                         lr -&gt; {
-<span class="pc bpc" id="L134" title="3 of 4 branches missed.">                            if (userHistory.size() == 5 &amp;&amp; !userHistory.contains(lr.name())) {</span>
-<span class="nc" id="L135">                                userHistory.remove(4);</span>
+<span class="pc bpc" id="L125" title="3 of 4 branches missed.">                            if (userHistory.size() == 5 &amp;&amp; !userHistory.contains(lr.name())) {</span>
+<span class="nc" id="L126">                                userHistory.remove(4);</span>
                             }
-<span class="fc" id="L137">                            Collections.reverse(userHistory);</span>
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">                            if (!userHistory.contains(lr.name())) {</span>
-<span class="fc" id="L139">                                userHistory.add(lr.name());</span>
+<span class="fc" id="L128">                            Collections.reverse(userHistory);</span>
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">                            if (!userHistory.contains(lr.name())) {</span>
+<span class="fc" id="L130">                                userHistory.add(lr.name());</span>
                             }
-<span class="fc" id="L141">                            prefs.setUserHistory(userHistory);</span>
-<span class="fc" id="L142">                            app.show(menuControllerProvider.get());</span>
-<span class="fc" id="L143">                        },</span>
-<span class="fc" id="L144">                        error -&gt; Dialog.error(error, &quot;Login failed!&quot;)));</span>
-<span class="fc" id="L145">    }</span>
+<span class="fc" id="L132">                            prefs.setUserHistory(userHistory);</span>
+<span class="fc" id="L133">                            app.show(menuControllerProvider.get());</span>
+<span class="fc" id="L134">                        },</span>
+<span class="fc" id="L135">                        error -&gt; Dialog.error(error, &quot;Login failed!&quot;)));</span>
+<span class="fc" id="L136">    }</span>
 
     @FXML
     public void register() {
-<span class="fc" id="L149">        app.show(registrationControllerProvider.get());</span>
-<span class="fc" id="L150">    }</span>
+<span class="fc" id="L140">        app.show(registrationControllerProvider.get());</span>
+<span class="fc" id="L141">    }</span>
 
     public void setDe() {
-<span class="nc" id="L153">        setLanguage(Locale.GERMAN);</span>
-<span class="nc" id="L154">    }</span>
+<span class="nc" id="L144">        setLanguage(Locale.GERMAN);</span>
+<span class="nc" id="L145">    }</span>
 
     public void setEn() {
-<span class="nc" id="L157">        setLanguage(Locale.ENGLISH);</span>
-<span class="nc" id="L158">    }</span>
+<span class="nc" id="L148">        setLanguage(Locale.ENGLISH);</span>
+<span class="nc" id="L149">    }</span>
 
     private void setLanguage(Locale locale) {
-<span class="nc" id="L161">        prefs.setLocale(locale.toLanguageTag());</span>
-<span class="nc" id="L162">        resources = resourcesProvider.get();</span>
-<span class="nc" id="L163">        app.update();</span>
-<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (loadingPage != null) {</span>
-<span class="nc" id="L165">            loadingPage.setDone();</span>
+<span class="nc" id="L152">        prefs.setLocale(locale.toLanguageTag());</span>
+<span class="nc" id="L153">        resources = resourcesProvider.get();</span>
+<span class="nc" id="L154">        app.update();</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">        if (loadingPage != null) {</span>
+<span class="nc" id="L156">            loadingPage.setDone();</span>
         }
-<span class="nc" id="L167">    }</span>
+<span class="nc" id="L158">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

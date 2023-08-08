@@ -134,51 +134,46 @@ public class EditBeastTeamController extends Controller {
                 ));
 <span class="fc" id="L135">    }</span>
 
-    @Override
-    public void destroy() {
-<span class="fc" id="L139">        super.destroy();</span>
-<span class="fc" id="L140">    }</span>
-
     public void filterMonster() {
         ObservableList&lt;Monster&gt; filtered;
-<span class="fc bfc" id="L144" title="All 2 branches covered.">        if (isInt(filterBar.getText())) {</span>
-<span class="fc bfc" id="L145" title="All 2 branches covered.">            filtered = beastList.filtered(monster -&gt; monster.level() == Integer.parseInt(filterBar.getText()));</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">        if (isInt(filterBar.getText())) {</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">            filtered = beastList.filtered(monster -&gt; monster.level() == Integer.parseInt(filterBar.getText()));</span>
         } else {
-<span class="fc" id="L147">            List&lt;MonsterTypeDto&gt; matchingNames = allBeasts.stream()</span>
-<span class="fc" id="L148">                    .filter(monsterTypeDto -&gt;</span>
-<span class="fc" id="L149">                            monsterTypeDto.name().toLowerCase().startsWith(filterBar.getText().toLowerCase()))</span>
-<span class="fc" id="L150">                    .toList();</span>
+<span class="fc" id="L142">            List&lt;MonsterTypeDto&gt; matchingNames = allBeasts.stream()</span>
+<span class="fc" id="L143">                    .filter(monsterTypeDto -&gt;</span>
+<span class="fc" id="L144">                            monsterTypeDto.name().toLowerCase().startsWith(filterBar.getText().toLowerCase()))</span>
+<span class="fc" id="L145">                    .toList();</span>
 
-<span class="fc" id="L152">            filtered = beastList.filtered(monster</span>
-<span class="fc bfc" id="L153" title="All 2 branches covered.">                    -&gt; matchingNames.stream().anyMatch(monsterTypeDto -&gt; monster.type() == monsterTypeDto.id()));</span>
+<span class="fc" id="L147">            filtered = beastList.filtered(monster</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">                    -&gt; matchingNames.stream().anyMatch(monsterTypeDto -&gt; monster.type() == monsterTypeDto.id()));</span>
         }
-<span class="fc" id="L155">        beastListView.setItems(filtered);</span>
-<span class="fc" id="L156">    }</span>
+<span class="fc" id="L150">        beastListView.setItems(filtered);</span>
+<span class="fc" id="L151">    }</span>
 
     public void moveItemToBeasts() {
-<span class="fc" id="L159">        filterBar.clear();</span>
-<span class="fc" id="L160">        beastListView.setItems(beastList);</span>
-<span class="pc bpc" id="L161" title="2 of 4 branches missed.">        if (teamList.size() &gt; 0 &amp;&amp; teamListView.getSelectionModel().getSelectedItem() != null) {</span>
-<span class="fc" id="L162">            beastList.add(teamListView.getSelectionModel().getSelectedItem());</span>
-<span class="fc" id="L163">            teamListView.getItems().remove(teamListView.getSelectionModel().getSelectedItem());</span>
+<span class="fc" id="L154">        filterBar.clear();</span>
+<span class="fc" id="L155">        beastListView.setItems(beastList);</span>
+<span class="pc bpc" id="L156" title="2 of 4 branches missed.">        if (!teamList.isEmpty() &amp;&amp; teamListView.getSelectionModel().getSelectedItem() != null) {</span>
+<span class="fc" id="L157">            beastList.add(teamListView.getSelectionModel().getSelectedItem());</span>
+<span class="fc" id="L158">            teamListView.getItems().remove(teamListView.getSelectionModel().getSelectedItem());</span>
         }
-<span class="fc" id="L165">    }</span>
+<span class="fc" id="L160">    }</span>
 
     public void moveItemToTeam() {
-<span class="fc" id="L168">        filterBar.clear();</span>
-<span class="fc" id="L169">        beastListView.setItems(beastList);</span>
-<span class="pc bpc" id="L170" title="2 of 4 branches missed.">        if (teamList.size() &lt; 6 &amp;&amp; beastListView.getSelectionModel().getSelectedItem() != null) {</span>
-<span class="fc" id="L171">            teamList.add(beastListView.getSelectionModel().getSelectedItem());</span>
-<span class="fc" id="L172">            beastListView.getItems().remove(beastListView.getSelectionModel().getSelectedItem());</span>
+<span class="fc" id="L163">        filterBar.clear();</span>
+<span class="fc" id="L164">        beastListView.setItems(beastList);</span>
+<span class="pc bpc" id="L165" title="2 of 4 branches missed.">        if (teamList.size() &lt; 6 &amp;&amp; beastListView.getSelectionModel().getSelectedItem() != null) {</span>
+<span class="fc" id="L166">            teamList.add(beastListView.getSelectionModel().getSelectedItem());</span>
+<span class="fc" id="L167">            beastListView.getItems().remove(beastListView.getSelectionModel().getSelectedItem());</span>
         }
-<span class="fc" id="L174">    }</span>
+<span class="fc" id="L169">    }</span>
 
     private static boolean isInt(String s) {
         try {
-<span class="fc" id="L178">            Integer.parseInt(s);</span>
-<span class="fc" id="L179">            return true;</span>
-<span class="fc" id="L180">        } catch (NumberFormatException e) {</span>
-<span class="fc" id="L181">            return false;</span>
+<span class="fc" id="L173">            Integer.parseInt(s);</span>
+<span class="fc" id="L174">            return true;</span>
+<span class="fc" id="L175">        } catch (NumberFormatException e) {</span>
+<span class="fc" id="L176">            return false;</span>
         }
     }
 }

@@ -86,7 +86,7 @@ public class ScoreboardFilterController extends Controller {
             }
 <span class="nc" id="L87">        }</span>
 
-<span class="pc bpc" id="L89" title="1 of 2 branches missed.">        filterApplied = selectedAchievements.size() != 0;</span>
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">        filterApplied = !selectedAchievements.isEmpty();</span>
 <span class="fc" id="L90">        selectedAchievementSet = new HashSet&lt;&gt;(selectedAchievements);</span>
 
 <span class="fc" id="L92">        filteredControllers.setPredicate(controller -&gt; {</span>

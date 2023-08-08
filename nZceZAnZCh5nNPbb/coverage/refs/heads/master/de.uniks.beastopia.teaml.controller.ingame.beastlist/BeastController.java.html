@@ -3,10 +3,12 @@
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.rest.Monster;
 import de.uniks.beastopia.teaml.service.PresetsService;
+import de.uniks.beastopia.teaml.utils.AssetProvider;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.GridPane;
 
 import javax.inject.Inject;
@@ -14,9 +16,13 @@ import java.util.function.Consumer;
 
 public class BeastController extends Controller {
     @FXML
+    public HBox statusPocket;
+    @FXML
     public GridPane beast;
     @Inject
     PresetsService presetsService;
+    @Inject
+    AssetProvider assets;
     @FXML
     public ImageView avatar;
     @FXML
@@ -29,38 +35,40 @@ public class BeastController extends Controller {
     private Consumer&lt;Monster&gt; onBeastClicked;
 
     @Inject
-<span class="fc" id="L32">    public BeastController() {</span>
-<span class="fc" id="L33">    }</span>
+<span class="fc" id="L38">    public BeastController() {</span>
+<span class="fc" id="L39">    }</span>
 
     public void setOnBeastClicked(Consumer&lt;Monster&gt; onBeastClicked) {
-<span class="nc" id="L36">        this.onBeastClicked = onBeastClicked;</span>
-<span class="nc" id="L37">    }</span>
+<span class="nc" id="L42">        this.onBeastClicked = onBeastClicked;</span>
+<span class="nc" id="L43">    }</span>
 
     public BeastController setBeast(Monster monster) {
-<span class="fc" id="L40">        this.monster = monster;</span>
-<span class="fc" id="L41">        return this;</span>
+<span class="fc" id="L46">        this.monster = monster;</span>
+<span class="fc" id="L47">        return this;</span>
     }
 
     @Override
     public Parent render() {
-<span class="fc" id="L46">        Parent parent = super.render();</span>
-<span class="fc" id="L47">        disposables.add(presetsService.getMonsterType(monster.type())</span>
-<span class="fc" id="L48">                .observeOn(FX_SCHEDULER)</span>
-<span class="pc" id="L49">                .subscribe(monsterType -&gt; name.setText(monsterType.name())));</span>
+<span class="fc" id="L52">        Parent parent = super.render();</span>
+<span class="fc" id="L53">        disposables.add(presetsService.getMonsterType(monster.type())</span>
+<span class="fc" id="L54">                .observeOn(FX_SCHEDULER)</span>
+<span class="pc" id="L55">                .subscribe(monsterType -&gt; name.setText(monsterType.name())));</span>
 
-<span class="fc" id="L51">        hp.setText(&quot;HP: &quot; + (int) monster.currentAttributes().health() + &quot; / &quot; + (int) monster.attributes().health());</span>
-<span class="fc" id="L52">        level.setText(String.valueOf(monster.level()));</span>
+<span class="fc" id="L57">        hp.setText(&quot;HP: &quot; + (int) monster.currentAttributes().health() + &quot; / &quot; + (int) monster.attributes().health());</span>
+<span class="fc" id="L58">        level.setText(String.valueOf(monster.level()));</span>
+<span class="fc" id="L59">        statusPocket.getChildren().clear();</span>
+<span class="fc" id="L60">        monster.status().forEach(status -&gt; statusPocket.getChildren().add(assets.getIcon(&quot;status&quot;, status, 20, 20)));</span>
 
-<span class="fc" id="L54">        disposables.add(presetsService.getMonsterImage(monster.type())</span>
-<span class="fc" id="L55">                .observeOn(FX_SCHEDULER)</span>
-<span class="pc" id="L56">                .subscribe(monsterImage -&gt; avatar.setImage(monsterImage)));</span>
+<span class="fc" id="L62">        disposables.add(presetsService.getMonsterImage(monster.type())</span>
+<span class="fc" id="L63">                .observeOn(FX_SCHEDULER)</span>
+<span class="pc" id="L64">                .subscribe(monsterImage -&gt; avatar.setImage(monsterImage)));</span>
 
-<span class="fc" id="L58">        return parent;</span>
+<span class="fc" id="L66">        return parent;</span>
     }
 
     @FXML
     public void toggleDetails() {
-<span class="nc" id="L63">        onBeastClicked.accept(monster);</span>
-<span class="nc" id="L64">    }</span>
+<span class="nc" id="L71">        onBeastClicked.accept(monster);</span>
+<span class="nc" id="L72">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

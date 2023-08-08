@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PatternHandlerProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.utils</a> &gt; <span class="el_source">PatternHandlerProvider.java</span></div><h1>PatternHandlerProvider.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.utils;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.uniks.beastopia.teaml.rest.Event;
+import io.reactivex.rxjava3.core.ObservableEmitter;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
+
+@Singleton
+public class PatternHandlerProvider {
+
+    @Inject
+<span class="nc" id="L17">    public PatternHandlerProvider() {</span>
+
+<span class="nc" id="L19">    }</span>
+
+    public &lt;T&gt; Consumer&lt;String&gt; createPatternHandler(ObjectMapper mapper, String pattern, Class&lt;T&gt; type, ObservableEmitter&lt;Event&lt;T&gt;&gt; emitter) {
+        // regions.*.created -&gt; regions\.[^.]*\.created
+<span class="nc" id="L23">        final Pattern regex = Pattern.compile(pattern.replace(&quot;.&quot;, &quot;\\.&quot;).replace(&quot;*&quot;, &quot;[^.]*&quot;));</span>
+<span class="nc" id="L24">        return eventStr -&gt; {</span>
+            try {
+<span class="nc" id="L26">                final JsonNode node = mapper.readTree(eventStr);</span>
+<span class="nc" id="L27">                final String event = node.get(&quot;event&quot;).asText();</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">                if (!regex.matcher(event).matches()) {</span>
+<span class="nc" id="L29">                    return;</span>
+                }
+
+<span class="nc" id="L32">                final T data = mapper.treeToValue(node.get(&quot;data&quot;), type);</span>
+<span class="nc" id="L33">                emitter.onNext(new Event&lt;&gt;(event, data));</span>
+<span class="nc" id="L34">            } catch (Exception e) {</span>
+<span class="nc" id="L35">                emitter.onError(e);</span>
+<span class="nc" id="L36">            }</span>
+<span class="nc" id="L37">        };</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

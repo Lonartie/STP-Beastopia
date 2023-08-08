@@ -149,45 +149,38 @@ public class RenderBeastController extends Controller {
 <span class="nc" id="L149">        this.encounterController = controller;</span>
 <span class="nc" id="L150">    }</span>
 
-    @Override
-    public void destroy() {
-<span class="nc" id="L154">        super.destroy();</span>
-
-<span class="nc" id="L156">    }</span>
-
     public void setItemAnimation(Image image, VBox selectBox) {
-<span class="nc" id="L159">        ImageView imageView = new ImageView();</span>
-<span class="nc" id="L160">        imageView.setFitHeight(25);</span>
-<span class="nc" id="L161">        imageView.setFitWidth(25);</span>
-<span class="nc bnc" id="L162" title="All 2 branches missed.">        if (selectBox != null) {</span>
-<span class="nc" id="L163">            selectBox.getChildren().add(0, imageView);</span>
-<span class="nc" id="L164">            imageView.setImage(image);</span>
+<span class="nc" id="L153">        ImageView imageView = new ImageView();</span>
+<span class="nc" id="L154">        imageView.setFitHeight(25);</span>
+<span class="nc" id="L155">        imageView.setFitWidth(25);</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">        if (selectBox != null) {</span>
+<span class="nc" id="L157">            selectBox.getChildren().add(0, imageView);</span>
+<span class="nc" id="L158">            imageView.setImage(image);</span>
         } else {
-<span class="nc" id="L166">            itemImage.setImage(image);</span>
+<span class="nc" id="L160">            itemImage.setImage(image);</span>
         }
         // Timer to remove the shown image
-<span class="nc" id="L169">        Timer timer = new Timer();</span>
-<span class="nc" id="L170">        timer.schedule(new TimerTask() {</span>
+<span class="nc" id="L163">        Timer timer = new Timer();</span>
+<span class="nc" id="L164">        timer.schedule(new TimerTask() {</span>
             @Override
             public void run() {
-<span class="nc" id="L173">                Platform.runLater(() -&gt; {</span>
-<span class="nc bnc" id="L174" title="All 2 branches missed.">                    if (selectBox != null) {</span>
-<span class="nc" id="L175">                        imageView.setImage(null);</span>
-<span class="nc" id="L176">                        selectBox.getChildren().remove(imageView);</span>
+<span class="nc" id="L167">                Platform.runLater(() -&gt; {</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">                    if (selectBox != null) {</span>
+<span class="nc" id="L169">                        imageView.setImage(null);</span>
+<span class="nc" id="L170">                        selectBox.getChildren().remove(imageView);</span>
                     } else {
-<span class="nc" id="L178">                        itemImage.setImage(null);</span>
+<span class="nc" id="L172">                        itemImage.setImage(null);</span>
                     }
-<span class="nc" id="L180">                });</span>
-<span class="nc" id="L181">            }</span>
+<span class="nc" id="L174">                });</span>
+<span class="nc" id="L175">            }</span>
         }, 2000);
-<span class="nc" id="L183">    }</span>
+<span class="nc" id="L177">    }</span>
 
     public void removeSelectBox() {
-<span class="nc" id="L186">        selectBox.setStyle(&quot;-fx-alignment: BOTTOM_CENTER; -fx-max-height: 150px; -fx-pref-height: 150px; -fx-pref-width: 125px;&quot;);</span>
-<span class="nc bnc" id="L187" title="All 2 branches missed.">        if (selectBox2 != null) {</span>
-<span class="nc" id="L188">            selectBox2.setStyle(&quot;-fx-alignment: BOTTOM_CENTER; -fx-max-height: 150px; -fx-pref-height: 150px; -fx-pref-width: 125px;&quot;);</span>
+<span class="nc" id="L180">        selectBox.setStyle(&quot;-fx-alignment: BOTTOM_CENTER; -fx-max-height: 150px; -fx-pref-height: 150px; -fx-pref-width: 125px;&quot;);</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (selectBox2 != null) {</span>
+<span class="nc" id="L182">            selectBox2.setStyle(&quot;-fx-alignment: BOTTOM_CENTER; -fx-max-height: 150px; -fx-pref-height: 150px; -fx-pref-width: 125px;&quot;);</span>
         }
-<span class="nc" id="L190">    }</span>
-
+<span class="nc" id="L184">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -82,12 +82,7 @@ public class JoinFightInfoController extends Controller {
 
     private void onTimerFinished() {
 <span class="nc" id="L84">        parent.getChildren().remove(infoSign);</span>
-<span class="nc" id="L85">        destroy();</span>
+<span class="nc" id="L85">        super.destroy();</span>
 <span class="nc" id="L86">    }</span>
-
-    @Override
-    public void destroy() {
-<span class="nc" id="L90">        super.destroy();</span>
-<span class="nc" id="L91">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
