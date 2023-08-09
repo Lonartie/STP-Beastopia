@@ -3,6 +3,7 @@
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.rest.User;
 import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.service.ImageService;
 import de.uniks.beastopia.teaml.utils.AssetProvider;
 import de.uniks.beastopia.teaml.utils.Prefs;
 import javafx.fxml.FXML;
@@ -30,6 +31,8 @@ public class UserController extends Controller {
     @Inject
     DataCache cache;
     @Inject
+    ImageService imageService;
+    @Inject
     AssetProvider assets;
     private User user;
     private Consumer&lt;User&gt; onUserToggled;
@@ -37,65 +40,71 @@ public class UserController extends Controller {
     private boolean isAdded;
 
     @Inject
-<span class="nc" id="L40">    public UserController() {</span>
+<span class="nc" id="L43">    public UserController() {</span>
 
-<span class="nc" id="L42">    }</span>
+<span class="nc" id="L45">    }</span>
 
     public UserController setOnUserToggled(Consumer&lt;User&gt; onUserToggled) {
-<span class="nc" id="L45">        this.onUserToggled = onUserToggled;</span>
-<span class="nc" id="L46">        return this;</span>
+<span class="nc" id="L48">        this.onUserToggled = onUserToggled;</span>
+<span class="nc" id="L49">        return this;</span>
     }
 
     public UserController setOnUserPinToggled(Consumer&lt;User&gt; onUserPinToggled) {
-<span class="nc" id="L50">        this.onUserPinToggled = onUserPinToggled;</span>
-<span class="nc" id="L51">        return this;</span>
+<span class="nc" id="L53">        this.onUserPinToggled = onUserPinToggled;</span>
+<span class="nc" id="L54">        return this;</span>
     }
 
     public UserController setIsAdded(boolean isAdded) {
-<span class="nc" id="L55">        this.isAdded = isAdded;</span>
-<span class="nc" id="L56">        return this;</span>
+<span class="nc" id="L58">        this.isAdded = isAdded;</span>
+<span class="nc" id="L59">        return this;</span>
     }
 
     @Override
     public Parent render() {
-<span class="nc" id="L61">        Parent parent = super.render();</span>
-<span class="nc" id="L62">        username.setText(user.name());</span>
-<span class="nc" id="L63">        avatar.setImage(cache.getImageAvatar(user));</span>
+<span class="nc" id="L64">        Parent parent = super.render();</span>
+<span class="nc" id="L65">        username.setText(user.name());</span>
+<span class="nc" id="L66">        avatar.setImage(cache.getImageAvatar(user));</span>
 
-<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (prefs.isPinned(user)) {</span>
-<span class="nc" id="L66">            this.pinButton.setGraphic(assets.getIcon(&quot;buttons&quot;, &quot;filled_pin&quot;, 15, 15));</span>
-        } else {
-<span class="nc" id="L68">            this.pinButton.setGraphic(assets.getIcon(&quot;buttons&quot;, &quot;pin&quot;, 15, 15));</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (prefs.isPinned(user)) {</span>
+<span class="nc" id="L69">            ImageView pin = imageService.getPinnedImage();</span>
+<span class="nc" id="L70">            pin.setFitHeight(15);</span>
+<span class="nc" id="L71">            pin.setFitWidth(15);</span>
+<span class="nc" id="L72">            this.pinButton.setGraphic(pin);</span>
+<span class="nc" id="L73">        } else {</span>
+<span class="nc" id="L74">            ImageView pin = imageService.getNotPinnedImage();</span>
+<span class="nc" id="L75">            pin.setFitHeight(15);</span>
+<span class="nc" id="L76">            pin.setFitWidth(15);</span>
+<span class="nc" id="L77">            this.pinButton.setGraphic(pin);</span>
         }
 
-<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (isAdded) {</span>
-<span class="nc" id="L72">            this.addRemoveButton.setGraphic(assets.getIcon(&quot;buttons&quot;, &quot;minus&quot;, 15, 15));</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (isAdded) {</span>
+<span class="nc" id="L81">            this.addRemoveButton.setGraphic(assets.getIcon(&quot;buttons&quot;, &quot;minus&quot;, 15, 15));</span>
         } else {
-<span class="nc" id="L74">            this.addRemoveButton.setGraphic(assets.getIcon(&quot;buttons&quot;, &quot;plus&quot;, 15, 15));</span>
+<span class="nc" id="L83">            this.addRemoveButton.setGraphic(assets.getIcon(&quot;buttons&quot;, &quot;plus&quot;, 15, 15));</span>
         }
 
-<span class="nc" id="L77">        return parent;</span>
+<span class="nc" id="L86">        return parent;</span>
     }
 
 
     public void setUser(User user) {
-<span class="nc" id="L82">        this.user = user;</span>
-<span class="nc" id="L83">    }</span>
+<span class="nc" id="L91">        this.user = user;</span>
+<span class="nc" id="L92">    }</span>
 
     @FXML
     public void addRemove() {
-<span class="nc" id="L87">        onUserToggled.accept(user);</span>
-<span class="nc" id="L88">    }</span>
+<span class="nc" id="L96">        onUserToggled.accept(user);</span>
+<span class="nc" id="L97">    }</span>
 
     @FXML
     public void pin() {
-<span class="nc" id="L92">        onUserPinToggled.accept(user);</span>
-<span class="nc" id="L93">    }</span>
+<span class="nc" id="L101">        onUserPinToggled.accept(user);</span>
+<span class="nc" id="L102">    }</span>
 
     @Override
     public void destroy() {
-<span class="nc" id="L97">        avatar = null;</span>
-<span class="nc" id="L98">        super.destroy();</span>
-<span class="nc" id="L99">    }</span>
+<span class="nc" id="L106">        avatar = null;</span>
+<span class="nc" id="L107">        super.destroy();</span>
+<span class="nc" id="L108">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
