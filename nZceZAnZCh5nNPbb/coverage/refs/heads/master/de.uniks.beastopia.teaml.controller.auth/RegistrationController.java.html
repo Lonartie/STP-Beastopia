@@ -3,6 +3,7 @@
 import de.uniks.beastopia.teaml.Main;
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.service.ImageService;
 import de.uniks.beastopia.teaml.service.RegistrationService;
 import de.uniks.beastopia.teaml.utils.Dialog;
 import de.uniks.beastopia.teaml.utils.Prefs;
@@ -16,6 +17,8 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -35,6 +38,14 @@ public class RegistrationController extends Controller {
     @FXML
     public ImageView banner;
     @FXML
+    public HBox backroundHbox;
+    @FXML
+    public GridPane innerGridPane;
+    @FXML
+    public Button login;
+    @FXML
+    public ImageView companyLogo;
+    @FXML
     private TextField usernameInput;
     @FXML
     private PasswordField passwordInput;
@@ -47,6 +58,8 @@ public class RegistrationController extends Controller {
     @FXML
     public RadioButton selectGermanLanguage;
     @Inject
+    ImageService imageService;
+    @Inject
     Provider&lt;ResourceBundle&gt; resourcesProvider;
     @Inject
     RegistrationService registrationService;
@@ -57,100 +70,103 @@ public class RegistrationController extends Controller {
     @Inject
     DataCache cache;
 
-<span class="fc" id="L60">    private final SimpleStringProperty username = new SimpleStringProperty();</span>
-<span class="fc" id="L61">    private final SimpleStringProperty password = new SimpleStringProperty();</span>
-<span class="fc" id="L62">    private final SimpleStringProperty passwordRepeat = new SimpleStringProperty();</span>
-<span class="fc" id="L63">    private boolean isEnglish = false;</span>
+<span class="fc" id="L73">    private final SimpleStringProperty username = new SimpleStringProperty();</span>
+<span class="fc" id="L74">    private final SimpleStringProperty password = new SimpleStringProperty();</span>
+<span class="fc" id="L75">    private final SimpleStringProperty passwordRepeat = new SimpleStringProperty();</span>
+<span class="fc" id="L76">    private boolean isEnglish = false;</span>
     private BufferedImage bufferedImage;
 
     @Inject
-<span class="fc" id="L67">    public RegistrationController() {</span>
-<span class="fc" id="L68">    }</span>
+<span class="fc" id="L80">    public RegistrationController() {</span>
+<span class="fc" id="L81">    }</span>
 
     @Override
     public void init() {
-<span class="fc" id="L72">        super.init();</span>
+<span class="fc" id="L85">        super.init();</span>
         try {
-<span class="fc" id="L74">            bufferedImage = ImageIO.read(new File(Objects.requireNonNull(Main.class.getResource(&quot;assets/user.png&quot;)).toURI()));</span>
-<span class="nc" id="L75">        } catch (IOException | URISyntaxException e) {</span>
-<span class="nc" id="L76">            throw new RuntimeException(e);</span>
-<span class="fc" id="L77">        }</span>
-<span class="fc" id="L78">    }</span>
+<span class="fc" id="L87">            bufferedImage = ImageIO.read(new File(Objects.requireNonNull(Main.class.getResource(&quot;assets/user.png&quot;)).toURI()));</span>
+<span class="nc" id="L88">        } catch (IOException | URISyntaxException e) {</span>
+<span class="nc" id="L89">            throw new RuntimeException(e);</span>
+<span class="fc" id="L90">        }</span>
+<span class="fc" id="L91">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L82">        return resources.getString(&quot;titleRegistration&quot;);</span>
+<span class="fc" id="L95">        return resources.getString(&quot;titleRegistration&quot;);</span>
     }
 
     @Override
     public Parent render() {
-<span class="fc" id="L87">        Parent parent = super.render();</span>
-<span class="fc" id="L88">        banner.setImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/beastopia_banner.png&quot;))));</span>
-<span class="fc" id="L89">        avatarPreview.setImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/user.png&quot;))));</span>
+<span class="fc" id="L100">        Parent parent = super.render();</span>
+<span class="fc" id="L101">        banner.setImage(imageService.getBanner());</span>
+<span class="fc" id="L102">        companyLogo.setImage(imageService.getCompanyLogo());</span>
 
-<span class="pc bpc" id="L91" title="1 of 2 branches missed.">        if (prefs.getLocale().contains(&quot;de&quot;)) {</span>
-<span class="nc" id="L92">            selectGermanLanguage.setSelected(true);</span>
-<span class="nc" id="L93">            isEnglish = false;</span>
+<span class="fc" id="L104">        avatarPreview.setImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/user.png&quot;))));</span>
+
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        if (prefs.getLocale().contains(&quot;de&quot;)) {</span>
+<span class="nc" id="L107">            selectGermanLanguage.setSelected(true);</span>
+<span class="nc" id="L108">            isEnglish = false;</span>
         } else {
-<span class="fc" id="L95">            selectEnglishLanguage.setSelected(true);</span>
-<span class="fc" id="L96">            isEnglish = true;</span>
+<span class="fc" id="L110">            selectEnglishLanguage.setSelected(true);</span>
+<span class="fc" id="L111">            isEnglish = true;</span>
         }
-<span class="fc" id="L98">        usernameInput.textProperty().bindBidirectional(username);</span>
-<span class="fc" id="L99">        passwordInput.textProperty().bindBidirectional(password);</span>
-<span class="fc" id="L100">        passwordRepeatInput.textProperty().bindBidirectional(passwordRepeat);</span>
+<span class="fc" id="L113">        usernameInput.textProperty().bindBidirectional(username);</span>
+<span class="fc" id="L114">        passwordInput.textProperty().bindBidirectional(password);</span>
+<span class="fc" id="L115">        passwordRepeatInput.textProperty().bindBidirectional(passwordRepeat);</span>
 
-<span class="fc" id="L102">        BooleanBinding isInValid = usernameInput.textProperty().isEmpty()</span>
-<span class="fc" id="L103">                .or(passwordInput.textProperty().length().lessThan(8))</span>
-<span class="fc" id="L104">                .or(passwordRepeatInput.textProperty().length().lessThan(8))</span>
-<span class="fc" id="L105">                .or(passwordInput.textProperty().isNotEqualTo(passwordRepeatInput.textProperty()));</span>
-<span class="fc" id="L106">        signUpButton.disableProperty().bind(isInValid);</span>
+<span class="fc" id="L117">        BooleanBinding isInValid = usernameInput.textProperty().isEmpty()</span>
+<span class="fc" id="L118">                .or(passwordInput.textProperty().length().lessThan(8))</span>
+<span class="fc" id="L119">                .or(passwordRepeatInput.textProperty().length().lessThan(8))</span>
+<span class="fc" id="L120">                .or(passwordInput.textProperty().isNotEqualTo(passwordRepeatInput.textProperty()));</span>
+<span class="fc" id="L121">        signUpButton.disableProperty().bind(isInValid);</span>
 
-<span class="fc" id="L108">        return parent;</span>
+<span class="fc" id="L123">        return parent;</span>
     }
 
     @FXML
     private void uploadAvatar() {
-<span class="nc" id="L113">        File file = cache.provideImageFile(app);</span>
-<span class="nc" id="L114">        this.bufferedImage = cache.provideBufferedImage(file);</span>
-<span class="nc" id="L115">        avatarPreview.setImage(new Image(file.toURI().toString(), 128, 128, true, true, true));</span>
-<span class="nc" id="L116">    }</span>
+<span class="nc" id="L128">        File file = cache.provideImageFile(app);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (file == null) return;</span>
+<span class="nc" id="L130">        this.bufferedImage = cache.provideBufferedImage(file);</span>
+<span class="nc" id="L131">        avatarPreview.setImage(new Image(file.toURI().toString(), 128, 128, true, true, true));</span>
+<span class="nc" id="L132">    }</span>
 
     @SuppressWarnings(&quot;UnnecessaryUnicodeEscape&quot;)
     @FXML
     private void signUp() {
-<span class="fc" id="L121">        disposables.add(registrationService.createUser(usernameInput.getText(), cache.getAvatarDataUrl(bufferedImage), passwordInput.getText())</span>
-<span class="fc" id="L122">                .observeOn(FX_SCHEDULER).subscribe(user -&gt; {</span>
-<span class="pc bpc" id="L123" title="1 of 2 branches missed.">                    Dialog.info(isEnglish ? &quot;Registration successful!&quot; : &quot;Registrierung erfolgreich!&quot;,</span>
-<span class="pc bpc" id="L124" title="1 of 2 branches missed.">                            isEnglish ? &quot;You can now sign in with your new account.&quot; : &quot;Sie k\u00f6nnen sich jetzt mit Ihrem neuen Konto anmelden.&quot;);</span>
-<span class="fc" id="L125">                    app.show(loginControllerProvider.get());</span>
-<span class="pc bpc" id="L126" title="1 of 2 branches missed.">                }, error -&gt; Dialog.error(error, isEnglish ? &quot;Registration failed.&quot; : &quot;Registrierung fehlgeschlagen.&quot;)));</span>
-<span class="fc" id="L127">    }</span>
+<span class="fc" id="L137">        disposables.add(registrationService.createUser(usernameInput.getText(), cache.getAvatarDataUrl(bufferedImage), passwordInput.getText())</span>
+<span class="fc" id="L138">                .observeOn(FX_SCHEDULER).subscribe(user -&gt; {</span>
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">                    Dialog.info(isEnglish ? &quot;Registration successful!&quot; : &quot;Registrierung erfolgreich!&quot;,</span>
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">                            isEnglish ? &quot;You can now sign in with your new account.&quot; : &quot;Sie k\u00f6nnen sich jetzt mit Ihrem neuen Konto anmelden.&quot;);</span>
+<span class="fc" id="L141">                    app.show(loginControllerProvider.get());</span>
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">                }, error -&gt; Dialog.error(error, isEnglish ? &quot;Registration failed.&quot; : &quot;Registrierung fehlgeschlagen.&quot;)));</span>
+<span class="fc" id="L143">    }</span>
 
     @FXML
     private void switchToSignIn() {
-<span class="fc" id="L131">        app.show(loginControllerProvider.get());</span>
-<span class="fc" id="L132">    }</span>
+<span class="fc" id="L147">        app.show(loginControllerProvider.get());</span>
+<span class="fc" id="L148">    }</span>
 
     public void setDe() {
-<span class="nc" id="L135">        setLanguage(Locale.GERMAN);</span>
-<span class="nc" id="L136">        isEnglish = false;</span>
-<span class="nc" id="L137">    }</span>
+<span class="nc" id="L151">        setLanguage(Locale.GERMAN);</span>
+<span class="nc" id="L152">        isEnglish = false;</span>
+<span class="nc" id="L153">    }</span>
 
     public void setEn() {
-<span class="nc" id="L140">        setLanguage(Locale.ENGLISH);</span>
-<span class="nc" id="L141">        isEnglish = true;</span>
-<span class="nc" id="L142">    }</span>
+<span class="nc" id="L156">        setLanguage(Locale.ENGLISH);</span>
+<span class="nc" id="L157">        isEnglish = true;</span>
+<span class="nc" id="L158">    }</span>
 
     private void setLanguage(Locale locale) {
-<span class="nc" id="L145">        prefs.setLocale(locale.toLanguageTag());</span>
-<span class="nc" id="L146">        resources = resourcesProvider.get();</span>
-<span class="nc" id="L147">        app.update();</span>
-<span class="nc" id="L148">    }</span>
+<span class="nc" id="L161">        prefs.setLocale(locale.toLanguageTag());</span>
+<span class="nc" id="L162">        resources = resourcesProvider.get();</span>
+<span class="nc" id="L163">        app.update();</span>
+<span class="nc" id="L164">    }</span>
 
     @Override
     public void destroy() {
-<span class="fc" id="L152">        super.destroy();</span>
-<span class="fc" id="L153">        avatarPreview = null;</span>
-<span class="fc" id="L154">    }</span>
+<span class="fc" id="L168">        super.destroy();</span>
+<span class="fc" id="L169">        avatarPreview = null;</span>
+<span class="fc" id="L170">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

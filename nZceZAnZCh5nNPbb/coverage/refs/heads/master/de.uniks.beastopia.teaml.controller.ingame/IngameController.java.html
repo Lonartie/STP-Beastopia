@@ -1135,11 +1135,11 @@ public class IngameController extends Controller {
 <span class="fc" id="L1135">        Pair&lt;Integer, Integer&gt; posXY = new Pair&lt;&gt;(posx, posy);</span>
 
 <span class="fc" id="L1137">        state.setValue(PlayerState.WALKING);</span>
-<span class="pc bpc" id="L1138" title="1 of 2 branches missed.">        if (MAP_INFO.containsKey(posXY)) {</span>
-<span class="nc bnc" id="L1139" title="All 2 branches missed.">            for (var pair : MAP_INFO.get(posXY)) {</span>
-<span class="nc" id="L1140">                Tile tile = pair.getKey();</span>
-<span class="nc" id="L1141">                Optional&lt;TileProperty&gt; jumpableTileProp = tile.properties().stream().filter(tileProperty -&gt; tileProperty.name().equals(&quot;Jumpable&quot;)).findFirst();</span>
-<span class="nc bnc" id="L1142" title="All 2 branches missed.">                if (jumpableTileProp.isPresent()) {</span>
+<span class="fc bfc" id="L1138" title="All 2 branches covered.">        if (MAP_INFO.containsKey(posXY)) {</span>
+<span class="fc bfc" id="L1139" title="All 2 branches covered.">            for (var pair : MAP_INFO.get(posXY)) {</span>
+<span class="fc" id="L1140">                Tile tile = pair.getKey();</span>
+<span class="pc" id="L1141">                Optional&lt;TileProperty&gt; jumpableTileProp = tile.properties().stream().filter(tileProperty -&gt; tileProperty.name().equals(&quot;Jumpable&quot;)).findFirst();</span>
+<span class="pc bpc" id="L1142" title="1 of 2 branches missed.">                if (jumpableTileProp.isPresent()) {</span>
 <span class="nc" id="L1143">                    int jumpDirection = Integer.parseInt(jumpableTileProp.get().value());</span>
 <span class="nc bnc" id="L1144" title="All 2 branches missed.">                    if (jumpDirection == direction.ordinal()) {</span>
 <span class="nc" id="L1145">                        state.setValue(PlayerState.JUMP);</span>
@@ -1148,7 +1148,7 @@ public class IngameController extends Controller {
 <span class="nc" id="L1148">                        updateOrigin();</span>
                     }
                 }
-<span class="nc" id="L1151">            }</span>
+<span class="fc" id="L1151">            }</span>
         }
 
 <span class="fc" id="L1154">        JsonObject message = new JsonObject();</span>
