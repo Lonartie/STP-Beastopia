@@ -48,25 +48,26 @@ public class SoundController {
 <span class="nc" id="L48">                sfxPlayer.play();</span>
             }
 <span class="nc" id="L50">        } catch (URISyntaxException | NullPointerException | MalformedURLException e) {</span>
-<span class="nc" id="L51">            e.printStackTrace();</span>
-<span class="nc" id="L52">        }</span>
-<span class="nc" id="L53">    }</span>
+            //noinspection CallToPrintStackTrace
+<span class="nc" id="L52">            e.printStackTrace();</span>
+<span class="nc" id="L53">        }</span>
+<span class="nc" id="L54">    }</span>
 
     public void stopBGM() {
-<span class="nc bnc" id="L56" title="All 2 branches missed.">        if (bgmPlayer != null) {</span>
-<span class="nc" id="L57">            bgmPlayer.stop();</span>
-<span class="nc" id="L58">            bgmPlayer = null;</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (bgmPlayer != null) {</span>
+<span class="nc" id="L58">            bgmPlayer.stop();</span>
+<span class="nc" id="L59">            bgmPlayer = null;</span>
 
-<span class="nc" id="L60">            currentTrack = &quot;&quot;;</span>
+<span class="nc" id="L61">            currentTrack = &quot;&quot;;</span>
         }
-<span class="nc" id="L62">    }</span>
+<span class="nc" id="L63">    }</span>
 
     public void updateVolume() {
-<span class="nc" id="L65">        bgmPlayer.setVolume(prefs.getMusicVolume() / 100.0);</span>
-<span class="nc" id="L66">    }</span>
+<span class="nc" id="L66">        bgmPlayer.setVolume(prefs.getMusicVolume() / 100.0);</span>
+<span class="nc" id="L67">    }</span>
 
     public MediaPlayer getBgmPlayer() {
-<span class="nc" id="L69">        return bgmPlayer;</span>
+<span class="nc" id="L70">        return bgmPlayer;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

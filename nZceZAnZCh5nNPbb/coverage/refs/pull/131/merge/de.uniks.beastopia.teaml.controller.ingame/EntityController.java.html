@@ -2,10 +2,9 @@
 
 import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.rest.MoveTrainerDto;
+import de.uniks.beastopia.teaml.rest.Position;
 import de.uniks.beastopia.teaml.rest.Trainer;
 import de.uniks.beastopia.teaml.service.DataCache;
-import de.uniks.beastopia.teaml.service.PresetsService;
-import de.uniks.beastopia.teaml.sockets.UDPEventListener;
 import de.uniks.beastopia.teaml.utils.Direction;
 import de.uniks.beastopia.teaml.utils.PlayerState;
 import javafx.beans.property.ObjectProperty;
@@ -19,110 +18,121 @@ import javax.inject.Inject;
 import java.util.function.Consumer;
 
 public class EntityController extends Controller {
-<span class="fc" id="L22">    final int PORT_WIDTH = 16;</span>
-<span class="fc" id="L23">    final int PORT_HEIGHT = 32;</span>
-<span class="fc" id="L24">    final int SPRITE_STEP = 16;</span>
-<span class="fc" id="L25">    final int STATE_STEP = 32;</span>
-<span class="fc" id="L26">    final int DIRECTION_STEP = 96;</span>
-<span class="fc" id="L27">    int index = 0;</span>
+<span class="fc" id="L21">    final int PORT_WIDTH = 16;</span>
+<span class="fc" id="L22">    final int PORT_HEIGHT = 32;</span>
+<span class="fc" id="L23">    final int SPRITE_STEP = 16;</span>
+<span class="fc" id="L24">    final int STATE_STEP = 32;</span>
+<span class="fc" id="L25">    final int DIRECTION_STEP = 96;</span>
+<span class="fc" id="L26">    int index = 0;</span>
     Trainer trainer;
     Parent parent;
     Direction direction;
-<span class="fc" id="L31">    final ObjectProperty&lt;PlayerState&gt; state = new SimpleObjectProperty&lt;&gt;();</span>
+<span class="fc" id="L30">    final ObjectProperty&lt;PlayerState&gt; state = new SimpleObjectProperty&lt;&gt;();</span>
     Consumer&lt;MoveTrainerDto&gt; onTrainerUpdate;
 
     @FXML
     public ImageView entityView;
     @Inject
-    PresetsService presetsService;
-    @Inject
-    UDPEventListener udpEventListener;
-    @Inject
     DataCache cache;
+    private Position position;
+    private Position oldPosition;
 
     @Inject
-<span class="fc" id="L44">    public EntityController() {</span>
-<span class="fc" id="L45">    }</span>
+<span class="fc" id="L41">    public EntityController() {</span>
+<span class="fc" id="L42">    }</span>
 
     public void setOnTrainerUpdate(Consumer&lt;MoveTrainerDto&gt; onTrainerUpdate) {
-<span class="nc" id="L48">        this.onTrainerUpdate = onTrainerUpdate;</span>
-<span class="nc" id="L49">    }</span>
+<span class="nc" id="L45">        this.onTrainerUpdate = onTrainerUpdate;</span>
+<span class="nc" id="L46">    }</span>
 
     public ObjectProperty&lt;PlayerState&gt; playerState() {
-<span class="fc" id="L52">        return state;</span>
+<span class="fc" id="L49">        return state;</span>
+    }
+
+    public Position getPosition() {
+<span class="nc" id="L53">        return position;</span>
+    }
+
+    public Position getOldPosition() {
+<span class="nc" id="L57">        return oldPosition;</span>
     }
 
     @Override
     public void init() {
-<span class="fc" id="L57">        super.init();</span>
-<span class="fc" id="L58">        direction = Direction.DOWN;</span>
-<span class="fc" id="L59">    }</span>
+<span class="fc" id="L62">        super.init();</span>
+<span class="fc" id="L63">        direction = Direction.DOWN;</span>
+<span class="fc" id="L64">    }</span>
 
     public void updateTrainer(MoveTrainerDto data) {
-<span class="nc" id="L62">        setDirection(data.direction());</span>
-<span class="nc" id="L63">        index = (index + 1) % 6;</span>
-<span class="nc" id="L64">        updateViewPort();</span>
-<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (!data.area().equals(trainer.area())) {</span>
-<span class="nc" id="L66">            trainer = new Trainer(trainer.createdAt(), trainer.updatedAt(), trainer._id(), trainer.region(),</span>
-<span class="nc" id="L67">                    trainer.user(), trainer.name(), trainer.image(), trainer.team(), trainer.encounteredMonsterTypes(), trainer.visitedAreas(), trainer.coins(), data.area(), trainer.x(),</span>
-<span class="nc" id="L68">                    trainer.y(), trainer.direction(), trainer.npc());</span>
+<span class="nc" id="L67">        oldPosition = position;</span>
+<span class="nc" id="L68">        position = new Position(data.x(), data.y());</span>
+<span class="nc" id="L69">        setDirection(data.direction());</span>
+<span class="nc" id="L70">        index = (index + 1) % 6;</span>
+<span class="nc" id="L71">        updateViewPort();</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (!data.area().equals(trainer.area())) {</span>
+<span class="nc" id="L73">            trainer = new Trainer(trainer.createdAt(), trainer.updatedAt(), trainer._id(), trainer.region(),</span>
+<span class="nc" id="L74">                    trainer.user(), trainer.name(), trainer.image(), trainer.team(), trainer.encounteredMonsterTypes(), trainer.visitedAreas(), trainer.coins(), data.area(), trainer.x(),</span>
+<span class="nc" id="L75">                    trainer.y(), trainer.direction(), trainer.npc());</span>
         }
-<span class="nc" id="L70">        onTrainerUpdate.accept(data);</span>
-<span class="nc" id="L71">    }</span>
+<span class="nc" id="L77">        onTrainerUpdate.accept(data);</span>
+<span class="nc" id="L78">    }</span>
 
     public void setTrainer(Trainer trainer) {
-<span class="fc" id="L74">        this.trainer = trainer;</span>
-<span class="fc" id="L75">    }</span>
+<span class="fc" id="L81">        this.trainer = trainer;</span>
+<span class="fc" id="L82">    }</span>
 
     public Trainer getTrainer() {
-<span class="nc" id="L78">        return this.trainer;</span>
+<span class="nc" id="L85">        return this.trainer;</span>
     }
 
     public void updateViewPort() {
-<span class="fc" id="L82">        entityView.setViewport(getViewport());</span>
-<span class="fc" id="L83">    }</span>
+<span class="fc" id="L89">        int VIEW_SIZE = 96;</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        if (state.get().equals(PlayerState.JUMP)) {</span>
+<span class="nc" id="L91">            VIEW_SIZE = (int) (VIEW_SIZE * 1.2);</span>
+        }
+<span class="fc" id="L93">        entityView.setFitWidth(VIEW_SIZE);</span>
+<span class="fc" id="L94">        entityView.setFitHeight(VIEW_SIZE);</span>
+<span class="fc" id="L95">        entityView.setViewport(getViewport());</span>
+<span class="fc" id="L96">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L87">        int VIEW_SIZE = 96;</span>
-<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        if (state.get().equals(PlayerState.JUMP)) {</span>
-<span class="nc" id="L89">            VIEW_SIZE *= 1.2;</span>
-        }
-<span class="fc" id="L91">        parent = super.render();</span>
-<span class="fc" id="L92">        entityView.toFront();</span>
-<span class="fc" id="L93">        entityView.setPreserveRatio(true);</span>
-<span class="fc" id="L94">        entityView.setSmooth(true);</span>
-<span class="fc" id="L95">        entityView.setFitWidth(VIEW_SIZE);</span>
-<span class="fc" id="L96">        entityView.setFitHeight(VIEW_SIZE);</span>
-<span class="fc" id="L97">        updateViewPort();</span>
+<span class="fc" id="L100">        parent = super.render();</span>
+<span class="fc" id="L101">        entityView.toFront();</span>
+<span class="fc" id="L102">        entityView.setPreserveRatio(true);</span>
+<span class="fc" id="L103">        entityView.setSmooth(true);</span>
+<span class="fc" id="L104">        updateViewPort();</span>
 
-<span class="fc" id="L99">        disposables.add(cache.getOrLoadTrainerImage(trainer.image(), true).observeOn(FX_SCHEDULER).subscribe(image -&gt; entityView.setImage(image)));</span>
+<span class="fc" id="L106">        disposables.add(cache.getOrLoadTrainerImage(trainer.image(), true).observeOn(FX_SCHEDULER).subscribe(image -&gt; entityView.setImage(image)));</span>
 
-<span class="fc" id="L101">        return parent;</span>
+<span class="fc" id="L108">        entityView.setPickOnBounds(false);</span>
+<span class="fc" id="L109">        parent.setPickOnBounds(false);</span>
+
+<span class="fc" id="L111">        return parent;</span>
     }
 
     private Rectangle2D getViewport() {
-<span class="fc" id="L105">        int SPRITE_SCALING = 5;</span>
-<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        int sheetY = state.get().equals(PlayerState.JUMP) ? 1 : state.get().ordinal();</span>
+<span class="fc" id="L115">        int SPRITE_SCALING = 5;</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">        int sheetY = state.get().equals(PlayerState.JUMP) ? 1 : state.get().ordinal();</span>
 
-<span class="fc" id="L108">        return new Rectangle2D(</span>
-<span class="fc" id="L109">                (direction.ordinal() * DIRECTION_STEP + index * SPRITE_STEP) * SPRITE_SCALING,</span>
+<span class="fc" id="L118">        return new Rectangle2D(</span>
+<span class="fc" id="L119">                (direction.ordinal() * DIRECTION_STEP + index * SPRITE_STEP) * SPRITE_SCALING,</span>
                 (sheetY * STATE_STEP + STATE_STEP) * SPRITE_SCALING,
                 PORT_WIDTH * SPRITE_SCALING,
                 PORT_HEIGHT * SPRITE_SCALING);
     }
 
     public void setDirection(int direction) {
-<span class="nc bnc" id="L116" title="All 5 branches missed.">        switch (direction) {</span>
-<span class="nc" id="L117">            case 0 -&gt; this.direction = Direction.RIGHT;</span>
-<span class="nc" id="L118">            case 1 -&gt; this.direction = Direction.UP;</span>
-<span class="nc" id="L119">            case 2 -&gt; this.direction = Direction.LEFT;</span>
-<span class="nc" id="L120">            case 3 -&gt; this.direction = Direction.DOWN;</span>
+<span class="nc bnc" id="L126" title="All 5 branches missed.">        switch (direction) {</span>
+<span class="nc" id="L127">            case 0 -&gt; this.direction = Direction.RIGHT;</span>
+<span class="nc" id="L128">            case 1 -&gt; this.direction = Direction.UP;</span>
+<span class="nc" id="L129">            case 2 -&gt; this.direction = Direction.LEFT;</span>
+<span class="nc" id="L130">            case 3 -&gt; this.direction = Direction.DOWN;</span>
         }
-<span class="nc" id="L122">    }</span>
+<span class="nc" id="L132">    }</span>
 
     public Direction getDirection() {
-<span class="nc" id="L125">        return direction;</span>
+<span class="nc" id="L135">        return direction;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

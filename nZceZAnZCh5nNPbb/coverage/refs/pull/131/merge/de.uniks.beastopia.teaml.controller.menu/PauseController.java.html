@@ -11,6 +11,8 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 
 import javax.inject.Inject;
@@ -21,7 +23,7 @@ import java.util.Objects;
 
 public class PauseController extends Controller {
 
-<span class="fc" id="L24">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L26">    private final List&lt;Controller&gt; subControllers = new ArrayList&lt;&gt;();</span>
     @FXML
     public ImageView settingsImage;
     @FXML
@@ -54,77 +56,79 @@ public class PauseController extends Controller {
     private Runnable onCloseRequest;
 
     @Inject
-<span class="fc" id="L57">    public PauseController() {</span>
+<span class="fc" id="L59">    public PauseController() {</span>
 
-<span class="fc" id="L59">    }</span>
+<span class="fc" id="L61">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L63">        Parent parent = super.render();</span>
-<span class="fc" id="L64">        Controller subController = friendListControllerProvider.get();</span>
-<span class="fc" id="L65">        subControllers.add(subController);</span>
-<span class="fc" id="L66">        friendListContainer.getChildren().add(subController.render());</span>
+<span class="fc" id="L65">        Parent parent = super.render();</span>
+<span class="fc" id="L66">        Controller subController = friendListControllerProvider.get();</span>
+<span class="fc" id="L67">        subControllers.add(subController);</span>
+<span class="fc" id="L68">        friendListContainer.getChildren().add(subController.render());</span>
 
-<span class="fc" id="L68">        settingsImage.setImage(imageService.getThemeImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/buttons/settings.png&quot;)))));</span>
-<span class="fc" id="L69">        editProfileImage.setImage(imageService.getThemeImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/buttons/edit.png&quot;)))));</span>
-<span class="fc" id="L70">        backToMainImage.setImage(imageService.getThemeImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/buttons/back.png&quot;)))));</span>
-<span class="fc" id="L71">        trainerMenuImage.setImage(imageService.getThemeImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/trainer.png&quot;)))));</span>
-<span class="fc" id="L72">        beastTeamImage.setImage(imageService.getThemeImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/buttons/beast.png&quot;)))));</span>
+<span class="fc" id="L70">        settingsImage.setImage(imageService.getThemeImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/buttons/settings.png&quot;)))));</span>
+<span class="fc" id="L71">        editProfileImage.setImage(imageService.getThemeImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/buttons/edit.png&quot;)))));</span>
+<span class="fc" id="L72">        backToMainImage.setImage(imageService.getThemeImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/buttons/back.png&quot;)))));</span>
+<span class="fc" id="L73">        trainerMenuImage.setImage(imageService.getThemeImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/trainer.png&quot;)))));</span>
+<span class="fc" id="L74">        beastTeamImage.setImage(imageService.getThemeImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/buttons/beast.png&quot;)))));</span>
 
-<span class="fc" id="L74">        return parent;</span>
+<span class="fc" id="L76">        return parent;</span>
     }
 
     @Override
     public void destroy() {
-<span class="fc" id="L79">        subControllers.forEach(Controller::destroy);</span>
-<span class="fc" id="L80">    }</span>
+<span class="fc" id="L81">        subControllers.forEach(Controller::destroy);</span>
+<span class="fc" id="L82">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L84">        return resources.getString(&quot;titlePause&quot;);</span>
+<span class="fc" id="L86">        return resources.getString(&quot;titlePause&quot;);</span>
     }
 
     @FXML
     public void editProfileButtonPressed() {
-<span class="nc" id="L89">        app.show(editProfileControllerProvider.get());</span>
-<span class="nc" id="L90">    }</span>
+<span class="nc" id="L91">        app.show(editProfileControllerProvider.get());</span>
+<span class="nc" id="L92">    }</span>
 
     @FXML
     public void settingsButtonPressed() {
-<span class="nc" id="L94">        app.show(settingsControllerProvider.get());</span>
-<span class="nc" id="L95">    }</span>
+<span class="nc" id="L96">        app.show(settingsControllerProvider.get());</span>
+<span class="nc" id="L97">    }</span>
 
     @FXML
     public void mainMenuButtonPressed() {
-<span class="pc bpc" id="L99" title="1 of 2 branches missed.">        if (soundControllerProvider.get().getBgmPlayer() != null) {</span>
-<span class="nc" id="L100">            soundControllerProvider.get().stopBGM();</span>
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">        if (soundControllerProvider.get().getBgmPlayer() != null) {</span>
+<span class="nc" id="L102">            soundControllerProvider.get().stopBGM();</span>
         }
-<span class="fc" id="L102">        app.show(menuControllerProvider.get());</span>
-<span class="fc" id="L103">    }</span>
+<span class="fc" id="L104">        app.show(menuControllerProvider.get());</span>
+<span class="fc" id="L105">    }</span>
 
     @FXML
     public void trainerMenuButtonPressed() {
-<span class="nc bnc" id="L107" title="All 2 branches missed.">        if (soundControllerProvider.get().getBgmPlayer() != null) {</span>
-<span class="nc" id="L108">            soundControllerProvider.get().stopBGM();</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (soundControllerProvider.get().getBgmPlayer() != null) {</span>
+<span class="nc" id="L110">            soundControllerProvider.get().stopBGM();</span>
         }
 
-<span class="nc" id="L111">        TrainerController controller = trainerControllerProvider.get();</span>
-<span class="nc" id="L112">        controller.backController(&quot;pause&quot;);</span>
-<span class="nc" id="L113">        app.show(controller);</span>
-<span class="nc" id="L114">    }</span>
+<span class="nc" id="L113">        TrainerController controller = trainerControllerProvider.get();</span>
+<span class="nc" id="L114">        controller.backController(&quot;pause&quot;);</span>
+<span class="nc" id="L115">        app.show(controller);</span>
+<span class="nc" id="L116">    }</span>
 
     public void setOnCloseRequest(Runnable onCloseRequest) {
-<span class="fc" id="L117">        this.onCloseRequest = onCloseRequest;</span>
-<span class="fc" id="L118">    }</span>
+<span class="fc" id="L119">        this.onCloseRequest = onCloseRequest;</span>
+<span class="fc" id="L120">    }</span>
 
     @FXML
-    public void pauseMenu() {
-<span class="fc" id="L122">        onCloseRequest.run();</span>
-<span class="fc" id="L123">    }</span>
+    public void pauseMenu(KeyEvent event) {
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if (event.getCode() == KeyCode.ESCAPE) {</span>
+<span class="fc" id="L125">            onCloseRequest.run();</span>
+        }
+<span class="fc" id="L127">    }</span>
 
     public void beastTeamButtonPressed() {
-<span class="nc" id="L126">        EditBeastTeamController beastTeam = editBeastTeamControllerProvider.get();</span>
-<span class="nc" id="L127">        app.show(beastTeam);</span>
-<span class="nc" id="L128">    }</span>
+<span class="nc" id="L130">        EditBeastTeamController beastTeam = editBeastTeamControllerProvider.get();</span>
+<span class="nc" id="L131">        app.show(beastTeam);</span>
+<span class="nc" id="L132">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -101,52 +101,52 @@ public class FriendController extends Controller {
 <span class="fc" id="L101">        return this;</span>
     }
 
+    private ImageView createImage(String imageUrl) {
+<span class="fc" id="L105">        ImageView imageView = new ImageView(imageUrl);</span>
+<span class="fc" id="L106">        imageView.setCache(false);</span>
+<span class="fc" id="L107">        imageView.setFitHeight(25.0);</span>
+<span class="fc" id="L108">        imageView.setFitWidth(25.0);</span>
+<span class="fc" id="L109">        return imageView;</span>
+    }
+
     @Override
     public Parent render() {
-<span class="fc" id="L106">        Parent parent = super.render();</span>
-<span class="fc" id="L107">        chatImage.setImage(imageService.getThemeImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/buttons/chat.png&quot;)))));</span>
-<span class="fc" id="L108">        pinned = imageService.getPinnedImage();</span>
-<span class="fc" id="L109">        notPinned = imageService.getNotPinnedImage();</span>
-<span class="fc" id="L110">        friendAvatar.setImage(cache.getImageAvatar(user));</span>
-<span class="fc" id="L111">        name.setText(user.name());</span>
-<span class="fc" id="L112">        updateOnlineStatus(user);</span>
+<span class="fc" id="L114">        Parent parent = super.render();</span>
+<span class="fc" id="L115">        chatImage.setImage(imageService.getThemeImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/buttons/chat.png&quot;)))));</span>
+<span class="fc" id="L116">        pinned = imageService.getPinnedImage();</span>
+<span class="fc" id="L117">        notPinned = imageService.getNotPinnedImage();</span>
+<span class="fc" id="L118">        friendAvatar.setImage(cache.getImageAvatar(user));</span>
+<span class="fc" id="L119">        name.setText(user.name());</span>
+<span class="fc" id="L120">        updateOnlineStatus(user);</span>
 
-<span class="pc bpc" id="L114" title="3 of 4 branches missed.">        if (friendListService.isFriend(user) || friend) {</span>
-<span class="pc bpc" id="L115" title="1 of 2 branches missed.">            if (this.friendPin) {</span>
-<span class="nc" id="L116">                this.pin.setGraphic(pinned);</span>
+<span class="pc bpc" id="L122" title="3 of 4 branches missed.">        if (friendListService.isFriend(user) || friend) {</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">            if (this.friendPin) {</span>
+<span class="nc" id="L124">                this.pin.setGraphic(pinned);</span>
             } else {
-<span class="fc" id="L118">                this.pin.setGraphic(notPinned);</span>
+<span class="fc" id="L126">                this.pin.setGraphic(notPinned);</span>
             }
         } else {
-<span class="nc" id="L121">            this.pin.setGraphic(notPinned);</span>
-<span class="nc" id="L122">            this.pin.setVisible(false);</span>
-<span class="nc" id="L123">            this.pin.setDisable(true);</span>
+<span class="nc" id="L129">            this.pin.setGraphic(notPinned);</span>
+<span class="nc" id="L130">            this.pin.setVisible(false);</span>
+<span class="nc" id="L131">            this.pin.setDisable(true);</span>
         }
 
-<span class="pc bpc" id="L126" title="1 of 2 branches missed.">        if (friendListService.isFriend(user)) {</span>
-<span class="fc" id="L127">            addRemoveFriendButton.setGraphic(removeImage);</span>
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">        if (friendListService.isFriend(user)) {</span>
+<span class="fc" id="L135">            addRemoveFriendButton.setGraphic(removeImage);</span>
         } else {
-<span class="nc" id="L129">            addRemoveFriendButton.setGraphic(addImage);</span>
+<span class="nc" id="L137">            addRemoveFriendButton.setGraphic(addImage);</span>
         }
 
-<span class="fc" id="L132">        return parent;</span>
+<span class="fc" id="L140">        return parent;</span>
     }
 
     private void updateOnlineStatus(User user) {
-<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        if (user.status().equals(STATUS_ONLINE)) {</span>
-<span class="nc" id="L137">            statusCircle.setFill(Paint.valueOf(&quot;green&quot;));</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if (user.status().equals(STATUS_ONLINE)) {</span>
+<span class="nc" id="L145">            statusCircle.setFill(Paint.valueOf(&quot;green&quot;));</span>
         } else {
-<span class="fc" id="L139">            statusCircle.setFill(Paint.valueOf(&quot;red&quot;));</span>
+<span class="fc" id="L147">            statusCircle.setFill(Paint.valueOf(&quot;red&quot;));</span>
         }
-<span class="fc" id="L141">    }</span>
-
-    private ImageView createImage(String imageUrl) {
-<span class="fc" id="L144">        ImageView imageView = new ImageView(imageUrl);</span>
-<span class="fc" id="L145">        imageView.setCache(false);</span>
-<span class="fc" id="L146">        imageView.setFitHeight(25.0);</span>
-<span class="fc" id="L147">        imageView.setFitWidth(25.0);</span>
-<span class="fc" id="L148">        return imageView;</span>
-    }
+<span class="fc" id="L149">    }</span>
 
     @FXML
     public void addRemoveFriend() {
