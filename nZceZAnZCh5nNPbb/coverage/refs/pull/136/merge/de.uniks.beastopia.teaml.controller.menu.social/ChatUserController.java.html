@@ -4,8 +4,8 @@ import de.uniks.beastopia.teaml.controller.Controller;
 import de.uniks.beastopia.teaml.rest.Group;
 import de.uniks.beastopia.teaml.service.DataCache;
 import de.uniks.beastopia.teaml.service.GroupListService;
+import de.uniks.beastopia.teaml.service.ImageService;
 import de.uniks.beastopia.teaml.service.TokenStorage;
-import de.uniks.beastopia.teaml.utils.AssetProvider;
 import de.uniks.beastopia.teaml.utils.Dialog;
 import de.uniks.beastopia.teaml.utils.Prefs;
 import javafx.fxml.FXML;
@@ -40,9 +40,9 @@ public class ChatUserController extends Controller {
     @Inject
     GroupListService groupListService;
     @Inject
-    Provider&lt;DirectMessageController&gt; directMessageControllerProvider;
+    ImageService imageService;
     @Inject
-    AssetProvider assets;
+    Provider&lt;DirectMessageController&gt; directMessageControllerProvider;
     private Group group;
     private ImageView pinnedImg;
     private ImageView notPinnedImg;
@@ -54,87 +54,85 @@ public class ChatUserController extends Controller {
 
 <span class="fc" id="L55">    }</span>
 
-    @Override
-    public void init() {
-<span class="fc" id="L59">        pinnedImg = assets.getIcon(&quot;buttons&quot;, &quot;filled_pin&quot;, 25, 25);</span>
-<span class="fc" id="L60">        notPinnedImg = assets.getIcon(&quot;buttons&quot;, &quot;pin&quot;, 25, 25);</span>
-<span class="fc" id="L61">    }</span>
-
     public void setOnGroupClicked(Consumer&lt;Group&gt; onGroupClicked) {
-<span class="fc" id="L64">        this.onGroupClicked = onGroupClicked;</span>
-<span class="fc" id="L65">    }</span>
+<span class="fc" id="L58">        this.onGroupClicked = onGroupClicked;</span>
+<span class="fc" id="L59">    }</span>
 
     public void setOnPinChanged(Consumer&lt;Group&gt; onPinChanged) {
-<span class="fc" id="L68">        this.onPinChanged = onPinChanged;</span>
-<span class="fc" id="L69">    }</span>
+<span class="fc" id="L62">        this.onPinChanged = onPinChanged;</span>
+<span class="fc" id="L63">    }</span>
 
     public void setGroup(Group group) {
-<span class="fc" id="L72">        this.group = group;</span>
-<span class="fc" id="L73">    }</span>
+<span class="fc" id="L66">        this.group = group;</span>
+<span class="fc" id="L67">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L77">        Parent parent = super.render();</span>
-<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        String otherID = group.members().get(0).equals(tokenStorage.getCurrentUser()._id())</span>
-<span class="fc" id="L79">                ? group.members().get(1)</span>
-<span class="pc" id="L80">                : group.members().get(0);</span>
+<span class="fc" id="L71">        Parent parent = super.render();</span>
 
-<span class="fc" id="L82">        cache.getAllUsers().stream()</span>
-<span class="fc" id="L83">                .filter(user -&gt; user._id().equals(otherID))</span>
-<span class="fc" id="L84">                .findFirst()</span>
-<span class="fc" id="L85">                .ifPresent(user -&gt; {</span>
-<span class="fc" id="L86">                    name.setText(user.name());</span>
-<span class="fc" id="L87">                    chatAvatar.setImage(cache.getImageAvatar(user));</span>
-<span class="fc" id="L88">                });</span>
+<span class="fc" id="L73">        pinnedImg = imageService.getPinnedImage();</span>
+<span class="fc" id="L74">        notPinnedImg = imageService.getNotPinnedImage();</span>
 
-<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        if (prefs.isPinned(this.group)) {</span>
-<span class="fc" id="L91">            this.pinGroupBtn.setGraphic(pinnedImg);</span>
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">        String otherID = group.members().get(0).equals(tokenStorage.getCurrentUser()._id())</span>
+<span class="fc" id="L77">                ? group.members().get(1)</span>
+<span class="pc" id="L78">                : group.members().get(0);</span>
+
+<span class="fc" id="L80">        cache.getAllUsers().stream()</span>
+<span class="fc" id="L81">                .filter(user -&gt; user._id().equals(otherID))</span>
+<span class="fc" id="L82">                .findFirst()</span>
+<span class="fc" id="L83">                .ifPresent(user -&gt; {</span>
+<span class="fc" id="L84">                    name.setText(user.name());</span>
+<span class="fc" id="L85">                    chatAvatar.setImage(cache.getImageAvatar(user));</span>
+<span class="fc" id="L86">                });</span>
+
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        if (prefs.isPinned(this.group)) {</span>
+<span class="fc" id="L89">            this.pinGroupBtn.setGraphic(pinnedImg);</span>
         } else {
-<span class="nc" id="L93">            this.pinGroupBtn.setGraphic(notPinnedImg);</span>
+<span class="nc" id="L91">            this.pinGroupBtn.setGraphic(notPinnedImg);</span>
         }
 
-<span class="fc" id="L96">        return parent;</span>
+<span class="fc" id="L94">        return parent;</span>
     }
 
     public void mouseClicked() {
-<span class="fc" id="L100">        onGroupClicked.accept(group);</span>
-<span class="fc" id="L101">    }</span>
+<span class="fc" id="L98">        onGroupClicked.accept(group);</span>
+<span class="fc" id="L99">    }</span>
 
 
     @SuppressWarnings(&quot;DuplicatedCode&quot;)
     public void deleteGroup() {
-<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (group.members().size() &lt; 2) {</span>
-<span class="nc" id="L107">            disposables.add(groupListService.deleteGroup(group).observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="nc" id="L108">                    lr -&gt; app.show(directMessageControllerProvider.get()),</span>
-<span class="nc" id="L109">                    error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;)</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (group.members().size() &lt; 2) {</span>
+<span class="nc" id="L105">            disposables.add(groupListService.deleteGroup(group).observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="nc" id="L106">                    lr -&gt; app.show(directMessageControllerProvider.get()),</span>
+<span class="nc" id="L107">                    error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;)</span>
                     )));
         } else {
-<span class="nc" id="L112">            disposables.add(groupListService.removeMember(group, tokenStorage.getCurrentUser()._id()).observeOn(FX_SCHEDULER).subscribe(</span>
-<span class="nc" id="L113">                    lr -&gt; app.show(directMessageControllerProvider.get()),</span>
-<span class="nc" id="L114">                    error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;)</span>
+<span class="nc" id="L110">            disposables.add(groupListService.removeMember(group, tokenStorage.getCurrentUser()._id()).observeOn(FX_SCHEDULER).subscribe(</span>
+<span class="nc" id="L111">                    lr -&gt; app.show(directMessageControllerProvider.get()),</span>
+<span class="nc" id="L112">                    error -&gt; Dialog.error(error, resources.getString(&quot;deleteFailed&quot;)</span>
                     )));
         }
-<span class="nc" id="L117">    }</span>
+<span class="nc" id="L115">    }</span>
 
     @SuppressWarnings(&quot;DuplicatedCode&quot;)
     @FXML
     public void pinGroup() {
-<span class="pc bpc" id="L122" title="1 of 2 branches missed.">        if (!prefs.isPinned(this.group)) {</span>
-<span class="nc" id="L123">            pinGroupBtn.setGraphic(pinnedImg);</span>
-<span class="nc" id="L124">            prefs.setPinned(this.group, true);</span>
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">        if (!prefs.isPinned(this.group)) {</span>
+<span class="nc" id="L121">            pinGroupBtn.setGraphic(pinnedImg);</span>
+<span class="nc" id="L122">            prefs.setPinned(this.group, true);</span>
         } else {
-<span class="fc" id="L126">            pinGroupBtn.setGraphic(notPinnedImg);</span>
-<span class="fc" id="L127">            prefs.setPinned(this.group, false);</span>
+<span class="fc" id="L124">            pinGroupBtn.setGraphic(notPinnedImg);</span>
+<span class="fc" id="L125">            prefs.setPinned(this.group, false);</span>
         }
-<span class="pc bpc" id="L129" title="1 of 2 branches missed.">        if (onPinChanged != null) {</span>
-<span class="fc" id="L130">            onPinChanged.accept(group);</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (onPinChanged != null) {</span>
+<span class="fc" id="L128">            onPinChanged.accept(group);</span>
         }
-<span class="fc" id="L132">    }</span>
+<span class="fc" id="L130">    }</span>
 
     @Override
     public void destroy() {
-<span class="nc" id="L136">        chatAvatar = null;</span>
-<span class="nc" id="L137">        super.destroy();</span>
-<span class="nc" id="L138">    }</span>
+<span class="nc" id="L134">        chatAvatar = null;</span>
+<span class="nc" id="L135">        super.destroy();</span>
+<span class="nc" id="L136">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
