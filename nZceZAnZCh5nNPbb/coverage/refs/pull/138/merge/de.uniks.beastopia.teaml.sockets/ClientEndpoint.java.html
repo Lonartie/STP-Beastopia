@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClientEndpoint.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.sockets</a> &gt; <span class="el_source">ClientEndpoint.java</span></div><h1>ClientEndpoint.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.sockets;
+
+import javax.websocket.CloseReason;
+import javax.websocket.ContainerProvider;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.WebSocketContainer;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
+
+@SuppressWarnings(&quot;unused&quot;)
+@javax.websocket.ClientEndpoint
+public class ClientEndpoint {
+    private final URI endpointURI;
+
+<span class="nc" id="L22">    private final List&lt;Consumer&lt;String&gt;&gt; messageHandlers = Collections.synchronizedList(new ArrayList&lt;&gt;());</span>
+
+    Session userSession;
+
+<span class="nc" id="L26">    public ClientEndpoint(URI endpointURI) {</span>
+<span class="nc" id="L27">        this.endpointURI = endpointURI;</span>
+<span class="nc" id="L28">    }</span>
+
+    public boolean isOpen() {
+<span class="nc bnc" id="L31" title="All 4 branches missed.">        return this.userSession != null &amp;&amp; this.userSession.isOpen();</span>
+    }
+
+    public void open() {
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        if (isOpen()) {</span>
+<span class="nc" id="L36">            return;</span>
+        }
+
+        try {
+<span class="nc" id="L40">            WebSocketContainer container = ContainerProvider.getWebSocketContainer();</span>
+            //noinspection resource
+<span class="nc" id="L42">            container.connectToServer(this, endpointURI);</span>
+<span class="nc" id="L43">        } catch (Exception e) {</span>
+<span class="nc" id="L44">            throw new RuntimeException(e);</span>
+<span class="nc" id="L45">        }</span>
+<span class="nc" id="L46">    }</span>
+
+    @OnOpen
+    public void onOpen(Session userSession) {
+<span class="nc" id="L50">        this.userSession = userSession;</span>
+<span class="nc" id="L51">    }</span>
+
+    @OnClose
+    public void onClose(Session userSession, CloseReason reason) {
+<span class="nc" id="L55">        this.messageHandlers.clear();</span>
+<span class="nc" id="L56">        this.userSession = null;</span>
+<span class="nc" id="L57">    }</span>
+
+    @OnMessage
+    public synchronized void onMessage(String message) {
+<span class="nc" id="L61">        List&lt;Consumer&lt;String&gt;&gt; handlersCopy = new ArrayList&lt;&gt;(this.messageHandlers);</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        for (Consumer&lt;String&gt; handler : handlersCopy) {</span>
+<span class="nc" id="L63">            handler.accept(message);</span>
+<span class="nc" id="L64">        }</span>
+<span class="nc" id="L65">    }</span>
+
+    @OnError
+    public void onError(Throwable error) {
+<span class="nc" id="L69">        error.printStackTrace();</span>
+<span class="nc" id="L70">    }</span>
+
+    public void addMessageHandler(Consumer&lt;String&gt; handler) {
+<span class="nc" id="L73">        this.messageHandlers.add(handler);</span>
+<span class="nc" id="L74">    }</span>
+
+    public void removeMessageHandler(Consumer&lt;String&gt; handler) {
+<span class="nc" id="L77">        this.messageHandlers.remove(handler);</span>
+<span class="nc" id="L78">    }</span>
+
+    public void sendMessage(String message) {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (this.userSession == null) {</span>
+<span class="nc" id="L82">            return;</span>
+        }
+<span class="nc" id="L84">        this.userSession.getAsyncRemote().sendText(message);</span>
+<span class="nc" id="L85">    }</span>
+
+    public void close() {
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (this.userSession == null) {</span>
+<span class="nc" id="L89">            return;</span>
+        }
+        try {
+<span class="nc" id="L92">            this.userSession.close();</span>
+<span class="nc" id="L93">        } catch (Exception e) {</span>
+<span class="nc" id="L94">            e.printStackTrace();</span>
+<span class="nc" id="L95">        }</span>
+<span class="nc" id="L96">    }</span>
+
+    @SuppressWarnings(&quot;BooleanMethodIsAlwaysInverted&quot;)
+    public boolean hasMessageHandlers() {
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        return !this.messageHandlers.isEmpty();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
