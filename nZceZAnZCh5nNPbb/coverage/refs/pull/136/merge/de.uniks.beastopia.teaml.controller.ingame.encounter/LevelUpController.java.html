@@ -2,7 +2,9 @@
 
 import de.uniks.beastopia.teaml.Main;
 import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.AbilityDto;
 import de.uniks.beastopia.teaml.rest.Monster;
+import de.uniks.beastopia.teaml.service.DataCache;
 import de.uniks.beastopia.teaml.service.PresetsService;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
@@ -17,6 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import javax.inject.Inject;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -66,137 +69,165 @@ public class LevelUpController extends Controller {
     public VBox beastInfo;
     @FXML
     public VBox abilityInfo;
+    @FXML
+    public Label statsLabel;
     @Inject
     PresetsService presetsService;
+    @Inject
+    DataCache cache;
     private Monster beast;
-    private boolean newAbility;
+    private Map&lt;String, Integer&gt; newAbilities;
     private boolean dev;
     private double plusHP;
+    private int plusAttack;
+    private int plusDefense;
+    private int plusSpeed;
     private double healthWidth;
     private double expWidth;
     private EndScreenController endScreenController;
 
     @Inject
-<span class="fc" id="L80">    public LevelUpController() {</span>
-<span class="fc" id="L81">    }</span>
+<span class="fc" id="L90">    public LevelUpController() {</span>
+<span class="fc" id="L91">    }</span>
 
-    public void setBeast(Monster beast, boolean newAbility, boolean dev, double hp, EndScreenController endScreenController) {
-<span class="fc" id="L84">        this.newAbility = newAbility;</span>
-<span class="fc" id="L85">        this.beast = beast;</span>
-<span class="fc" id="L86">        this.dev = dev;</span>
-<span class="fc" id="L87">        this.plusHP = hp;</span>
-<span class="fc" id="L88">        this.endScreenController = endScreenController;</span>
-<span class="fc" id="L89">    }</span>
+    public void setBeast(Monster beast, Map&lt;String, Integer&gt; newAbilities, boolean dev, double hp, int attack, int defense, int speed, EndScreenController endScreenController) {
+<span class="fc" id="L94">        this.newAbilities = newAbilities;</span>
+<span class="fc" id="L95">        this.beast = beast;</span>
+<span class="fc" id="L96">        this.dev = dev;</span>
+<span class="fc" id="L97">        this.plusHP = hp;</span>
+<span class="fc" id="L98">        this.plusAttack = attack;</span>
+<span class="fc" id="L99">        this.plusDefense = defense;</span>
+<span class="fc" id="L100">        this.plusSpeed = speed;</span>
+<span class="fc" id="L101">        this.endScreenController = endScreenController;</span>
+<span class="fc" id="L102">    }</span>
 
     @Override
     public String getTitle() {
-<span class="fc" id="L93">        return resources.getString(&quot;titleEncounter&quot;);</span>
+<span class="fc" id="L106">        return resources.getString(&quot;titleEncounter&quot;);</span>
     }
 
     @Override
     public void onResize(int width, int height) {
-<span class="fc" id="L98">        hpBg.setMinWidth(healthWidth * borderBg.getWidth());</span>
-<span class="fc" id="L99">        hpBg.setMaxWidth(healthWidth * borderBg.getWidth());</span>
-<span class="fc" id="L100">        starBg.setMinWidth(expWidth * borderBg.getWidth());</span>
-<span class="fc" id="L101">        starBg.setMaxWidth(expWidth * borderBg.getWidth());</span>
-<span class="fc" id="L102">    }</span>
+<span class="fc" id="L111">        hpBg.setMinWidth(healthWidth * borderBg.getWidth());</span>
+<span class="fc" id="L112">        hpBg.setMaxWidth(healthWidth * borderBg.getWidth());</span>
+<span class="fc" id="L113">        starBg.setMinWidth(expWidth * borderBg.getWidth());</span>
+<span class="fc" id="L114">        starBg.setMaxWidth(expWidth * borderBg.getWidth());</span>
+<span class="fc" id="L115">    }</span>
 
     @Override
     public Parent render() {
-<span class="fc" id="L106">        Parent parent = super.render();</span>
-<span class="fc" id="L107">        headline.setText(&quot;Level up!&quot;);</span>
-<span class="fc" id="L108">        heart.setImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/herz.png&quot;))));</span>
-<span class="fc" id="L109">        heart.setFitWidth(25);</span>
-<span class="fc" id="L110">        heart.setFitHeight(25);</span>
+<span class="fc" id="L119">        Parent parent = super.render();</span>
 
-<span class="fc" id="L112">        star.setImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/star.png&quot;))));</span>
-<span class="fc" id="L113">        star.setFitWidth(25);</span>
-<span class="fc" id="L114">        star.setFitHeight(25);</span>
+<span class="fc" id="L121">        abilityInfo.setVisible(false);</span>
+<span class="fc" id="L122">        headline.setText(&quot;Level up!&quot;);</span>
+<span class="fc" id="L123">        heart.setImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/herz.png&quot;))));</span>
+<span class="fc" id="L124">        heart.setFitWidth(25);</span>
+<span class="fc" id="L125">        heart.setFitHeight(25);</span>
 
-<span class="fc" id="L116">        disposables.add(presetsService.getMonsterType(beast.type())</span>
-<span class="fc" id="L117">                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L118">                .subscribe(type -&gt; {</span>
-<span class="fc" id="L119">                    up_text_bottom.setText(type.name() + &quot; &quot; + type.type() + &quot; Lvl. &quot; + beast.level());</span>
-<span class="pc bpc" id="L120" title="1 of 2 branches missed.">                    if (this.newAbility) {</span>
-<span class="fc" id="L121">                        up_text.setText(type.name() + &quot; &quot; + resources.getString(&quot;lvl+A&quot;));</span>
-                    } else {
-<span class="nc" id="L123">                        up_text.setText(type.name() + &quot; &quot; + resources.getString(&quot;lvl+&quot;));</span>
-                    }
-<span class="fc" id="L125">                }));</span>
+<span class="fc" id="L127">        star.setImage(new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/star.png&quot;))));</span>
+<span class="fc" id="L128">        star.setFitWidth(25);</span>
+<span class="fc" id="L129">        star.setFitHeight(25);</span>
 
-<span class="fc" id="L127">        lifeValueLabel.setText((int) beast.currentAttributes().health() + &quot; &quot;);</span>
-<span class="fc" id="L128">        maxLifeLabel.setText(&quot; &quot; + (int) beast.attributes().health());</span>
-<span class="fc" id="L129">        plusHPLabel.setText(&quot; (+&quot; + (int) plusHP + &quot; Max HP)&quot;);</span>
-<span class="fc" id="L130">        xpValueLabel.setText(beast.experience() + &quot; &quot;);</span>
-<span class="fc" id="L131">        int maxExp = (int) Math.pow(beast.level(), 3) - (int) Math.pow(beast.level() - 1, 3);</span>
-<span class="fc" id="L132">        maxXpLabel.setText(maxExp + &quot; &quot;);</span>
+<span class="fc" id="L131">        up_text_bottom.setText(cache.getBeastDto(beast.type()).name() + &quot; &quot; + cache.getBeastDto(beast.type()).type() + &quot; Lvl. &quot; + beast.level());</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        if (this.newAbilities != null) {</span>
+<span class="fc" id="L133">            up_text.setText(cache.getBeastDto(beast.type()).name() + &quot; &quot; + resources.getString(&quot;lvl+A&quot;) + &quot; &quot;);</span>
+        } else {
+<span class="nc" id="L135">            up_text.setText(cache.getBeastDto(beast.type()).name() + &quot; &quot; + resources.getString(&quot;lvl+&quot;));</span>
+        }
 
-<span class="fc" id="L134">        healthWidth = beast.currentAttributes().health() / beast.attributes().health();</span>
-<span class="fc" id="L135">        expWidth = (double) beast.experience() / maxExp;</span>
+<span class="fc" id="L138">        lifeValueLabel.setText((int) beast.currentAttributes().health() + &quot; &quot;);</span>
+<span class="fc" id="L139">        maxLifeLabel.setText(&quot; &quot; + (int) beast.attributes().health());</span>
+<span class="fc" id="L140">        plusHPLabel.setText(&quot; (+&quot; + (int) plusHP + &quot; Max HP)&quot;);</span>
+<span class="fc" id="L141">        statsLabel.setText(&quot;Attack: &quot; + beast.attributes().attack() + &quot; (+&quot; + plusAttack + &quot;), Defense: &quot; +</span>
+<span class="fc" id="L142">                beast.attributes().defense() + &quot; (+&quot; + plusDefense + &quot;), Speed: &quot; + beast.attributes().speed() + &quot; (+&quot; + plusSpeed + &quot;)&quot;);</span>
+<span class="fc" id="L143">        xpValueLabel.setText(beast.experience() + &quot; &quot;);</span>
+<span class="fc" id="L144">        int maxExp = (int) Math.pow(beast.level(), 3) - (int) Math.pow(beast.level() - 1, 3);</span>
+<span class="fc" id="L145">        maxXpLabel.setText(maxExp + &quot; &quot;);</span>
 
-<span class="fc" id="L137">        Timer timer = new Timer();</span>
-<span class="fc" id="L138">        timer.schedule(new TimerTask() {</span>
+<span class="fc" id="L147">        healthWidth = beast.currentAttributes().health() / beast.attributes().health();</span>
+<span class="fc" id="L148">        expWidth = (double) beast.experience() / maxExp;</span>
+
+<span class="fc" id="L150">        Timer timer = new Timer();</span>
+<span class="fc" id="L151">        timer.schedule(new TimerTask() {</span>
             @Override
             public void run() {
-<span class="fc" id="L141">                Platform.runLater(() -&gt; {</span>
-<span class="fc" id="L142">                    hpBg.setMinWidth(healthWidth * borderBg.getWidth());</span>
-<span class="fc" id="L143">                    hpBg.setMaxWidth(healthWidth * borderBg.getWidth());</span>
-<span class="fc" id="L144">                    starBg.setMinWidth(expWidth * borderBg.getWidth());</span>
-<span class="fc" id="L145">                    starBg.setMaxWidth(expWidth * borderBg.getWidth());</span>
-<span class="fc" id="L146">                });</span>
-<span class="fc" id="L147">            }</span>
-        }, 100);
+<span class="fc" id="L154">                Platform.runLater(() -&gt; {</span>
+<span class="fc" id="L155">                    hpBg.setMinWidth(healthWidth * borderBg.getWidth());</span>
+<span class="fc" id="L156">                    hpBg.setMaxWidth(healthWidth * borderBg.getWidth());</span>
+<span class="fc" id="L157">                    starBg.setMinWidth(expWidth * borderBg.getWidth());</span>
+<span class="fc" id="L158">                    starBg.setMaxWidth(expWidth * borderBg.getWidth());</span>
+<span class="fc" id="L159">                });</span>
+<span class="fc" id="L160">            }</span>
+        }, 200);
 
-<span class="pc bpc" id="L150" title="1 of 2 branches missed.">        if (dev) { //Fade old Image -&gt; New one</span>
-<span class="fc" id="L151">            disposables.add(presetsService.getMonsterImage(beast.type() - 1)</span>
-<span class="fc" id="L152">                    .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L153">                    .subscribe(beforeImg -&gt; {</span>
-<span class="fc" id="L154">                        image.setImage(beforeImg);</span>
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">        if (dev) { //Fade old Image -&gt; New one</span>
+<span class="fc" id="L164">            image.setImage(cache.getMonsterImage(beast.type() - 1));</span>
 
-<span class="fc" id="L156">                        FadeTransition fadeOut = new FadeTransition(Duration.seconds(2), image);</span>
-<span class="fc" id="L157">                        fadeOut.setFromValue(1.0);</span>
-<span class="fc" id="L158">                        fadeOut.setToValue(0.0);</span>
+<span class="fc" id="L166">            FadeTransition fadeOut = new FadeTransition(Duration.seconds(2), image);</span>
+<span class="fc" id="L167">            fadeOut.setFromValue(1.0);</span>
+<span class="fc" id="L168">            fadeOut.setToValue(0.0);</span>
+<span class="fc" id="L169">            fadeOut.play();</span>
 
-<span class="fc" id="L160">                        disposables.add(presetsService.getMonsterImage(beast.type())</span>
-<span class="fc" id="L161">                                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L162">                                .subscribe(afterImage -&gt; {</span>
-<span class="fc" id="L163">                                    FadeTransition fadeIn = new FadeTransition(Duration.seconds(2), image);</span>
-<span class="fc" id="L164">                                    fadeIn.setFromValue(0.0);</span>
-<span class="fc" id="L165">                                    fadeIn.setToValue(1.0);</span>
+<span class="fc" id="L171">            FadeTransition fadeIn = new FadeTransition(Duration.seconds(2), image);</span>
+<span class="fc" id="L172">            fadeIn.setFromValue(0.0);</span>
+<span class="fc" id="L173">            fadeIn.setToValue(1.0);</span>
 
-<span class="fc" id="L167">                                    fadeOut.setOnFinished(event -&gt; { // set new img and start fade</span>
-<span class="fc" id="L168">                                        image.setImage(afterImage);</span>
-<span class="fc" id="L169">                                        fadeIn.play();</span>
-<span class="fc" id="L170">                                    });</span>
-<span class="fc" id="L171">                                    fadeOut.play();</span>
-<span class="fc" id="L172">                                }));</span>
-<span class="fc" id="L173">                    }));</span>
-        } else {
-<span class="nc" id="L175">            disposables.add(presetsService.getMonsterImage(beast.type())</span>
-<span class="nc" id="L176">                    .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L177">                    .subscribe(monsterImage -&gt; image.setImage(monsterImage)));</span>
+<span class="fc" id="L175">            fadeOut.setOnFinished(event -&gt; { // set new img and start fade</span>
+<span class="pc bpc" id="L176" title="1 of 2 branches missed.">                if (cache.imageIsDownloaded(beast.type())) {</span>
+<span class="nc" id="L177">                    image.setImage(cache.getMonsterImage(beast.type()));</span>
+<span class="nc" id="L178">                    fadeIn.play();</span>
+                } else {
+<span class="fc" id="L180">                    disposables.add(presetsService.getMonsterImage(beast.type())</span>
+<span class="fc" id="L181">                            .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L182">                            .subscribe(afterImage -&gt; {</span>
+<span class="fc" id="L183">                                cache.addMonsterImages(beast.type(), afterImage);</span>
+<span class="fc" id="L184">                                image.setImage(afterImage);</span>
+<span class="fc" id="L185">                                fadeIn.play();</span>
+<span class="fc" id="L186">                            }));</span>
+                }
+<span class="fc" id="L188">            });</span>
+<span class="fc" id="L189">        } else {</span>
+<span class="nc" id="L190">            image.setImage(cache.getMonsterImage(beast.type()));</span>
         }
 
-<span class="pc bpc" id="L180" title="1 of 2 branches missed.">        if (this.newAbility) {</span>
-<span class="fc" id="L181">            String lastKey = (String) beast.abilities().keySet().toArray()[beast.abilities().size() - 1];</span>
-<span class="fc" id="L182">            disposables.add(presetsService.getAbility(beast.abilities().get(lastKey))</span>
-<span class="fc" id="L183">                    .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L184">                    .subscribe(abilityDto -&gt; {</span>
-<span class="fc" id="L185">                        attack.setText(abilityDto.name());</span>
-<span class="fc" id="L186">                        abilityLabel.setText(abilityDto.name());</span>
-<span class="fc" id="L187">                        accuracy.setText(&quot;Accuracy: &quot; + abilityDto.accuracy());</span>
-<span class="fc" id="L188">                        type.setText(&quot;Type: &quot; + abilityDto.type());</span>
-<span class="fc" id="L189">                        power.setText(&quot;Power: &quot; + abilityDto.power());</span>
-<span class="fc" id="L190">                    }));</span>
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">        if (this.newAbilities != null) {</span>
+<span class="fc" id="L194">            Map.Entry&lt;String, Integer&gt; lastEntry = null;</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">            for (Map.Entry&lt;String, Integer&gt; entry : newAbilities.entrySet()) {</span>
+<span class="fc" id="L196">                lastEntry = entry;</span>
+<span class="fc" id="L197">            }</span>
+<span class="pc bpc" id="L198" title="1 of 2 branches missed.">            if (lastEntry != null) {</span>
+<span class="fc" id="L199">                abilityInfo.setVisible(true);</span>
+
+<span class="fc" id="L201">                int index = Integer.parseInt(lastEntry.getKey());</span>
+<span class="pc bpc" id="L202" title="1 of 2 branches missed.">                if (cache.getAbilities().containsKey(index)) {</span>
+<span class="nc" id="L203">                    AbilityDto abilityDto = cache.getAbilities().get(index);</span>
+<span class="nc" id="L204">                    abilityLabel.setText(cache.getAbilities().get(index).name() + &quot;.&quot;);</span>
+<span class="nc" id="L205">                    attack.setText(abilityDto.name());</span>
+<span class="nc" id="L206">                    accuracy.setText(&quot;Accuracy: &quot; + abilityDto.accuracy());</span>
+<span class="nc" id="L207">                    type.setText(&quot;Type: &quot; + abilityDto.type());</span>
+<span class="nc" id="L208">                    power.setText(&quot;Power: &quot; + abilityDto.power());</span>
+<span class="nc" id="L209">                } else {</span>
+<span class="fc" id="L210">                    disposables.add(presetsService.getAbility(Integer.parseInt(lastEntry.getKey()))</span>
+<span class="fc" id="L211">                            .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L212">                            .subscribe(abilityDto -&gt; {</span>
+<span class="fc" id="L213">                                cache.getAbilities().put(abilityDto.id(), abilityDto);</span>
+<span class="fc" id="L214">                                abilityLabel.setText(abilityDto.name() + &quot;.&quot;);</span>
+<span class="fc" id="L215">                                attack.setText(abilityDto.name());</span>
+<span class="fc" id="L216">                                accuracy.setText(&quot;Accuracy: &quot; + abilityDto.accuracy());</span>
+<span class="fc" id="L217">                                type.setText(&quot;Type: &quot; + abilityDto.type());</span>
+<span class="fc" id="L218">                                power.setText(&quot;Power: &quot; + abilityDto.power());</span>
+<span class="fc" id="L219">                            }));</span>
+                }
+            }
         }
 
-<span class="fc" id="L193">        return parent;</span>
+<span class="fc" id="L224">        return parent;</span>
     }
 
 
     @FXML
     public void continuePressed() {
-<span class="nc" id="L199">        app.show(endScreenController);</span>
-<span class="nc" id="L200">    }</span>
+<span class="nc" id="L230">        app.show(endScreenController);</span>
+<span class="nc" id="L231">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
