@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
@@ -47,60 +48,59 @@ public class EndScreenController extends Controller {
     private Monster winner2;
     private Monster loser1;
     private Monster loser2;
-<span class="nc" id="L50">    private boolean isWinner = false;</span>
-<span class="nc" id="L51">    private String gainedCoins = &quot;&quot;;</span>
+<span class="nc" id="L51">    private boolean isWinner = false;</span>
+<span class="nc" id="L52">    private String gainedCoins = &quot;&quot;;</span>
 
     @Inject
-<span class="nc" id="L54">    public EndScreenController() {</span>
-<span class="nc" id="L55">    }</span>
+<span class="nc" id="L55">    public EndScreenController() {</span>
+<span class="nc" id="L56">    }</span>
 
     @Override
     public String getTitle() {
-<span class="nc" id="L59">        return resources.getString(&quot;titleEncounter&quot;);</span>
+<span class="nc" id="L60">        return resources.getString(&quot;titleEncounter&quot;);</span>
     }
 
     @Override
     public Parent render() {
-<span class="nc" id="L64">        Parent parent = super.render();</span>
+<span class="nc" id="L65">        Parent parent = super.render();</span>
 
-<span class="nc" id="L66">        disposables.add(presetsService.getMonsterImage(winner1.type())</span>
-<span class="nc" id="L67">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L68">                .subscribe(monsterImage -&gt; winnerImg.setImage(monsterImage)));</span>
+<span class="nc" id="L67">        getEndScreenImages(winner1, winnerImg, winner2, leftMonsterContainer);</span>
+<span class="nc" id="L68">        getEndScreenImages(loser1, loserImg, loser2, rightMonsterContainer);</span>
 
-<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (winner2 != null) {</span>
-<span class="nc" id="L71">            ImageView secondWinner = new ImageView();</span>
-<span class="nc" id="L72">            secondWinner.setX(125);</span>
-<span class="nc" id="L73">            secondWinner.setY(125);</span>
-<span class="nc" id="L74">            disposables.add(presetsService.getMonsterImage(winner2.type())</span>
-<span class="nc" id="L75">                    .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L76">                    .subscribe(secondWinner::setImage));</span>
-<span class="nc" id="L77">            leftMonsterContainer.getChildren().add(secondWinner);</span>
-        }
-
-<span class="nc" id="L80">        disposables.add(presetsService.getMonsterImage(loser1.type())</span>
-<span class="nc" id="L81">                .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L82">                .subscribe(monsterImage -&gt; loserImg.setImage(monsterImage)));</span>
-
-<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (loser2 != null) {</span>
-<span class="nc" id="L85">            ImageView secondLoser = new ImageView();</span>
-<span class="nc" id="L86">            secondLoser.setX(125);</span>
-<span class="nc" id="L87">            secondLoser.setY(125);</span>
-<span class="nc" id="L88">            disposables.add(presetsService.getMonsterImage(loser2.type())</span>
-<span class="nc" id="L89">                    .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L90">                    .subscribe(secondLoser::setImage));</span>
-<span class="nc" id="L91">            rightMonsterContainer.getChildren().add(secondLoser);</span>
-        }
-
-<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (isWinner) {</span>
-<span class="nc" id="L95">            resultLabel.setText(resources.getString(&quot;fightWon&quot;));</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (isWinner) {</span>
+<span class="nc" id="L71">            resultLabel.setText(resources.getString(&quot;fightWon&quot;));</span>
         } else {
-<span class="nc" id="L97">            resultLabel.setText(resources.getString(&quot;fightLost&quot;));</span>
+<span class="nc" id="L73">            resultLabel.setText(resources.getString(&quot;fightLost&quot;));</span>
         }
 
-<span class="nc" id="L100">        coinInfo.setText(gainedCoins);</span>
+<span class="nc" id="L76">        coinInfo.setText(gainedCoins);</span>
 
-<span class="nc" id="L102">        return parent;</span>
+<span class="nc" id="L78">        return parent;</span>
     }
+
+    private void getEndScreenImages(Monster monster1, ImageView winnerImg, Monster monster2, VBox leftMonsterContainer) {
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (!dataCache.imageIsDownloaded(monster1.type())) {</span>
+<span class="nc" id="L83">            Image monsterImage = presetsService.getMonsterImage(monster1.type()).blockingFirst();</span>
+<span class="nc" id="L84">            dataCache.addMonsterImages(monster1.type(), monsterImage);</span>
+<span class="nc" id="L85">            winnerImg.setImage(monsterImage);</span>
+<span class="nc" id="L86">        } else {</span>
+<span class="nc" id="L87">            winnerImg.setImage(dataCache.getMonsterImage(monster1.type()));</span>
+        }
+
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (monster2 != null) {</span>
+<span class="nc" id="L91">            ImageView secondWinner = new ImageView();</span>
+<span class="nc" id="L92">            secondWinner.setX(125);</span>
+<span class="nc" id="L93">            secondWinner.setY(125);</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">            if (!dataCache.imageIsDownloaded(monster2.type())) {</span>
+<span class="nc" id="L95">                Image monsterImage = presetsService.getMonsterImage(monster2.type()).blockingFirst();</span>
+<span class="nc" id="L96">                dataCache.addMonsterImages(monster2.type(), monsterImage);</span>
+<span class="nc" id="L97">                secondWinner.setImage(monsterImage);</span>
+<span class="nc" id="L98">            } else {</span>
+<span class="nc" id="L99">                secondWinner.setImage(dataCache.getMonsterImage(monster2.type()));</span>
+            }
+<span class="nc" id="L101">            leftMonsterContainer.getChildren().add(secondWinner);</span>
+        }
+<span class="nc" id="L103">    }</span>
 
     public void onLeaveButtonClicked() {
 <span class="nc" id="L106">        IngameController controller = ingameControllerProvider.get();</span>
