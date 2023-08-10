@@ -510,7 +510,7 @@ public class IngameController extends Controller {
 <span class="fc" id="L510">            hideButtonHints(true);</span>
 <span class="fc" id="L511">            setOpacities(0);</span>
 <span class="fc" id="L512">            disableHint.setOpacity(1);</span>
-<span class="fc" id="L513">            disableHint.setText(&quot;Enable Buttons with Shift + B&quot;);</span>
+<span class="fc" id="L513">            disableHint.setText(resources.getString(&quot;EnableHints&quot;));</span>
         }
 <span class="fc" id="L515">    }</span>
 
@@ -1539,7 +1539,7 @@ public class IngameController extends Controller {
 <span class="fc" id="L1539">            mondexHint.toBack();</span>
 <span class="fc" id="L1540">            beastTeamHint.toBack();</span>
 <span class="fc" id="L1541">            talkHint.toBack();</span>
-<span class="fc" id="L1542">            disableHint.setText(&quot;Enable Buttons with Shift + B&quot;);</span>
+<span class="fc" id="L1542">            disableHint.setText(resources.getString(&quot;EnableHints&quot;));</span>
 <span class="fc" id="L1543">            cache.setHintsNotVisible(false);</span>
         } else {
 <span class="nc" id="L1545">            pauseHint.toFront();</span>
@@ -1550,7 +1550,7 @@ public class IngameController extends Controller {
 <span class="nc" id="L1550">            mondexHint.toFront();</span>
 <span class="nc" id="L1551">            beastTeamHint.toFront();</span>
 <span class="nc" id="L1552">            talkHint.toFront();</span>
-<span class="nc" id="L1553">            disableHint.setText(&quot;Disable Buttons with Shift + B&quot;);</span>
+<span class="nc" id="L1553">            disableHint.setText(resources.getString(&quot;DisableHints&quot;));</span>
 <span class="nc" id="L1554">            cache.setHintsNotVisible(true);</span>
         }
 <span class="fc" id="L1556">        pauseHint.setDisable(hide);</span>
