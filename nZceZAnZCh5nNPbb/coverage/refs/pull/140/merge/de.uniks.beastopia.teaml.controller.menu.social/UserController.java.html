@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.menu.social</a> &gt; <span class="el_source">UserController.java</span></div><h1>UserController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.menu.social;
+
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.User;
+import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.service.ImageService;
+import de.uniks.beastopia.teaml.utils.AssetProvider;
+import de.uniks.beastopia.teaml.utils.Prefs;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+
+import javax.inject.Inject;
+import java.util.function.Consumer;
+
+
+public class UserController extends Controller {
+
+    @FXML
+    public ImageView avatar;
+    @FXML
+    public Label username;
+    @FXML
+    public Button addRemoveButton;
+    @FXML
+    public Button pinButton;
+    @Inject
+    Prefs prefs;
+    @Inject
+    DataCache cache;
+    @Inject
+    ImageService imageService;
+    @Inject
+    AssetProvider assets;
+    private User user;
+    private Consumer&lt;User&gt; onUserToggled;
+    private Consumer&lt;User&gt; onUserPinToggled;
+    private boolean isAdded;
+
+    @Inject
+<span class="nc" id="L43">    public UserController() {</span>
+
+<span class="nc" id="L45">    }</span>
+
+    public UserController setOnUserToggled(Consumer&lt;User&gt; onUserToggled) {
+<span class="nc" id="L48">        this.onUserToggled = onUserToggled;</span>
+<span class="nc" id="L49">        return this;</span>
+    }
+
+    public UserController setOnUserPinToggled(Consumer&lt;User&gt; onUserPinToggled) {
+<span class="nc" id="L53">        this.onUserPinToggled = onUserPinToggled;</span>
+<span class="nc" id="L54">        return this;</span>
+    }
+
+    public UserController setIsAdded(boolean isAdded) {
+<span class="nc" id="L58">        this.isAdded = isAdded;</span>
+<span class="nc" id="L59">        return this;</span>
+    }
+
+    @Override
+    public Parent render() {
+<span class="nc" id="L64">        Parent parent = super.render();</span>
+<span class="nc" id="L65">        username.setText(user.name());</span>
+<span class="nc" id="L66">        avatar.setImage(cache.getImageAvatar(user));</span>
+
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (prefs.isPinned(user)) {</span>
+<span class="nc" id="L69">            ImageView pin = imageService.getPinnedImage();</span>
+<span class="nc" id="L70">            pin.setFitHeight(15);</span>
+<span class="nc" id="L71">            pin.setFitWidth(15);</span>
+<span class="nc" id="L72">            this.pinButton.setGraphic(pin);</span>
+<span class="nc" id="L73">        } else {</span>
+<span class="nc" id="L74">            ImageView pin = imageService.getNotPinnedImage();</span>
+<span class="nc" id="L75">            pin.setFitHeight(15);</span>
+<span class="nc" id="L76">            pin.setFitWidth(15);</span>
+<span class="nc" id="L77">            this.pinButton.setGraphic(pin);</span>
+        }
+
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (isAdded) {</span>
+<span class="nc" id="L81">            this.addRemoveButton.setGraphic(assets.getIcon(&quot;buttons&quot;, &quot;minus&quot;, 15, 15));</span>
+        } else {
+<span class="nc" id="L83">            this.addRemoveButton.setGraphic(assets.getIcon(&quot;buttons&quot;, &quot;plus&quot;, 15, 15));</span>
+        }
+
+<span class="nc" id="L86">        return parent;</span>
+    }
+
+
+    public void setUser(User user) {
+<span class="nc" id="L91">        this.user = user;</span>
+<span class="nc" id="L92">    }</span>
+
+    @FXML
+    public void addRemove() {
+<span class="nc" id="L96">        onUserToggled.accept(user);</span>
+<span class="nc" id="L97">    }</span>
+
+    @FXML
+    public void pin() {
+<span class="nc" id="L101">        onUserPinToggled.accept(user);</span>
+<span class="nc" id="L102">    }</span>
+
+    @Override
+    public void destroy() {
+<span class="nc" id="L106">        avatar = null;</span>
+<span class="nc" id="L107">        super.destroy();</span>
+<span class="nc" id="L108">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
