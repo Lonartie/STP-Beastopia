@@ -528,23 +528,24 @@ public class DataCache {
     }
 
     public void setTrainerItems(List&lt;Item&gt; itemList) {
-<span class="nc" id="L531">        this.trainerItems = itemList;</span>
-<span class="nc" id="L532">    }</span>
+<span class="nc" id="L531">        this.trainerItems.clear();</span>
+<span class="nc" id="L532">        this.trainerItems = itemList;</span>
+<span class="nc" id="L533">    }</span>
 
     public List&lt;Item&gt; getTrainerItems() {
-<span class="nc" id="L535">        return this.trainerItems;</span>
+<span class="nc" id="L536">        return this.trainerItems;</span>
     }
 
     public Map&lt;Integer, AbilityDto&gt; getAbilities() {
-<span class="nc" id="L539">        return abilities;</span>
+<span class="nc" id="L540">        return abilities;</span>
     }
 
     public boolean getHintsNotVisible() {
-<span class="nc" id="L543">        return this.visibleHints;</span>
+<span class="nc" id="L544">        return this.visibleHints;</span>
     }
 
     public void setHintsNotVisible(boolean visibleHints) {
-<span class="nc" id="L547">        this.visibleHints = visibleHints;</span>
-<span class="nc" id="L548">    }</span>
+<span class="nc" id="L548">        this.visibleHints = visibleHints;</span>
+<span class="nc" id="L549">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
