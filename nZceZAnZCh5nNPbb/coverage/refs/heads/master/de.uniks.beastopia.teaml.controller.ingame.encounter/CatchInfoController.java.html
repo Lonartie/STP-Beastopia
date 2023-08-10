@@ -54,33 +54,23 @@ public class CatchInfoController extends Controller {
         }
 <span class="nc" id="L55">        catchImage.setImage(cache.getMonsterImage(monster.type()));</span>
 
-        /*disposables.add(presetsService.getMonsterType(beastType).observeOn(FX_SCHEDULER).subscribe(
-                t -&gt; {
-                    catchInfo.setText(catchInfoText + &quot; &quot; + t.name() + &quot;!&quot;);
-                    if (!catchToTeam.isEmpty()) {
-                        catchToTeamLabel.setText(t.name() + &quot; &quot; + catchToTeam);
-                    }
-                    disposables.add(presetsService.getMonsterImage(t.id()).subscribe(
-                            i -&gt; catchImage.setImage(i)));
-                }
-        ));*/
-<span class="nc" id="L67">        return parent;</span>
+<span class="nc" id="L57">        return parent;</span>
     }
 
     @FXML
     public void handleKeyEvent(KeyEvent keyEvent) {
-<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {</span>
-<span class="nc" id="L73">            onCloseRequest.run();</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {</span>
+<span class="nc" id="L63">            onCloseRequest.run();</span>
         }
-<span class="nc" id="L75">    }</span>
+<span class="nc" id="L65">    }</span>
 
     @FXML
     public void close() {
-<span class="nc" id="L79">        onCloseRequest.run();</span>
-<span class="nc" id="L80">    }</span>
+<span class="nc" id="L69">        onCloseRequest.run();</span>
+<span class="nc" id="L70">    }</span>
 
     public void setOnCloseRequest(Runnable onCloseRequest) {
-<span class="nc" id="L83">        this.onCloseRequest = onCloseRequest;</span>
-<span class="nc" id="L84">    }</span>
+<span class="nc" id="L73">        this.onCloseRequest = onCloseRequest;</span>
+<span class="nc" id="L74">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
