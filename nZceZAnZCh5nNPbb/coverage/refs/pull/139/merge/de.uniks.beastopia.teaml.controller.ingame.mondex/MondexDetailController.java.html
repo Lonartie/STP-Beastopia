@@ -81,7 +81,7 @@ public class MondexDetailController extends Controller {
 <span class="nc" id="L81">                    .subscribe(monsters -&gt; {</span>
 <span class="nc" id="L82">                        inTeam = false;</span>
 <span class="nc bnc" id="L83" title="All 2 branches missed.">                        for (Monster m : monsters) {</span>
-<span class="nc bnc" id="L84" title="All 2 branches missed.">                            if (m.type() == monster.id()) {</span>
+<span class="nc bnc" id="L84" title="All 4 branches missed.">                            if (m.type() == monster.id() &amp;&amp; dataCache.getTrainer().team().contains(m._id())) {</span>
 <span class="nc" id="L85">                                inTeam = true;</span>
 <span class="nc" id="L86">                                break;</span>
                             }
