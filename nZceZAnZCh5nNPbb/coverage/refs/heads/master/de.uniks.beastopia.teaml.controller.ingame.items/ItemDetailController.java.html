@@ -256,112 +256,113 @@ public class ItemDetailController extends Controller {
                     }
 <span class="nc" id="L257">                }));</span>
 <span class="nc" id="L258">        cache.setTrainer(updateTrainer(amount, usage));</span>
-<span class="nc bnc" id="L259" title="All 6 branches missed.">        if (itemType.price() &gt; cache.getTrainer().coins() &amp;&amp; isShop &amp;&amp; !onlyInventory) {</span>
-<span class="nc" id="L260">            shopBtn.setDisable(true);</span>
-<span class="nc" id="L261">            ingameController.toggleShopItemDetails(itemType);</span>
-<span class="nc bnc" id="L262" title="All 4 branches missed.">        } else if (!onlyInventory &amp;&amp; !isShop) {</span>
-<span class="nc" id="L263">            ingameController.toggleInventoryItemDetails(itemType);</span>
+<span class="nc" id="L259">        ingameController.checkCoinAchievement();</span>
+<span class="nc bnc" id="L260" title="All 6 branches missed.">        if (itemType.price() &gt; cache.getTrainer().coins() &amp;&amp; isShop &amp;&amp; !onlyInventory) {</span>
+<span class="nc" id="L261">            shopBtn.setDisable(true);</span>
+<span class="nc" id="L262">            ingameController.toggleShopItemDetails(itemType);</span>
+<span class="nc bnc" id="L263" title="All 4 branches missed.">        } else if (!onlyInventory &amp;&amp; !isShop) {</span>
+<span class="nc" id="L264">            ingameController.toggleInventoryItemDetails(itemType);</span>
         }
-<span class="nc" id="L265">        disposables.add(trainerItemsService.getItems(cache.getJoinedRegion()._id(), cache.getTrainer()._id())</span>
-<span class="nc" id="L266">                .observeOn(FX_SCHEDULER).subscribe</span>
-<span class="nc" id="L267">                        (itemList -&gt; {</span>
-<span class="nc" id="L268">                            cache.setTrainerItems(itemList);</span>
-<span class="nc" id="L269">                            inventoryController.updateInventory();</span>
-<span class="nc" id="L270">                        }, error -&gt; System.out.println(&quot;Error:&quot; + error)));</span>
-<span class="nc" id="L271">    }</span>
+<span class="nc" id="L266">        disposables.add(trainerItemsService.getItems(cache.getJoinedRegion()._id(), cache.getTrainer()._id())</span>
+<span class="nc" id="L267">                .observeOn(FX_SCHEDULER).subscribe</span>
+<span class="nc" id="L268">                        (itemList -&gt; {</span>
+<span class="nc" id="L269">                            cache.setTrainerItems(itemList);</span>
+<span class="nc" id="L270">                            inventoryController.updateInventory();</span>
+<span class="nc" id="L271">                        }, error -&gt; System.out.println(&quot;Error:&quot; + error)));</span>
+<span class="nc" id="L272">    }</span>
 
     private Trainer updateTrainer(int amount, String usage) {
-<span class="nc bnc" id="L274" title="All 2 branches missed.">        if (usage.equals(&quot;trade&quot;)) {</span>
-<span class="nc" id="L275">            Trainer oldTrainer = cache.getTrainer();</span>
-<span class="nc" id="L276">            float multiplier = 1;</span>
-<span class="nc bnc" id="L277" title="All 2 branches missed.">            if (amount &lt; 0) { // sell item value = item value / 2</span>
-<span class="nc" id="L278">                multiplier = 0.5f;</span>
+<span class="nc bnc" id="L275" title="All 2 branches missed.">        if (usage.equals(&quot;trade&quot;)) {</span>
+<span class="nc" id="L276">            Trainer oldTrainer = cache.getTrainer();</span>
+<span class="nc" id="L277">            float multiplier = 1;</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">            if (amount &lt; 0) { // sell item value = item value / 2</span>
+<span class="nc" id="L279">                multiplier = 0.5f;</span>
             }
-<span class="nc" id="L280">            return new Trainer(</span>
-<span class="nc" id="L281">                    oldTrainer.createdAt(),</span>
-<span class="nc" id="L282">                    oldTrainer.updatedAt(),</span>
-<span class="nc" id="L283">                    oldTrainer._id(),</span>
-<span class="nc" id="L284">                    oldTrainer.region(),</span>
-<span class="nc" id="L285">                    oldTrainer.user(),</span>
-<span class="nc" id="L286">                    oldTrainer.name(),</span>
-<span class="nc" id="L287">                    oldTrainer.image(),</span>
-<span class="nc" id="L288">                    oldTrainer.team(),</span>
-<span class="nc" id="L289">                    oldTrainer.encounteredMonsterTypes(),</span>
-<span class="nc" id="L290">                    oldTrainer.visitedAreas(),</span>
-<span class="nc" id="L291">                    oldTrainer.coins() + (itemType.price() * (-1) * amount * multiplier),</span>
-<span class="nc" id="L292">                    oldTrainer.area(),</span>
-<span class="nc" id="L293">                    oldTrainer.x(),</span>
-<span class="nc" id="L294">                    oldTrainer.y(),</span>
-<span class="nc" id="L295">                    oldTrainer.direction(),</span>
-<span class="nc" id="L296">                    oldTrainer.npc()</span>
+<span class="nc" id="L281">            return new Trainer(</span>
+<span class="nc" id="L282">                    oldTrainer.createdAt(),</span>
+<span class="nc" id="L283">                    oldTrainer.updatedAt(),</span>
+<span class="nc" id="L284">                    oldTrainer._id(),</span>
+<span class="nc" id="L285">                    oldTrainer.region(),</span>
+<span class="nc" id="L286">                    oldTrainer.user(),</span>
+<span class="nc" id="L287">                    oldTrainer.name(),</span>
+<span class="nc" id="L288">                    oldTrainer.image(),</span>
+<span class="nc" id="L289">                    oldTrainer.team(),</span>
+<span class="nc" id="L290">                    oldTrainer.encounteredMonsterTypes(),</span>
+<span class="nc" id="L291">                    oldTrainer.visitedAreas(),</span>
+<span class="nc" id="L292">                    oldTrainer.coins() + (itemType.price() * (-1) * amount * multiplier),</span>
+<span class="nc" id="L293">                    oldTrainer.area(),</span>
+<span class="nc" id="L294">                    oldTrainer.x(),</span>
+<span class="nc" id="L295">                    oldTrainer.y(),</span>
+<span class="nc" id="L296">                    oldTrainer.direction(),</span>
+<span class="nc" id="L297">                    oldTrainer.npc()</span>
             );
         }
-<span class="nc" id="L299">        return cache.getTrainer();</span>
+<span class="nc" id="L300">        return cache.getTrainer();</span>
     }
 
     private void listenToNewMonster() {
-<span class="nc bnc" id="L303" title="All 2 branches missed.">        if (monsterEventListenerDisposable == null) {</span>
-<span class="nc" id="L304">            monsterEventListenerDisposable = eventListener.listen(&quot;trainers.&quot; + cache.getTrainer()._id() + &quot;.monsters.*.created&quot;, Monster.class)</span>
-<span class="nc" id="L305">                    .observeOn(FX_SCHEDULER).subscribe(monster -&gt; {</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">        if (monsterEventListenerDisposable == null) {</span>
+<span class="nc" id="L305">            monsterEventListenerDisposable = eventListener.listen(&quot;trainers.&quot; + cache.getTrainer()._id() + &quot;.monsters.*.created&quot;, Monster.class)</span>
+<span class="nc" id="L306">                    .observeOn(FX_SCHEDULER).subscribe(monster -&gt; {</span>
                         String beastName;
-<span class="nc bnc" id="L307" title="All 2 branches missed.">                        if (cache.getBeastDto(monster.data().type()) != null) {</span>
-<span class="nc" id="L308">                            beastName = cache.getBeastDto(monster.data().type()).name();</span>
+<span class="nc bnc" id="L308" title="All 2 branches missed.">                        if (cache.getBeastDto(monster.data().type()) != null) {</span>
+<span class="nc" id="L309">                            beastName = cache.getBeastDto(monster.data().type()).name();</span>
                         } else {
-<span class="nc" id="L310">                            beastName = presetsService.getMonsterType(monster.data().type()).blockingFirst().name();</span>
+<span class="nc" id="L311">                            beastName = presetsService.getMonsterType(monster.data().type()).blockingFirst().name();</span>
                         }
-<span class="nc" id="L312">                        ingameController.showItemImage(itemType);</span>
-<span class="nc" id="L313">                        Timer timer = new Timer();</span>
-<span class="nc" id="L314">                        timer.schedule(new TimerTask() {</span>
+<span class="nc" id="L313">                        ingameController.showItemImage(itemType);</span>
+<span class="nc" id="L314">                        Timer timer = new Timer();</span>
+<span class="nc" id="L315">                        timer.schedule(new TimerTask() {</span>
                             @Override
                             public void run() {
-<span class="nc" id="L317">                                Platform.runLater(() -&gt; Dialog.info(resources.getString(&quot;unlockMonsterHeader&quot;), resources.getString(&quot;unlockMonster&quot;) + &quot; &quot; + beastName));</span>
-<span class="nc" id="L318">                            }</span>
+<span class="nc" id="L318">                                Platform.runLater(() -&gt; Dialog.info(resources.getString(&quot;unlockMonsterHeader&quot;), resources.getString(&quot;unlockMonster&quot;) + &quot; &quot; + beastName));</span>
+<span class="nc" id="L319">                            }</span>
                         }, 3000);
-<span class="nc" id="L320">                    });</span>
+<span class="nc" id="L321">                    });</span>
         }
-<span class="nc" id="L322">    }</span>
+<span class="nc" id="L323">    }</span>
 
     private void listenToNewItem() {
-<span class="nc bnc" id="L325" title="All 2 branches missed.">        if (itemEventListenerDisposable == null) {</span>
-<span class="nc" id="L326">            itemEventListenerDisposable = eventListener.listen(&quot;trainers.&quot; + cache.getTrainer()._id() + &quot;.items.*.*&quot;, Item.class)</span>
-<span class="nc" id="L327">                    .observeOn(FX_SCHEDULER).subscribe(item -&gt; {</span>
-<span class="nc bnc" id="L328" title="All 2 branches missed.">                        if (onlyInventory) {</span>
-<span class="nc" id="L329">                            boolean isUsedItem = false;</span>
-<span class="nc bnc" id="L330" title="All 2 branches missed.">                            for (Item item1 : cache.getTrainerItems()) {</span>
-<span class="nc bnc" id="L331" title="All 4 branches missed.">                                if (item1._id().equals(item.data()._id()) &amp;&amp; itemType.id() == item.data().type()) {</span>
-<span class="nc" id="L332">                                    isUsedItem = true;</span>
-<span class="nc" id="L333">                                    break;</span>
+<span class="nc bnc" id="L326" title="All 2 branches missed.">        if (itemEventListenerDisposable == null) {</span>
+<span class="nc" id="L327">            itemEventListenerDisposable = eventListener.listen(&quot;trainers.&quot; + cache.getTrainer()._id() + &quot;.items.*.*&quot;, Item.class)</span>
+<span class="nc" id="L328">                    .observeOn(FX_SCHEDULER).subscribe(item -&gt; {</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">                        if (onlyInventory) {</span>
+<span class="nc" id="L330">                            boolean isUsedItem = false;</span>
+<span class="nc bnc" id="L331" title="All 2 branches missed.">                            for (Item item1 : cache.getTrainerItems()) {</span>
+<span class="nc bnc" id="L332" title="All 4 branches missed.">                                if (item1._id().equals(item.data()._id()) &amp;&amp; itemType.id() == item.data().type()) {</span>
+<span class="nc" id="L333">                                    isUsedItem = true;</span>
+<span class="nc" id="L334">                                    break;</span>
                                 }
-<span class="nc" id="L335">                            }</span>
-<span class="nc bnc" id="L336" title="All 2 branches missed.">                            if (!isUsedItem) {</span>
-<span class="nc bnc" id="L337" title="All 2 branches missed.">                                for (ItemTypeDto itemTypeDto : cache.getPresetItems()) {</span>
-<span class="nc bnc" id="L338" title="All 2 branches missed.">                                    if (itemTypeDto.id() == item.data().type()) {</span>
-<span class="nc" id="L339">                                        ingameController.showItemImage(itemType);</span>
-<span class="nc" id="L340">                                        Timer timer = new Timer();</span>
-<span class="nc" id="L341">                                        timer.schedule(new TimerTask() {</span>
+<span class="nc" id="L336">                            }</span>
+<span class="nc bnc" id="L337" title="All 2 branches missed.">                            if (!isUsedItem) {</span>
+<span class="nc bnc" id="L338" title="All 2 branches missed.">                                for (ItemTypeDto itemTypeDto : cache.getPresetItems()) {</span>
+<span class="nc bnc" id="L339" title="All 2 branches missed.">                                    if (itemTypeDto.id() == item.data().type()) {</span>
+<span class="nc" id="L340">                                        ingameController.showItemImage(itemType);</span>
+<span class="nc" id="L341">                                        Timer timer = new Timer();</span>
+<span class="nc" id="L342">                                        timer.schedule(new TimerTask() {</span>
                                             @Override
                                             public void run() {
-<span class="nc" id="L344">                                                Platform.runLater(() -&gt; Dialog.info(resources.getString(&quot;newItemHeader&quot;), resources.getString(&quot;newItem&quot;) + &quot; &quot; + itemTypeDto.name()));</span>
-<span class="nc" id="L345">                                            }</span>
+<span class="nc" id="L345">                                                Platform.runLater(() -&gt; Dialog.info(resources.getString(&quot;newItemHeader&quot;), resources.getString(&quot;newItem&quot;) + &quot; &quot; + itemTypeDto.name()));</span>
+<span class="nc" id="L346">                                            }</span>
                                         }, 3000);
                                     }
-<span class="nc" id="L348">                                }</span>
+<span class="nc" id="L349">                                }</span>
                             }
                         }
-<span class="nc" id="L351">                    });</span>
+<span class="nc" id="L352">                    });</span>
         }
-<span class="nc" id="L353">    }</span>
+<span class="nc" id="L354">    }</span>
 
     public void setInventoryController(InventoryController inventoryController) {
-<span class="nc" id="L356">        this.inventoryController = inventoryController;</span>
-<span class="nc" id="L357">    }</span>
+<span class="nc" id="L357">        this.inventoryController = inventoryController;</span>
+<span class="nc" id="L358">    }</span>
 
     public void setIngameController(IngameController ingameController) {
-<span class="nc" id="L360">        this.ingameController = ingameController;</span>
-<span class="nc" id="L361">    }</span>
+<span class="nc" id="L361">        this.ingameController = ingameController;</span>
+<span class="nc" id="L362">    }</span>
 
     public void setEncounterController(EncounterController encounterController) {
-<span class="nc" id="L364">        this.encounterController = encounterController;</span>
-<span class="nc" id="L365">    }</span>
+<span class="nc" id="L365">        this.encounterController = encounterController;</span>
+<span class="nc" id="L366">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

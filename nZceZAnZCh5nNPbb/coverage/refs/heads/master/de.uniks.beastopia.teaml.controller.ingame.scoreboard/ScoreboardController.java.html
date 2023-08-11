@@ -71,7 +71,7 @@ public class ScoreboardController extends Controller {
 <span class="fc" id="L71">            currentAchievements = new ArrayList&lt;&gt;(allAchievements);</span>
 
 <span class="fc bfc" id="L73" title="All 2 branches covered.">            for (AchievementsSummary achievement : currentAchievements) {</span>
-<span class="pc bpc" id="L74" title="6 of 7 branches missed.">                switch (achievement.id()) {</span>
+<span class="pc bpc" id="L74" title="14 of 15 branches missed.">                switch (achievement.id()) {</span>
                     case &quot;FirstTrainer&quot; -&gt;
 <span class="nc" id="L76">                            cache.addAchievementDescription(&quot;FirstTrainer&quot;, resources.getString(&quot;achievementFirstTrainer&quot;));</span>
                     case &quot;FirstRegion&quot; -&gt;
@@ -84,138 +84,154 @@ public class ScoreboardController extends Controller {
 <span class="nc" id="L84">                            cache.addAchievementDescription(&quot;MeetAlbert&quot;, resources.getString(&quot;achievementMeetAlbert&quot;));</span>
                     case &quot;VisitAllRegions&quot; -&gt;
 <span class="nc" id="L86">                            cache.addAchievementDescription(&quot;VisitAllRegions&quot;, resources.getString(&quot;achievementVisitAllRegions&quot;));</span>
-<span class="fc" id="L87">                    default -&gt; cache.addAchievementDescription(&quot;NotFound&quot;, &quot;NotFound&quot;);</span>
+                    case &quot;FirstMonster&quot; -&gt;
+<span class="nc" id="L88">                        cache.addAchievementDescription(&quot;FirstMonster&quot;, resources.getString(&quot;achievementFirstMonster&quot;));</span>
+                    case &quot;TenMonsters&quot; -&gt;
+<span class="nc" id="L90">                        cache.addAchievementDescription(&quot;TenMonsters&quot;, resources.getString(&quot;achievementTenMonsters&quot;));</span>
+                    case &quot;FiftyMonsters&quot; -&gt;
+<span class="nc" id="L92">                        cache.addAchievementDescription(&quot;FiftyMonsters&quot;, resources.getString(&quot;achievementFiftyMonsters&quot;));</span>
+                    case &quot;AllMonsters&quot; -&gt;
+<span class="nc" id="L94">                        cache.addAchievementDescription(&quot;AllMonsters&quot;, resources.getString(&quot;achievementAllMonsters&quot;));</span>
+                    case &quot;FirstCoins&quot; -&gt;
+<span class="nc" id="L96">                        cache.addAchievementDescription(&quot;FirstCoins&quot;, resources.getString(&quot;achievementFirstCoins&quot;));</span>
+                    case &quot;HundredCoins&quot; -&gt;
+<span class="nc" id="L98">                        cache.addAchievementDescription(&quot;HundredCoins&quot;, resources.getString(&quot;achievementHundredCoins&quot;));</span>
+                    case &quot;thousandCoins&quot; -&gt;
+<span class="nc" id="L100">                        cache.addAchievementDescription(&quot;thousandCoins&quot;, resources.getString(&quot;achievementThousandCoins&quot;));</span>
+                    case &quot;hundredThousandCoins&quot; -&gt;
+<span class="nc" id="L102">                        cache.addAchievementDescription(&quot;hundredThousandCoins&quot;, resources.getString(&quot;achievementHundredThousandCoins&quot;));</span>
+<span class="fc" id="L103">                    default -&gt; cache.addAchievementDescription(&quot;NotFound&quot;, &quot;NotFound&quot;);</span>
                 }
-<span class="fc" id="L89">            }</span>
+<span class="fc" id="L105">            }</span>
 
-<span class="fc" id="L91">            disposables.add(delay().map(t -&gt; disposables.add(trainerService.getAllTrainer(prefs.getRegionID()).subscribe(trainers -&gt; {</span>
-<span class="fc bfc" id="L92" title="All 2 branches covered.">                for (Trainer trainer : trainers) {</span>
-<span class="fc" id="L93">                    User user = cache.getAllUsers().stream()</span>
-<span class="fc" id="L94">                            .filter(u -&gt; u._id().equals(trainer.user()))</span>
-<span class="fc" id="L95">                            .findFirst()</span>
-<span class="fc" id="L96">                            .orElse(null);</span>
+<span class="fc" id="L107">            disposables.add(delay().map(t -&gt; disposables.add(trainerService.getAllTrainer(prefs.getRegionID()).subscribe(trainers -&gt; {</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">                for (Trainer trainer : trainers) {</span>
+<span class="fc" id="L109">                    User user = cache.getAllUsers().stream()</span>
+<span class="fc" id="L110">                            .filter(u -&gt; u._id().equals(trainer.user()))</span>
+<span class="fc" id="L111">                            .findFirst()</span>
+<span class="fc" id="L112">                            .orElse(null);</span>
 
-<span class="pc bpc" id="L98" title="1 of 2 branches missed.">                    if (user == null) {</span>
-<span class="nc" id="L99">                        continue;</span>
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">                    if (user == null) {</span>
+<span class="nc" id="L115">                        continue;</span>
                     }
 
-<span class="fc" id="L102">                    Thread.sleep(1000);</span>
+<span class="fc" id="L118">                    Thread.sleep(1000);</span>
 
-<span class="fc" id="L104">                    disposables.add(delay().map(t2 -&gt; {</span>
-<span class="fc" id="L105">                        disposables.add(achievementsService.getUserAchievements(user._id())</span>
-<span class="fc" id="L106">                                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L107">                                .subscribe(achievementList -&gt; {</span>
-<span class="fc" id="L108">                                    ScoreboardUserItemController controller = scoreBoardUserItemControllerProvider.get()</span>
-<span class="fc" id="L109">                                            .setUser(user)</span>
-<span class="fc" id="L110">                                            .setAchievements(achievementList.size())</span>
-<span class="fc" id="L111">                                            .setOnUserClicked(u -&gt; onUserClicked(u, achievementList.size(), allAchievements.size(), achievementList))</span>
-<span class="fc" id="L112">                                            .setTotalAchievements(allAchievements.size())</span>
-<span class="fc" id="L113">                                            .setUserAchievements(achievementList);</span>
+<span class="fc" id="L120">                    disposables.add(delay().map(t2 -&gt; {</span>
+<span class="fc" id="L121">                        disposables.add(achievementsService.getUserAchievements(user._id())</span>
+<span class="fc" id="L122">                                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L123">                                .subscribe(achievementList -&gt; {</span>
+<span class="fc" id="L124">                                    ScoreboardUserItemController controller = scoreBoardUserItemControllerProvider.get()</span>
+<span class="fc" id="L125">                                            .setUser(user)</span>
+<span class="fc" id="L126">                                            .setAchievements(achievementList.size())</span>
+<span class="fc" id="L127">                                            .setOnUserClicked(u -&gt; onUserClicked(u, achievementList.size(), allAchievements.size(), achievementList))</span>
+<span class="fc" id="L128">                                            .setTotalAchievements(allAchievements.size())</span>
+<span class="fc" id="L129">                                            .setUserAchievements(achievementList);</span>
 
-<span class="fc" id="L115">                                    scoreboardControllers.add(controller);</span>
+<span class="fc" id="L131">                                    scoreboardControllers.add(controller);</span>
 
-<span class="fc" id="L117">                                    Parent parent = controller.render();</span>
-<span class="fc" id="L118">                                    controller.setParent(parent);</span>
+<span class="fc" id="L133">                                    Parent parent = controller.render();</span>
+<span class="fc" id="L134">                                    controller.setParent(parent);</span>
 
-<span class="pc bpc" id="L120" title="1 of 2 branches missed.">                                    if (scoreboardFilterController != null) {</span>
-<span class="nc bnc" id="L121" title="All 2 branches missed.">                                        if (scoreboardFilterController.isFilterApplied()) {</span>
-<span class="nc" id="L122">                                            scoreboardFilterController.checkCurrentController(controller);</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">                                    if (scoreboardFilterController != null) {</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">                                        if (scoreboardFilterController.isFilterApplied()) {</span>
+<span class="nc" id="L138">                                            scoreboardFilterController.checkCurrentController(controller);</span>
                                         } else {
-<span class="nc" id="L124">                                            scoreBoard.getChildren().add(parent);</span>
+<span class="nc" id="L140">                                            scoreBoard.getChildren().add(parent);</span>
                                         }
                                     } else {
-<span class="fc" id="L127">                                        scoreBoard.getChildren().add(parent);</span>
+<span class="fc" id="L143">                                        scoreBoard.getChildren().add(parent);</span>
                                     }
 
-<span class="fc" id="L130">                                    HBox.setHgrow(parent, Priority.ALWAYS);</span>
-<span class="fc" id="L131">                                }));</span>
-<span class="fc" id="L132">                        return t;</span>
-<span class="fc" id="L133">                    }).subscribe());</span>
-<span class="fc" id="L134">                }</span>
-<span class="fc" id="L135">            }))).subscribe());</span>
-<span class="fc" id="L136">        }));</span>
-<span class="fc" id="L137">    }</span>
+<span class="fc" id="L146">                                    HBox.setHgrow(parent, Priority.ALWAYS);</span>
+<span class="fc" id="L147">                                }));</span>
+<span class="fc" id="L148">                        return t;</span>
+<span class="fc" id="L149">                    }).subscribe());</span>
+<span class="fc" id="L150">                }</span>
+<span class="fc" id="L151">            }))).subscribe());</span>
+<span class="fc" id="L152">        }));</span>
+<span class="fc" id="L153">    }</span>
 
     public void handleKeyEvent(KeyEvent event) {
-<span class="pc bpc" id="L140" title="1 of 2 branches missed.">        if (event.getCode().equals(KeyCode.N)) {</span>
-<span class="fc" id="L141">            onCloseRequested.run();</span>
+<span class="pc bpc" id="L156" title="1 of 2 branches missed.">        if (event.getCode().equals(KeyCode.N)) {</span>
+<span class="fc" id="L157">            onCloseRequested.run();</span>
         }
-<span class="fc" id="L143">    }</span>
+<span class="fc" id="L159">    }</span>
 
     public void setOnCloseRequested(Runnable onCloseRequested) {
-<span class="fc" id="L146">        this.onCloseRequested = onCloseRequested;</span>
-<span class="fc" id="L147">    }</span>
+<span class="fc" id="L162">        this.onCloseRequested = onCloseRequested;</span>
+<span class="fc" id="L163">    }</span>
 
     private void onUserClicked(String userId, int noOfAchievements, int totalAchievements, List&lt;Achievement&gt; userAchievements) {
-<span class="fc" id="L150">        User user = cache.getAllUsers().stream()</span>
-<span class="fc" id="L151">                .filter(u -&gt; u._id().equals(userId))</span>
-<span class="fc" id="L152">                .findFirst()</span>
-<span class="fc" id="L153">                .orElseThrow();</span>
+<span class="fc" id="L166">        User user = cache.getAllUsers().stream()</span>
+<span class="fc" id="L167">                .filter(u -&gt; u._id().equals(userId))</span>
+<span class="fc" id="L168">                .findFirst()</span>
+<span class="fc" id="L169">                .orElseThrow();</span>
 
-<span class="pc bpc" id="L155" title="1 of 2 branches missed.">        if (selectedUserID.equals(user._id())) {</span>
-<span class="nc bnc" id="L156" title="All 2 branches missed.">            achievements.setVisible(!clicked);</span>
-<span class="nc bnc" id="L157" title="All 2 branches missed.">            clicked = !clicked;</span>
-<span class="nc" id="L158">            return;</span>
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">        if (selectedUserID.equals(user._id())) {</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">            achievements.setVisible(!clicked);</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">            clicked = !clicked;</span>
+<span class="nc" id="L174">            return;</span>
         }
 
-<span class="fc" id="L161">        achievements.setVisible(true);</span>
-<span class="fc" id="L162">        clicked = true;</span>
-<span class="fc" id="L163">        selectedUserID = user._id();</span>
+<span class="fc" id="L177">        achievements.setVisible(true);</span>
+<span class="fc" id="L178">        clicked = true;</span>
+<span class="fc" id="L179">        selectedUserID = user._id();</span>
 
-<span class="pc bpc" id="L165" title="1 of 2 branches missed.">        if (userInfoController != null) {</span>
-<span class="nc" id="L166">            userInfoController.destroy();</span>
+<span class="pc bpc" id="L181" title="1 of 2 branches missed.">        if (userInfoController != null) {</span>
+<span class="nc" id="L182">            userInfoController.destroy();</span>
         }
 
-<span class="pc bpc" id="L169" title="1 of 2 branches missed.">        if (scoreboardFilterController != null) {</span>
-<span class="nc" id="L170">            clickedFilter = false;</span>
-<span class="nc" id="L171">            scoreboardFilterController.destroy();</span>
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">        if (scoreboardFilterController != null) {</span>
+<span class="nc" id="L186">            clickedFilter = false;</span>
+<span class="nc" id="L187">            scoreboardFilterController.destroy();</span>
         }
 
-<span class="fc" id="L174">        userInfoController = userInfoControllerProvider.get()</span>
-<span class="fc" id="L175">                .setName(user.name())</span>
-<span class="fc" id="L176">                .setAchievements(noOfAchievements)</span>
-<span class="fc" id="L177">                .setTotalAchievements(totalAchievements)</span>
-<span class="fc" id="L178">                .setUserAchievements(userAchievements)</span>
-<span class="fc" id="L179">                .setUserAvatar(cache.getImageAvatar(user));</span>
+<span class="fc" id="L190">        userInfoController = userInfoControllerProvider.get()</span>
+<span class="fc" id="L191">                .setName(user.name())</span>
+<span class="fc" id="L192">                .setAchievements(noOfAchievements)</span>
+<span class="fc" id="L193">                .setTotalAchievements(totalAchievements)</span>
+<span class="fc" id="L194">                .setUserAchievements(userAchievements)</span>
+<span class="fc" id="L195">                .setUserAvatar(cache.getImageAvatar(user));</span>
 
-<span class="fc" id="L181">        Parent parent = userInfoController.render();</span>
-<span class="fc" id="L182">        achievements.getChildren().clear();</span>
-<span class="fc" id="L183">        achievements.getChildren().add(parent);</span>
-<span class="fc" id="L184">    }</span>
+<span class="fc" id="L197">        Parent parent = userInfoController.render();</span>
+<span class="fc" id="L198">        achievements.getChildren().clear();</span>
+<span class="fc" id="L199">        achievements.getChildren().add(parent);</span>
+<span class="fc" id="L200">    }</span>
 
     public void showFilterOptions() {
-<span class="pc bpc" id="L187" title="1 of 2 branches missed.">        achievements.setVisible(!clickedFilter);</span>
-<span class="pc bpc" id="L188" title="1 of 2 branches missed.">        clickedFilter = !clickedFilter;</span>
+<span class="pc bpc" id="L203" title="1 of 2 branches missed.">        achievements.setVisible(!clickedFilter);</span>
+<span class="pc bpc" id="L204" title="1 of 2 branches missed.">        clickedFilter = !clickedFilter;</span>
 
-<span class="pc bpc" id="L190" title="1 of 2 branches missed.">        if (userInfoController != null) {</span>
-<span class="nc" id="L191">            userInfoController.destroy();</span>
-<span class="nc" id="L192">            clicked = false;</span>
+<span class="pc bpc" id="L206" title="1 of 2 branches missed.">        if (userInfoController != null) {</span>
+<span class="nc" id="L207">            userInfoController.destroy();</span>
+<span class="nc" id="L208">            clicked = false;</span>
         }
 
-<span class="pc bpc" id="L195" title="1 of 2 branches missed.">        if (scoreboardFilterController != null) {</span>
-<span class="nc bnc" id="L196" title="All 2 branches missed.">            if (scoreboardFilterController.isFilterApplied()) {</span>
-<span class="nc" id="L197">                scoreboardFilterController.removeFilter();</span>
+<span class="pc bpc" id="L211" title="1 of 2 branches missed.">        if (scoreboardFilterController != null) {</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">            if (scoreboardFilterController.isFilterApplied()) {</span>
+<span class="nc" id="L213">                scoreboardFilterController.removeFilter();</span>
             }
-<span class="nc" id="L199">            scoreboardFilterController.destroy();</span>
+<span class="nc" id="L215">            scoreboardFilterController.destroy();</span>
         }
 
-<span class="fc" id="L202">        scoreboardFilterController = scoreboardFilterControllerProvider.get()</span>
-<span class="fc" id="L203">                .setCurrentAchievements(currentAchievements)</span>
-<span class="fc" id="L204">                .setSubControllers(scoreboardControllers)</span>
-<span class="fc" id="L205">                .setParentPane(scoreBoard);</span>
+<span class="fc" id="L218">        scoreboardFilterController = scoreboardFilterControllerProvider.get()</span>
+<span class="fc" id="L219">                .setCurrentAchievements(currentAchievements)</span>
+<span class="fc" id="L220">                .setSubControllers(scoreboardControllers)</span>
+<span class="fc" id="L221">                .setParentPane(scoreBoard);</span>
 
-<span class="fc" id="L207">        Parent parent = scoreboardFilterController.render();</span>
-<span class="fc" id="L208">        achievements.getChildren().clear();</span>
-<span class="fc" id="L209">        achievements.getChildren().add(parent);</span>
-<span class="fc" id="L210">    }</span>
+<span class="fc" id="L223">        Parent parent = scoreboardFilterController.render();</span>
+<span class="fc" id="L224">        achievements.getChildren().clear();</span>
+<span class="fc" id="L225">        achievements.getChildren().add(parent);</span>
+<span class="fc" id="L226">    }</span>
 
     @Override
     public void destroy() {
-<span class="nc" id="L214">        super.destroy();</span>
-<span class="nc" id="L215">        scoreboardControllers.forEach(Controller::destroy);</span>
-<span class="nc bnc" id="L216" title="All 2 branches missed.">        if (userInfoController != null) {</span>
-<span class="nc" id="L217">            userInfoController.destroy();</span>
+<span class="nc" id="L230">        super.destroy();</span>
+<span class="nc" id="L231">        scoreboardControllers.forEach(Controller::destroy);</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">        if (userInfoController != null) {</span>
+<span class="nc" id="L233">            userInfoController.destroy();</span>
         }
-<span class="nc" id="L219">    }</span>
+<span class="nc" id="L235">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
