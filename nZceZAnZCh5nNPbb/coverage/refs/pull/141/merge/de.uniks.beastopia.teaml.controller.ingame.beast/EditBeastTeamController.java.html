@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EditBeastTeamController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.ingame.beast</a> &gt; <span class="el_source">EditBeastTeamController.java</span></div><h1>EditBeastTeamController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.ingame.beast;
+
+import de.uniks.beastopia.teaml.App;
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.Monster;
+import de.uniks.beastopia.teaml.rest.MonsterTypeDto;
+import de.uniks.beastopia.teaml.rest.Trainer;
+import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.service.PresetsService;
+import de.uniks.beastopia.teaml.service.TrainerService;
+import de.uniks.beastopia.teaml.utils.Dialog;
+import de.uniks.beastopia.teaml.utils.LoadingPage;
+import de.uniks.beastopia.teaml.utils.Prefs;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.List;
+
+public class EditBeastTeamController extends Controller {
+
+    @FXML
+    public ListView&lt;Monster&gt; beastListView;
+    @FXML
+    public ListView&lt;Monster&gt; teamListView;
+    @FXML
+    public TextField filterBar;
+    @FXML
+    public Button beastTeamBack;
+    @FXML
+    public Button editBeastTeam;
+    @FXML
+    public HBox backroundHbox;
+    @FXML
+    public VBox innerVBox;
+    @Inject
+    App app;
+    @Inject
+    TrainerService trainerService;
+    @Inject
+    Prefs prefs;
+    @Inject
+    DataCache cache;
+    @Inject
+    PresetsService presetsService;
+    @Inject
+    Provider&lt;BeastListElementController&gt; beastListElementControllerProvider;
+<span class="fc" id="L57">    final ObservableList&lt;Monster&gt; beastList = FXCollections.observableArrayList();</span>
+<span class="fc" id="L58">    final ObservableList&lt;Monster&gt; teamList = FXCollections.observableArrayList();</span>
+    public LoadingPage loadingPage;
+
+    @Inject
+<span class="fc" id="L62">    public EditBeastTeamController() {</span>
+<span class="fc" id="L63">    }</span>
+
+    @Override
+    public String getTitle() {
+<span class="fc" id="L67">        return resources.getString(&quot;TitelBeastTeam&quot;);</span>
+    }
+
+    @Override
+    public Parent render() {
+<span class="fc" id="L72">        loadingPage = LoadingPage.makeLoadingPage(super.render());</span>
+<span class="fc" id="L73">        beastListView.setId(&quot;beastListView&quot;);</span>
+<span class="fc" id="L74">        disposables.add(trainerService.getTrainerMonsters(prefs.getRegionID(), cache.getTrainer()._id())</span>
+<span class="fc" id="L75">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L76">                .subscribe(monsters -&gt; {</span>
+<span class="nc" id="L77">                    setupListView(monsters);</span>
+<span class="nc" id="L78">                    this.beastListView.setCellFactory(param -&gt; beastListElementControllerProvider.get());</span>
+<span class="nc" id="L79">                    this.teamListView.setCellFactory(param -&gt; beastListElementControllerProvider.get());</span>
+<span class="nc" id="L80">                    loadingPage.setDone();</span>
+<span class="nc" id="L81">                }));</span>
+<span class="fc" id="L82">        return loadingPage.parent();</span>
+    }
+
+    public void setupListView(List&lt;Monster&gt; monsters) {
+<span class="fc" id="L86">        Label label = new Label();</span>
+<span class="fc" id="L87">        label.setText(resources.getString(&quot;NoBeasts&quot;));</span>
+<span class="fc" id="L88">        beastListView.setPlaceholder(label);</span>
+<span class="fc" id="L89">        teamListView.setPlaceholder(label);</span>
+<span class="fc" id="L90">        List&lt;String&gt; prefTeam = cache.getTrainer().team();</span>
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">        if (prefTeam == null) {</span>
+<span class="nc" id="L92">            prefTeam = List.of();</span>
+        }
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        for (Monster monster : monsters) {</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">            if (prefTeam.contains(monster._id())) {</span>
+<span class="fc" id="L96">                teamList.add(monster);</span>
+            } else {
+<span class="fc" id="L98">                beastList.add(monster);</span>
+            }
+<span class="fc" id="L100">        }</span>
+<span class="fc" id="L101">        this.beastListView.setItems(beastList);</span>
+<span class="fc" id="L102">        this.teamListView.setItems(teamList);</span>
+<span class="fc" id="L103">    }</span>
+
+    public void backToPrevious() {
+<span class="fc" id="L106">        app.showPrevious();</span>
+<span class="fc" id="L107">    }</span>
+
+    public void saveBeastTeam() {
+        List&lt;String&gt; updatedTeam;
+<span class="fc" id="L111">        Trainer trainer = cache.getTrainer();</span>
+
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (!teamList.isEmpty()) {</span>
+<span class="fc" id="L114">            updatedTeam = teamList.stream().map(Monster::_id).toList();</span>
+        } else {
+<span class="fc" id="L116">            updatedTeam = List.of();</span>
+        }
+<span class="fc" id="L118">        disposables.add(trainerService.updateTrainer(prefs.getRegionID(), trainer._id(), trainer.name(), trainer.image(), updatedTeam)</span>
+<span class="fc" id="L119">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L120">                .subscribe(</span>
+                        newTrainer -&gt; {
+<span class="fc" id="L122">                            cache.setTrainer(newTrainer);</span>
+<span class="fc" id="L123">                            app.showPrevious();</span>
+<span class="fc" id="L124">                        },</span>
+<span class="nc" id="L125">                        error -&gt; Dialog.error(error.getMessage(), &quot;Error&quot;)</span>
+                ));
+<span class="fc" id="L127">    }</span>
+
+    public void filterMonster() {
+        ObservableList&lt;Monster&gt; filtered;
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (isInt(filterBar.getText())) {</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">            filtered = beastList.filtered(monster -&gt; monster.level() == Integer.parseInt(filterBar.getText()));</span>
+        } else {
+<span class="fc" id="L134">            List&lt;MonsterTypeDto&gt; matchingNames = cache.getAllBeasts().stream()</span>
+<span class="fc" id="L135">                    .filter(monsterTypeDto -&gt;</span>
+<span class="fc" id="L136">                            monsterTypeDto.name().toLowerCase().startsWith(filterBar.getText().toLowerCase()))</span>
+<span class="fc" id="L137">                    .toList();</span>
+
+<span class="fc" id="L139">            filtered = beastList.filtered(monster</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">                    -&gt; matchingNames.stream().anyMatch(monsterTypeDto -&gt; monster.type() == monsterTypeDto.id()));</span>
+        }
+<span class="fc" id="L142">        beastListView.setItems(filtered);</span>
+<span class="fc" id="L143">    }</span>
+
+    public void moveItemToBeasts() {
+<span class="fc" id="L146">        filterBar.clear();</span>
+<span class="fc" id="L147">        beastListView.setItems(beastList);</span>
+<span class="pc bpc" id="L148" title="2 of 4 branches missed.">        if (!teamList.isEmpty() &amp;&amp; teamListView.getSelectionModel().getSelectedItem() != null) {</span>
+<span class="fc" id="L149">            beastList.add(teamListView.getSelectionModel().getSelectedItem());</span>
+<span class="fc" id="L150">            teamListView.getItems().remove(teamListView.getSelectionModel().getSelectedItem());</span>
+        }
+<span class="fc" id="L152">    }</span>
+
+    public void moveItemToTeam() {
+<span class="fc" id="L155">        filterBar.clear();</span>
+<span class="fc" id="L156">        beastListView.setItems(beastList);</span>
+<span class="pc bpc" id="L157" title="2 of 4 branches missed.">        if (teamList.size() &lt; 6 &amp;&amp; beastListView.getSelectionModel().getSelectedItem() != null) {</span>
+<span class="fc" id="L158">            teamList.add(beastListView.getSelectionModel().getSelectedItem());</span>
+<span class="fc" id="L159">            beastListView.getItems().remove(beastListView.getSelectionModel().getSelectedItem());</span>
+        }
+<span class="fc" id="L161">    }</span>
+
+    private static boolean isInt(String s) {
+        try {
+<span class="fc" id="L165">            Integer.parseInt(s);</span>
+<span class="fc" id="L166">            return true;</span>
+<span class="fc" id="L167">        } catch (NumberFormatException e) {</span>
+<span class="fc" id="L168">            return false;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
