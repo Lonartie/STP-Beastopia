@@ -124,7 +124,7 @@ public class MapController extends Controller {
         }
 <span class="fc" id="L125">        r.setFill(Color.TRANSPARENT);</span>
 <span class="fc" id="L126">        r.setOnMouseEntered(event -&gt; setRegionInfo(r, object, regionInfo, event));</span>
-<span class="fc" id="L127">        r.setOnMouseExited(event -&gt; anchorPane.getChildren().remove(anchorPane.getChildren().size() - 1));</span>
+<span class="pc" id="L127">        r.setOnMouseExited(event -&gt; anchorPane.getChildren().remove(anchorPane.getChildren().size() - 1));</span>
 <span class="fc" id="L128">        anchorPane.getChildren().add(r);</span>
 <span class="fc" id="L129">    }</span>
 
