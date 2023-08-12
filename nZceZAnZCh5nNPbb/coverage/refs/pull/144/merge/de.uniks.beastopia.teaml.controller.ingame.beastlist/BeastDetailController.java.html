@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BeastDetailController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stp-23-team-lumnix</a> &gt; <a href="index.source.html" class="el_package">de.uniks.beastopia.teaml.controller.ingame.beastlist</a> &gt; <span class="el_source">BeastDetailController.java</span></div><h1>BeastDetailController.java</h1><pre class="source lang-java linenums">package de.uniks.beastopia.teaml.controller.ingame.beastlist;
+
+import de.uniks.beastopia.teaml.controller.Controller;
+import de.uniks.beastopia.teaml.rest.AbilityDto;
+import de.uniks.beastopia.teaml.rest.Monster;
+import de.uniks.beastopia.teaml.service.DataCache;
+import de.uniks.beastopia.teaml.service.PresetsService;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+
+import javax.inject.Inject;
+import java.util.Map;
+
+public class BeastDetailController extends Controller {
+
+    @FXML
+    public Label name;
+    @FXML
+    public Label hp;
+    @FXML
+    public Label speed;
+    @FXML
+    public Label level;
+    @FXML
+    public Label type;
+    @FXML
+    public Label attack;
+    @FXML
+    public Label experience;
+    @FXML
+    public Label defense;
+    @FXML
+    public TextArea description;
+    @FXML
+    public ImageView ImageViewAvatar;
+    @FXML
+    public VBox VBoxBeastDetail;
+    @Inject
+    PresetsService presetsService;
+    @Inject
+    DataCache cache;
+    private Monster monster;
+
+    @Inject
+<span class="fc" id="L50">    public BeastDetailController() {</span>
+
+<span class="fc" id="L52">    }</span>
+
+    public void setBeast(Monster monster) {
+<span class="fc" id="L55">        this.monster = monster;</span>
+<span class="fc" id="L56">    }</span>
+
+    @Override
+    public Parent render() {
+<span class="fc" id="L60">        Parent parent = super.render();</span>
+<span class="fc" id="L61">        level.setText(&quot;Level: &quot; + (monster.level()));</span>
+<span class="fc" id="L62">        int maxExp = (int) Math.round(Math.pow(monster.level(), 3) - Math.pow((monster.level() - 1), 3));</span>
+<span class="fc" id="L63">        experience.setText(&quot;EXP: &quot; + monster.experience() + &quot; / &quot; + maxExp);</span>
+<span class="fc" id="L64">        speed.setText(&quot;Speed: &quot; + monster.currentAttributes().speed());</span>
+<span class="fc" id="L65">        attack.setText(&quot;Attack: &quot; + monster.currentAttributes().attack());</span>
+<span class="fc" id="L66">        defense.setText(&quot;Defense: &quot; + monster.currentAttributes().defense());</span>
+<span class="fc" id="L67">        hp.setText(&quot;HP: &quot; + (int) monster.currentAttributes().health() + &quot; / &quot; + (int) monster.attributes().health());</span>
+
+<span class="fc" id="L69">        description.setEditable(false);</span>
+<span class="fc" id="L70">        description.setFocusTraversable(false);</span>
+<span class="fc" id="L71">        name.setText(cache.getBeastDto(monster.type()).name());</span>
+<span class="fc" id="L72">        type.setText(&quot;Type: &quot; + cache.getBeastDto(monster.type()).type().get(0));</span>
+<span class="fc" id="L73">        description.setText(cache.getBeastDto(monster.type()).description() + &quot;\n\n&quot;);</span>
+
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        for (Map.Entry&lt;String, Integer&gt; entry : monster.abilities().entrySet()) {</span>
+<span class="fc" id="L76">            int ability = Integer.parseInt(entry.getKey());</span>
+
+<span class="fc bfc" id="L78" title="All 2 branches covered.">            if (cache.getAbilities().containsKey(ability)) {</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">                for (Map.Entry&lt;Integer, AbilityDto&gt; cacheEntry : cache.getAbilities().entrySet()) {</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">                    if (cacheEntry.getKey() == ability) {</span>
+<span class="fc" id="L81">                        description.setText(description.getText() + cacheEntry.getValue().name() + &quot; [&quot; + cacheEntry.getValue().type() +</span>
+<span class="fc" id="L82">                                &quot;] ACC: &quot; + cacheEntry.getValue().accuracy() + &quot; POW: &quot; + cacheEntry.getValue().power() + &quot;\n&quot; + cacheEntry.getValue().description() + &quot;\n\n&quot;);</span>
+<span class="fc" id="L83">                        break;</span>
+                    }
+<span class="pc" id="L85">                }</span>
+            } else {
+<span class="fc" id="L87">                disposables.add(presetsService.getAbility(ability)</span>
+<span class="fc" id="L88">                        .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L89">                        .subscribe(ad -&gt; {</span>
+<span class="fc" id="L90">                            cache.getAbilities().put(ability, ad);</span>
+<span class="fc" id="L91">                            description.setText(description.getText() + ad.name() + &quot; [&quot; + ad.type() +</span>
+<span class="fc" id="L92">                                    &quot;] ACC: &quot; + ad.accuracy() + &quot; POW: &quot; + ad.power() + &quot;\n&quot; + ad.description() + &quot;\n\n&quot;);</span>
+<span class="fc" id="L93">                        }));</span>
+            }
+<span class="fc" id="L95">        }</span>
+
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">        if (!cache.imageIsDownloaded(monster.type())) {</span>
+<span class="fc" id="L98">            Image monsterImage = presetsService.getMonsterImage(monster.type()).blockingFirst();</span>
+<span class="fc" id="L99">            cache.addMonsterImages(monster.type(), monsterImage);</span>
+<span class="fc" id="L100">            ImageViewAvatar.setImage(monsterImage);</span>
+<span class="fc" id="L101">        } else {</span>
+<span class="nc" id="L102">            ImageViewAvatar.setImage(cache.getMonsterImage(monster.type()));</span>
+        }
+
+<span class="fc" id="L105">        return parent;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
