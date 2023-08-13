@@ -54,23 +54,25 @@ public class DeleteTrainerController extends Controller {
 <span class="fc" id="L54">            return;</span>
         }
 
-<span class="fc" id="L57">        disposables.add(trainerService.deleteTrainer(cache.getJoinedRegion()._id(), cache.getTrainer()._id())</span>
-<span class="fc" id="L58">                .observeOn(FX_SCHEDULER)</span>
-<span class="fc" id="L59">                .subscribe(tr -&gt; {</span>
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">                    if (tr != null) {</span>
-<span class="fc" id="L61">                        cache.setTrainer(null);</span>
+<span class="fc" id="L57">        cache.setTrainerItems(null);</span>
 
-<span class="fc" id="L63">                        TrainerController trainerController = trainerControllerProvider.get();</span>
-<span class="fc" id="L64">                        trainerController.backController(&quot;menu&quot;);</span>
-<span class="fc" id="L65">                        app.show(trainerController);</span>
+<span class="fc" id="L59">        disposables.add(trainerService.deleteTrainer(cache.getJoinedRegion()._id(), cache.getTrainer()._id())</span>
+<span class="fc" id="L60">                .observeOn(FX_SCHEDULER)</span>
+<span class="fc" id="L61">                .subscribe(tr -&gt; {</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">                    if (tr != null) {</span>
+<span class="fc" id="L63">                        cache.setTrainer(null);</span>
+
+<span class="fc" id="L65">                        TrainerController trainerController = trainerControllerProvider.get();</span>
+<span class="fc" id="L66">                        trainerController.backController(&quot;menu&quot;);</span>
+<span class="fc" id="L67">                        app.show(trainerController);</span>
                     }
-<span class="fc" id="L67">                }));</span>
-<span class="fc" id="L68">    }</span>
+<span class="fc" id="L69">                }));</span>
+<span class="fc" id="L70">    }</span>
 
     public void cancel() {
-<span class="fc" id="L71">        TrainerController trainerController = trainerControllerProvider.get();</span>
-<span class="fc" id="L72">        trainerController.backController(&quot;pause&quot;);</span>
-<span class="fc" id="L73">        app.show(trainerController);</span>
-<span class="fc" id="L74">    }</span>
+<span class="fc" id="L73">        TrainerController trainerController = trainerControllerProvider.get();</span>
+<span class="fc" id="L74">        trainerController.backController(&quot;pause&quot;);</span>
+<span class="fc" id="L75">        app.show(trainerController);</span>
+<span class="fc" id="L76">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
