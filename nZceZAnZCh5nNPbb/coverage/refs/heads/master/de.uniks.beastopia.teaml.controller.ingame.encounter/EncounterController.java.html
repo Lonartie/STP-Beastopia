@@ -1127,41 +1127,42 @@ public class EncounterController extends Controller {
 <span class="nc" id="L1127">                infoAnchorPane.setStyle(&quot;-fx-background-color: none;&quot;);</span>
 <span class="nc" id="L1128">                IngameController controller = ingameControllerProvider.get();</span>
 <span class="nc" id="L1129">                controller.setRegion(cache.getJoinedRegion());</span>
-<span class="nc" id="L1130">                app.show(controller);</span>
-<span class="nc" id="L1131">            });</span>
-<span class="nc" id="L1132">            catchInfoBox.getChildren().add(catchInfoParent);</span>
-<span class="nc" id="L1133">            infoAnchorPane.toFront();</span>
-<span class="nc" id="L1134">            infoAnchorPane.setStyle(&quot;-fx-background-color: rgba(0,0,0,0.5);&quot;);</span>
-<span class="nc" id="L1135">            showItemAnimation(renderBeastController2, null, -1);</span>
-<span class="nc" id="L1136">        } else {</span>
-<span class="nc" id="L1137">            showItemAnimation(renderBeastController2, null, -5);</span>
+<span class="nc" id="L1130">                cache.setCurrentEncounter(null);</span>
+<span class="nc" id="L1131">                app.show(controller);</span>
+<span class="nc" id="L1132">            });</span>
+<span class="nc" id="L1133">            catchInfoBox.getChildren().add(catchInfoParent);</span>
+<span class="nc" id="L1134">            infoAnchorPane.toFront();</span>
+<span class="nc" id="L1135">            infoAnchorPane.setStyle(&quot;-fx-background-color: rgba(0,0,0,0.5);&quot;);</span>
+<span class="nc" id="L1136">            showItemAnimation(renderBeastController2, null, -1);</span>
+<span class="nc" id="L1137">        } else {</span>
+<span class="nc" id="L1138">            showItemAnimation(renderBeastController2, null, -5);</span>
         }
 
-<span class="nc" id="L1140">    }</span>
+<span class="nc" id="L1141">    }</span>
 
     public void setMonBallUsed(boolean used) {
-<span class="nc" id="L1143">        monBallUsed = used;</span>
-<span class="nc" id="L1144">    }</span>
+<span class="nc" id="L1144">        monBallUsed = used;</span>
+<span class="nc" id="L1145">    }</span>
 
     public void showItemAnimation(RenderBeastController renderBeastController, VBox selectBox, int itemId) {
-<span class="nc bnc" id="L1147" title="All 2 branches missed.">        if (itemId == -5) {</span>
-<span class="nc" id="L1148">            Image catchFailedImage = new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/close.png&quot;)));</span>
-<span class="nc" id="L1149">            renderBeastController.setItemAnimation(catchFailedImage, selectBox);</span>
-<span class="nc" id="L1150">        } else {</span>
-<span class="nc bnc" id="L1151" title="All 2 branches missed.">            int usedItemId = itemId == -1 ? usedItemTypeDto.id() : itemId;</span>
-<span class="nc bnc" id="L1152" title="All 2 branches missed.">            if (cache.getItemImages().containsKey(usedItemId)) {</span>
-<span class="nc" id="L1153">                renderBeastController.setItemAnimation(cache.getItemImages().get(usedItemId), selectBox);</span>
+<span class="nc bnc" id="L1148" title="All 2 branches missed.">        if (itemId == -5) {</span>
+<span class="nc" id="L1149">            Image catchFailedImage = new Image(Objects.requireNonNull(Main.class.getResourceAsStream(&quot;assets/close.png&quot;)));</span>
+<span class="nc" id="L1150">            renderBeastController.setItemAnimation(catchFailedImage, selectBox);</span>
+<span class="nc" id="L1151">        } else {</span>
+<span class="nc bnc" id="L1152" title="All 2 branches missed.">            int usedItemId = itemId == -1 ? usedItemTypeDto.id() : itemId;</span>
+<span class="nc bnc" id="L1153" title="All 2 branches missed.">            if (cache.getItemImages().containsKey(usedItemId)) {</span>
+<span class="nc" id="L1154">                renderBeastController.setItemAnimation(cache.getItemImages().get(usedItemId), selectBox);</span>
             } else {
-<span class="nc" id="L1155">                disposables.add(presetsService.getItemImage(usedItemId)</span>
-<span class="nc" id="L1156">                        .observeOn(FX_SCHEDULER)</span>
-<span class="nc" id="L1157">                        .subscribe(itemImage -&gt; {</span>
-<span class="nc" id="L1158">                            Map&lt;Integer, Image&gt; itemImages = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L1159">                            itemImages.put(usedItemId, itemImage);</span>
-<span class="nc" id="L1160">                            cache.setItemImages(itemImages);</span>
-<span class="nc" id="L1161">                            renderBeastController.setItemAnimation(cache.getItemImages().get(usedItemId), selectBox);</span>
-<span class="nc" id="L1162">                        }));</span>
+<span class="nc" id="L1156">                disposables.add(presetsService.getItemImage(usedItemId)</span>
+<span class="nc" id="L1157">                        .observeOn(FX_SCHEDULER)</span>
+<span class="nc" id="L1158">                        .subscribe(itemImage -&gt; {</span>
+<span class="nc" id="L1159">                            Map&lt;Integer, Image&gt; itemImages = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L1160">                            itemImages.put(usedItemId, itemImage);</span>
+<span class="nc" id="L1161">                            cache.setItemImages(itemImages);</span>
+<span class="nc" id="L1162">                            renderBeastController.setItemAnimation(cache.getItemImages().get(usedItemId), selectBox);</span>
+<span class="nc" id="L1163">                        }));</span>
             }
         }
-<span class="nc" id="L1165">    }</span>
+<span class="nc" id="L1166">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
